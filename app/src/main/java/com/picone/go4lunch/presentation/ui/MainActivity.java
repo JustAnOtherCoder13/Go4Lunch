@@ -1,8 +1,10 @@
-package com.picone.go4lunch;
+package com.picone.go4lunch.presentation.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.picone.go4lunch.R;
 
 public class MainActivity extends AppCompatActivity {
 
