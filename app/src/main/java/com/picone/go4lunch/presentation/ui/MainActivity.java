@@ -1,10 +1,9 @@
 package com.picone.go4lunch.presentation.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 
-import com.picone.go4lunch.R;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.picone.go4lunch.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
