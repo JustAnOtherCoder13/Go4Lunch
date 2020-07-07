@@ -13,6 +13,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentMapsBinding;
 
+import static com.picone.go4lunch.presentation.utils.BottomNavigationUtil.getBottomNavigation;
+
 
 public class MapsFragment extends Fragment {
 
@@ -31,20 +33,7 @@ public class MapsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentMapsBinding.inflate(inflater, container, false);
-        mBinding.bottomNavigation.setOnNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()){
-                case R.id.map_view_button_bottom_nav :
-                case R.id.workmates_view_button_bottom_nav:
-                    break;
-                case R.id.list_view_button_bottom_nav :
-                    goToList();
-                    break;
-            }
-            return false;
-        });
+        getBottomNavigation(mBinding.bottomNavigation,this);
         return mBinding.getRoot();
-    }
-    private void goToList (){
-        NavHostFragment.findNavController(this).navigate(R.id.action_mapsFragment_to_listFragment);
     }
 }
