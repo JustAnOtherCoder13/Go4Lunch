@@ -11,8 +11,6 @@ import androidx.fragment.app.Fragment;
 
 import com.picone.go4lunch.databinding.FragmentListBinding;
 
-import static com.picone.go4lunch.presentation.utils.BottomNavigationUtil.getBottomNavigation;
-
 public class ListFragment extends Fragment {
 
     private FragmentListBinding mBinding;
@@ -30,7 +28,6 @@ public class ListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentListBinding.inflate(inflater, container, false);
-        getBottomNavigation(mBinding.bottomNavigation, container);
         return mBinding.getRoot();
     }
 

@@ -2,13 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/map_view_button_bottom_nav"
+        android:id="@+id/mapsFragment"
         android:enabled="true"
         android:icon="@drawable/ic_map_icon"
         android:title="Map View"
         />
     <item
-        android:id="@+id/list_view_button_bottom_nav"
+        android:id="@+id/listFragment"
         android:enabled="true"
         android:icon="@drawable/ic_list_icon"
         android:title="List View"
