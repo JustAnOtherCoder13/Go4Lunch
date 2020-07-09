@@ -16,7 +16,7 @@ public class MapsFragment extends Fragment {
 
     private FragmentMapsBinding mBinding;
 
-    public static MapsFragment newInstance(String param1, String param2) {
+    public static MapsFragment newInstance() {
         return new MapsFragment();
     }
 

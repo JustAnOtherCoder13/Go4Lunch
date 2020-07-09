@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
+import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentAuthenticationBinding;
 
 public class AuthenticationFragment extends Fragment {
@@ -28,6 +30,12 @@ public class AuthenticationFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentAuthenticationBinding.inflate(inflater, container, false);
+        mBinding.loginWithFacebook.setOnClickListener(v -> goToMaps());
+        mBinding.loginWithGoogle.setOnClickListener(v -> goToMaps());
         return mBinding.getRoot();
+    }
+
+    private void goToMaps() {
+        NavHostFragment.findNavController(this).navigate(R.id.action_authenticationFragment_to_mapsFragment);
     }
 }
