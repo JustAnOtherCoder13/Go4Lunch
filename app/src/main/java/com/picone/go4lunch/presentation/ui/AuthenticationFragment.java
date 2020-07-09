@@ -31,11 +31,11 @@ public class AuthenticationFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentAuthenticationBinding.inflate(inflater, container, false);
         mBinding.loginWithFacebook.setOnClickListener(v -> goToMaps());
-        mBinding.loginWithGoogle.setOnClickListener(v ->goToMaps());
+        mBinding.loginWithGoogle.setOnClickListener(v -> goToMaps());
         return mBinding.getRoot();
     }
 
-    private void goToMaps (){
+    private void goToMaps() {
         NavHostFragment.findNavController(this).navigate(R.id.action_authenticationFragment_to_mapsFragment);
     }
 }

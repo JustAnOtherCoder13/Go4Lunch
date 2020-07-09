@@ -20,11 +20,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(mBinding.getRoot());
         setUpNavigation();
     }
-    public void setUpNavigation (){
-        NavHostFragment navHostFragment = (NavHostFragment)getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+
+    public void setUpNavigation() {
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         assert navHostFragment != null;
-        NavigationUI.setupWithNavController(mBinding.bottomNavigation,navHostFragment.getNavController());
+        NavigationUI.setupWithNavController(mBinding.bottomNavigation, navHostFragment.getNavController());
     }
-
-
 }

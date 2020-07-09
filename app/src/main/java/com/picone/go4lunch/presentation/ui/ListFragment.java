@@ -30,6 +30,4 @@ public class ListFragment extends Fragment {
         mBinding = FragmentListBinding.inflate(inflater, container, false);
         return mBinding.getRoot();
     }
-
-
 }

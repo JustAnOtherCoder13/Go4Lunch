@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".presentation.ui.AuthenticationFragment"
-    >
+    tools:context=".presentation.ui.AuthenticationFragment">
 
     <ImageView
         android:id="@+id/go_4_lunch_logo"
@@ -13,48 +12,32 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="80dp"
-        tools:src="@tools:sample/avatars"
-        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/go_for_lunch_logo_authentication"
+        app:layout_constraintBottom_toTopOf="@id/login_with_facebook"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/login_with_facebook"
-        android:contentDescription="Go for lunch logo" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
 
     <Button
-        android:padding="10dp"
         android:id="@+id/login_with_facebook"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#416BC1"
-        android:text="Sign in with Facebook"
-        android:drawableStart="@drawable/ic_facebook_logo"
-        android:textColor="#ffffff"
-        android:textAllCaps="false"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        app:layout_constraintTop_toBottomOf="@id/go_4_lunch_logo"
+        style="@style/LoginWithFacebook"
         app:layout_constraintBottom_toTopOf="@id/login_with_google"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@id/go_4_lunch_logo" />
+
     <Button
-        android:padding="10dp"
         android:id="@+id/login_with_google"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#F44336"
-        android:text="Sign in with google"
-        android:drawableStart="@drawable/ic_google_logo"
-        android:textColor="#ffffff"
-        android:textAllCaps="false"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        app:layout_constraintTop_toBottomOf="@id/login_with_facebook"
+        style="@style/LoginWithGoogle"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@id/login_with_facebook" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
