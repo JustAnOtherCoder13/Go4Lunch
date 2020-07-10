@@ -1,10 +1,22 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!-- toolbar -->
+    <style name="toolbar_menu">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:contentDescription">@string/toolbar_menu_icon_content_description_activity_main</item>
+        <item name="android:src">@drawable/ic_menu_icon</item>
+    </style>
+    <style name="toolbar_title">
+        <item name="android:text">@string/app_name</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <!-- fragment_authentication-->

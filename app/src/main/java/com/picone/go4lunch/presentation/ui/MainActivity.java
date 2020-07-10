@@ -31,10 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-
-            finish();
-        }
+        if (item.getItemId() == android.R.id.home) { finish(); }
         return super.onOptionsItemSelected(item);
     }
 
@@ -44,8 +41,11 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(mBinding.bottomNavigation, navController);
         NavigationUI.setupWithNavController(mBinding.toolbar, navController);
-        mBinding.toolbar.setTitle(" ");
+        setUpBottomNavAndToolbar(navController);
+    }
 
+    private void setUpBottomNavAndToolbar(NavController navController) {
+        mBinding.toolbar.setTitle(" ");
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (destination.getId() != R.id.authenticationFragment) {
                 mBinding.toolbar.setVisibility(View.VISIBLE);
