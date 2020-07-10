@@ -30,5 +30,6 @@
     <string name="web_site_button_content_description_restaurant_detail">Visit the restaurant website</string>
     <string name="colleague_avatar_content_description_colleague_items">Colleague avatar</string>
     <string name="restaurant_photo_content_description_restaurant_items">Restaurant photo</string>
+    <string name="toolbar_menu_icon_content_description_activity_main">Menu Icon</string>
 
 </resources>

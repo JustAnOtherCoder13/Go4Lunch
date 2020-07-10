@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
 
-    <Button
+    <com.facebook.login.widget.LoginButton
         android:id="@+id/login_with_facebook"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: "androidx.navigation.safeargs"
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 29
@@ -19,14 +20,26 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        resValue "string", "google_maps_key",
+                (project.findProperty("GOOGLE_MAPS_API_KEY") ?: "")
+        resValue "string", "facebook_key",
+                (project.findProperty("FACEBOOK_API_ID") ?: "")
+        resValue "string", "facebook_login_protocol_scheme",
+                (project.findProperty("FACEBOOK_LOGIN_PROTOCOL_SHEME") ?: "")
+
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            shrinkResources true
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
@@ -57,6 +70,20 @@ dependencies {
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
     //MaterialComponent
     implementation 'com.google.android.material:material:1.1.0'
+    //Firebase
+    implementation "com.google.firebase:firebase-core:17.4.4"
+    implementation "com.google.firebase:firebase-auth:19.3.2"
+    implementation "com.google.firebase:firebase-firestore:21.5.0"
+    //Google
+    implementation 'com.google.android.gms:play-services-auth:18.0.0'
+    //Multidex
+    implementation 'com.android.support:multidex:1.0.3'
+    //Facebook
+    implementation 'com.facebook.android:facebook-android-sdk:4.42.0'
+    implementation 'com.facebook.android:facebook-login:4.42.0'
+    //google maps
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+
 
 
 }
