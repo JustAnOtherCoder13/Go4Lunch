@@ -9,11 +9,15 @@ android {
         viewBinding = true
     }
 
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
+    configurations.all {
+        //exclude protobuf-javalite cause of duplicate class
+        exclude group: 'com.google.protobuf', module: 'protobuf-javalite'
+    }
     defaultConfig {
         applicationId "com.picone.go4lunch"
         minSdkVersion 19
@@ -83,7 +87,9 @@ dependencies {
     implementation 'com.facebook.android:facebook-login:4.42.0'
     //google maps
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
-
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    //place
+    implementation 'com.google.android.libraries.places:places:2.3.0'
 
 
 }

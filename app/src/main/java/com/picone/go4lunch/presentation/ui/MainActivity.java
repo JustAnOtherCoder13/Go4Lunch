@@ -4,18 +4,14 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
-import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
-
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,24 +32,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setUpNavigation() {
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-        assert navHostFragment != null;
-        NavController navController = navHostFragment.getNavController();
+        NavController navController = Navigation.findNavController(this,R.id.nav_host_fragment);
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.authenticationFragment,R.id.mapsFragment,R.id.listFragment).build();
         NavigationUI.setupWithNavController(mBinding.bottomNavigation, navController);
-        NavigationUI.setupWithNavController(mBinding.toolbar, navController);
-        setUpBottomNavAndToolbar(navController);
+        NavigationUI.setupWithNavController(mBinding.toolbar, navController, appBarConfiguration);
+        setBottomNavAndToolbarVisibility(navController);
     }
 
-    private void setUpBottomNavAndToolbar(NavController navController) {
-        mBinding.toolbar.setTitle(" ");
+    private void setBottomNavAndToolbarVisibility(NavController navController) {
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (destination.getId() != R.id.authenticationFragment) {
                 mBinding.toolbar.setVisibility(View.VISIBLE);
                 mBinding.bottomNavigation.setVisibility(View.VISIBLE);
-                setSupportActionBar(mBinding.toolbar);
-                Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
-
-            } else {
+            }else {
                 mBinding.toolbar.setVisibility(View.GONE);
                 mBinding.bottomNavigation.setVisibility(View.GONE);
             }

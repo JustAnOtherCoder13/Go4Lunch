@@ -143,6 +143,6 @@ public class AuthenticationFragment extends Fragment {
     }
     //-----------------------------------------------------------------------------------------
     private void goToMaps() {
-        NavHostFragment.findNavController(this).navigate(R.id.action_authenticationFragment_to_mapsFragment);
+        NavHostFragment.findNavController(this).navigate(R.id.action_global_mapsFragment);
     }
 }

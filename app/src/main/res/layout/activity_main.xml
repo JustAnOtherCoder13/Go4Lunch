@@ -6,14 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".presentation.ui.MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
         android:background="@color/colorPrimary"
+        app:title=""
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        >
+        <!--TODO set tool bar as top level layout without elevation (API 21+) -->
+
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -27,7 +31,9 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 style="@style/toolbar_menu"
-                 />
+                android:contentDescription ="@string/toolbar_menu_icon_content_description_activity_main"
+
+            />
 
             <TextView
                 android:id="@+id/top_nav_bar_title_text_view"
@@ -47,7 +53,7 @@
 
 
         </RelativeLayout>
-    </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <fragment
         android:id="@+id/nav_host_fragment"
@@ -59,7 +65,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/navigation_graph" />
+        app:navGraph="@navigation/navigation_graph"
+        />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
