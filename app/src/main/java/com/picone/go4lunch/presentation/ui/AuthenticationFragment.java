@@ -69,7 +69,7 @@ public class AuthenticationFragment extends Fragment {
                 firebaseAuthWithGoogle(account.getIdToken());
 
             } catch (ApiException e) {
-                Toast.makeText(getContext(), "failure", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.google_auth_failed, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -99,7 +99,7 @@ public class AuthenticationFragment extends Fragment {
                     if (task.isSuccessful()) {
                         goToMaps();
                     } else {
-                        Toast.makeText(getContext(), "failure", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.google_auth_failed, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -110,11 +110,9 @@ public class AuthenticationFragment extends Fragment {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(requireActivity(), task -> {
                     if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
                         FirebaseUser user = mAuth.getCurrentUser();
                     } else {
-                        // If sign in fails, display a message to the user.
-                        Toast.makeText(requireContext(), "Authentication failed.",
+                        Toast.makeText(requireContext(), R.string.facebook_auth_failed,
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -132,12 +130,12 @@ public class AuthenticationFragment extends Fragment {
 
             @Override
             public void onCancel() {
-
+                Toast.makeText(requireContext(),R.string.facebook_auth_canceled,Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(FacebookException error) {
-
+                Toast.makeText(requireContext(),R.string.facebook_auth_failed,Toast.LENGTH_SHORT).show();
             }
         });
     }

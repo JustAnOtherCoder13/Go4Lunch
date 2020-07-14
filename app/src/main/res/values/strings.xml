@@ -32,7 +32,13 @@
     <string name="restaurant_photo_content_description_restaurant_items">Restaurant photo</string>
     <string name="toolbar_menu_icon_content_description_activity_main">Menu Icon</string>
 
-    <!-- address and name path -->
-    <string name="maps_token_title">"Name: %1$s \n Address: %2$s \n Timestamp: %3$tr"</string>
+    <!-- maps -->
+    <string name="maps_token_title">My position</string>
+
+    <!-- Warning message -->
+    <string name="google_auth_failed">Your authentication with Google have failed, please try again</string>
+    <string name="facebook_auth_failed">Your authentication with Facebook have failed, please try again</string>
+    <string name="facebook_auth_canceled">Your authentication with Facebook has been canceled, please try again</string>
+
 
 </resources>

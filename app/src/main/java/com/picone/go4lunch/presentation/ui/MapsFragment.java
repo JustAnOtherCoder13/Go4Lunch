@@ -25,14 +25,12 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.api.Places;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentMapsBinding;
 
 import java.util.Objects;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
@@ -41,7 +39,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap mMap;
     private boolean mLocationPermissionGranted;
     private final int REQUEST_CODE = 13700;
-    private final int DEFAULT_ZOOM = 12;
     private Location mCurrentLocation;
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
@@ -50,10 +47,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         return new MapsFragment();
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Places.initialize(getApplicationContext(), getString(R.string.google_api_key));
         super.onCreate(savedInstanceState);
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
         fetchLastLocation();
@@ -77,29 +72,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         updateLocationUI();
-        LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-        googleMap.addMarker(new MarkerOptions().position(latLng).title(getString(R.string.maps_token_title)));
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(latLng).zoom(DEFAULT_ZOOM).build();
-        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        mLocationPermissionGranted = false;
-        if (requestCode == REQUEST_CODE) {
-            // If request is cancelled, the result arrays are empty.
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mLocationPermissionGranted = true;
-                fetchLastLocation();
-            }
-        }
-        updateLocationUI();
-    }
 
     private void fetchLastLocation() {
         if (ActivityCompat.checkSelfPermission(this.requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -107,14 +81,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     {ACCESS_FINE_LOCATION}, REQUEST_CODE);
             return;
         }
+
         Task<Location> task = mFusedLocationProviderClient.getLastLocation();
         task.addOnSuccessListener(location -> {
             if (location != null) {
                 mCurrentLocation = location;
+
                 mBinding.mapView.getMapAsync(this);
             }
         });
     }
+
     private void updateLocationUI() {
         if (mMap == null) {
             return;
@@ -123,6 +100,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             if (mLocationPermissionGranted) {
                 mMap.setMyLocationEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                setUpMapCurrentPosition();
             } else {
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -133,8 +111,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void getLocationPermission() {
+    private void setUpMapCurrentPosition() {
+        LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        mMap.addMarker(new MarkerOptions().position(latLng).title(getString(R.string.maps_token_title)));
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(latLng).zoom(12).build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
 
+    private void getLocationPermission() {
         if (ContextCompat.checkSelfPermission(this.requireContext(),
                 ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -146,5 +131,4 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     REQUEST_CODE);
         }
     }
-
 }
