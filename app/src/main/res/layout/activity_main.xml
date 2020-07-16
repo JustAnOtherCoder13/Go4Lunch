@@ -8,14 +8,12 @@
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
+        style="@style/toolbar_base_design"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        app:title=""
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        >
+        app:layout_constraintTop_toTopOf="parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -24,29 +22,22 @@
 
             <ImageButton
                 android:id="@+id/top_nav_bar_menu_image_button"
+                style="@style/toolbar_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                style="@style/toolbar_menu"
-                android:contentDescription ="@string/toolbar_menu_icon_content_description_activity_main"
-            />
+                android:contentDescription="@string/toolbar_menu_icon_content_description_activity_main" />
 
             <TextView
                 android:id="@+id/top_nav_bar_title_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
                 style="@style/toolbar_title"
-                 />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/top_nav_bar_search_view_widget"
+                style="@style/toolbar_search_view"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                app:searchIcon="@drawable/ic_search_icon" />
+                android:layout_height="wrap_content" />
 
 
         </RelativeLayout>
@@ -62,8 +53,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/navigation_graph"
-        />
+        app:navGraph="@navigation/navigation_graph" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"

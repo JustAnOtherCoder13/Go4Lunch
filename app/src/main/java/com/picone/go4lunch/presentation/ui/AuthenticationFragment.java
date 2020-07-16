@@ -43,6 +43,9 @@ public class AuthenticationFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MainActivity mainActivity = (MainActivity) getActivity();
+        assert mainActivity != null;
+        mainActivity.setBottomNavAndToolbarVisibility(false);
         mAuth = FirebaseAuth.getInstance();
         mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), getGoogleSignInOptions());
         mCallbackManager = CallbackManager.Factory.create();
@@ -67,7 +70,6 @@ public class AuthenticationFragment extends Fragment {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 assert account != null;
                 firebaseAuthWithGoogle(account.getIdToken());
-
             } catch (ApiException e) {
                 Toast.makeText(getContext(), R.string.google_auth_failed, Toast.LENGTH_SHORT).show();
             }
@@ -97,6 +99,9 @@ public class AuthenticationFragment extends Fragment {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(requireActivity(), task -> {
                     if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        assert user != null;
+                        Toast.makeText(requireContext(), getResources().getString(R.string.welcome_message) + user.getDisplayName(), Toast.LENGTH_LONG).show();
                         goToMaps();
                     } else {
                         Toast.makeText(getContext(), R.string.google_auth_failed, Toast.LENGTH_SHORT).show();
@@ -111,6 +116,8 @@ public class AuthenticationFragment extends Fragment {
                 .addOnCompleteListener(requireActivity(), task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
+                        assert user != null;
+                        Toast.makeText(requireContext(), getResources().getString(R.string.welcome_message) + user.getDisplayName(), Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(requireContext(), R.string.facebook_auth_failed,
                                 Toast.LENGTH_SHORT).show();
@@ -130,15 +137,16 @@ public class AuthenticationFragment extends Fragment {
 
             @Override
             public void onCancel() {
-                Toast.makeText(requireContext(),R.string.facebook_auth_canceled,Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), R.string.facebook_auth_canceled, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(FacebookException error) {
-                Toast.makeText(requireContext(),R.string.facebook_auth_failed,Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), R.string.facebook_auth_failed, Toast.LENGTH_SHORT).show();
             }
         });
     }
+
     //-----------------------------------------------------------------------------------------
     private void goToMaps() {
         NavHostFragment.findNavController(this).navigate(R.id.action_global_mapsFragment);

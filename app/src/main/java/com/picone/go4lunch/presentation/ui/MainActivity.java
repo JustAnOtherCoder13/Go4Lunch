@@ -36,18 +36,17 @@ public class MainActivity extends AppCompatActivity {
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.authenticationFragment,R.id.mapsFragment,R.id.listFragment).build();
         NavigationUI.setupWithNavController(mBinding.bottomNavigation, navController);
         NavigationUI.setupWithNavController(mBinding.toolbar, navController, appBarConfiguration);
-        setBottomNavAndToolbarVisibility(navController);
     }
 
-    private void setBottomNavAndToolbarVisibility(NavController navController) {
-        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (destination.getId() != R.id.authenticationFragment) {
+    void setBottomNavAndToolbarVisibility(Boolean bool) {
+
+            if (bool) {
                 mBinding.toolbar.setVisibility(View.VISIBLE);
                 mBinding.bottomNavigation.setVisibility(View.VISIBLE);
             }else {
                 mBinding.toolbar.setVisibility(View.GONE);
                 mBinding.bottomNavigation.setVisibility(View.GONE);
             }
-        });
+
     }
 }

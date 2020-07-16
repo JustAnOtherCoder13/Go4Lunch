@@ -50,6 +50,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MainActivity mainActivity = (MainActivity) getActivity();
+        assert mainActivity != null;
+        mainActivity.setBottomNavAndToolbarVisibility(true);
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
         fetchLastLocation();
     }
@@ -81,12 +84,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     {ACCESS_FINE_LOCATION}, REQUEST_CODE);
             return;
         }
-
         Task<Location> task = mFusedLocationProviderClient.getLastLocation();
         task.addOnSuccessListener(location -> {
             if (location != null) {
                 mCurrentLocation = location;
-
                 mBinding.mapView.getMapAsync(this);
             }
         });

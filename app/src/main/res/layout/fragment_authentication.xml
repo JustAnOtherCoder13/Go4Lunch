@@ -21,9 +21,9 @@
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_with_facebook"
+        style="@style/LoginWithFacebook"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/LoginWithFacebook"
         app:layout_constraintBottom_toTopOf="@id/login_with_google"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -31,9 +31,9 @@
 
     <Button
         android:id="@+id/login_with_google"
+        style="@style/LoginWithGoogle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/LoginWithGoogle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
