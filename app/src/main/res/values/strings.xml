@@ -39,7 +39,11 @@
     <string name="google_auth_failed">Your authentication with Google have failed, please try again</string>
     <string name="facebook_auth_failed">Your authentication with Facebook have failed, please try again</string>
     <string name="facebook_auth_canceled">Your authentication with Facebook has been canceled, please try again</string>
+    <string name="invalid_authentication">"You are not authenticate, please authenticate."</string>
+
 
     <!-- login message -->
     <string name="welcome_message">"Welcome "</string>
+    <string name="welcome_back_message">"Welcome back "</string>
+
 </resources>

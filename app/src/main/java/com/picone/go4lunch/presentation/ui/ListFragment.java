@@ -22,15 +22,15 @@ public class ListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MainActivity mainActivity = (MainActivity) getActivity();
-        assert mainActivity != null;
-        mainActivity.setBottomNavAndToolbarVisibility(true);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentListBinding.inflate(inflater, container, false);
+        MainActivity mainActivity = (MainActivity) getActivity();
+        assert mainActivity != null;
+        mainActivity.setBottomNavAndToolbarVisibility(true);
         return mBinding.getRoot();
     }
 }

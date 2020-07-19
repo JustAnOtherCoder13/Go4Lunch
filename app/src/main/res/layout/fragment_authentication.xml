@@ -24,6 +24,7 @@
         style="@style/LoginWithFacebook"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
         app:layout_constraintBottom_toTopOf="@id/login_with_google"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
