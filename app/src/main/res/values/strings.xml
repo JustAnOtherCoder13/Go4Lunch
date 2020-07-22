@@ -46,4 +46,15 @@
     <string name="welcome_message">"Welcome "</string>
     <string name="welcome_back_message">"Welcome back "</string>
 
+    <!-- drawer menu -->
+    <string name="user_avatar_drawer_menu">User Avatar</string>
+    <string name="user_name_drawer_menu">User Name</string>
+    <string name="user_mail_drawer_menu">User Mail</string>
+    <string name="your_lunch_drawer_menu_title">YOUR LUNCH</string>
+    <string name="settings_drawer_menu_title">SETTINGS</string>
+    <string name="logout_drawer_menu_title">LOGOUT</string>
+
+    <!-- nav graph label -->
+    <string name="i_am_hungry_title">I\'m Hungry!</string>
+
 </resources>

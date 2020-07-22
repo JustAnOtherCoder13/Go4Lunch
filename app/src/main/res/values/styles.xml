@@ -6,37 +6,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <!-- toolbar -->
-    <style name="toolbar_base_design">
-        <item name="title">""</item>
-        <item name="android:background">@color/colorPrimary</item>
-    </style>
-
-    <style name="toolbar_menu">
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:contentDescription">
-            @string/toolbar_menu_icon_content_description_activity_main
-        </item>
-        <item name="android:src">@drawable/ic_menu_icon</item>
-        <item name="android:layout_alignParentStart">true</item>
-        <item name="android:layout_centerVertical">true</item>
-    </style>
-
-    <style name="toolbar_title">
-        <item name="android:text">@string/app_name</item>
-        <item name="android:textColor">@color/onPrimaryColor</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:layout_toEndOf">@id/top_nav_bar_menu_image_button</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:layout_marginStart">10dp</item>
-    </style>
-
-    <style name="toolbar_search_view">
-        <item name="android:layout_alignParentEnd">true</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="searchIcon">@drawable/ic_search_icon</item>
-    </style>
-
     <!-- fragment_authentication-->
     <style name="LoginWithGoogle">
         <item name="icon">@drawable/ic_google_logo</item>
@@ -55,7 +24,6 @@
     </style>
 
     <style name="LoginWithFacebook">
-        <item name="android:text">@string/sign_in_with_facebook_authentication</item>
         <item name="textAllCaps">false</item>
         <item name="android:textSize">13sp</item>
         <item name="android:layout_marginLeft">@dimen/login_button_horizontal_margin</item>
@@ -77,4 +45,28 @@
         <item name="android:layout_marginBottom">55dp</item>
     </style>
 
+    <!-- toolbar -->
+    <style name="top_nav_bar_style">
+        <item name="titleTextColor">@color/onPrimaryColor</item>
+        <item name="menu">@menu/top_nav_bar_menu</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+    <!-- drawer menu -->
+    <style name="drawer_menu_style">
+        <item name="android:layout_gravity">start</item>
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="itemTextColor">@color/onPrimaryColor</item>
+        <item name="itemIconTint">@color/onPrimaryColor</item>
+        <item name="menu">@menu/drawer_menu</item>
+        <item name="headerLayout">@layout/drawer_menu_header_layout</item>
+    </style>
+
+    <!-- drawer menu title -->
+    <style name="drawer_title">
+        <item name="android:text">@string/app_name</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">30sp</item>
+    </style>
 </resources>

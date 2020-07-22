@@ -6,8 +6,8 @@
     tools:context=".presentation.ui.MapsFragment">
 
     <com.google.android.gms.maps.MapView
-        style="@style/maps_widget_fragment_maps"
         android:id="@+id/map_view"
+        style="@style/maps_widget_fragment_maps"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

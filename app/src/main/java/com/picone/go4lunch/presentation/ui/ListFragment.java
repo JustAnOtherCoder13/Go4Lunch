@@ -7,17 +7,12 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.picone.go4lunch.databinding.FragmentListBinding;
 
-public class ListFragment extends Fragment {
+public class ListFragment extends BaseFragment {
 
     private FragmentListBinding mBinding;
-
-    public static ListFragment newInstance() {
-        return new ListFragment();
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,9 +23,7 @@ public class ListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentListBinding.inflate(inflater, container, false);
-        MainActivity mainActivity = (MainActivity) getActivity();
-        assert mainActivity != null;
-        mainActivity.setBottomNavAndToolbarVisibility(true);
+        setNavVisibility(true);
         return mBinding.getRoot();
     }
 }

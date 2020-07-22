@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:facebook="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.ui.AuthenticationFragment">
 
     <ImageView
@@ -24,7 +25,8 @@
         style="@style/LoginWithFacebook"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
+        facebook:com_facebook_logout_text="@string/sign_in_with_facebook_authentication"
+        facebook:com_facebook_login_text="@string/sign_in_with_facebook_authentication"
         app:layout_constraintBottom_toTopOf="@id/login_with_google"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

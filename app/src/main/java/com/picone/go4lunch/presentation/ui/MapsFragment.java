@@ -46,7 +46,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private Location mCurrentLocation;
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
