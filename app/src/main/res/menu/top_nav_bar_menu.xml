@@ -13,6 +13,7 @@
         android:enabled="true"
         android:icon="@drawable/ic_search_icon"
         android:title=""
-        app:showAsAction="ifRoom" />
+        app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="android.widget.SearchView" />
 
 </menu>

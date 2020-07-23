@@ -2,15 +2,16 @@ package com.picone.go4lunch.presentation.ui;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -21,18 +22,18 @@ import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static LoginViewModel LOGIN_VIEW_MODEL;
-
     private ActivityMainBinding mBinding;
-    private NavController mNavController;
-    private GoogleSignInClient mGoogleSignInClient;
-    private FirebaseAuth firebaseAuth;
+
+    public FirebaseAuth firebaseAuth;
+    public NavController mNavController;
+    public GoogleSignInClient mGoogleSignInClient;
+    public LoginViewModel loginViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         firebaseAuth = FirebaseAuth.getInstance();
-        LOGIN_VIEW_MODEL = new ViewModelProvider(this).get(LoginViewModel.class);
+        loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         mGoogleSignInClient = GoogleSignIn.getClient(this, getGoogleSignInOptions());
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
@@ -42,6 +43,21 @@ public class MainActivity extends AppCompatActivity {
         initLoginViewModel();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (firebaseAuth.getCurrentUser() != null) {
+            loginViewModel.authenticate(true);
+            Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + firebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
+    }
+
     private void initMenuButton() {
         mBinding.topNavBar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
@@ -49,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
                     mBinding.drawerLayout.open();
                     break;
                 case R.id.top_nav_search_button:
+
                     break;
             }
             return false;
@@ -67,19 +84,21 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void setUpNavigation() {
+    private void setUpNavigation() {
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.authenticationFragment, R.id.mapsFragment, R.id.listFragment, R.id.drawer_layout).build();
         NavigationUI.setupWithNavController(mBinding.bottomNavigation, mNavController);
         NavigationUI.setupWithNavController(mBinding.topNavBar, mNavController, appBarConfiguration);
     }
 
-    void setBottomNavAndToolbarVisibility(Boolean bool) {
+    void setMenuVisibility(Boolean bool) {
         if (bool) {
             mBinding.topNavBar.setVisibility(View.VISIBLE);
             mBinding.bottomNavigation.setVisibility(View.VISIBLE);
+            mBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         } else {
             mBinding.topNavBar.setVisibility(View.GONE);
             mBinding.bottomNavigation.setVisibility(View.GONE);
+            mBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         }
     }
 
@@ -91,12 +110,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void signOut() {
-        LoginManager.getInstance().logOut();
-        mGoogleSignInClient.signOut().addOnCompleteListener(task -> LOGIN_VIEW_MODEL.authenticate(false));
+        firebaseAuth.signOut();
+        loginViewModel.authenticate(false);
     }
 
     private void initLoginViewModel() {
-        LOGIN_VIEW_MODEL.authenticationState.observe(this,
+        loginViewModel.authenticationState.observe(this,
                 authenticationState -> {
                     switch (authenticationState) {
                         case AUTHENTICATED:
@@ -108,6 +127,5 @@ public class MainActivity extends AppCompatActivity {
                             break;
                     }
                 });
-        if (firebaseAuth.getCurrentUser() != null) LOGIN_VIEW_MODEL.authenticate(true);
     }
 }

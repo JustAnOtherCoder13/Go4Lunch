@@ -77,7 +77,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private void setNavVisibility() {
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
-        mainActivity.setBottomNavAndToolbarVisibility(true);
+        mainActivity.setMenuVisibility(true);
     }
 
     private void initMapView(@Nullable Bundle savedInstanceState) {
