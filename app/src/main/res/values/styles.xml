@@ -2,8 +2,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorOnPrimary">@color/onPrimaryColor</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:actionBarWidgetTheme">@style/search_view_style</item>
     </style>
 
     <!-- fragment_authentication-->
@@ -12,7 +13,7 @@
         <item name="iconGravity">start</item>
         <item name="iconSize">17dp</item>
         <item name="android:text">@string/sign_in_with_google_authentication</item>
-        <item name="android:textColor">#fff</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
         <item name="textAllCaps">false</item>
         <item name="android:textSize">13sp</item>
         <item name="fontFamily">sans-serif</item>
@@ -68,5 +69,14 @@
         <item name="android:textAlignment">center</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">30sp</item>
+    </style>
+
+    <!-- searchView -->
+    <style name="search_view_style" parent="Theme.MaterialComponents.Light">
+        <item name="searchIcon">@drawable/ic_search_icon</item>
+        <item name="autoCompleteTextViewStyle">@style/autoCompleteSearchViewStyle</item>
+    </style>
+    <style name="autoCompleteSearchViewStyle" parent="Widget.AppCompat.Light.AutoCompleteTextView">
+        <item name="android:background">@color/onPrimaryColor</item>
     </style>
 </resources>

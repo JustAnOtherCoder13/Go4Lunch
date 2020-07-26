@@ -12,6 +12,9 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -20,23 +23,29 @@ import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding mBinding;
 
-    public FirebaseAuth firebaseAuth;
-    public NavController mNavController;
-    public GoogleSignInClient mGoogleSignInClient;
-    public LoginViewModel loginViewModel;
+    LottieAnimationView mAnimationView;
+    FirebaseAuth mFirebaseAuth;
+    NavController mNavController;
+    GoogleSignInClient mGoogleSignInClient;
+    private LoginViewModel mLoginViewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        firebaseAuth = FirebaseAuth.getInstance();
-        loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mLoginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         mGoogleSignInClient = GoogleSignIn.getClient(this, getGoogleSignInOptions());
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
+        mAnimationView = mBinding.animationView;
+        mAnimationView.setAnimation(R.raw.loading_animation);
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
         initMenuButton();
         setUpNavigation();
@@ -46,16 +55,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (firebaseAuth.getCurrentUser() != null) {
-            loginViewModel.authenticate(true);
-            Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + firebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if (mFirebaseAuth.getCurrentUser() != null || accessToken != null && !accessToken.isExpired()) {
+            mLoginViewModel.authenticate(true);
+            Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        this.finish();
+        if (Objects.requireNonNull(mNavController.getCurrentDestination()).getId() == R.id.authenticationFragment) {
+            this.finish();
+        }
     }
 
     private void initMenuButton() {
@@ -71,12 +83,13 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
         mBinding.navView.setNavigationItemSelectedListener(item -> {
+            mBinding.drawerLayout.close();
             switch (item.getItemId()) {
                 case R.id.your_lunch_drawer_layout:
+                    mNavController.navigate(R.id.restaurantDetailFragment);
                 case R.id.settings_drawer_layout:
                     break;
                 case R.id.logout_drawer_layout:
-                    mBinding.drawerLayout.close();
                     signOut();
                     break;
             }
@@ -110,12 +123,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void signOut() {
-        firebaseAuth.signOut();
-        loginViewModel.authenticate(false);
+        LoginManager.getInstance().logOut();
+        mFirebaseAuth.signOut();
+        mLoginViewModel.authenticate(false);
     }
 
     private void initLoginViewModel() {
-        loginViewModel.authenticationState.observe(this,
+        mLoginViewModel.authenticationState.observe(this,
                 authenticationState -> {
                     switch (authenticationState) {
                         case AUTHENTICATED:

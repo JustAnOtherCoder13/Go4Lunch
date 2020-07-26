@@ -21,7 +21,6 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentAuthenticationBinding;
@@ -82,6 +81,7 @@ public class AuthenticationFragment extends BaseFragment {
     //--------------------Authentication with google----------------------------
 
     private void signInWithGoogle() {
+        playLoadingAnimation(true);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -91,11 +91,9 @@ public class AuthenticationFragment extends BaseFragment {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(requireActivity(), task -> {
                     if (task.isSuccessful()) {
-                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        assert firebaseUser != null;
+                        Toast.makeText(requireContext(), getResources().getString(R.string.welcome_message) + Objects.requireNonNull(mAuth.getCurrentUser()).getDisplayName(), Toast.LENGTH_LONG).show();
                         mLoginViewModel.authenticate(true);
                         mNavController.navigateUp();
-                        Toast.makeText(requireContext(), getResources().getString(R.string.welcome_message) + firebaseUser.getDisplayName(), Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(getContext(), R.string.google_auth_failed, Toast.LENGTH_SHORT).show();
                     }
@@ -119,6 +117,7 @@ public class AuthenticationFragment extends BaseFragment {
     }
 
     private void signInWithFacebook() {
+        playLoadingAnimation(true);
         mBinding.loginWithFacebook.setReadPermissions("email", "public_profile");
         mBinding.loginWithFacebook.setFragment(this);
         mBinding.loginWithFacebook.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {

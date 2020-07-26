@@ -1,11 +1,14 @@
 package com.picone.go4lunch.presentation.ui;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
@@ -13,31 +16,44 @@ import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 
 abstract class BaseFragment extends Fragment {
 
-    public FirebaseAuth mAuth;
-    public GoogleSignInClient mGoogleSignInClient;
-    public CallbackManager mCallbackManager;
-    public LoginViewModel mLoginViewModel;
-    public NavController mNavController;
+    FirebaseAuth mAuth;
+    GoogleSignInClient mGoogleSignInClient;
+    CallbackManager mCallbackManager;
+    LoginViewModel mLoginViewModel;
+    NavController mNavController;
+    LottieAnimationView mAnimationView;
     private MainActivity mainActivity;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainActivity = (MainActivity) getActivity();
-        assert mainActivity != null;
-        mLoginViewModel = mainActivity.loginViewModel;
-        mNavController = mainActivity.mNavController;
-        initAuthentication();
+        initVariables();
     }
 
-    public void initAuthentication() {
-        mAuth = mainActivity.firebaseAuth;
+    void initVariables() {
+        assert mainActivity != null;
+        mLoginViewModel = new ViewModelProvider(mainActivity).get(LoginViewModel.class);
+        mAnimationView = mainActivity.mAnimationView;
+        mNavController = mainActivity.mNavController;
+        mAuth = mainActivity.mFirebaseAuth;
         mGoogleSignInClient = mainActivity.mGoogleSignInClient;
         mCallbackManager = CallbackManager.Factory.create();
     }
 
-    public void setNavVisibility(boolean bol) {
+    void setNavVisibility(boolean bol) {
         mainActivity.setMenuVisibility(bol);
     }
 
+    void playLoadingAnimation(boolean bol) {
+        if (bol) {
+            mAnimationView.setVisibility(View.VISIBLE);
+            mAnimationView.playAnimation();
+        } else {
+            mAnimationView.setVisibility(View.GONE);
+            mAnimationView.pauseAnimation();
+        }
+    }
 }
+
+
