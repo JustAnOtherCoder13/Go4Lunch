@@ -12,7 +12,6 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -29,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding mBinding;
 
-    LottieAnimationView mAnimationView;
     FirebaseAuth mFirebaseAuth;
     NavController mNavController;
     GoogleSignInClient mGoogleSignInClient;
@@ -44,8 +42,6 @@ public class MainActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, getGoogleSignInOptions());
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
-        mAnimationView = mBinding.animationView;
-        mAnimationView.setAnimation(R.raw.loading_animation);
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
         initMenuButton();
         setUpNavigation();
@@ -98,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpNavigation() {
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.authenticationFragment, R.id.mapsFragment, R.id.listFragment, R.id.drawer_layout).build();
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.authenticationFragment, R.id.mapsFragment, R.id.listFragment,R.id.workmatesFragment).build();
         NavigationUI.setupWithNavController(mBinding.bottomNavigation, mNavController);
         NavigationUI.setupWithNavController(mBinding.topNavBar, mNavController, appBarConfiguration);
     }

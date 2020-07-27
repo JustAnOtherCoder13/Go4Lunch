@@ -11,6 +11,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.AccessToken;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -32,13 +33,14 @@ public class AuthenticationFragment extends BaseFragment {
     private static final int RC_SIGN_IN = 13250;
 
     private FragmentAuthenticationBinding mBinding;
+    LottieAnimationView mAnimationView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentAuthenticationBinding.inflate(inflater, container, false);
         initView();
-        setNavVisibility(false);
+        showAppBars(false);
         return mBinding.getRoot();
     }
 
@@ -65,6 +67,9 @@ public class AuthenticationFragment extends BaseFragment {
     }
 
     private void initView() {
+        mAnimationView = mBinding.animationView;
+        mAnimationView.setAnimation(R.raw.loading_animation);
+        mAnimationView.setVisibility(View.GONE);
         mBinding.loginWithFacebook.setOnClickListener(v -> signInWithFacebook());
         mBinding.loginWithGoogle.setOnClickListener(v -> signInWithGoogle());
     }
@@ -78,10 +83,11 @@ public class AuthenticationFragment extends BaseFragment {
                     }
                 });
     }
+
     //--------------------Authentication with google----------------------------
 
     private void signInWithGoogle() {
-        playLoadingAnimation(true);
+        playLoadingAnimation(true,mAnimationView);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -99,6 +105,7 @@ public class AuthenticationFragment extends BaseFragment {
                     }
                 });
     }
+
 //------------------------------------Facebook authentication----------------------------
 
     private void handleFacebookAccessToken(AccessToken token) {
@@ -117,7 +124,7 @@ public class AuthenticationFragment extends BaseFragment {
     }
 
     private void signInWithFacebook() {
-        playLoadingAnimation(true);
+        playLoadingAnimation(true,mAnimationView);
         mBinding.loginWithFacebook.setReadPermissions("email", "public_profile");
         mBinding.loginWithFacebook.setFragment(this);
         mBinding.loginWithFacebook.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {

@@ -25,5 +25,10 @@
         android:name="com.picone.go4lunch.presentation.ui.AuthenticationFragment"
         android:label=""
         tools:layout="@layout/fragment_authentication" />
+    <fragment
+        android:id="@+id/workmatesFragment"
+        android:name="com.picone.go4lunch.presentation.ui.WorkmatesFragment"
+        android:label="@string/available_workmates"
+        tools:layout="@layout/fragment_workmates" />
 
 </navigation>

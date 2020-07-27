@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
 
     <TextView
@@ -14,7 +14,7 @@
         app:layout_constraintBottom_toTopOf="@id/food_style_and_address_text_view"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/distance_text_view"
-        app:layout_constraintTop_toTopOf="@id/restaurant_photo_image_view" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/distance_text_view"
@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/opening_time_text_restaurant_items"
-        app:layout_constraintBottom_toBottomOf="@id/restaurant_photo_image_view"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/restaurant_name_text_view"
         app:layout_constraintTop_toBottomOf="@id/food_style_and_address_text_view" />
 
@@ -48,8 +48,7 @@
         android:id="@+id/restaurant_photo_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_margin="@dimen/basic_marge"
         android:contentDescription="@string/restaurant_photo_content_description_restaurant_items"
         app:layout_constraintLeft_toRightOf="@id/distance_text_view"
         app:layout_constraintRight_toRightOf="parent"

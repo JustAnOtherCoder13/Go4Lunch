@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -29,7 +28,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentMapsBinding;
-import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 
 import java.util.Objects;
 
@@ -90,9 +88,8 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     }
 
     private void initLoginViewModel() {
-        LoginViewModel loginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
         final NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
-        loginViewModel.authenticationState.observe(getViewLifecycleOwner(),
+        mLoginViewModel.authenticationState.observe(getViewLifecycleOwner(),
                 authenticationState -> {
                     switch (authenticationState) {
                         case AUTHENTICATED:
@@ -138,7 +135,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(latLng).zoom(12).build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        playLoadingAnimation(false);
+        playLoadingAnimation(false,mAnimationView);
     }
 
     private void updateLocationUI() {

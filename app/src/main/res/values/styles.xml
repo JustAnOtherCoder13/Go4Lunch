@@ -4,7 +4,6 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorOnPrimary">@color/onPrimaryColor</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:actionBarWidgetTheme">@style/search_view_style</item>
     </style>
 
     <!-- fragment_authentication-->
@@ -20,8 +19,8 @@
         <item name="android:background">#F44336</item>
         <item name="android:layout_marginLeft">@dimen/login_button_horizontal_margin</item>
         <item name="android:layout_marginRight">@dimen/login_button_horizontal_margin</item>
-        <item name="android:layout_marginTop">10dp</item>
-        <item name="android:padding">@dimen/login_button_padding</item>
+        <item name="android:layout_marginTop">@dimen/basic_marge</item>
+        <item name="android:padding">@dimen/basic_marge</item>
     </style>
 
     <style name="LoginWithFacebook">
@@ -29,9 +28,9 @@
         <item name="android:textSize">13sp</item>
         <item name="android:layout_marginLeft">@dimen/login_button_horizontal_margin</item>
         <item name="android:layout_marginRight">@dimen/login_button_horizontal_margin</item>
-        <item name="android:layout_marginTop">10dp</item>
-        <item name="android:paddingTop">13dp</item>
-        <item name="android:paddingBottom">13dp</item>
+        <item name="android:layout_marginTop">@dimen/basic_marge</item>
+        <item name="android:paddingTop">@dimen/basic_marge</item>
+        <item name="android:paddingBottom">@dimen/basic_marge</item>
     </style>
 
     <!-- fragment_restaurant_detail -->
@@ -42,8 +41,41 @@
 
     <!-- fragment_maps -->
     <style name="maps_widget_fragment_maps">
-        <item name="android:layout_marginTop">55dp</item>
-        <item name="android:layout_marginBottom">55dp</item>
+        <item name="android:layout_marginTop">?attr/actionBarSize</item>
+        <item name="android:layout_marginBottom">?attr/actionBarSize</item>
+    </style>
+
+    <!-- restaurant detail fragment -->
+    <style name="selected_restaurant_fab_style">
+        <item name="android:layout_marginTop">@dimen/xl_marge</item>
+        <item name="android:layout_marginEnd">@dimen/basic_marge</item>
+        <item name="android:padding">@dimen/little_marge</item>
+        <item name="android:src">@drawable/ic_check_icon</item>
+    </style>
+    <style name="restaurant_name">
+        <item name="android:text">@string/restaurant_name_restaurant_detail</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+    </style>
+    <style name="food_and_address">
+        <item name="android:text">@string/food_style_address_restaurant_detail</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+    </style>
+    <style name="average_satisfaction">
+        <item name="android:layout_marginStart">@dimen/basic_marge</item>
+    </style>
+    <style name="call_button">
+        <item name="android:background">@color/onPrimaryColor</item>
+        <item name="android:src">@drawable/ic_phone_icon</item>
+    </style>
+    <style name="like_button">
+        <item name="android:background">@color/onPrimaryColor</item>
+        <item name="android:src">@drawable/ic_star_icon</item>
+        <item name="android:tint">@color/colorPrimary</item>
+    </style>
+    <style name="website_button">
+        <item name="android:background">@color/onPrimaryColor</item>
+        <item name="android:src">@drawable/ic_phone_icon</item>
     </style>
 
     <!-- toolbar -->
@@ -62,8 +94,6 @@
         <item name="menu">@menu/drawer_menu</item>
         <item name="headerLayout">@layout/drawer_menu_header_layout</item>
     </style>
-
-    <!-- drawer menu title -->
     <style name="drawer_title">
         <item name="android:text">@string/app_name</item>
         <item name="android:textAlignment">center</item>
@@ -71,12 +101,4 @@
         <item name="android:textSize">30sp</item>
     </style>
 
-    <!-- searchView -->
-    <style name="search_view_style" parent="Theme.MaterialComponents.Light">
-        <item name="searchIcon">@drawable/ic_search_icon</item>
-        <item name="autoCompleteTextViewStyle">@style/autoCompleteSearchViewStyle</item>
-    </style>
-    <style name="autoCompleteSearchViewStyle" parent="Widget.AppCompat.Light.AutoCompleteTextView">
-        <item name="android:background">@color/onPrimaryColor</item>
-    </style>
 </resources>
