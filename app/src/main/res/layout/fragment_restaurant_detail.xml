@@ -8,9 +8,9 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/check_if_selected_detail_fab"
+        style="@style/selected_restaurant_fab_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_check_icon"
         app:layout_constraintBottom_toBottomOf="@id/restaurant_description_layout"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,16 +30,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:padding="10dp"
-        app:layout_constraintTop_toBottomOf="@id/restaurant_photo_detail_image_view"
-        tools:layout_editor_absoluteX="52dp">
+        android:padding="@dimen/basic_marge"
+        app:layout_constraintTop_toBottomOf="@id/restaurant_photo_detail_image_view">
 
         <TextView
             android:id="@+id/restaurant_name_detail_text_view"
+            style="@style/restaurant_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/restaurant_name_restaurant_detail"
-            android:textColor="@color/onPrimaryColor"
             app:layout_constraintBottom_toTopOf="@id/food_style_and_address_detail_text_view"
             app:layout_constraintRight_toLeftOf="@id/opinion_star_detail_image_view"
             app:layout_constraintRight_toRightOf="parent"
@@ -47,19 +45,18 @@
 
         <TextView
             android:id="@+id/food_style_and_address_detail_text_view"
+            style="@style/food_and_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/food_style_address_restaurant_detail"
-            android:textColor="@color/onPrimaryColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/restaurant_name_detail_text_view" />
 
         <ImageView
             android:id="@+id/opinion_star_detail_image_view"
+            style=""
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:contentDescription="@string/opinion_star_detail_content_description_restaurant_detail"
             android:src="@drawable/ic_star_icon"
             app:layout_constraintBottom_toTopOf="@id/food_style_and_address_detail_text_view"
@@ -71,17 +68,17 @@
         android:id="@+id/action_button_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:padding="@dimen/basic_marge"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/restaurant_description_layout">
 
         <ImageButton
             android:id="@+id/call_number_detail_image_button"
+            style="@style/call_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/restaurant_button_content_description_restaurant_detail"
-            android:src="@drawable/ic_phone_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/like_detail_image_button"
@@ -99,11 +96,10 @@
 
         <ImageButton
             android:id="@+id/like_detail_image_button"
+            style="@style/like_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/call_restaurant_content_description_restaurant_detail"
-            android:src="@drawable/ic_star_icon"
-            android:tint="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/call_number_detail_image_button"
             app:layout_constraintRight_toLeftOf="@id/web_site_detail_image_button"
@@ -121,10 +117,10 @@
 
         <ImageButton
             android:id="@+id/web_site_detail_image_button"
+            style="@style/website_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/web_site_button_content_description_restaurant_detail"
-            android:src="@drawable/ic_phone_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/like_detail_image_button"
             app:layout_constraintRight_toRightOf="parent"
@@ -139,9 +135,11 @@
             app:layout_constraintLeft_toLeftOf="@id/web_site_detail_image_button"
             app:layout_constraintRight_toRightOf="@id/web_site_detail_image_button"
             app:layout_constraintTop_toBottomOf="@id/web_site_detail_image_button" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_restaurant_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"

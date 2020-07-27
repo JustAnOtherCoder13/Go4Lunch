@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Button-->
-    <dimen name="login_button_horizontal_margin">20dp</dimen>
-    <dimen name="login_button_padding">10dp</dimen>
+    <dimen name="login_button_horizontal_margin">30dp</dimen>
+    <dimen name="animation_loader_size">150dp</dimen>
+    <!-- common dimens -->
+    <dimen name="little_marge">5dp</dimen>
+    <dimen name="basic_marge">10dp</dimen>
+    <dimen name="big_marge">20dp</dimen>
+    <dimen name="xl_marge">40dp</dimen>
 </resources>

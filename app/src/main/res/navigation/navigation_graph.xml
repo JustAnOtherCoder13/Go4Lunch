@@ -3,34 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
-    app:startDestination="@id/authenticationFragment">
-
-    <fragment
-        android:id="@+id/authenticationFragment"
-        android:name="com.picone.go4lunch.presentation.ui.AuthenticationFragment"
-        android:label="fragment_authentication"
-        tools:layout="@layout/fragment_authentication">
-        <action
-            android:id="@+id/action_authenticationFragment_to_mapsFragment"
-            app:destination="@id/mapsFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/mapsFragment"
-        android:name="com.picone.go4lunch.presentation.ui.MapsFragment"
-        android:label="fragment_maps"
-        tools:layout="@layout/fragment_maps" />
+    app:startDestination="@id/mapsFragment">
 
     <fragment
         android:id="@+id/listFragment"
         android:name="com.picone.go4lunch.presentation.ui.ListFragment"
-        android:label="fragment_list"
+        android:label="@string/i_am_hungry_title"
         tools:layout="@layout/fragment_list" />
-
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="com.picone.go4lunch.presentation.ui.MapsFragment"
+        android:label="@string/i_am_hungry_title"
+        tools:layout="@layout/fragment_maps" />
     <fragment
         android:id="@+id/restaurantDetailFragment"
         android:name="com.picone.go4lunch.presentation.ui.RestaurantDetailFragment"
-        android:label="fragment_restaurant_detail"
+        android:label=""
         tools:layout="@layout/fragment_restaurant_detail" />
+    <fragment
+        android:id="@+id/authenticationFragment"
+        android:name="com.picone.go4lunch.presentation.ui.AuthenticationFragment"
+        android:label=""
+        tools:layout="@layout/fragment_authentication" />
+    <fragment
+        android:id="@+id/workmatesFragment"
+        android:name="com.picone.go4lunch.presentation.ui.WorkmatesFragment"
+        android:label="@string/available_workmates"
+        tools:layout="@layout/fragment_workmates" />
 
 </navigation>

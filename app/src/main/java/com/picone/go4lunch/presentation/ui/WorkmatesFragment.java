@@ -10,30 +10,23 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.picone.go4lunch.databinding.FragmentListBinding;
+import com.picone.go4lunch.databinding.FragmentWorkmatesBinding;
 
-public class ListFragment extends BaseFragment {
+public class WorkmatesFragment extends BaseFragment {
 
-    private FragmentListBinding mBinding;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initViewModels();
-    }
+    private FragmentWorkmatesBinding mBinding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mBinding = FragmentListBinding.inflate(inflater, container, false);
+        mBinding = FragmentWorkmatesBinding.inflate(getLayoutInflater());
         initRecyclerView();
         showAppBars(true);
         return mBinding.getRoot();
     }
-
     private void initRecyclerView() {
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        mBinding.recyclerViewListFragment.setLayoutManager(linearLayoutManager);
-        mBinding.recyclerViewListFragment.setAdapter(mAdapter);
+        mBinding.recyclerViewWorkmatesFragment.setLayoutManager(linearLayoutManager);
+        mBinding.recyclerViewWorkmatesFragment.setAdapter(mAdapter);
     }
 }
