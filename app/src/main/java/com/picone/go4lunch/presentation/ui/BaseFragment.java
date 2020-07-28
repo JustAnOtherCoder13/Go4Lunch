@@ -63,9 +63,9 @@ abstract class BaseFragment extends Fragment {
         mainActivity.setMenuVisibility(isVisible);
     }
 
-    void playLoadingAnimation(boolean bol, LottieAnimationView mAnimationView) {
+    void playLoadingAnimation(boolean isAnimationMustPlay, LottieAnimationView mAnimationView) {
         this.mAnimationView = mAnimationView;
-        if (bol) {
+        if (isAnimationMustPlay) {
             mAnimationView.setVisibility(View.VISIBLE);
             mAnimationView.playAnimation();
         } else {
