@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.picone.core.domain.entity.Restaurant;
-import com.picone.core.domain.interactors.GetAllRestaurants;
-import com.picone.core.domain.interactors.GetRestaurant;
-import com.picone.core.domain.interactors.SetRestaurantOpinion;
+import com.picone.core_.domain.entity.Restaurant;
+import com.picone.core_.domain.interactors.GetAllRestaurants;
+import com.picone.core_.domain.interactors.GetRestaurant;
+import com.picone.core_.domain.interactors.SetRestaurantOpinion;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class RestaurantViewModel extends ViewModel {
     }
 
     public LiveData<List<Restaurant>> getAllRestaurants() {
-        return (LiveData<List<Restaurant>>) restaurantsMutableLiveData;
+        return restaurantsMutableLiveData;
     }
 
     public Restaurant getRestaurant(int position) {

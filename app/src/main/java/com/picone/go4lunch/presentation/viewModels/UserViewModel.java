@@ -4,11 +4,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.picone.core.data.mocks.Generator;
-import com.picone.core.domain.entity.User;
-import com.picone.core.domain.interactors.GetAllUsers;
-import com.picone.core.domain.interactors.GetUser;
-import com.picone.core.domain.interactors.SetUserSelectedRestaurant;
+import com.picone.core_.domain.entity.User;
+import com.picone.core_.domain.interactors.GetAllUsers;
+import com.picone.core_.domain.interactors.GetUser;
+import com.picone.core_.domain.interactors.SetUserSelectedRestaurant;
 
 import java.util.List;
 
