@@ -41,6 +41,8 @@ abstract class BaseFragment extends Fragment {
     UserViewModel mUserViewModel;
     private MainActivity mainActivity;
 
+    User user;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,12 +81,12 @@ abstract class BaseFragment extends Fragment {
     void initViewModels() {
         switch (Objects.requireNonNull(mNavController.getCurrentDestination()).getId()){
             case R.id.listFragment :
-                mRestaurantViewModel.restaurantsMutableLiveData.observe(this, restaurants -> {
+                mRestaurantViewModel.getAllRestaurants().observe(this, restaurants -> {
                     mRestaurants = restaurants;
                 });
                 break;
             case R.id.restaurantDetailFragment :
-                mRestaurantViewModel.restaurantsMutableLiveData.observe(this, restaurants -> mRestaurants = restaurants);
+                mRestaurantViewModel.getAllRestaurants().observe(this, restaurants -> mRestaurants = restaurants);
                 mUserViewModel.usersMutableLiveData.observe(this, users ->{
                     mUsers = users;
                 } );

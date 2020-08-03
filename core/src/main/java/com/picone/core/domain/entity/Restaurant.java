@@ -8,9 +8,9 @@ public class Restaurant {
     String foodType;
     int interestedColleague;
     int openingHours;
-    int averageSatisfaction;
+    double averageSatisfaction;
 
-    public Restaurant(String name, int distance, String restaurantPhoto, String foodType, int interestedColleague, int openingHours, int averageSatisfaction) {
+    public Restaurant(String name, int distance, String restaurantPhoto, String foodType, int interestedColleague, int openingHours, double averageSatisfaction) {
         this.name = name;
         this.distance = distance;
         this.restaurantPhoto = restaurantPhoto;
@@ -68,11 +68,11 @@ public class Restaurant {
         this.openingHours = openingHours;
     }
 
-    public int getAverageSatisfaction() {
+    public double getAverageSatisfaction() {
         return averageSatisfaction;
     }
 
-    public void setAverageSatisfaction(int averageSatisfaction) {
+    public void setAverageSatisfaction(double averageSatisfaction) {
         this.averageSatisfaction = averageSatisfaction;
     }
 }
