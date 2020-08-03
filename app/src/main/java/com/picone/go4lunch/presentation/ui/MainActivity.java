@@ -24,6 +24,9 @@ import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 
 import java.util.Objects;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding mBinding;

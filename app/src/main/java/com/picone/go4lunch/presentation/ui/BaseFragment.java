@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 abstract class BaseFragment extends Fragment {
 
     List<User> mUsers = new ArrayList<>();

@@ -1,6 +1,7 @@
-apply plugin: 'com.android.application'
+apply plugin: "com.android.application"
 apply plugin: "androidx.navigation.safeargs"
-apply plugin: 'com.google.gms.google-services'
+apply plugin: "com.google.gms.google-services"
+apply plugin: "dagger.hilt.android.plugin"
 
 android {
     compileSdkVersion 29
@@ -58,7 +59,7 @@ dependencies {
     androidTestImplementation Testing.jUnitAndroidx
     androidTestImplementation Testing.espresso
     //Core reference
-    implementation project(':core_')
+    implementation project(':core')
     //RecyclerView
     implementation RecyclerViewDependency.recyclerView
     //Lifecycle
@@ -92,4 +93,8 @@ dependencies {
     implementation GooglemapsDependency.places
     //Lottie
     implementation "com.airbnb.android:lottie:3.0.0"
+    //Hilt
+    implementation HiltDependency.hilt
+    annotationProcessor HiltDependency.hiltCompiler
+    implementation HiltDependency.hiltViewModel
 }
