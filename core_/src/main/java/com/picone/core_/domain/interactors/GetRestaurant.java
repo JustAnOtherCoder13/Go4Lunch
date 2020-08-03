@@ -1,11 +1,20 @@
 package com.picone.core_.domain.interactors;
 
+import androidx.fragment.app.Fragment;
+
 import com.picone.core_.data.repository.RestaurantRepository;
 import com.picone.core_.domain.entity.Restaurant;
 
-public class GetRestaurant {
-    private RestaurantRepository restaurantDataSource;
+import javax.inject.Inject;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
+public class GetRestaurant extends Fragment {
+    @Inject
+    public RestaurantRepository restaurantDataSource;
+
+    @Inject
     public GetRestaurant(RestaurantRepository restaurantDataSource){
         this.restaurantDataSource = restaurantDataSource;
     }

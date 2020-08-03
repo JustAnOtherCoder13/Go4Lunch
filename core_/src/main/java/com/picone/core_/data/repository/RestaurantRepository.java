@@ -6,11 +6,16 @@ import com.picone.core_.domain.entity.Restaurant;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.qualifiers.ActivityContext;
+
 public class RestaurantRepository {
 
     private final RestaurantDao restaurantDao;
 
-    public RestaurantRepository(Context context) {
+    @Inject
+    public RestaurantRepository(@ActivityContext Context context) {
         FirebaseDataBase firebaseDataBase = FirebaseDataBase.getInstance(context);
         restaurantDao = firebaseDataBase.restaurantDao();
     }

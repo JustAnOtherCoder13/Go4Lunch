@@ -5,6 +5,7 @@ interface Versions{
     String navigationComponent = "2.3.0";
     String facebook = "4.42.0";
     String playService = "17.0.0";
+    String hilt = "2.28-alpha";
 }
 
 class Androidx {
@@ -54,4 +55,8 @@ class GooglemapsDependency {
     public static String mapsLocation = "com.google.android.gms:play-services-location:"+Versions.playService;
     public static String places = "com.google.android.libraries.places:places:2.3.0";
 }
-
+class HiltDependency {
+    public static String hilt = "com.google.dagger:hilt-android:"+Versions.hilt;
+    public static String hiltCompiler = "com.google.dagger:hilt-android-compiler:"+Versions.hilt;
+    public static String hiltViewModel = "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha01";
+}
