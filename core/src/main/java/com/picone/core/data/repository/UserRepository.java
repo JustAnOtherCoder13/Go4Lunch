@@ -1,17 +1,20 @@
-package com.picone.core_.data.repository;
+package com.picone.core.data.repository;
 
 import android.content.Context;
 
-import com.picone.core_.domain.entity.User;
+import com.picone.core.domain.entity.User;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class UserRepository {
 
     private final UserDao userDao;
+    @Inject
+    public FirebaseDataBase firebaseDataBase;
 
-    public UserRepository(Context context) {
-        FirebaseDataBase firebaseDataBase = FirebaseDataBase.getInstance(context);
+    public UserRepository() {
         userDao = firebaseDataBase.userDao();
     }
 

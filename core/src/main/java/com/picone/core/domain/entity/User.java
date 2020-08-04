@@ -1,4 +1,4 @@
-package com.picone.core_.domain.entity;
+package com.picone.core.domain.entity;
 
 public class User {
 

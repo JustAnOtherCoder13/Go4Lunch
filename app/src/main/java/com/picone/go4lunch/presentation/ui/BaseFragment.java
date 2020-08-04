@@ -12,16 +12,16 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
-import com.picone.core_.domain.entity.Restaurant;
-import com.picone.core_.domain.entity.User;
-import com.picone.go4lunch.R;
+import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -32,6 +32,7 @@ abstract class BaseFragment extends Fragment {
     List<Restaurant> mRestaurants = new ArrayList<>();
 
     ListRecyclerViewAdapter mAdapter;
+    @Inject
     FirebaseAuth mAuth;
     GoogleSignInClient mGoogleSignInClient;
     CallbackManager mCallbackManager;
@@ -40,11 +41,9 @@ abstract class BaseFragment extends Fragment {
 
     //View Model
     LoginViewModel mLoginViewModel;
-    RestaurantViewModel mRestaurantViewModel;
-    UserViewModel mUserViewModel;
+
     private MainActivity mainActivity;
 
-    User user;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,11 +54,8 @@ abstract class BaseFragment extends Fragment {
 
     void initVariables() {
         assert mainActivity != null;
-        mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
         mLoginViewModel = new ViewModelProvider(mainActivity).get(LoginViewModel.class);
-        mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         mNavController = mainActivity.mNavController;
-        mAuth = mainActivity.mFirebaseAuth;
         mGoogleSignInClient = mainActivity.mGoogleSignInClient;
         mCallbackManager = CallbackManager.Factory.create();
     }
@@ -78,21 +74,6 @@ abstract class BaseFragment extends Fragment {
                 mAnimationView.setVisibility(View.GONE);
                 mAnimationView.pauseAnimation();
             }
-        }
-    }
-
-    void initViewModels() {
-        switch (Objects.requireNonNull(mNavController.getCurrentDestination()).getId()){
-            case R.id.listFragment :
-                mRestaurantViewModel.getAllRestaurants().observe(this, restaurants -> {
-                    mRestaurants = restaurants;
-                });
-                break;
-            case R.id.restaurantDetailFragment :
-                mRestaurantViewModel.getAllRestaurants().observe(this, restaurants -> mRestaurants = restaurants);
-                mUserViewModel.usersMutableLiveData.observe(this, users ->{
-                    mUsers = users;
-                } );
         }
     }
 }

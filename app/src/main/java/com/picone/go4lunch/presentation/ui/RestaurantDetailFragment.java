@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.picone.core_.domain.entity.User;
+import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.databinding.FragmentRestaurantDetailBinding;
 
 public class RestaurantDetailFragment extends BaseFragment {
@@ -20,7 +20,6 @@ public class RestaurantDetailFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initViewModels();
     }
 
     @Nullable

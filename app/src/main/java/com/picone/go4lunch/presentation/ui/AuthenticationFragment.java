@@ -35,6 +35,8 @@ public class AuthenticationFragment extends BaseFragment {
     private FragmentAuthenticationBinding mBinding;
     LottieAnimationView mAnimationView;
 
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

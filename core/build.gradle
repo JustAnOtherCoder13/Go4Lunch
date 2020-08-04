@@ -43,5 +43,10 @@ dependencies {
     //Hilt
     implementation HiltDependency.hilt
     annotationProcessor HiltDependency.hiltCompiler
+    //Firebase
+    implementation FirebaseDependency.firebaseDatabase
+    implementation FirebaseDependency.core
+    implementation FirebaseDependency.fireAuth
+    implementation FirebaseDependency.fireStore
 
 }

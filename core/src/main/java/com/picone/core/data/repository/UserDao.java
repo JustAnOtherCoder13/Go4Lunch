@@ -1,6 +1,6 @@
-package com.picone.core_.data.repository;
+package com.picone.core.data.repository;
 
-import com.picone.core_.domain.entity.User;
+import com.picone.core.domain.entity.User;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
-package com.picone.core_.domain.interactors;
+package com.picone.core.domain.interactors;
 
-import com.picone.core_.domain.entity.Restaurant;
-import com.picone.core_.domain.entity.User;
+import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.entity.User;
 
 public class SetUserSelectedRestaurant {
 

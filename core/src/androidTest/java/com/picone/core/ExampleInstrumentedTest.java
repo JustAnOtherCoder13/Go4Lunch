@@ -1,4 +1,4 @@
-package com.picone.core_;
+package com.picone.core;
 
 import android.content.Context;
 

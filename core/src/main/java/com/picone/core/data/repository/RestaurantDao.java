@@ -1,6 +1,6 @@
-package com.picone.core_.data.repository;
+package com.picone.core.data.repository;
 
-import com.picone.core_.domain.entity.Restaurant;
+import com.picone.core.domain.entity.Restaurant;
 
 import java.util.List;
 

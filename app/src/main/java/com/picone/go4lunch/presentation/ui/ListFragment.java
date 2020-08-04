@@ -19,7 +19,6 @@ public class ListFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initViewModels();
     }
 
     @Nullable

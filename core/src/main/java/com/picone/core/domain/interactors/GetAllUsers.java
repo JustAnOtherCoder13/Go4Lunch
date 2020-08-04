@@ -1,13 +1,16 @@
-package com.picone.core_.domain.interactors;
+package com.picone.core.domain.interactors;
 
-import com.picone.core_.data.repository.UserRepository;
-import com.picone.core_.domain.entity.User;
+import com.picone.core.data.repository.UserRepository;
+import com.picone.core.domain.entity.User;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class GetAllUsers {
 
-    private UserRepository userDataSource;
+    @Inject
+    public UserRepository userDataSource;
 
     public GetAllUsers(UserRepository userDataSource) {
         this.userDataSource = userDataSource;

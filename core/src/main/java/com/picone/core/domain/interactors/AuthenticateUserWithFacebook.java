@@ -1,4 +1,4 @@
-package com.picone.core_.domain.interactors;
+package com.picone.core.domain.interactors;
 
 public class AuthenticateUserWithFacebook {
 }

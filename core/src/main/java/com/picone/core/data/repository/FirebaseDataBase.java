@@ -1,6 +1,5 @@
-package com.picone.core_.data.repository;
+package com.picone.core.data.repository;
 
-import android.content.Context;
 
 public abstract class FirebaseDataBase {
 
@@ -10,11 +9,12 @@ public abstract class FirebaseDataBase {
 
     public abstract UserDao userDao();
 
-    public static FirebaseDataBase getInstance(Context context) {
+    public static FirebaseDataBase getInstance() {
         if (INSTANCE == null) {
             synchronized (FirebaseDataBase.class) {
                 if (INSTANCE == null) {
                     //init db
+                    INSTANCE = FirebaseDataBase.getInstance();
                 }
             }
         }

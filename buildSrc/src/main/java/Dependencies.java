@@ -41,6 +41,7 @@ class FirebaseDependency {
     public static String core = "com.google.firebase:firebase-core:17.4.4";
     public static String fireAuth = "com.google.firebase:firebase-auth:19.3.2";
     public static String fireStore = "com.google.firebase:firebase-firestore:21.5.0";
+    public static String firebaseDatabase = "com.google.firebase:firebase-database:19.3.1";
 }
 
 class GoogleauthDependency {

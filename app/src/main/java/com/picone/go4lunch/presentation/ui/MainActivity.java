@@ -24,13 +24,16 @@ import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 
 import java.util.Objects;
 
+import javax.inject.Inject;
+
 import dagger.hilt.android.AndroidEntryPoint;
 
-
+@AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding mBinding;
 
+    @Inject
     FirebaseAuth mFirebaseAuth;
     NavController mNavController;
     GoogleSignInClient mGoogleSignInClient;
@@ -40,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFirebaseAuth = FirebaseAuth.getInstance();
         mLoginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         mGoogleSignInClient = GoogleSignIn.getClient(this, getGoogleSignInOptions());
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
