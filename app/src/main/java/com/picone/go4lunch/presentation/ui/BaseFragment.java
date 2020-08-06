@@ -15,8 +15,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
-import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
-import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +32,7 @@ abstract class BaseFragment extends Fragment {
     ListRecyclerViewAdapter mAdapter;
     @Inject
     FirebaseAuth mAuth;
+    @Inject
     GoogleSignInClient mGoogleSignInClient;
     CallbackManager mCallbackManager;
     NavController mNavController;
@@ -56,7 +55,6 @@ abstract class BaseFragment extends Fragment {
         assert mainActivity != null;
         mLoginViewModel = new ViewModelProvider(mainActivity).get(LoginViewModel.class);
         mNavController = mainActivity.mNavController;
-        mGoogleSignInClient = mainActivity.mGoogleSignInClient;
         mCallbackManager = CallbackManager.Factory.create();
     }
 

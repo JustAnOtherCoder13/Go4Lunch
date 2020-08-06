@@ -2,6 +2,7 @@ package com.picone.core.di;
 
 import com.picone.core.data.repository.FirebaseDataBase;
 import com.picone.core.data.repository.UserRepository;
+import com.picone.core.domain.interactors.GetAllUsers;
 
 import javax.inject.Singleton;
 
@@ -14,10 +15,12 @@ import dagger.hilt.android.components.ActivityComponent;
 @Module
 public final class coreModule {
 
+    @Singleton
     @Provides
     static FirebaseDataBase provideFirebaseDatabase () {return FirebaseDataBase.getInstance();}
 
     @Singleton
     @Provides
     static UserRepository provideUserDataSource(){return new UserRepository();}
+
 }

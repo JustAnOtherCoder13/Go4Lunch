@@ -27,16 +27,20 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import dagger.hilt.android.scopes.ActivityScoped;
 
+@ActivityScoped
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding mBinding;
 
     @Inject
+    GoogleSignInClient mGoogleSignInClient;
+    @Inject
     FirebaseAuth mFirebaseAuth;
     NavController mNavController;
-    GoogleSignInClient mGoogleSignInClient;
+
     private LoginViewModel mLoginViewModel;
 
 
@@ -44,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLoginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
-        mGoogleSignInClient = GoogleSignIn.getClient(this, getGoogleSignInOptions());
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -116,12 +119,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private GoogleSignInOptions getGoogleSignInOptions() {
-        return new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-    }
+
 
     public void signOut() {
         LoginManager.getInstance().logOut();

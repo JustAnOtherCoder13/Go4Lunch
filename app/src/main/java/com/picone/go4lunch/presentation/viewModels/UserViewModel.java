@@ -26,7 +26,7 @@ public class UserViewModel extends ViewModel {
         usersMutableLiveData.setValue(getAllUsers.getAllUsers());
     }
 
-    public LiveData<List<User>> getAllUsers(){return (LiveData<List<User>>)usersMutableLiveData;}
+    public LiveData<List<User>> getAllUsers(){return usersMutableLiveData;}
 
     public User getUser(int position){return getUser.getUser(position);}
 
