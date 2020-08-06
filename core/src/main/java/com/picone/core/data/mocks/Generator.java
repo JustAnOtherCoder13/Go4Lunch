@@ -3,7 +3,6 @@ package com.picone.core.data.mocks;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,9 +14,7 @@ public abstract class Generator {
             new Restaurant("chez jiji", 7, "ma photo", "roman", 3, 14, 2)
     );
 
-    public static List<Restaurant> generateRestaurant() {
-        return new ArrayList<>(RESTAURANTS);
-    }
+
 
     public static List<User> USERS = Arrays.asList(
 
@@ -26,7 +23,5 @@ public abstract class Generator {
             new User("Edouard", new Restaurant("", 0, "", "", 0, 0, 0))
     );
 
-    public static List<User> generateUsers() {
-        return new ArrayList<>(USERS);
-    }
+
 }

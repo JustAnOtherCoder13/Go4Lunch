@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.databinding.FragmentRestaurantDetailBinding;
 
 public class RestaurantDetailFragment extends BaseFragment {
@@ -26,7 +25,6 @@ public class RestaurantDetailFragment extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentRestaurantDetailBinding.inflate(inflater, container, false);
-        setUserRestaurant();
         initRecyclerView();
         showAppBars(false);
         return mBinding.getRoot();
@@ -38,10 +36,5 @@ public class RestaurantDetailFragment extends BaseFragment {
         mBinding.recyclerViewRestaurantDetail.setAdapter(mAdapter);
     }
 
-    private void setUserRestaurant() {
-        for (int i = 0; i < mUsers.size(); i++) {
-            User user = mUsers.get(i);
-            user.setSelectedRestaurant(mRestaurants.get(i));
-        }
-    }
+
 }

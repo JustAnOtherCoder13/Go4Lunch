@@ -14,9 +14,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
@@ -33,8 +31,6 @@ import dagger.hilt.android.scopes.ActivityScoped;
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
-    private ActivityMainBinding mBinding;
-
     @Inject
     GoogleSignInClient mGoogleSignInClient;
     @Inject
@@ -42,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     NavController mNavController;
 
     private LoginViewModel mLoginViewModel;
+    private ActivityMainBinding mBinding;
+
 
 
     @Override

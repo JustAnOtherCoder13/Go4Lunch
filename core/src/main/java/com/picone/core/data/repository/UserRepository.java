@@ -1,7 +1,5 @@
 package com.picone.core.data.repository;
 
-import android.content.Context;
-
 import com.picone.core.domain.entity.User;
 
 import java.util.List;

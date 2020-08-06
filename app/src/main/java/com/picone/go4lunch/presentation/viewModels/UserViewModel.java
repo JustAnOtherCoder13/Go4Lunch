@@ -1,7 +1,10 @@
 package com.picone.go4lunch.presentation.viewModels;
 
+import androidx.hilt.Assisted;
+import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
 import com.picone.core.domain.entity.User;
@@ -17,12 +20,13 @@ public class UserViewModel extends ViewModel {
     private GetAllUsers getAllUsers;
     private GetUser getUser;
     private SetUserSelectedRestaurant setUserSelectedRestaurant;
+    private final SavedStateHandle savedStateHandle;
 
-    public UserViewModel(GetAllUsers getAllUsers, GetUser getUser
-    ,SetUserSelectedRestaurant setUserSelectedRestaurant) {
+
+    @ViewModelInject
+    public UserViewModel(GetAllUsers getAllUsers,@Assisted SavedStateHandle savedStateHandle) {
         this.getAllUsers = getAllUsers;
-        this.getUser = getUser;
-        this.setUserSelectedRestaurant = setUserSelectedRestaurant;
+        this.savedStateHandle = savedStateHandle;
         usersMutableLiveData.setValue(getAllUsers.getAllUsers());
     }
 

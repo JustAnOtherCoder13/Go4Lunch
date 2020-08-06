@@ -12,11 +12,14 @@ public class GetAllUsers {
     @Inject
     public UserRepository userDataSource;
 
+    @Inject
+    List<User> mUsers;
+
     public GetAllUsers(UserRepository userDataSource) {
         this.userDataSource = userDataSource;
     }
 
     public List<User> getAllUsers() {
-        return userDataSource.getAllUsers();
+        return mUsers;
     }
 }

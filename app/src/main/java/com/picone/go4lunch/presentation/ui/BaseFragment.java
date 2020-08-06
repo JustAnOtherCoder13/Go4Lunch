@@ -16,27 +16,28 @@ import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-@AndroidEntryPoint
-abstract class BaseFragment extends Fragment {
+@AndroidEntryPoint(Fragment.class)
+abstract class BaseFragment extends Hilt_BaseFragment {
 
-    List<User> mUsers = new ArrayList<>();
-    List<Restaurant> mRestaurants = new ArrayList<>();
-
-    ListRecyclerViewAdapter mAdapter;
+    @Inject
+    List<User> mUsers;
+    @Inject
+    List<Restaurant> mRestaurants;
     @Inject
     FirebaseAuth mAuth;
     @Inject
     GoogleSignInClient mGoogleSignInClient;
+    @Inject
     CallbackManager mCallbackManager;
     NavController mNavController;
     LottieAnimationView mAnimationView;
+    ListRecyclerViewAdapter mAdapter;
 
     //View Model
     LoginViewModel mLoginViewModel;
@@ -55,7 +56,6 @@ abstract class BaseFragment extends Fragment {
         assert mainActivity != null;
         mLoginViewModel = new ViewModelProvider(mainActivity).get(LoginViewModel.class);
         mNavController = mainActivity.mNavController;
-        mCallbackManager = CallbackManager.Factory.create();
     }
 
     void showAppBars(boolean isVisible) {
