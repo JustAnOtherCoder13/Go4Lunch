@@ -9,14 +9,15 @@ import javax.inject.Inject;
 
 public class GetAllUsers {
 
-    @Inject
-    public UserRepository userDataSource;
+   // @Inject
+    //public UserRepository userDataSource;
 
     @Inject
     List<User> mUsers;
 
-    public GetAllUsers(UserRepository userDataSource) {
-        this.userDataSource = userDataSource;
+    public GetAllUsers(List<User> users) {
+        this.mUsers = users;
+        //this.userDataSource = userDataSource;
     }
 
     public List<User> getAllUsers() {

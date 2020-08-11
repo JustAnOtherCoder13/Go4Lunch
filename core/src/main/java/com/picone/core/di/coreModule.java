@@ -1,9 +1,13 @@
 package com.picone.core.di;
 
-import com.picone.core.data.repository.FirebaseDataBase;
+import com.picone.core.data.repository.DataBase;
 import com.picone.core.data.repository.UserRepository;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
+import com.picone.core.domain.interactors.GetAllRestaurants;
+import com.picone.core.domain.interactors.GetAllUsers;
+import com.picone.core.domain.interactors.GetRestaurant;
+import com.picone.core.domain.interactors.GetUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +28,13 @@ public final class coreModule {
 
     @Singleton
     @Provides
-    static FirebaseDataBase provideFirebaseDatabase () {return FirebaseDataBase.getInstance();}
+    static DataBase provideFirebaseDatabase () {return DataBase.getInstance();}
 
     @Singleton
     @Provides
-    static UserRepository provideUserDataSource(){return new UserRepository();}
+    static UserRepository provideUserDataSource(){return new UserRepository(provideFirebaseDatabase());}
 
+    //generator
     @Provides
     static List<User> provideGenerateUsers() { return new ArrayList<>(USERS); }
 
@@ -37,4 +42,18 @@ public final class coreModule {
     static List<Restaurant> provideGenerateRestaurant() {
         return new ArrayList<>(RESTAURANTS);
     }
+
+    //interactors
+
+    @Provides
+    static GetAllUsers provideGetAllUsers(){return new GetAllUsers(provideGenerateUsers());}
+
+    @Provides
+    static GetUser provideGetUser () {return new GetUser(provideGenerateUsers());}
+
+    @Provides
+    static GetAllRestaurants provideGetAllRestaurants() {return new GetAllRestaurants(provideGenerateRestaurant());}
+
+    @Provides
+    static GetRestaurant provideGetRestaurant(){return new GetRestaurant(provideGenerateRestaurant());}
 }

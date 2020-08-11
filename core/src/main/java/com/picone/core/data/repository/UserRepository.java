@@ -10,10 +10,11 @@ public class UserRepository {
 
     private final UserDao userDao;
     @Inject
-    public FirebaseDataBase firebaseDataBase;
+    public DataBase dataBase;
 
-    public UserRepository() {
-        userDao = firebaseDataBase.userDao();
+    public UserRepository(DataBase dataBase) {
+        this.dataBase = dataBase;
+        userDao = dataBase.userDao();
     }
 
     public List<User> getAllUsers(){return userDao.getAllUsers();}

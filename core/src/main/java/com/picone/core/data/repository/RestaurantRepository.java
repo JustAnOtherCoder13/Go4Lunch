@@ -10,10 +10,11 @@ public class RestaurantRepository {
 
     private final RestaurantDao restaurantDao;
     @Inject
-    public FirebaseDataBase firebaseDataBase;
+    public DataBase dataBase;
 
-    public RestaurantRepository() {
-        restaurantDao = firebaseDataBase.restaurantDao();
+    public RestaurantRepository(DataBase dataBase) {
+        this.dataBase = dataBase;
+        restaurantDao = dataBase.restaurantDao();
     }
 
     public List<Restaurant> getAllRestaurants(){return restaurantDao.getAllRestaurants();}

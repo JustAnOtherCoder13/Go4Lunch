@@ -14,6 +14,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
+import com.picone.core.domain.interactors.GetAllRestaurants;
+import com.picone.core.domain.interactors.GetAllUsers;
+import com.picone.core.domain.interactors.GetRestaurant;
+import com.picone.core.domain.interactors.GetUser;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 
 import java.util.List;
@@ -25,16 +29,23 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint(Fragment.class)
 abstract class BaseFragment extends Hilt_BaseFragment {
 
-    @Inject
-    List<User> mUsers;
-    @Inject
-    List<Restaurant> mRestaurants;
+    //Authentication injection
     @Inject
     FirebaseAuth mAuth;
     @Inject
     GoogleSignInClient mGoogleSignInClient;
     @Inject
     CallbackManager mCallbackManager;
+    //Interactors injection
+    @Inject
+    GetAllUsers mGetAllUsers;
+    @Inject
+    GetUser mGetUser;
+    @Inject
+    GetAllRestaurants mGetAllRestaurants;
+    @Inject
+    GetRestaurant mGetRestaurant;
+
     NavController mNavController;
     LottieAnimationView mAnimationView;
     ListRecyclerViewAdapter mAdapter;

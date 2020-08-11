@@ -20,10 +20,12 @@ public class ListFragment extends BaseFragment {
     private FragmentListBinding mBinding;
 
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("test", "onCreate: "+mUsers.size());
+        Log.i("test", "onCreate: "+mGetAllUsers.getAllUsers().size()+" "+mGetUser.getUser(0).Name
+        +" "+mGetAllRestaurants.getAllRestaurants().size()+" "+mGetRestaurant.getRestaurant(0).getName());
     }
 
     @Nullable
