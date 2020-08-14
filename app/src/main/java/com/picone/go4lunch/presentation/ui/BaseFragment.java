@@ -14,6 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
+import com.picone.core.domain.interactors.AddUser;
 import com.picone.core.domain.interactors.GetAllRestaurants;
 import com.picone.core.domain.interactors.GetAllUsers;
 import com.picone.core.domain.interactors.GetRestaurant;
@@ -45,6 +46,8 @@ abstract class BaseFragment extends Hilt_BaseFragment {
     GetAllRestaurants mGetAllRestaurants;
     @Inject
     GetRestaurant mGetRestaurant;
+    @Inject
+    AddUser addUser;
 
     NavController mNavController;
     LottieAnimationView mAnimationView;

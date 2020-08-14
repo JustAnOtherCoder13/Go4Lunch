@@ -24,7 +24,7 @@ public class ListFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("test", "onCreate: "+mGetAllUsers.getAllUsers().size()+" "+mGetUser.getUser(0).Name
+        Log.i("test", "onCreate: "+mGetAllUsers.getAllUsers()+" "+mGetUser.getUser(0).getName()
         +" "+mGetAllRestaurants.getAllRestaurants().size()+" "+mGetRestaurant.getRestaurant(0).getName());
     }
 

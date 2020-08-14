@@ -7,6 +7,6 @@ import java.util.List;
 public interface UserDao {
 
     List<User> getAllUsers();
-
     User getUser();
+    void AddUser(User user);
 }

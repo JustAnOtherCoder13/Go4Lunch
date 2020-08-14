@@ -18,9 +18,9 @@ public abstract class Generator {
 
     public static List<User> USERS = Arrays.asList(
 
-            new User("Frank", new Restaurant("", 0, "", "", 0, 0, 0)),
-            new User("Jo", new Restaurant("", 0, "", "", 0, 0, 0)),
-            new User("Edouard", new Restaurant("", 0, "", "", 0, 0, 0))
+            new User("Frank"),
+            new User("Jo"),
+            new User("Edouard")
     );
 
 
