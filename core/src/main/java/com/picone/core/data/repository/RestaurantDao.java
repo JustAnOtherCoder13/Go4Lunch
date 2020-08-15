@@ -8,5 +8,5 @@ public interface RestaurantDao {
 
     List<Restaurant> getAllRestaurants();
 
-    Restaurant getRestaurant();
+    Restaurant getRestaurant(int position);
 }

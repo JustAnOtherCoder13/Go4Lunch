@@ -19,9 +19,9 @@ import javax.inject.Inject;
 public class UserDaoImpl implements UserDao {
 
     @Inject
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
-    List<User> users = new ArrayList<>();
+    protected FirebaseDatabase firebaseDatabase;
+    private DatabaseReference databaseReference;
+    private List<User> users = new ArrayList<>();
 
 
     public UserDaoImpl(FirebaseDatabase firebaseDatabase) {
@@ -31,45 +31,33 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        readData(user -> {
-            users.add(user);
-            Log.i("test", "onCallBack: " + users);
-        });
 
+        this.databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    User user = dataSnapshot.getValue(User.class);
+                    users.add(user);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.i("error", "onCancelled: " + error);
+            }
+        });
         return users;
     }
 
     @Override
-    public User getUser() {
+    public User getUser(int position) {
         return null;
     }
 
     @Override
     public void AddUser(User user) {
-
         databaseReference.push().setValue(user);
-
-    }
-
-    public void readData(MyCallback myCallback) {
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                DataSnapshot snapshotRef = snapshot.child("users");
-                User user = snapshotRef.getValue(User.class);
-                myCallback.onCallBack(user);
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
 }
 
-interface MyCallback {
 
-    void onCallBack(User user);
-
-}

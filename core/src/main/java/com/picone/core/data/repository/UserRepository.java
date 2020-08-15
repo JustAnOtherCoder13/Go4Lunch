@@ -9,18 +9,25 @@ import javax.inject.Inject;
 
 public class UserRepository {
 
-    private final UserDao userDao;
+    @Inject
+    public UserDao userDao;
     @Inject
     public FirebaseDatabase dataBase;
 
-    public UserRepository(FirebaseDatabase dataBase) {
-       this.dataBase = dataBase;
-        userDao = new UserDaoImpl(dataBase);
+    public UserRepository(FirebaseDatabase dataBase, UserDao dao) {
+        this.dataBase = dataBase;
+        userDao = dao;
     }
 
-    public List<User> getAllUsers(){return userDao.getAllUsers();}
+    public List<User> getAllUsers() {
+        return userDao.getAllUsers();
+    }
 
-    public User getUser(int position){return userDao.getUser();}
+    public User getUser(int position) {
+        return userDao.getUser(position);
+    }
 
-    public void addUser (User user) { userDao.AddUser(user); }
+    public void addUser(User user) {
+        userDao.AddUser(user);
+    }
 }

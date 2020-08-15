@@ -1,38 +1,27 @@
 package com.picone.core.domain.entity;
 
-import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @IgnoreExtraProperties
 public class User {
 
-    private String Name;
-    //private Restaurant selectedRestaurant;
+    private String name;
+    private String avatar;
 
-    public User() {    }
+    public User() {
+    }
 
-    public User(String name/*, Restaurant selectedRestaurant*/) {
-        this.Name = name;
-       // this.selectedRestaurant = selectedRestaurant;
+    public User(String name, String avatar) {
+        this.name = name;
+        this.avatar = avatar;
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
-     /*public void setName(String name) {
-        Name = name;
+    public String getAvatar() {
+        return avatar;
     }
-
-   public Restaurant getSelectedRestaurant() {
-        return selectedRestaurant;
-    }
-
-    public void setSelectedRestaurant(Restaurant selectedRestaurant) {
-        this.selectedRestaurant = selectedRestaurant;
-    }*/
 
 }

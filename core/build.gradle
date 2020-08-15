@@ -34,19 +34,15 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation Androidx.appcompat
-    implementation Androidx.legacySupport
+    implementation "androidx.appcompat:appcompat:1.2.0"
+    implementation "androidx.legacy:legacy-support-v4:1.0.0"
     //Test
-    testImplementation Testing.jUnit
-    androidTestImplementation Testing.jUnitAndroidx
-    androidTestImplementation Testing.espresso
+    testImplementation "junit:junit:4.13"
+    androidTestImplementation "androidx.test.ext:junit:1.1.1"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.2.0"
     //Hilt
-    implementation HiltDependency.hilt
-    annotationProcessor HiltDependency.hiltCompiler
+    implementation "com.google.dagger:hilt-android:2.28.3-alpha"
+    annotationProcessor "com.google.dagger:hilt-android-compiler:2.28.3-alpha"
     //Firebase
-    implementation FirebaseDependency.firebaseDatabase
-    implementation FirebaseDependency.core
-    implementation FirebaseDependency.fireAuth
-    implementation FirebaseDependency.fireStore
-
+    implementation "com.google.firebase:firebase-database:19.3.1"
 }

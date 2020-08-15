@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.ui;
+package com.picone.go4lunch.presentation.ui.restaurant;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -12,20 +12,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.picone.go4lunch.databinding.FragmentListBinding;
-import com.picone.go4lunch.presentation.viewModels.UserViewModel;
+import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 
 public class ListFragment extends BaseFragment {
 
     private FragmentListBinding mBinding;
-
-
+    private ListRecyclerViewAdapter mAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("test", "onCreate: "+mGetAllUsers.getAllUsers()+" "+mGetUser.getUser(0).getName()
-        +" "+mGetAllRestaurants.getAllRestaurants().size()+" "+mGetRestaurant.getRestaurant(0).getName());
     }
 
     @Nullable
@@ -35,6 +32,14 @@ public class ListFragment extends BaseFragment {
         initRecyclerView();
         showAppBars(true);
         return mBinding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mUserViewModel.getAllUsers().observe(getViewLifecycleOwner(), users -> {
+            mUsers = users;
+        });
     }
 
     private void initRecyclerView() {

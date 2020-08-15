@@ -1,5 +1,7 @@
 package com.picone.go4lunch.presentation.viewModels;
 
+import androidx.hilt.lifecycle.ViewModelInject;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -12,11 +14,16 @@ public class LoginViewModel extends ViewModel {
         INVALID_AUTHENTICATION  // Authentication failed
     }
 
-    public final MutableLiveData<AuthenticationState> authenticationState =
+    private final MutableLiveData<AuthenticationState> authenticationState =
             new MutableLiveData<>();
 
+    @ViewModelInject
     public LoginViewModel() {
         authenticationState.setValue(AuthenticationState.UNAUTHENTICATED);
+    }
+
+    public LiveData<AuthenticationState> getAuthenticationState() {
+        return authenticationState;
     }
 
     public void authenticate(boolean bool) {

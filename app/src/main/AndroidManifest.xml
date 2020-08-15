@@ -15,9 +15,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name=".presentation.ui.GoForLunch">
+        android:name=".presentation.ui.main.GoForLunch">
 
-        <activity android:name=".presentation.ui.MainActivity">
+        <activity android:name=".presentation.ui.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

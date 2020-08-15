@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.ui;
+package com.picone.go4lunch.presentation.ui.restaurant;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +24,7 @@ public class ListRecyclerViewAdapter extends RecyclerView.Adapter<ListRecyclerVi
         return 0;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
         }

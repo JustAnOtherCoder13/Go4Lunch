@@ -14,6 +14,5 @@ public class SetUserSelectedRestaurant {
     }
 
     public void setUserSelectedRestaurant() {
-        //user.setSelectedRestaurant(restaurant);
     }
 }

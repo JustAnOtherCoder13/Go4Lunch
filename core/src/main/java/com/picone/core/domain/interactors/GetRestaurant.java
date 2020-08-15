@@ -1,25 +1,22 @@
 package com.picone.core.domain.interactors;
 
-import androidx.fragment.app.Fragment;
-
 import com.picone.core.data.repository.RestaurantRepository;
 import com.picone.core.domain.entity.Restaurant;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
 
-public class GetRestaurant extends Fragment {
-
-    public RestaurantRepository restaurantDataSource;
+public class GetRestaurant{
 
     @Inject
-    List<Restaurant> restaurants;
+    RestaurantRepository restaurantDataSource;
 
-    public GetRestaurant(List<Restaurant> restaurants){
-        this.restaurants = restaurants;
+
+    public GetRestaurant(RestaurantRepository restaurantDataSource) {
+        this.restaurantDataSource = restaurantDataSource;
     }
 
-    public Restaurant getRestaurant(int position){return restaurants.get(position);}
+    public Restaurant getRestaurant(int position) {
+        return restaurantDataSource.getRestaurant(position);
+    }
 }

@@ -13,8 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -28,6 +26,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentMapsBinding;
+import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 import java.util.Objects;
 
@@ -54,27 +53,15 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentMapsBinding.inflate(inflater, container, false);
         initMapView(savedInstanceState);
-        setNavVisibility();
+        showAppBars(true);
         fetchLastLocation();
         return mBinding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initLoginViewModel();
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         updateLocationUI();
-    }
-
-    private void setNavVisibility() {
-        MainActivity mainActivity = (MainActivity) getActivity();
-        assert mainActivity != null;
-        mainActivity.setMenuVisibility(true);
     }
 
     private void initMapView(@Nullable Bundle savedInstanceState) {
@@ -87,19 +74,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         }
     }
 
-    private void initLoginViewModel() {
-        final NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
-        mLoginViewModel.authenticationState.observe(getViewLifecycleOwner(),
-                authenticationState -> {
-                    switch (authenticationState) {
-                        case AUTHENTICATED:
-                            break;
-                        case UNAUTHENTICATED:
-                            navController.navigate(R.id.authenticationFragment);
-                            break;
-                    }
-                });
-    }
 
     private void getLocationPermission() {
         if (ContextCompat.checkSelfPermission(this.requireContext(),

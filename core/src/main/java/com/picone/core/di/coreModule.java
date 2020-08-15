@@ -1,7 +1,8 @@
 package com.picone.core.di;
 
 import com.google.firebase.database.FirebaseDatabase;
-import com.picone.core.data.repository.DataBase;
+import com.picone.core.data.repository.RestaurantDaoImpl;
+import com.picone.core.data.repository.RestaurantRepository;
 import com.picone.core.data.repository.UserDaoImpl;
 import com.picone.core.data.repository.UserRepository;
 import com.picone.core.domain.entity.Restaurant;
@@ -31,38 +32,68 @@ public final class coreModule {
 
     @Singleton
     @Provides
-    static FirebaseDatabase provideFireBaseDataBase(){return FirebaseDatabase.getInstance();}
+    static FirebaseDatabase provideFireBaseDataBase() {
+        return FirebaseDatabase.getInstance();
+    }
 
     @Singleton
     @Provides
-    static UserRepository provideUserDataSource(){return new UserRepository(provideFireBaseDataBase());}
+    static UserRepository provideUserDataSource() {
+        return new UserRepository(provideFireBaseDataBase(), provideUserDaoImpl());
+    }
+
+    @Singleton
+    @Provides
+    static RestaurantRepository provideRestaurantDataSource(){
+        return new RestaurantRepository(provideFireBaseDataBase(), provideRestaurantDaoImpl());
+    }
+
+    //DAO
+    @Provides
+    static UserDaoImpl provideUserDaoImpl() {
+        return new UserDaoImpl(provideFireBaseDataBase());
+    }
 
     @Provides
-    static UserDaoImpl provideUserDaoImpl(){return new UserDaoImpl(provideFireBaseDataBase());}
+    static RestaurantDaoImpl provideRestaurantDaoImpl(){
+        return new RestaurantDaoImpl(provideFireBaseDataBase());
+    }
 
     //generator
     @Provides
-    static List<User> provideGenerateUsers() { return new ArrayList<>(USERS); }
+    static List<User> provideGenerateUsers() {
+        return new ArrayList<>(USERS);
+    }
 
     @Provides
     static List<Restaurant> provideGenerateRestaurant() {
         return new ArrayList<>(RESTAURANTS);
     }
 
-    //interactors
+    //user interactors
+    @Provides
+    static GetAllUsers provideGetAllUsers() {
+        return new GetAllUsers(provideUserDataSource());
+    }
 
     @Provides
-    static GetAllUsers provideGetAllUsers(){return new GetAllUsers(provideGenerateUsers(),provideUserDataSource());}
+    static GetUser provideGetUser() {
+        return new GetUser(provideUserDataSource());
+    }
 
     @Provides
-    static GetUser provideGetUser () {return new GetUser(provideGenerateUsers());}
+    static AddUser provideAddUser() {
+        return new AddUser(provideUserDataSource());
+    }
+
+    //restaurant interactors
+    @Provides
+    static GetAllRestaurants provideGetAllRestaurants() {
+        return new GetAllRestaurants(provideRestaurantDataSource());
+    }
 
     @Provides
-    static AddUser provideAddUser () {return new AddUser(provideUserDataSource());}
-
-    @Provides
-    static GetAllRestaurants provideGetAllRestaurants() {return new GetAllRestaurants(provideGenerateRestaurant());}
-
-    @Provides
-    static GetRestaurant provideGetRestaurant(){return new GetRestaurant(provideGenerateRestaurant());}
+    static GetRestaurant provideGetRestaurant() {
+        return new GetRestaurant(provideRestaurantDataSource());
+    }
 }

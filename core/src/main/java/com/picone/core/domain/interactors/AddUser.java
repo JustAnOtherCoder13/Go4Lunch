@@ -10,12 +10,11 @@ public class AddUser {
     @Inject
     UserRepository userDataSource;
 
-    public AddUser(UserRepository userDataSource){
+    public AddUser(UserRepository userDataSource) {
         this.userDataSource = userDataSource;
-
     }
 
-    public void addUser(User user){
+    public void addUser(User user) {
         userDataSource.addUser(user);
     }
 }
