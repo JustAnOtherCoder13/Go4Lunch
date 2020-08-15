@@ -8,5 +8,7 @@ public interface UserDao {
 
     List<User> getAllUsers();
 
-    User getUser();
+    User getUser(int position);
+
+    void AddUser(User user);
 }

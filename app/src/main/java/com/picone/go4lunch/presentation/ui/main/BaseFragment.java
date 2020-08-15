@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.ui;
+package com.picone.go4lunch.presentation.ui.main;
 
 import android.os.Bundle;
 import android.view.View;
@@ -6,15 +6,14 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
-import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
+import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
 import java.util.List;
 
@@ -22,53 +21,48 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-@AndroidEntryPoint(Fragment.class)
-abstract class BaseFragment extends Hilt_BaseFragment {
+@AndroidEntryPoint
+public abstract class BaseFragment extends Fragment {
 
+    //Authentication injection
     @Inject
-    List<User> mUsers;
+    protected FirebaseAuth mAuth;
     @Inject
-    List<Restaurant> mRestaurants;
+    protected GoogleSignInClient mGoogleSignInClient;
     @Inject
-    FirebaseAuth mAuth;
-    @Inject
-    GoogleSignInClient mGoogleSignInClient;
-    @Inject
-    CallbackManager mCallbackManager;
-    NavController mNavController;
-    LottieAnimationView mAnimationView;
-    ListRecyclerViewAdapter mAdapter;
+    protected CallbackManager mCallbackManager;
+    protected LottieAnimationView mAnimationView;
 
     //View Model
-    LoginViewModel mLoginViewModel;
+    protected LoginViewModel mLoginViewModel;
+    protected UserViewModel mUserViewModel;
 
-    private MainActivity mainActivity;
-
+    protected List<User> mUsers;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mainActivity = (MainActivity) getActivity();
         initVariables();
     }
 
-    void initVariables() {
-        assert mainActivity != null;
-        mLoginViewModel = new ViewModelProvider(mainActivity).get(LoginViewModel.class);
-        mNavController = mainActivity.mNavController;
+    private void initVariables() {
+        mLoginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
+        mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
     }
 
-    void showAppBars(boolean isVisible) {
+    protected void showAppBars(boolean isVisible) {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        assert mainActivity != null;
         mainActivity.setMenuVisibility(isVisible);
     }
 
-    void playLoadingAnimation(boolean bol, LottieAnimationView mAnimationView) {
+    protected void playLoadingAnimation(boolean bol, LottieAnimationView mAnimationView) {
         this.mAnimationView = mAnimationView;
         if (bol) {
             mAnimationView.setVisibility(View.VISIBLE);
             mAnimationView.playAnimation();
         } else {
-            if (mAnimationView!=null) {
+            if (mAnimationView != null) {
                 mAnimationView.setVisibility(View.GONE);
                 mAnimationView.pauseAnimation();
             }

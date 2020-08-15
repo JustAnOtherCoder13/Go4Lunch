@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.ui;
+package com.picone.go4lunch.presentation.ui.restaurant;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,10 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.picone.go4lunch.databinding.FragmentRestaurantDetailBinding;
+import com.picone.go4lunch.presentation.ui.colleague.ColleagueRecyclerViewAdapter;
+import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 public class RestaurantDetailFragment extends BaseFragment {
 
     private FragmentRestaurantDetailBinding mBinding;
+    private ColleagueRecyclerViewAdapter mAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

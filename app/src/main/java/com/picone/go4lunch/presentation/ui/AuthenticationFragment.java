@@ -10,8 +10,9 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.AccessToken;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -25,17 +26,15 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentAuthenticationBinding;
+import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 import java.util.Objects;
 
 public class AuthenticationFragment extends BaseFragment {
 
     private static final int RC_SIGN_IN = 13250;
-
     private FragmentAuthenticationBinding mBinding;
-    LottieAnimationView mAnimationView;
-
-
+    private NavController mNavController;
 
     @Nullable
     @Override
@@ -43,6 +42,7 @@ public class AuthenticationFragment extends BaseFragment {
         mBinding = FragmentAuthenticationBinding.inflate(inflater, container, false);
         initView();
         showAppBars(false);
+        mNavController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
         return mBinding.getRoot();
     }
 
@@ -118,6 +118,7 @@ public class AuthenticationFragment extends BaseFragment {
                         Toast.makeText(requireContext(), getResources().getString(R.string.welcome_message) + Objects.requireNonNull(mAuth.getCurrentUser()).getDisplayName(), Toast.LENGTH_LONG).show();
                         mLoginViewModel.authenticate(true);
                         mNavController.navigateUp();
+
                     } else {
                         Toast.makeText(requireContext(), R.string.facebook_auth_failed,
                                 Toast.LENGTH_SHORT).show();

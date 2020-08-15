@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.ui;
+package com.picone.go4lunch.presentation.ui.main;
 
 import android.os.Bundle;
 import android.view.View;
@@ -32,15 +32,13 @@ import dagger.hilt.android.scopes.ActivityScoped;
 public class MainActivity extends AppCompatActivity {
 
     @Inject
-    GoogleSignInClient mGoogleSignInClient;
+    protected GoogleSignInClient mGoogleSignInClient;
     @Inject
-    FirebaseAuth mFirebaseAuth;
-    NavController mNavController;
+    protected FirebaseAuth mFirebaseAuth;
+    private NavController mNavController;
 
     private LoginViewModel mLoginViewModel;
     private ActivityMainBinding mBinding;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,12 +98,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpNavigation() {
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.authenticationFragment, R.id.mapsFragment, R.id.listFragment,R.id.workmatesFragment).build();
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.authenticationFragment, R.id.mapsFragment, R.id.listFragment, R.id.workmatesFragment).build();
         NavigationUI.setupWithNavController(mBinding.bottomNavigation, mNavController);
         NavigationUI.setupWithNavController(mBinding.topNavBar, mNavController, appBarConfiguration);
     }
 
-    void setMenuVisibility(Boolean bool) {
+    public void setMenuVisibility(Boolean bool) {
         if (bool) {
             mBinding.topNavBar.setVisibility(View.VISIBLE);
             mBinding.bottomNavigation.setVisibility(View.VISIBLE);
@@ -117,16 +115,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
-    public void signOut() {
+    private void signOut() {
         LoginManager.getInstance().logOut();
         mFirebaseAuth.signOut();
         mLoginViewModel.authenticate(false);
     }
 
     private void initLoginViewModel() {
-        mLoginViewModel.authenticationState.observe(this,
+        mLoginViewModel.getAuthenticationState().observe(this,
                 authenticationState -> {
                     switch (authenticationState) {
                         case AUTHENTICATED:

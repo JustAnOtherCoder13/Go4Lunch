@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.ui;
+package com.picone.go4lunch.presentation.ui.colleague;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +23,7 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
         return 0;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
         }
