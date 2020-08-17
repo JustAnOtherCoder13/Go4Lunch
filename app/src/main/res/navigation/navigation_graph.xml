@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/listFragment"
-        android:name="com.picone.go4lunch.presentation.ui.restaurant.ListFragment"
+        android:name="com.picone.go4lunch.presentation.ui.restaurant.RestaurantListFragment"
         android:label="@string/i_am_hungry_title"
         tools:layout="@layout/fragment_list" />
     <fragment

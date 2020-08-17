@@ -23,7 +23,9 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserInfo;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentAuthenticationBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
@@ -99,13 +101,34 @@ public class AuthenticationFragment extends BaseFragment {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(requireActivity(), task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(requireContext(), getResources().getString(R.string.welcome_message) + Objects.requireNonNull(mAuth.getCurrentUser()).getDisplayName(), Toast.LENGTH_LONG).show();
                         mLoginViewModel.authenticate(true);
-                        mNavController.navigateUp();
+                        scopeCurrentUser();
+                        mUserViewModel.getCurrentUser().observe(getViewLifecycleOwner(), user -> {
+                            mUserViewModel.addUser(user);
+                            mNavController.navigateUp();
+                        });
+                        Toast.makeText(requireContext(), getResources().getString(R.string.welcome_message) + Objects.requireNonNull(mAuth.getCurrentUser()).getDisplayName(), Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(getContext(), R.string.google_auth_failed, Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void scopeCurrentUser() {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        String uid = "";
+        String name = "";
+        String email = "";
+        String photoUrl = "";
+        if (currentUser != null){
+            for (UserInfo profile : currentUser.getProviderData()){
+                uid = profile.getUid();
+                name = profile.getDisplayName();
+                email = profile.getEmail();
+                photoUrl = Objects.requireNonNull(profile.getPhotoUrl()).toString();
+            }
+            mUserViewModel.setCurrentUser(uid,name,email,photoUrl);
+        }
     }
 
 //------------------------------------Facebook authentication----------------------------

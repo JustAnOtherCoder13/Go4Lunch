@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
                     mBinding.drawerLayout.open();
                     break;
                 case R.id.top_nav_search_button:
-
                     break;
             }
             return false;

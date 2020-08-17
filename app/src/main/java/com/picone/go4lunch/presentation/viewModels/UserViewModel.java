@@ -12,13 +12,15 @@ import com.picone.core.domain.interactors.GetUser;
 
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
+
 public class UserViewModel extends ViewModel {
 
     private MutableLiveData<List<User>> usersMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
     private GetAllUsers getAllUsers;
     private GetUser getUser;
     private AddUser addUser;
-    private List<User> users;
 
 
     @ViewModelInject
@@ -27,8 +29,7 @@ public class UserViewModel extends ViewModel {
         this.getAllUsers = getAllUsers;
         this.getUser = getUser;
         this.addUser = addUser;
-        getAllUsers.getAllUsers().subscribe(users ->usersMutableLiveData = new MutableLiveData<>(users));
-        usersMutableLiveData.setValue(users);
+        Disposable disposable = getAllUsers.getAllUsers().subscribe(users ->usersMutableLiveData.setValue(users));
     }
 
 
@@ -37,4 +38,12 @@ public class UserViewModel extends ViewModel {
     public User getUser(int position){return getUser.getUser(position);}
 
     public void addUser(User user){addUser.addUser(user);}
+
+    public LiveData<User> setCurrentUser (String uid, String name, String email, String avatar){
+        userMutableLiveData.setValue(new User(uid,name,email,avatar));
+        return userMutableLiveData;
+    }
+    public LiveData<User> getCurrentUser(){
+        return userMutableLiveData;
+    }
 }

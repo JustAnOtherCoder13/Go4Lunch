@@ -6,7 +6,6 @@ import com.picone.core.data.repository.RestaurantRepository;
 import com.picone.core.data.repository.UserDaoImpl;
 import com.picone.core.data.repository.UserRepository;
 import com.picone.core.domain.entity.Restaurant;
-import com.picone.core.domain.entity.User;
 import com.picone.core.domain.interactors.AddUser;
 import com.picone.core.domain.interactors.GetAllRestaurants;
 import com.picone.core.domain.interactors.GetAllUsers;
@@ -24,7 +23,6 @@ import dagger.hilt.InstallIn;
 import dagger.hilt.android.components.ActivityComponent;
 
 import static com.picone.core.data.mocks.Generator.RESTAURANTS;
-import static com.picone.core.data.mocks.Generator.USERS;
 
 @InstallIn(ActivityComponent.class)
 @Module
@@ -60,11 +58,6 @@ public final class coreModule {
     }
 
     //generator
-    @Provides
-    static List<User> provideGenerateUsers() {
-        return new ArrayList<>(USERS);
-    }
-
     @Provides
     static List<Restaurant> provideGenerateRestaurant() {
         return new ArrayList<>(RESTAURANTS);

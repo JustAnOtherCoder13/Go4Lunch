@@ -15,10 +15,10 @@ import com.picone.go4lunch.databinding.FragmentListBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 
-public class ListFragment extends BaseFragment {
+public class RestaurantListFragment extends BaseFragment {
 
     private FragmentListBinding mBinding;
-    private ListRecyclerViewAdapter mAdapter;
+    private RestaurantListRecyclerViewAdapter mAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,7 +39,9 @@ public class ListFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         mUserViewModel.getAllUsers().observe(getViewLifecycleOwner(), users -> {
             mUsers = users;
+            Log.i("test", "onViewCreated: "+mUsers.get(0).getName());
         });
+
     }
 
     private void initRecyclerView() {
