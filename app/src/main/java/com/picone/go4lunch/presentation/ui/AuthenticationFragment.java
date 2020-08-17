@@ -103,32 +103,11 @@ public class AuthenticationFragment extends BaseFragment {
                     if (task.isSuccessful()) {
                         mLoginViewModel.authenticate(true);
                         scopeCurrentUser();
-                        mUserViewModel.getCurrentUser().observe(getViewLifecycleOwner(), user -> {
-                            mUserViewModel.addUser(user);
-                            mNavController.navigateUp();
-                        });
                         Toast.makeText(requireContext(), getResources().getString(R.string.welcome_message) + Objects.requireNonNull(mAuth.getCurrentUser()).getDisplayName(), Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(getContext(), R.string.google_auth_failed, Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
-
-    private void scopeCurrentUser() {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        String uid = "";
-        String name = "";
-        String email = "";
-        String photoUrl = "";
-        if (currentUser != null){
-            for (UserInfo profile : currentUser.getProviderData()){
-                uid = profile.getUid();
-                name = profile.getDisplayName();
-                email = profile.getEmail();
-                photoUrl = Objects.requireNonNull(profile.getPhotoUrl()).toString();
-            }
-            mUserViewModel.setCurrentUser(uid,name,email,photoUrl);
-        }
     }
 
 //------------------------------------Facebook authentication----------------------------
@@ -140,8 +119,7 @@ public class AuthenticationFragment extends BaseFragment {
                     if (task.isSuccessful()) {
                         Toast.makeText(requireContext(), getResources().getString(R.string.welcome_message) + Objects.requireNonNull(mAuth.getCurrentUser()).getDisplayName(), Toast.LENGTH_LONG).show();
                         mLoginViewModel.authenticate(true);
-                        mNavController.navigateUp();
-
+                        scopeCurrentUser();
                     } else {
                         Toast.makeText(requireContext(), R.string.facebook_auth_failed,
                                 Toast.LENGTH_SHORT).show();
@@ -168,6 +146,27 @@ public class AuthenticationFragment extends BaseFragment {
             public void onError(FacebookException error) {
                 Toast.makeText(requireContext(), R.string.facebook_auth_failed, Toast.LENGTH_SHORT).show();
             }
+        });
+    }
+
+    private void scopeCurrentUser() {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        String uid = "";
+        String name = "";
+        String email = "";
+        String photoUrl = "";
+        if (currentUser != null){
+            for (UserInfo profile : currentUser.getProviderData()){
+                uid = profile.getUid();
+                name = profile.getDisplayName();
+                email = profile.getEmail();
+                photoUrl = Objects.requireNonNull(profile.getPhotoUrl()).toString();
+            }
+            mUserViewModel.setCurrentUser(uid,name,email,photoUrl);
+        }
+        mUserViewModel.getCurrentUser().observe(getViewLifecycleOwner(), user -> {
+            mUserViewModel.addUser(user);
+            mNavController.navigateUp();
         });
     }
 }
