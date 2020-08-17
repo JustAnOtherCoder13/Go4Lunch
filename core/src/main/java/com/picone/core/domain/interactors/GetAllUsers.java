@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+
 public class GetAllUsers {
 
     @Inject
@@ -16,7 +18,7 @@ public class GetAllUsers {
         this.userDataSource = userDataSource;
     }
 
-    public List<User> getAllUsers() {
+    public Observable<List<User>> getAllUsers() {
         return userDataSource.getAllUsers();
     }
 }

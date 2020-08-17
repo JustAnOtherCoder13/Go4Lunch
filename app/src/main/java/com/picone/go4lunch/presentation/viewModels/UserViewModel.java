@@ -18,6 +18,7 @@ public class UserViewModel extends ViewModel {
     private GetAllUsers getAllUsers;
     private GetUser getUser;
     private AddUser addUser;
+    private List<User> users;
 
 
     @ViewModelInject
@@ -26,7 +27,8 @@ public class UserViewModel extends ViewModel {
         this.getAllUsers = getAllUsers;
         this.getUser = getUser;
         this.addUser = addUser;
-        usersMutableLiveData.setValue(getAllUsers.getAllUsers());
+        getAllUsers.getAllUsers().subscribe(users ->usersMutableLiveData = new MutableLiveData<>(users));
+        usersMutableLiveData.setValue(users);
     }
 
 
