@@ -3,20 +3,18 @@ package com.picone.core.domain.interactors;
 import com.picone.core.data.repository.UserRepository;
 import com.picone.core.domain.entity.User;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
-public class GetAllUsers {
+public class GetUserInteractor {
 
     @Inject
     UserRepository userDataSource;
 
-    public GetAllUsers(UserRepository userDataSource) {
+    public GetUserInteractor(UserRepository userDataSource) {
         this.userDataSource = userDataSource;
     }
 
-    public List<User> getAllUsers() {
-        return userDataSource.getAllUsers();
+    public User getUser(int position) {
+        return userDataSource.getUser(position);
     }
 }

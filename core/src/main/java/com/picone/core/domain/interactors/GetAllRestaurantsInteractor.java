@@ -8,12 +8,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 
-public class GetAllRestaurants{
+public class GetAllRestaurantsInteractor {
 
     @Inject
     RestaurantRepository restaurantDataSource;
 
-    public GetAllRestaurants(RestaurantRepository restaurantDataSource) {
+    public GetAllRestaurantsInteractor(RestaurantRepository restaurantDataSource) {
         this.restaurantDataSource = restaurantDataSource;
     }
 
