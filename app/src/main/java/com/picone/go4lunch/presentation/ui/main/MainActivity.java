@@ -35,10 +35,12 @@ public class MainActivity extends AppCompatActivity {
     protected GoogleSignInClient mGoogleSignInClient;
     @Inject
     protected FirebaseAuth mFirebaseAuth;
-    private NavController mNavController;
 
     private LoginViewModel mLoginViewModel;
+
     private ActivityMainBinding mBinding;
+    private NavController mNavController;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

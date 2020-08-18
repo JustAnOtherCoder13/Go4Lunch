@@ -40,10 +40,10 @@ public class UserViewModel extends ViewModel {
     public void addUser(User user){
         addUserInteractor.addUser(user);}
 
-    public LiveData<User> setCurrentUser (String uid, String name, String email, String avatar){
+    public void setCurrentUser (String uid, String name, String email, String avatar){
         userMutableLiveData.setValue(new User(uid,name,email,avatar));
-        return userMutableLiveData;
     }
+
     public LiveData<User> getCurrentUser(){
         return userMutableLiveData;
     }

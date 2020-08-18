@@ -1,7 +1,6 @@
 package com.picone.go4lunch.presentation.ui.restaurant;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +14,10 @@ import com.picone.go4lunch.databinding.FragmentListBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 
-public class ListFragment extends BaseFragment {
+public class RestaurantListFragment extends BaseFragment {
 
     private FragmentListBinding mBinding;
-    private ListRecyclerViewAdapter mAdapter;
+    private RestaurantListRecyclerViewAdapter mAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,9 +36,6 @@ public class ListFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mUserViewModel.getAllUsers().observe(getViewLifecycleOwner(), users -> {
-            mUsers = users;
-        });
     }
 
     private void initRecyclerView() {
