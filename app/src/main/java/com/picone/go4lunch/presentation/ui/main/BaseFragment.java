@@ -1,19 +1,34 @@
 package com.picone.go4lunch.presentation.ui.main;
 
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
+import com.picone.core.domain.entity.User;
+import com.picone.go4lunch.databinding.ActivityMainBinding;
+import com.picone.go4lunch.databinding.DrawerMenuHeaderLayoutBinding;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
+
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -45,6 +60,12 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mLoginViewModel.getAuthenticationState().observe(getViewLifecycleOwner(), authenticationState -> {
+            if (authenticationState == LoginViewModel.AuthenticationState.AUTHENTICATED) {
+                populateDrawerMenu(mAuth.getCurrentUser());
+            }
+        });
+
     }
 
     private void initVariables() {
@@ -69,6 +90,30 @@ public abstract class BaseFragment extends Fragment {
                 mAnimationView.pauseAnimation();
             }
         }
+    }
+
+    protected void populateDrawerMenu(FirebaseUser currentUser) {
+
+        MainActivity mainActivity = (MainActivity) getActivity();
+        ActivityMainBinding mBinding = mainActivity.mBinding;
+        View hView = mBinding.navView.getHeaderView(0);
+        DrawerMenuHeaderLayoutBinding headerLayoutBinding = DrawerMenuHeaderLayoutBinding.bind(hView);
+        headerLayoutBinding.drawerUserName.setText(currentUser.getDisplayName());
+        headerLayoutBinding.drawerUserMail.setText(currentUser.getEmail());
+        Glide.with(this)
+                .load(currentUser.getPhotoUrl())
+                .circleCrop()
+                .into(new CustomTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        headerLayoutBinding.drawerAvatar.setImageDrawable(resource);
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                    }
+                });
     }
 }
 

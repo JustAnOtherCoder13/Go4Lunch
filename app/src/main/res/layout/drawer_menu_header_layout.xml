@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/onPrimaryColor">
+    android:background="@color/onPrimaryColor"
+    android:layout_marginBottom="@dimen/basic_marge"
+    >
 
     <TextView
         android:id="@+id/drawer_title"
@@ -17,8 +19,8 @@
 
     <ImageView
         android:id="@+id/drawer_avatar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:contentDescription="@string/user_avatar_drawer_menu"
         android:padding="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -30,13 +32,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/user_name_drawer_menu"
-        app:layout_constraintBottom_toBottomOf="@id/drawer_user_mail"
+        app:layout_constraintBottom_toTopOf="@id/drawer_user_mail"
         app:layout_constraintLeft_toRightOf="@id/drawer_avatar"
         app:layout_constraintTop_toTopOf="@id/drawer_avatar" />
 
     <TextView
         android:id="@+id/drawer_user_mail"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/user_mail_drawer_menu"
         app:layout_constraintBottom_toBottomOf="@id/drawer_avatar"

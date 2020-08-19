@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#FF5722</color>
-    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorPrimaryLight">#F87E58</color>
     <color name="onPrimaryColor">#fff</color>
     <color name="colorAccent">#69F0AE</color>
     <color name="uncheckedIconBottomNav">#000000</color>
