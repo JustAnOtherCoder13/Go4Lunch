@@ -12,11 +12,8 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
-import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -38,7 +35,6 @@ public abstract class BaseFragment extends Fragment {
     protected LoginViewModel mLoginViewModel;
     protected UserViewModel mUserViewModel;
 
-    protected List<User> mUsers;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,9 +45,6 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mUserViewModel.getAllUsers().observe(getViewLifecycleOwner(), users -> {
-            mUsers = users;
-        });
     }
 
     private void initVariables() {

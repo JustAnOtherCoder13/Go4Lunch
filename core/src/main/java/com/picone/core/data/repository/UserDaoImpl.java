@@ -4,14 +4,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.picone.core.domain.entity.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import durdinapps.rxfirebase2.DataSnapshotMapper;
 import durdinapps.rxfirebase2.RxFirebaseDatabase;
-import io.reactivex.Maybe;
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 public class UserDaoImpl implements UserDao {
@@ -38,8 +37,8 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void AddUser(User user) {
-        databaseReference.push().setValue(user);
+    public Completable AddUser(User user) {
+        return RxFirebaseDatabase.setValue(databaseReference.push(),user);
     }
 }
 

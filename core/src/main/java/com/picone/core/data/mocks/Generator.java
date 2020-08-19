@@ -1,7 +1,6 @@
 package com.picone.core.data.mocks;
 
 import com.picone.core.domain.entity.Restaurant;
-import com.picone.core.domain.entity.User;
 
 import java.util.Arrays;
 import java.util.List;

@@ -2,7 +2,6 @@ package com.picone.go4lunch.presentation.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,19 +22,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserInfo;
-import com.google.firebase.firestore.core.UserData;
-import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentAuthenticationBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
+import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class AuthenticationFragment extends BaseFragment {
@@ -43,6 +39,7 @@ public class AuthenticationFragment extends BaseFragment {
     private static final int RC_SIGN_IN = 13250;
     private FragmentAuthenticationBinding mBinding;
     private NavController mNavController;
+    private boolean isNewUser;
 
     @Nullable
     @Override
@@ -59,27 +56,13 @@ public class AuthenticationFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         initAuthenticationAborted();
         mUserViewModel.getCurrentUser().observe(getViewLifecycleOwner(), currentUser -> {
-            if (!isCurrentUserExist(currentUser.getUid())) mUserViewModel.addUser(currentUser);
-            //if (test(mAuth.getCurrentUser()))mUserViewModel.addUser(currentUser);
-            mNavController.navigateUp();
-        });
-    }
-
-    private boolean test(FirebaseUser currentUser){
-        Log.i("test", "test: "+currentUser.getMetadata().getCreationTimestamp()+" "+currentUser.getMetadata().getLastSignInTimestamp());
-        return currentUser.getMetadata().getCreationTimestamp() == currentUser.getMetadata().getLastSignInTimestamp();
-    }
-    private boolean isCurrentUserExist(String uid) {
-        boolean isCurrentUserExist = false;
-        if (mUsers != null) {
-            for (User user : mUsers) {
-                if (user.getUid().equals(uid)) {
-                    isCurrentUserExist = true;
-                    break;
+            if (isNewUser) mUserViewModel.addUser(currentUser);
+            mUserViewModel.getAddUserState().observe(getViewLifecycleOwner(), addUserState -> {
+                if (addUserState == UserViewModel.AddUserState.ON_COMPLETE){
+                    mNavController.navigateUp();
                 }
-            }
-        }
-        return isCurrentUserExist;
+            });
+        });
     }
 
     @Override
@@ -130,7 +113,7 @@ public class AuthenticationFragment extends BaseFragment {
                 .addOnCompleteListener(requireActivity(), task -> {
                     if (task.isSuccessful()) {
                         mLoginViewModel.authenticate(true);
-                        setCurrentUser();
+                        setCurrentUser(task);
                         Toast.makeText(requireContext(), getResources().getString(R.string.welcome_message) + Objects.requireNonNull(mAuth.getCurrentUser()).getDisplayName(), Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(getContext(), R.string.google_auth_failed, Toast.LENGTH_SHORT).show();
@@ -145,9 +128,9 @@ public class AuthenticationFragment extends BaseFragment {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(requireActivity(), task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(requireContext(), getResources().getString(R.string.welcome_message) + Objects.requireNonNull(mAuth.getCurrentUser()).getDisplayName(), Toast.LENGTH_LONG).show();
                         mLoginViewModel.authenticate(true);
-                        setCurrentUser();
+                        setCurrentUser(task);
+                        Toast.makeText(requireContext(), getResources().getString(R.string.welcome_message) + Objects.requireNonNull(mAuth.getCurrentUser()).getDisplayName(), Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(requireContext(), R.string.facebook_auth_failed,
                                 Toast.LENGTH_SHORT).show();
@@ -177,7 +160,12 @@ public class AuthenticationFragment extends BaseFragment {
         });
     }
 
-    private void setCurrentUser() {
+    private void setCurrentUser(Task<AuthResult> task) {
+        if (task.isSuccessful()) {
+            isNewUser = Objects.requireNonNull(Objects.requireNonNull(task.getResult())
+                    .getAdditionalUserInfo())
+                    .isNewUser();
+        }
         FirebaseUser currentUser = mAuth.getCurrentUser();
         String uid = "";
         String name = "";

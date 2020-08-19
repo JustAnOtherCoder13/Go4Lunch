@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 public class UserRepository {
@@ -29,7 +30,9 @@ public class UserRepository {
         return userDao.getUser(position);
     }
 
-    public void addUser(User user) {
-        userDao.AddUser(user);
+    public Completable addUser(User user) {
+        return userDao.AddUser(user);
     }
+
+
 }
