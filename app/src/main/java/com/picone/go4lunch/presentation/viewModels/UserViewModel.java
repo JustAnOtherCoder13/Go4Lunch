@@ -62,7 +62,6 @@ public class UserViewModel extends ViewModel {
                     @Override
                     public void onComplete() {
                         addUserStateMutableLiveData.setValue(AddUserState.ON_COMPLETE);
-
                     }
 
                     @Override

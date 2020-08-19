@@ -88,7 +88,7 @@
     <!-- drawer menu -->
     <style name="drawer_menu_style">
         <item name="android:layout_gravity">start</item>
-        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:background">@color/colorPrimaryLight</item>
         <item name="itemTextColor">@color/onPrimaryColor</item>
         <item name="itemIconTint">@color/onPrimaryColor</item>
         <item name="menu">@menu/drawer_menu</item>
