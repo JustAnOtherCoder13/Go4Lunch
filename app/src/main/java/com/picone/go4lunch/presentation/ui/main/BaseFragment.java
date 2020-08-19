@@ -3,6 +3,7 @@ package com.picone.go4lunch.presentation.ui.main;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -11,11 +12,8 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
-import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -37,12 +35,16 @@ public abstract class BaseFragment extends Fragment {
     protected LoginViewModel mLoginViewModel;
     protected UserViewModel mUserViewModel;
 
-    protected List<User> mUsers;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initVariables();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     private void initVariables() {

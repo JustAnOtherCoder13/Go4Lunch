@@ -6,13 +6,13 @@ import com.picone.core.domain.entity.Restaurant;
 import javax.inject.Inject;
 
 
-public class GetRestaurant{
+public class GetRestaurantInteractor {
 
     @Inject
     RestaurantRepository restaurantDataSource;
 
 
-    public GetRestaurant(RestaurantRepository restaurantDataSource) {
+    public GetRestaurantInteractor(RestaurantRepository restaurantDataSource) {
         this.restaurantDataSource = restaurantDataSource;
     }
 

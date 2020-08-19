@@ -4,11 +4,14 @@ import com.picone.core.domain.entity.User;
 
 import java.util.List;
 
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+
 public interface UserDao {
 
-    List<User> getAllUsers();
+    Observable<List<User>> getAllUsers();
 
     User getUser(int position);
 
-    void AddUser(User user);
+    Completable AddUser(User user);
 }

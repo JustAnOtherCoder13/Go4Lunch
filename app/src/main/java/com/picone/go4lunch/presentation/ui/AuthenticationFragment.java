@@ -22,11 +22,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserInfo;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentAuthenticationBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
+import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
 import java.util.Objects;
 
@@ -35,6 +39,7 @@ public class AuthenticationFragment extends BaseFragment {
     private static final int RC_SIGN_IN = 13250;
     private FragmentAuthenticationBinding mBinding;
     private NavController mNavController;
+    private boolean isNewUser;
 
     @Nullable
     @Override
@@ -50,6 +55,14 @@ public class AuthenticationFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initAuthenticationAborted();
+        mUserViewModel.getCurrentUser().observe(getViewLifecycleOwner(), currentUser -> {
+            if (isNewUser) mUserViewModel.addUser(currentUser);
+            mUserViewModel.getAddUserState().observe(getViewLifecycleOwner(), addUserState -> {
+                if (addUserState == UserViewModel.AddUserState.ON_COMPLETE){
+                    mNavController.navigateUp();
+                }
+            });
+        });
     }
 
     @Override
@@ -89,7 +102,7 @@ public class AuthenticationFragment extends BaseFragment {
     //--------------------Authentication with google----------------------------
 
     private void signInWithGoogle() {
-        playLoadingAnimation(true,mAnimationView);
+        playLoadingAnimation(true, mAnimationView);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -99,9 +112,9 @@ public class AuthenticationFragment extends BaseFragment {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(requireActivity(), task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(requireContext(), getResources().getString(R.string.welcome_message) + Objects.requireNonNull(mAuth.getCurrentUser()).getDisplayName(), Toast.LENGTH_LONG).show();
                         mLoginViewModel.authenticate(true);
-                        mNavController.navigateUp();
+                        setCurrentUser(task);
+                        Toast.makeText(requireContext(), getResources().getString(R.string.welcome_message) + Objects.requireNonNull(mAuth.getCurrentUser()).getDisplayName(), Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(getContext(), R.string.google_auth_failed, Toast.LENGTH_SHORT).show();
                     }
@@ -115,10 +128,9 @@ public class AuthenticationFragment extends BaseFragment {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(requireActivity(), task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(requireContext(), getResources().getString(R.string.welcome_message) + Objects.requireNonNull(mAuth.getCurrentUser()).getDisplayName(), Toast.LENGTH_LONG).show();
                         mLoginViewModel.authenticate(true);
-                        mNavController.navigateUp();
-
+                        setCurrentUser(task);
+                        Toast.makeText(requireContext(), getResources().getString(R.string.welcome_message) + Objects.requireNonNull(mAuth.getCurrentUser()).getDisplayName(), Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(requireContext(), R.string.facebook_auth_failed,
                                 Toast.LENGTH_SHORT).show();
@@ -127,7 +139,7 @@ public class AuthenticationFragment extends BaseFragment {
     }
 
     private void signInWithFacebook() {
-        playLoadingAnimation(true,mAnimationView);
+        playLoadingAnimation(true, mAnimationView);
         mBinding.loginWithFacebook.setReadPermissions("email", "public_profile");
         mBinding.loginWithFacebook.setFragment(this);
         mBinding.loginWithFacebook.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
@@ -146,5 +158,27 @@ public class AuthenticationFragment extends BaseFragment {
                 Toast.makeText(requireContext(), R.string.facebook_auth_failed, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void setCurrentUser(Task<AuthResult> task) {
+        if (task.isSuccessful()) {
+            isNewUser = Objects.requireNonNull(Objects.requireNonNull(task.getResult())
+                    .getAdditionalUserInfo())
+                    .isNewUser();
+        }
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        String uid = "";
+        String name = "";
+        String email = "";
+        String photoUrl = "";
+        if (currentUser != null) {
+            for (UserInfo profile : currentUser.getProviderData()) {
+                uid = profile.getUid();
+                name = profile.getDisplayName();
+                email = profile.getEmail();
+                photoUrl = Objects.requireNonNull(profile.getPhotoUrl()).toString();
+            }
+            mUserViewModel.setCurrentUser(uid, name, email, photoUrl);
+        }
     }
 }

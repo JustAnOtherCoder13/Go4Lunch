@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.picone.core.domain.entity.Restaurant;
-import com.picone.core.domain.interactors.GetAllRestaurants;
-import com.picone.core.domain.interactors.GetRestaurant;
+import com.picone.core.domain.interactors.GetAllRestaurantsInteractor;
+import com.picone.core.domain.interactors.GetRestaurantInteractor;
 import com.picone.core.domain.interactors.SetRestaurantOpinion;
 
 import java.util.List;
@@ -15,15 +15,15 @@ import java.util.List;
 public class RestaurantViewModel extends ViewModel {
 
     private MutableLiveData<List<Restaurant>> restaurantsMutableLiveData = new MutableLiveData<>();
-    private GetAllRestaurants getAllRestaurants;
-    private GetRestaurant getRestaurant;
+    private GetAllRestaurantsInteractor getAllRestaurantsInteractor;
+    private GetRestaurantInteractor getRestaurant;
     private SetRestaurantOpinion setRestaurantOpinion;
 
     @ViewModelInject
-    public RestaurantViewModel(GetAllRestaurants getAllRestaurants, GetRestaurant getRestaurant) {
-        this.getAllRestaurants = getAllRestaurants;
+    public RestaurantViewModel(GetAllRestaurantsInteractor getAllRestaurantsInteractor, GetRestaurantInteractor getRestaurant) {
+        this.getAllRestaurantsInteractor = getAllRestaurantsInteractor;
         this.getRestaurant = getRestaurant;
-        restaurantsMutableLiveData.setValue(getAllRestaurants.getAllRestaurants());
+        restaurantsMutableLiveData.setValue(getAllRestaurantsInteractor.getAllRestaurants());
     }
 
     public LiveData<List<Restaurant>> getAllRestaurants() {

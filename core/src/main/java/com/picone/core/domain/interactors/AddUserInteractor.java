@@ -5,16 +5,18 @@ import com.picone.core.domain.entity.User;
 
 import javax.inject.Inject;
 
-public class GetUser {
+import io.reactivex.Completable;
+
+public class AddUserInteractor {
 
     @Inject
     UserRepository userDataSource;
 
-    public GetUser(UserRepository userDataSource) {
+    public AddUserInteractor(UserRepository userDataSource) {
         this.userDataSource = userDataSource;
     }
 
-    public User getUser(int position) {
-        return userDataSource.getUser(position);
+    public Completable addUser(User user) {
+        return userDataSource.addUser(user);
     }
 }
