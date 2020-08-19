@@ -1,0 +1,35 @@
+package com.picone.go4lunch.presentation.ui.colleague;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.picone.go4lunch.databinding.FragmentWorkmatesBinding;
+import com.picone.go4lunch.presentation.ui.main.BaseFragment;
+
+public class WorkmatesFragment extends BaseFragment {
+
+    private FragmentWorkmatesBinding mBinding;
+    private ColleagueRecyclerViewAdapter mAdapter;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mBinding = FragmentWorkmatesBinding.inflate(getLayoutInflater());
+        initRecyclerView();
+        showAppBars(true);
+        return mBinding.getRoot();
+    }
+
+    private void initRecyclerView() {
+        RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        mBinding.recyclerViewWorkmatesFragment.setLayoutManager(linearLayoutManager);
+        mBinding.recyclerViewWorkmatesFragment.setAdapter(mAdapter);
+    }
+}

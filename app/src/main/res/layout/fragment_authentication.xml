@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:facebook="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.ui.AuthenticationFragment">
 
     <ImageView
@@ -19,11 +20,13 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
 
-    <Button
+    <com.facebook.login.widget.LoginButton
         android:id="@+id/login_with_facebook"
+        style="@style/LoginWithFacebook"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/LoginWithFacebook"
+        facebook:com_facebook_logout_text="@string/sign_in_with_facebook_authentication"
+        facebook:com_facebook_login_text="@string/sign_in_with_facebook_authentication"
         app:layout_constraintBottom_toTopOf="@id/login_with_google"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -31,13 +34,22 @@
 
     <Button
         android:id="@+id/login_with_google"
+        style="@style/LoginWithGoogle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/LoginWithGoogle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/login_with_facebook" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/animation_loader_size"
+        app:layout_constraintTop_toBottomOf="@id/login_with_google"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:lottie_loop="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
