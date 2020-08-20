@@ -3,7 +3,6 @@ package com.picone.core.domain.interactors;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SetUserSelectedRestaurant {

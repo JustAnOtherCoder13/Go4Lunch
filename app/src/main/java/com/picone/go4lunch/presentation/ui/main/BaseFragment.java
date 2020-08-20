@@ -1,35 +1,27 @@
 package com.picone.go4lunch.presentation.ui.main;
 
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
-import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
 import com.picone.go4lunch.databinding.DrawerMenuHeaderLayoutBinding;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
-
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -51,7 +43,6 @@ public abstract class BaseFragment extends Fragment {
     protected LoginViewModel mLoginViewModel;
     protected UserViewModel mUserViewModel;
     protected RestaurantViewModel mRestaurantViewModel;
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,7 +86,6 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected void populateDrawerMenu(FirebaseUser currentUser) {
-
         MainActivity mainActivity = (MainActivity) getActivity();
         ActivityMainBinding mBinding = mainActivity.mBinding;
         View hView = mBinding.navView.getHeaderView(0);

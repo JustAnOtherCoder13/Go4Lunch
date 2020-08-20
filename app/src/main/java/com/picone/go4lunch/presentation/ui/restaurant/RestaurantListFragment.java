@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -54,12 +53,13 @@ public class RestaurantListFragment extends BaseFragment {
         mRestaurantViewModel.getAllRestaurants().observe(getViewLifecycleOwner(),
                 restaurants -> mAdapter.updateRestaurants(restaurants));
     }
-    public void configureOnClickRecyclerView(){
+
+    public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewListFragment, R.layout.fragment_list)
                 .setOnItemClickListener((recyclerView, position, v) -> {
                     NavController navController = Navigation.findNavController(v);
                     mRestaurantViewModel.getAllRestaurants().observe(getViewLifecycleOwner(),
-                            restaurants ->RestaurantDetailFragment.newInstance(restaurants.get(position)));
+                            restaurants -> RestaurantDetailFragment.updateRestaurantDetailUi(restaurants.get(position)));
                     navController.navigate(R.id.restaurantDetailFragment);
                 });
     }

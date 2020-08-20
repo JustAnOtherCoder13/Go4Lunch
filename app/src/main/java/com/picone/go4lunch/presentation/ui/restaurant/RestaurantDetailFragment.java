@@ -28,10 +28,6 @@ public class RestaurantDetailFragment extends BaseFragment {
     private static Restaurant restaurant;
     private List<User> mInterestedUsers = new ArrayList<>();
 
-    public static RestaurantDetailFragment newInstance(Restaurant restaurant){
-        RestaurantDetailFragment.restaurant = restaurant;
-        return new RestaurantDetailFragment();
-    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,24 +37,25 @@ public class RestaurantDetailFragment extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentRestaurantDetailBinding.inflate(inflater, container, false);
-        initRecyclerView();
         showAppBars(false);
+        initRecyclerView();
         populateView();
-        mAdapter = new ColleagueRecyclerViewAdapter(mInterestedUsers);
-        mBinding.recyclerViewRestaurantDetail.setLayoutManager(new LinearLayoutManager(getContext()));
-        mBinding.recyclerViewRestaurantDetail.setAdapter(mAdapter);
         return mBinding.getRoot();
     }
 
     private void populateView() {
         mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
         mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getFoodType()
-        .concat(" - ").concat(restaurant.getAddress()));
+                .concat(" - ").concat(restaurant.getAddress()));
     }
 
     private void initRecyclerView() {
-        RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        mBinding.recyclerViewRestaurantDetail.setLayoutManager(linearLayoutManager);
+        mAdapter = new ColleagueRecyclerViewAdapter(mInterestedUsers);
+        mBinding.recyclerViewRestaurantDetail.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.recyclerViewRestaurantDetail.setAdapter(mAdapter);
+    }
+
+    static void updateRestaurantDetailUi(Restaurant restaurant) {
+        RestaurantDetailFragment.restaurant = restaurant;
     }
 }

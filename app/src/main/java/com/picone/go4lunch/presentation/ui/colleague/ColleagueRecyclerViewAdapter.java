@@ -1,9 +1,7 @@
 package com.picone.go4lunch.presentation.ui.colleague;
 
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -49,9 +47,7 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
                     }
 
                     @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-
-                    }
+                    public void onLoadCleared(@Nullable Drawable placeholder) {}
                 });
     }
 
@@ -70,7 +66,7 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
         }
     }
 
-    public void updateUsers(List<User> users){
+    public void updateUsers(List<User> users) {
         this.mUsers = users;
         notifyDataSetChanged();
     }

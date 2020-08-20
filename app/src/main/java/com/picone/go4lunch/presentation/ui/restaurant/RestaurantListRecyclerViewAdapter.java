@@ -1,7 +1,6 @@
 package com.picone.go4lunch.presentation.ui.restaurant;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -9,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.go4lunch.databinding.RecyclerViewRestaurantItemsBinding;
-import com.picone.go4lunch.presentation.utils.RecyclerViewItemClickUtil;
 
 import java.util.List;
 
@@ -17,13 +15,15 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
 
     List<Restaurant> mRestaurants;
 
-    public RestaurantListRecyclerViewAdapter(List<Restaurant> items){this.mRestaurants = items;}
+    public RestaurantListRecyclerViewAdapter(List<Restaurant> items) {
+        this.mRestaurants = items;
+    }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         RecyclerViewRestaurantItemsBinding binding = RecyclerViewRestaurantItemsBinding
-                .inflate(LayoutInflater.from(parent.getContext()),parent,false);
+                .inflate(LayoutInflater.from(parent.getContext()), parent, false);
         return new ViewHolder(binding);
     }
 
@@ -34,7 +34,7 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
         holder.binding.restaurantNameTextView.setText(restaurant.getName());
         holder.binding.openingTimeTextView.setText(String.valueOf(restaurant.getOpeningHours()).concat(" h"));
         holder.binding.foodStyleAndAddressTextView.setText(restaurant.getFoodType().concat(" - ")
-        .concat(restaurant.getAddress()));
+                .concat(restaurant.getAddress()));
         holder.binding.distanceTextView.setText(String.valueOf(restaurant.getDistance()).concat(" M"));
     }
 
@@ -53,7 +53,7 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
         }
     }
 
-    public void updateRestaurants(List<Restaurant> restaurants){
+    public void updateRestaurants(List<Restaurant> restaurants) {
         this.mRestaurants = restaurants;
         notifyDataSetChanged();
     }

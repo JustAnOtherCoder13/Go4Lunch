@@ -1,17 +1,11 @@
 package com.picone.go4lunch.presentation.ui.main;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -22,16 +16,10 @@ import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
-import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
-import com.picone.go4lunch.databinding.DrawerMenuHeaderLayoutBinding;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
-import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
-import java.io.IOException;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -149,5 +137,4 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-
 }

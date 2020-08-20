@@ -31,7 +31,6 @@ public class UserViewModel extends ViewModel {
     private GetUserInteractor getUserInteractor;
     private AddUserInteractor addUserInteractor;
 
-
     @ViewModelInject
     public UserViewModel(GetAllUsersInteractor getAllUsersInteractor, GetUserInteractor getUserInteractor,
                          AddUserInteractor addUserInteractor) {
@@ -40,7 +39,6 @@ public class UserViewModel extends ViewModel {
         this.addUserInteractor = addUserInteractor;
         Disposable disposable = getAllUsersInteractor.getAllUsers().subscribe(users -> usersMutableLiveData.setValue(users));
     }
-
 
     public LiveData<List<User>> getAllUsers() {
         return usersMutableLiveData;
