@@ -12,17 +12,20 @@ public class GetAllRestaurantsInteractor {
 
     @Inject
     RestaurantRepository restaurantDataSource;
+    @Inject
+    List<Restaurant> generatorRestaurant;
 
-    public GetAllRestaurantsInteractor(RestaurantRepository restaurantDataSource) {
+    public GetAllRestaurantsInteractor(RestaurantRepository restaurantDataSource,List<Restaurant> generatorRestaurant) {
         this.restaurantDataSource = restaurantDataSource;
+        this.generatorRestaurant = generatorRestaurant;
     }
 
     public List<Restaurant> getAllRestaurants() {
-        return restaurantDataSource.getAllRestaurants();
+        return generatorRestaurant;//restaurantDataSource.getAllRestaurants();
     }
 
     public Restaurant getRestaurant(int position){
-        return restaurantDataSource.getRestaurant(position);
+        return generatorRestaurant.get(position); //restaurantDataSource.getRestaurant(position);
     }
 
 }

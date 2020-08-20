@@ -1,20 +1,27 @@
 package com.picone.core.domain.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Restaurant {
 
     String name;
     int distance;
     String restaurantPhoto;
     String foodType;
-    int interestedColleague;
+    String address;
+    List<User> interestedColleague;
     int openingHours;
     double averageSatisfaction;
 
-    public Restaurant(String name, int distance, String restaurantPhoto, String foodType, int interestedColleague, int openingHours, double averageSatisfaction) {
+    public Restaurant(String name, int distance, String restaurantPhoto, String foodType,
+                      String address, List<User> interestedColleague, int openingHours,
+                      double averageSatisfaction) {
         this.name = name;
         this.distance = distance;
         this.restaurantPhoto = restaurantPhoto;
         this.foodType = foodType;
+        this.address = address;
         this.interestedColleague = interestedColleague;
         this.openingHours = openingHours;
         this.averageSatisfaction = averageSatisfaction;
@@ -52,11 +59,13 @@ public class Restaurant {
         this.foodType = foodType;
     }
 
-    public int getInterestedColleague() {
+    public String getAddress(){ return address;}
+
+    public List<User> getInterestedColleague() {
         return interestedColleague;
     }
 
-    public void setInterestedColleague(int interestedColleague) {
+    public void setInterestedColleague(List<User> interestedColleague) {
         this.interestedColleague = interestedColleague;
     }
 

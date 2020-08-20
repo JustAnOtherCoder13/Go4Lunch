@@ -22,7 +22,7 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
 
     private List<User> mUsers;
 
-    ColleagueRecyclerViewAdapter(List<User> items) {
+    public ColleagueRecyclerViewAdapter(List<User> items) {
         mUsers = items;
     }
 
@@ -70,7 +70,7 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
         }
     }
 
-    public void updateUser(List<User> users){
+    public void updateUsers(List<User> users){
         this.mUsers = users;
         notifyDataSetChanged();
     }

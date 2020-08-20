@@ -82,7 +82,7 @@ public final class coreModule {
     //restaurant interactors
     @Provides
     static GetAllRestaurantsInteractor provideGetAllRestaurants() {
-        return new GetAllRestaurantsInteractor(provideRestaurantDataSource());
+        return new GetAllRestaurantsInteractor(provideRestaurantDataSource(),provideGenerateRestaurant());
     }
 
     @Provides

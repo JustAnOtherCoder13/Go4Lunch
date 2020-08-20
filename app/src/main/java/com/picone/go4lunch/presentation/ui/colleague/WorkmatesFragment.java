@@ -7,14 +7,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.databinding.FragmentWorkmatesBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
-import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +37,7 @@ public class WorkmatesFragment extends BaseFragment {
         mBinding.recyclerViewWorkmatesFragment.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.recyclerViewWorkmatesFragment.setAdapter(mAdapter);
         mUserViewModel.getAllUsers().observe(getViewLifecycleOwner(), users ->{
-            mAdapter.updateUser(users);
+            mAdapter.updateUsers(users);
         });
 
     }

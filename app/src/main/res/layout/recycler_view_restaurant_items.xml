@@ -10,6 +10,7 @@
         android:id="@+id/restaurant_name_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textStyle="bold"
         android:text="@string/restaurant_name_text_restaurant_items"
         app:layout_constraintBottom_toTopOf="@id/food_style_and_address_text_view"
         app:layout_constraintLeft_toLeftOf="parent"
