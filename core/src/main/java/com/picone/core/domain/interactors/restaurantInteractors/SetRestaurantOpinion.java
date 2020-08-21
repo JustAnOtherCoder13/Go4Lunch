@@ -1,4 +1,4 @@
-package com.picone.core.domain.interactors;
+package com.picone.core.domain.interactors.restaurantInteractors;
 
 import com.picone.core.domain.entity.Restaurant;
 
@@ -13,6 +13,6 @@ public class SetRestaurantOpinion {
 
     public void setRestaurantOpinion(double note, long numberOfVote, Restaurant restaurant) {
         double globalNote = restaurant.getAverageSatisfaction();
-        restaurant.setAverageSatisfaction((globalNote + note) / numberOfVote);
+        double note1 = (globalNote + note) / numberOfVote;
     }
 }

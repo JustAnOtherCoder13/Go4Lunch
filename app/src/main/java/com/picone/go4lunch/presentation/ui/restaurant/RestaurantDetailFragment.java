@@ -1,16 +1,13 @@
 package com.picone.go4lunch.presentation.ui.restaurant;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
@@ -19,14 +16,13 @@ import com.picone.go4lunch.presentation.ui.colleague.ColleagueRecyclerViewAdapte
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RestaurantDetailFragment extends BaseFragment {
 
+    public static final String TAG = RestaurantDetailFragment.class.getName();
+
     private FragmentRestaurantDetailBinding mBinding;
     private ColleagueRecyclerViewAdapter mAdapter;
-    private static Restaurant restaurant;
-    private List<User> mInterestedUsers = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,23 +35,36 @@ public class RestaurantDetailFragment extends BaseFragment {
         mBinding = FragmentRestaurantDetailBinding.inflate(inflater, container, false);
         showAppBars(false);
         initRecyclerView();
-        populateView();
+        initView();
         return mBinding.getRoot();
     }
 
-    private void populateView() {
-        mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
-        mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getFoodType()
-                .concat(" - ").concat(restaurant.getAddress()));
+    private void initView() {
+        mRestaurantViewModel.selectRestaurant(getArguments().getInt("position"));
+        mRestaurantViewModel.getRestaurant().observe(getViewLifecycleOwner(), restaurant -> {
+            mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
+            mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getFoodType()
+                    .concat(" - ").concat(restaurant.getAddress()));
+            initFabClickListener(restaurant);
+        });
+    }
+
+    private void initFabClickListener(Restaurant restaurant) {
+        mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
+                mUserViewModel.getAllUsers().observe(getViewLifecycleOwner(), users -> {
+                    for (User user : users) {
+                        if (user.getEmail().equals(mAuth.getCurrentUser().getEmail())) {
+                            mRestaurantViewModel.addInterestedUser(user);
+                            mRestaurantViewModel.getInterestedColleague(restaurant).observe(getViewLifecycleOwner(),
+                                    users1 -> mAdapter.updateUsers(users1));
+                        }
+                    }
+                }));
     }
 
     private void initRecyclerView() {
-        mAdapter = new ColleagueRecyclerViewAdapter(mInterestedUsers);
+        mAdapter = new ColleagueRecyclerViewAdapter(new ArrayList<>(), TAG);
         mBinding.recyclerViewRestaurantDetail.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.recyclerViewRestaurantDetail.setAdapter(mAdapter);
-    }
-
-    static void updateRestaurantDetailUi(Restaurant restaurant) {
-        RestaurantDetailFragment.restaurant = restaurant;
     }
 }

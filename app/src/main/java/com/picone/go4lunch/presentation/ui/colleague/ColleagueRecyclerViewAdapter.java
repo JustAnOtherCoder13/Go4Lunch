@@ -13,15 +13,19 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.databinding.RecyclerViewColleagueItemsBinding;
+import com.picone.go4lunch.presentation.ui.restaurant.RestaurantDetailFragment;
 
 import java.util.List;
 
 public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<ColleagueRecyclerViewAdapter.ViewHolder> {
 
     private List<User> mUsers;
+    private String tag;
 
-    public ColleagueRecyclerViewAdapter(List<User> items) {
-        mUsers = items;
+    public <T> ColleagueRecyclerViewAdapter(List<T> items, String tag) {
+        this.tag = tag;
+        if (tag.equals(RestaurantDetailFragment.TAG) || tag.equals(WorkmatesFragment.TAG))
+            this.mUsers = (List<User>) items;
     }
 
     @NonNull
@@ -36,7 +40,9 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
     public void onBindViewHolder(@NonNull ColleagueRecyclerViewAdapter.ViewHolder holder, int position) {
 
         final User user = mUsers.get(position);
-        holder.binding.userSelectedRestaurant.setText(user.getName().concat(" is eating ").concat("food type ").concat("(selected restaurant)"));
+        if (WorkmatesFragment.TAG.equals(tag))
+            holder.binding.userSelectedRestaurant.setText(user.getName().concat(" is eating ").concat("food type ").concat("(selected restaurant)"));
+        else holder.binding.userSelectedRestaurant.setText(user.getName().concat(" is joining!"));
         Glide.with(holder.binding.avatarImageView.getContext())
                 .load(user.getAvatar())
                 .circleCrop()
@@ -47,7 +53,8 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
                     }
 
                     @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {}
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
                 });
     }
 

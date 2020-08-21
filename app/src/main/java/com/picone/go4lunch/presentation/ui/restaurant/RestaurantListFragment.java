@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,11 +25,10 @@ import java.util.List;
 
 public class RestaurantListFragment extends BaseFragment {
 
+    public final static String TAG = RestaurantListFragment.class.getName();
+
     private FragmentListBinding mBinding;
     private RestaurantListRecyclerViewAdapter mAdapter;
-
-    private List<Restaurant> mRestaurants = new ArrayList<>();
-
 
     @Nullable
     @Override
@@ -46,21 +46,28 @@ public class RestaurantListFragment extends BaseFragment {
     }
 
     private void initRecyclerView() {
-        mAdapter = new RestaurantListRecyclerViewAdapter(mRestaurants);
+        mAdapter = new RestaurantListRecyclerViewAdapter(new ArrayList<>());
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mBinding.recyclerViewListFragment.setLayoutManager(linearLayoutManager);
         mBinding.recyclerViewListFragment.setAdapter(mAdapter);
         mRestaurantViewModel.getAllRestaurants().observe(getViewLifecycleOwner(),
-                restaurants -> mAdapter.updateRestaurants(restaurants));
+                new Observer<List<Restaurant>>() {
+                    @Override
+                    public void onChanged(List<Restaurant> restaurants) {
+                        mAdapter.updateRestaurants(restaurants);
+                        mRestaurantViewModel.addRestaurant();
+
+                    }
+                });
     }
 
     public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewListFragment, R.layout.fragment_list)
                 .setOnItemClickListener((recyclerView, position, v) -> {
                     NavController navController = Navigation.findNavController(v);
-                    mRestaurantViewModel.getAllRestaurants().observe(getViewLifecycleOwner(),
-                            restaurants -> RestaurantDetailFragment.updateRestaurantDetailUi(restaurants.get(position)));
-                    navController.navigate(R.id.restaurantDetailFragment);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("position", position);
+                    navController.navigate(R.id.restaurantDetailFragment, bundle);
                 });
     }
 }

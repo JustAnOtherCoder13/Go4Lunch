@@ -16,18 +16,17 @@ import io.reactivex.Observable;
 public class UserDaoImpl implements UserDao {
 
     @Inject
-    protected FirebaseDatabase firebaseDatabase;
-    private DatabaseReference databaseReference;
+    protected FirebaseDatabase database;
+    private DatabaseReference userDatabaseReference;
 
-    public UserDaoImpl(FirebaseDatabase firebaseDatabase) {
-        this.firebaseDatabase = firebaseDatabase;
-        this.databaseReference = firebaseDatabase.getReference().child("users");
+    public UserDaoImpl(FirebaseDatabase database) {
+        this.database = database;
+        this.userDatabaseReference = database.getReference().child("users");
     }
 
     @Override
     public Observable<List<User>> getAllUsers() {
-
-        return RxFirebaseDatabase.observeSingleValueEvent(databaseReference
+        return RxFirebaseDatabase.observeSingleValueEvent(userDatabaseReference
                 , DataSnapshotMapper.listOf(User.class)).toObservable();
     }
 
@@ -38,7 +37,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Completable AddUser(User user) {
-        return RxFirebaseDatabase.setValue(databaseReference.push(),user);
+        return RxFirebaseDatabase.setValue(userDatabaseReference.push(), user);
     }
 }
 

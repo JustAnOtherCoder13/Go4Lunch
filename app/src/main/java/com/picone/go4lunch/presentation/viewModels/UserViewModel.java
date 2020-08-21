@@ -6,9 +6,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.picone.core.domain.entity.User;
-import com.picone.core.domain.interactors.AddUserInteractor;
-import com.picone.core.domain.interactors.GetAllUsersInteractor;
-import com.picone.core.domain.interactors.GetUserInteractor;
+import com.picone.core.domain.interactors.userInteractors.AddUserInteractor;
+import com.picone.core.domain.interactors.userInteractors.GetAllUsersInteractor;
+import com.picone.core.domain.interactors.userInteractors.GetUserInteractor;
 
 import java.util.List;
 
@@ -27,6 +27,7 @@ public class UserViewModel extends ViewModel {
     private MutableLiveData<AddUserState> addUserStateMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<List<User>> usersMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
+    //interactors
     private GetAllUsersInteractor getAllUsersInteractor;
     private GetUserInteractor getUserInteractor;
     private AddUserInteractor addUserInteractor;
@@ -37,10 +38,10 @@ public class UserViewModel extends ViewModel {
         this.getAllUsersInteractor = getAllUsersInteractor;
         this.getUserInteractor = getUserInteractor;
         this.addUserInteractor = addUserInteractor;
-        Disposable disposable = getAllUsersInteractor.getAllUsers().subscribe(users -> usersMutableLiveData.setValue(users));
     }
 
     public LiveData<List<User>> getAllUsers() {
+        Disposable disposable = getAllUsersInteractor.getAllUsers().subscribe(users -> usersMutableLiveData.setValue(users));
         return usersMutableLiveData;
     }
 
@@ -80,5 +81,6 @@ public class UserViewModel extends ViewModel {
     public LiveData<AddUserState> getAddUserState() {
         return addUserStateMutableLiveData;
     }
+
 
 }

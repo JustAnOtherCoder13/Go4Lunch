@@ -1,12 +1,22 @@
 package com.picone.core.data.repository;
 
 import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.entity.User;
 
 import java.util.List;
 
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+
 public interface RestaurantDao {
 
-    List<Restaurant> getAllRestaurants();
+    Observable<List<Restaurant>> getAllRestaurants();
 
     Restaurant getRestaurant(int position);
+
+    Completable AddRestaurant(Restaurant restaurant);
+
+    Observable<List<User>> interestedColleague(Restaurant restaurant);
+
+    Completable updateInterestedColleague(User user);
 }
