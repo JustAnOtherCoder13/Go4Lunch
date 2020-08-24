@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.ui.restaurant;
+package com.picone.go4lunch.presentation.ui.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +17,7 @@ import com.picone.core.domain.entity.Restaurant;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentListBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
+import com.picone.go4lunch.presentation.utils.RecyclerViewAdapter;
 import com.picone.go4lunch.presentation.utils.RecyclerViewItemClickUtil;
 
 import java.util.ArrayList;
@@ -25,10 +26,8 @@ import java.util.List;
 
 public class RestaurantListFragment extends BaseFragment {
 
-    public final static String TAG = RestaurantListFragment.class.getName();
-
     private FragmentListBinding mBinding;
-    private RestaurantListRecyclerViewAdapter mAdapter;
+    private RecyclerViewAdapter mAdapter;
 
     @Nullable
     @Override
@@ -46,19 +45,18 @@ public class RestaurantListFragment extends BaseFragment {
     }
 
     private void initRecyclerView() {
-        mAdapter = new RestaurantListRecyclerViewAdapter(new ArrayList<>());
+        mAdapter = new RecyclerViewAdapter(new ArrayList<>());
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mBinding.recyclerViewListFragment.setLayoutManager(linearLayoutManager);
         mBinding.recyclerViewListFragment.setAdapter(mAdapter);
-        mRestaurantViewModel.getAllRestaurants().observe(getViewLifecycleOwner(),
-                new Observer<List<Restaurant>>() {
-                    @Override
-                    public void onChanged(List<Restaurant> restaurants) {
-                        mAdapter.updateRestaurants(restaurants);
-                        mRestaurantViewModel.addRestaurant();
+        /*mRestaurantViewModel.getAllRestaurants().observe(getViewLifecycleOwner(),
+                restaurants -> {
+                    mAdapter.updateRestaurants(restaurants);
+                    mRestaurantViewModel.addRestaurant();
+                });*/
+        List<Restaurant> restaurants = mRestaurantViewModel.getGeneratedRestaurants();
+        mAdapter.updateRestaurants(restaurants);
 
-                    }
-                });
     }
 
     public void configureOnClickRecyclerView() {

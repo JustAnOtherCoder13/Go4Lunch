@@ -40,10 +40,6 @@ public class RestaurantDaoImpl implements RestaurantDao {
         return null;
     }
 
-    @Override
-    public Completable AddRestaurant(Restaurant restaurant) {
-        return RxFirebaseDatabase.setValue(restaurantDatabaseReference.push(), restaurant);
-    }
 
     @Override
     public Observable<List<User>> interestedColleague(Restaurant restaurant) {

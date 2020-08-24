@@ -9,16 +9,18 @@ public class User {
     private String name;
     private String email;
     private String avatar;
+    private Restaurant selectedRestaurant;
 
 
     public User() {
     }
 
-    public User(String uid, String name, String email, String avatar) {
+    public User(String uid, String name, String email, String avatar,Restaurant selectedRestaurant) {
         this.uid = uid;
         this.name = name;
         this.email = email;
         this.avatar = avatar;
+        this.selectedRestaurant = selectedRestaurant;
     }
 
     public String getUid() {
@@ -29,7 +31,6 @@ public class User {
         return name;
     }
 
-
     public String getEmail() {
         return email;
     }
@@ -37,5 +38,7 @@ public class User {
     public String getAvatar() {
         return avatar;
     }
+
+    public Restaurant getSelectedRestaurant(){return selectedRestaurant;}
 
 }

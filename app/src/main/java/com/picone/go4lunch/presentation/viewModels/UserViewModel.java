@@ -1,10 +1,13 @@
 package com.picone.go4lunch.presentation.viewModels;
 
+import android.annotation.SuppressLint;
+
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 import com.picone.core.domain.interactors.userInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.userInteractors.GetAllUsersInteractor;
@@ -40,8 +43,14 @@ public class UserViewModel extends ViewModel {
         this.addUserInteractor = addUserInteractor;
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    //suppress warning is safe cause getAllResultInteractor is used to set usersMutableLiveData value
     public LiveData<List<User>> getAllUsers() {
-        Disposable disposable = getAllUsersInteractor.getAllUsers().subscribe(users -> usersMutableLiveData.setValue(users));
+        getAllUsersInteractor.getAllUsers()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(users -> usersMutableLiveData.setValue(users));
         return usersMutableLiveData;
     }
 
@@ -70,8 +79,8 @@ public class UserViewModel extends ViewModel {
                 });
     }
 
-    public void setCurrentUser(String uid, String name, String email, String avatar) {
-        userMutableLiveData.setValue(new User(uid, name, email, avatar));
+    public void setCurrentUser(String uid, String name, String email, String avatar, Restaurant selectedRestaurant) {
+        userMutableLiveData.setValue(new User(uid, name, email, avatar, selectedRestaurant));
     }
 
     public LiveData<User> getCurrentUser() {

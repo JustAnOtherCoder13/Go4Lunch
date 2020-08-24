@@ -8,17 +8,19 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import durdinapps.rxfirebase2.DataSnapshotMapper;
+import durdinapps.rxfirebase2.RxFirebaseDatabase;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 public class RestaurantRepository {
 
     @Inject
-    public RestaurantDao restaurantDao;
+    public RestaurantDaoImpl restaurantDao;
     @Inject
     public FirebaseDatabase dataBase;
 
-    public RestaurantRepository(FirebaseDatabase dataBase, RestaurantDao dao) {
+    public RestaurantRepository(FirebaseDatabase dataBase, RestaurantDaoImpl dao) {
         this.dataBase = dataBase;
         restaurantDao = dao;
     }
@@ -29,10 +31,6 @@ public class RestaurantRepository {
 
     public Restaurant getRestaurant(int position) {
         return restaurantDao.getRestaurant(position);
-    }
-
-    public Completable addRestaurant(Restaurant restaurant) {
-        return restaurantDao.AddRestaurant(restaurant);
     }
 
     public Completable updateInterestedColleague(User user) {

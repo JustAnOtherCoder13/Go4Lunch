@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+
 
 public class GetAllRestaurantsInteractor {
 
@@ -20,7 +22,11 @@ public class GetAllRestaurantsInteractor {
         this.generatorRestaurant = generatorRestaurant;
     }
 
-    public List<Restaurant> getAllRestaurants() {
-        return generatorRestaurant;//restaurantDataSource.getAllRestaurants();
+    public List<Restaurant> getGeneratedRestaurants() {
+        return generatorRestaurant;
+    }
+
+    public Observable <List<Restaurant>> getAllRestaurants(){
+        return restaurantDataSource.getAllRestaurants();
     }
 }

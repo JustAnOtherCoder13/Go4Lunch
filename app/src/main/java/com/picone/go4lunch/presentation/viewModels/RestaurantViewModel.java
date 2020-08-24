@@ -1,5 +1,6 @@
 package com.picone.go4lunch.presentation.viewModels;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import androidx.hilt.lifecycle.ViewModelInject;
@@ -9,7 +10,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
-import com.picone.core.domain.interactors.restaurantInteractors.AddRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.GetAllRestaurantsInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.GetInterestedColleagueInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.GetRestaurantInteractor;
@@ -32,58 +32,46 @@ public class RestaurantViewModel extends ViewModel {
     //interactors
     private GetAllRestaurantsInteractor getAllRestaurantsInteractor;
     private GetRestaurantInteractor getRestaurant;
-    private AddRestaurantInteractor addRestaurantInteractor;
     private GetInterestedColleagueInteractor getInterestedColleagueInteractor;
     private UpdateInterestedColleagueInteractor updateInterestedColleagueInteractor;
 
     @ViewModelInject
     public RestaurantViewModel(GetAllRestaurantsInteractor getAllRestaurantsInteractor, GetRestaurantInteractor getRestaurant
-            , AddRestaurantInteractor addRestaurantInteractor, GetInterestedColleagueInteractor getInterestedColleagueInteractor,
+            , GetInterestedColleagueInteractor getInterestedColleagueInteractor,
                                UpdateInterestedColleagueInteractor updateInterestedColleagueInteractor) {
         this.getAllRestaurantsInteractor = getAllRestaurantsInteractor;
         this.getRestaurant = getRestaurant;
-        this.addRestaurantInteractor = addRestaurantInteractor;
         this.getInterestedColleagueInteractor = getInterestedColleagueInteractor;
         this.updateInterestedColleagueInteractor = updateInterestedColleagueInteractor;
         this.allRestaurantsMutableLiveData.setValue(new ArrayList<>());
         this.interestedColleagueMutableLiveData.setValue(new ArrayList<>());
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    //suppress warning is safe cause getAllRestaurantsInteractor is used to set
+    //allRestaurantsMutableLiveData value
     public LiveData<List<Restaurant>> getAllRestaurants() {
-        allRestaurantsMutableLiveData.setValue(getAllRestaurantsInteractor.getAllRestaurants());
+        getAllRestaurantsInteractor.getAllRestaurants()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(restaurants -> allRestaurantsMutableLiveData.setValue(restaurants));
         return allRestaurantsMutableLiveData;
+    }
+    public List<Restaurant> getGeneratedRestaurants(){
+        return getAllRestaurantsInteractor.getGeneratedRestaurants();
     }
 
     public LiveData<Restaurant> getRestaurant() {
         return restaurantMutableLiveData;
     }
 
-    public void selectRestaurant(int position) {
-        restaurantMutableLiveData.setValue(getRestaurant.getRestaurant(position));
+    public void selectRestaurant(User user) {
+        restaurantMutableLiveData.setValue(user.getSelectedRestaurant());
     }
 
-    public void addRestaurant() {
-        for (Restaurant restaurant : Objects.requireNonNull(allRestaurantsMutableLiveData.getValue())) {
-            if (!allRestaurantsMutableLiveData.getValue().contains(restaurant)) {
-                addRestaurantInteractor.addRestaurant(restaurant)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new CompletableObserver() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                Log.i("restaurant interactor", "onComplete: restaurant added");
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                            }
-                        });
-            }
-        }
+    public void selectRestaurant(int position) {
+        restaurantMutableLiveData.setValue(getRestaurant.getRestaurant(position));
     }
 
     public void addInterestedUser(User user) {
