@@ -13,8 +13,4 @@ public interface RestaurantDao {
     Observable<List<Restaurant>> getAllRestaurants();
 
     Restaurant getRestaurant(int position);
-
-    Observable<List<User>> interestedColleague(Restaurant restaurant);
-
-    Completable updateInterestedColleague(User user);
 }

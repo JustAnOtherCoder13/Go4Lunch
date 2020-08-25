@@ -7,9 +7,9 @@ import com.picone.core.data.repository.UserDaoImpl;
 import com.picone.core.data.repository.UserRepository;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.interactors.restaurantInteractors.GetAllRestaurantsInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.GetInterestedColleagueInteractor;
+import com.picone.core.domain.interactors.userInteractors.GetInterestedColleagueInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.GetRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.UpdateInterestedColleagueInteractor;
+import com.picone.core.domain.interactors.userInteractors.UpdateInterestedColleagueInteractor;
 import com.picone.core.domain.interactors.userInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.userInteractors.GetAllUsersInteractor;
 import com.picone.core.domain.interactors.userInteractors.GetUserInteractor;
@@ -94,11 +94,11 @@ public final class coreModule {
 
     @Provides
     static GetInterestedColleagueInteractor provideGetInterestedColleague() {
-        return new GetInterestedColleagueInteractor(provideRestaurantDataSource());
+        return new GetInterestedColleagueInteractor(provideUserDataSource());
     }
 
     @Provides
     static UpdateInterestedColleagueInteractor provideUpdateInterestedColleague() {
-        return new UpdateInterestedColleagueInteractor(provideRestaurantDataSource());
+        return new UpdateInterestedColleagueInteractor(provideUserDataSource());
     }
 }

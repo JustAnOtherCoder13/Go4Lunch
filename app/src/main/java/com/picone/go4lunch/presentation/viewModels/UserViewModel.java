@@ -1,6 +1,7 @@
 package com.picone.go4lunch.presentation.viewModels;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
@@ -11,9 +12,13 @@ import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 import com.picone.core.domain.interactors.userInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.userInteractors.GetAllUsersInteractor;
+import com.picone.core.domain.interactors.userInteractors.GetInterestedColleagueInteractor;
 import com.picone.core.domain.interactors.userInteractors.GetUserInteractor;
+import com.picone.core.domain.interactors.userInteractors.UpdateInterestedColleagueInteractor;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -30,17 +35,24 @@ public class UserViewModel extends ViewModel {
     private MutableLiveData<AddUserState> addUserStateMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<List<User>> usersMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<User>> interestedColleagueMutableLiveData = new MutableLiveData<>();
     //interactors
     private GetAllUsersInteractor getAllUsersInteractor;
     private GetUserInteractor getUserInteractor;
     private AddUserInteractor addUserInteractor;
+    private GetInterestedColleagueInteractor getInterestedColleagueInteractor;
+    private UpdateInterestedColleagueInteractor updateInterestedColleagueInteractor;
 
     @ViewModelInject
     public UserViewModel(GetAllUsersInteractor getAllUsersInteractor, GetUserInteractor getUserInteractor,
-                         AddUserInteractor addUserInteractor) {
+                         AddUserInteractor addUserInteractor, GetInterestedColleagueInteractor getInterestedColleagueInteractor,
+                         UpdateInterestedColleagueInteractor updateInterestedColleagueInteractor) {
         this.getAllUsersInteractor = getAllUsersInteractor;
         this.getUserInteractor = getUserInteractor;
         this.addUserInteractor = addUserInteractor;
+        this.getInterestedColleagueInteractor = getInterestedColleagueInteractor;
+        this.updateInterestedColleagueInteractor = updateInterestedColleagueInteractor;
+        this.interestedColleagueMutableLiveData.setValue(new ArrayList<>());
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -89,6 +101,35 @@ public class UserViewModel extends ViewModel {
 
     public LiveData<AddUserState> getAddUserState() {
         return addUserStateMutableLiveData;
+    }
+
+    public void addInterestedUser(User user) {
+            updateInterestedColleagueInteractor.updateUserInterestedColleague(user)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new CompletableObserver() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            Log.i("addInterestedUser", "onComplete:  user added");
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+                    });
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    public LiveData<List<User>> getInterestedColleague() {
+        getInterestedColleagueInteractor.getInterestedColleague().subscribe(interestedUsers -> interestedColleagueMutableLiveData.setValue(interestedUsers));
+        return interestedColleagueMutableLiveData;
     }
 
 

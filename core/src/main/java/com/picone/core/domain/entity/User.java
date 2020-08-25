@@ -41,4 +41,7 @@ public class User {
 
     public Restaurant getSelectedRestaurant(){return selectedRestaurant;}
 
+    public void setSelectedRestaurant(Restaurant selectedRestaurant) {
+        this.selectedRestaurant = selectedRestaurant;
+    }
 }

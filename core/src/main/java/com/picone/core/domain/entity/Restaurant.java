@@ -12,21 +12,19 @@ public class Restaurant {
     private String restaurantPhoto;
     private String foodType;
     private String address;
-    private List<User> interestedColleague;
     private int openingHours;
     private double averageSatisfaction;
 
     public Restaurant(){}
 
     public Restaurant(String name, int distance, String restaurantPhoto, String foodType,
-                      String address, List<User> interestedColleague, int openingHours,
+                      String address, int openingHours,
                       double averageSatisfaction) {
         this.name = name;
         this.distance = distance;
         this.restaurantPhoto = restaurantPhoto;
         this.foodType = foodType;
         this.address = address;
-        this.interestedColleague = interestedColleague;
         this.openingHours = openingHours;
         this.averageSatisfaction = averageSatisfaction;
     }
@@ -48,10 +46,6 @@ public class Restaurant {
     }
 
     public String getAddress(){ return address;}
-
-    public List<User> getInterestedColleague() {
-        return interestedColleague;
-    }
 
     public int getOpeningHours() {
         return openingHours;

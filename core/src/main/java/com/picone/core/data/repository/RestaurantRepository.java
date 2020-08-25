@@ -33,11 +33,5 @@ public class RestaurantRepository {
         return restaurantDao.getRestaurant(position);
     }
 
-    public Completable updateInterestedColleague(User user) {
-        return restaurantDao.updateInterestedColleague(user);
-    }
 
-    public Observable<List<User>> getInterestedColleague(Restaurant restaurant) {
-        return restaurantDao.interestedColleague(restaurant);
-    }
 }

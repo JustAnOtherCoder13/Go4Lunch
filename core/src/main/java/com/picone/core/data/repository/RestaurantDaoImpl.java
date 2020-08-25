@@ -20,13 +20,11 @@ public class RestaurantDaoImpl implements RestaurantDao {
     @Inject
     protected FirebaseDatabase database;
     private DatabaseReference restaurantDatabaseReference;
-    private DatabaseReference interestedColleagueDatabaseReference;
 
 
     public RestaurantDaoImpl(FirebaseDatabase database) {
         this.database = database;
         restaurantDatabaseReference = database.getReference().child("restaurants");
-        this.interestedColleagueDatabaseReference = database.getReference().child("interestedColleague");
     }
 
     @Override
@@ -41,17 +39,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
     }
 
 
-    @Override
-    public Observable<List<User>> interestedColleague(Restaurant restaurant) {
-        Query findRestaurant = restaurantDatabaseReference.orderByChild("name").equalTo(restaurant.getName());
-        return RxFirebaseDatabase.observeValueEvent(findRestaurant,
-                DataSnapshotMapper.listOf(User.class)).toObservable();
-    }
 
-    @Override
-    public Completable updateInterestedColleague(User user) {
-        return RxFirebaseDatabase.setValue(restaurantDatabaseReference.child("interestedUser").push(), user);
-    }
 
 
 }
