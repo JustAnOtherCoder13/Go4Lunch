@@ -10,16 +10,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.databinding.FragmentRestaurantDetailBinding;
-import com.picone.go4lunch.presentation.utils.RecyclerViewAdapter;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
+import com.picone.go4lunch.presentation.utils.RecyclerViewAdapter;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class RestaurantDetailFragment extends BaseFragment {
 
@@ -27,6 +30,10 @@ public class RestaurantDetailFragment extends BaseFragment {
 
     private FragmentRestaurantDetailBinding mBinding;
     private RecyclerViewAdapter mAdapter;
+    private final static Calendar CALENDAR = Calendar.getInstance();
+    public final static int MY_DAY_OF_MONTH = CALENDAR.get(Calendar.DAY_OF_MONTH);
+    public final static int MY_MONTH = CALENDAR.get(Calendar.MONTH);
+    public final static int MY_YEAR = CALENDAR.get(Calendar.YEAR);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,93 +46,115 @@ public class RestaurantDetailFragment extends BaseFragment {
         mBinding = FragmentRestaurantDetailBinding.inflate(inflater, container, false);
         showAppBars(false);
         initRecyclerView();
-        initView(container);
+        initView();
         return mBinding.getRoot();
     }
 
     @SuppressWarnings("ConstantConditions")
     //suppress warning is safe cause CurrentUser must be initialized to enter app
-    private void initView(ViewGroup container) {
+    private void initView() {
 
-        mUserViewModel.getAllUsers().observe(getViewLifecycleOwner(), allUsers -> {
-            for (User user : allUsers) {
-                if (user.getEmail().equals(mAuth.getCurrentUser().getEmail())) {
-                    populateRecyclerViewOnRestaurantSelected(user);
-                    populateRecyclerViewOnMyLunchClicked(user,container);
-                }
+        if (!mRestaurantViewModel.getSelectedRestaurant().hasObservers()) {
+            if (getArguments() != null) {
+                mRestaurantViewModel.setSelectedRestaurant(getArguments().getInt("position"));
             }
-        });
+        }
 
-        mRestaurantViewModel.getRestaurant().observe(getViewLifecycleOwner(), restaurant -> {
-            mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
-            mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getFoodType()
-                    .concat(" - ").concat(restaurant.getAddress()));
+        Date today = null;
+        try {
+            today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(MY_DAY_OF_MONTH + "/" + MY_MONTH + "/" + MY_YEAR);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-        });
-    }
-//TODO problem when click on restaurant always go "chez jaja"
-    private void populateRecyclerViewOnMyLunchClicked(User user,ViewGroup container) {
-        mUserViewModel.getInterestedColleague().observe(getViewLifecycleOwner(), users -> {
 
-            for (User interestedUser : users) {
-                if (user.getEmail().equals(interestedUser.getEmail()) && interestedUser.getSelectedRestaurant() != null) {
-                    mRestaurantViewModel.selectRestaurant(interestedUser);
-                    getInterestedUsers(interestedUser.getSelectedRestaurant(), users);
-                    break;
+        Date finalToday = today;
+        mRestaurantViewModel.getSelectedRestaurant().observe(getViewLifecycleOwner(), selectedRestaurant -> {
+            Log.i(TAG, "initView: selected restaurantObserve");
+            mUserViewModel.getAllUsers().observe(getViewLifecycleOwner(), allUsers -> {
+                User currentUser = null;
+                for (User user : allUsers) {
+                    if (user.getEmail().equals(mAuth.getCurrentUser().getEmail())) {
+                        currentUser = user;
+                    }
                 }
-            }
-                //Snackbar.make(container, "You haven't chose a restaurant, make your choice to get information.", BaseTransientBottomBar.LENGTH_LONG).show();
+                initFabClickListener(currentUser, selectedRestaurant, null);
+                Log.i(TAG, "initView: getCurrentUser ");
+                User finalCurrentUser = currentUser;
+                mRestaurantViewModel.getInterestedUsersForRestaurant(finalToday, selectedRestaurant.getName()).observe(getViewLifecycleOwner(),
+                        persistedUsers -> {
+                            Log.i(TAG, "initView: persistedUsersObserve");
+                            initFabClickListener(finalCurrentUser, selectedRestaurant, persistedUsers);
+                            mAdapter.updateUsers(persistedUsers);
+                        });
+
+            });
+            mBinding.restaurantNameDetailTextView.setText(selectedRestaurant.getName());
+            mBinding.foodStyleAndAddressDetailTextView.setText(selectedRestaurant.getFoodType()
+                    .concat(" - ").concat(selectedRestaurant.getAddress()));
         });
+
     }
 
-    private void populateRecyclerViewOnRestaurantSelected(User user) {
-        if (getArguments() != null) {
-            mRestaurantViewModel.selectRestaurant(getArguments().getInt("position"));
-            mRestaurantViewModel.getRestaurant().observe(getViewLifecycleOwner(), restaurant -> {
-                mUserViewModel.getInterestedColleague().observe(getViewLifecycleOwner(), interestedUsers -> {
-                    initFabClickListener(user, restaurant, interestedUsers);
-                    getInterestedUsers(restaurant, interestedUsers);
+
+    private void initFabClickListener(User currentUser, Restaurant selectedRestaurant, List<User> interestedUsers) {
+        Date today = null;
+        try {
+            today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(MY_DAY_OF_MONTH + "/" + MY_MONTH + "/" + MY_YEAR);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Date finalToday = today;
+        if (interestedUsers == null) {
+            mBinding.checkIfSelectedDetailFab.setOnClickListener(v -> {
+
+                mRestaurantViewModel.addRestaurant(selectedRestaurant);
+                mRestaurantViewModel.getCompletionState().observe(getViewLifecycleOwner(), completionState -> {
+                    Log.i(TAG, "onChanged: " + completionState);
+                    switch (completionState) {
+                        case RESTAURANT_ON_COMPLETE:
+                            Log.i(TAG, "initFabClickListener:  restaurant added");
+                            assert finalToday != null;
+                            mRestaurantViewModel.addDailySchedule(finalToday, null, selectedRestaurant);
+                            break;
+                        case DAILY_SCHEDULE_ON_COMPLETE:
+                            Log.i(TAG, "initFabClickListener:  dailySchedule added");
+                            mRestaurantViewModel.updateInterestedUsers(finalToday, selectedRestaurant.getName(), currentUser);
+                            break;
+                        case USERS_ON_COMPLETE:
+                            Log.i(TAG, "initFabClickListener: user added");
+                            mRestaurantViewModel.getInterestedUsersForRestaurant(finalToday,selectedRestaurant.getName()).observe(getViewLifecycleOwner(),
+                                    persistedUsers -> {
+                                        mAdapter.updateUsers(persistedUsers);
+                                        Log.i(TAG, "initFabClickListener: update users");
+                                    });
+                            break;
+                    }
                 });
             });
+        } else {
+            mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
+
+                    mRestaurantViewModel.getInterestedUsersForRestaurant(finalToday, selectedRestaurant.getName())
+                            .observe(getViewLifecycleOwner(), persistedUsers -> {
+                                Log.i(TAG, "initFabClickListener: persistedUsersObserve" + persistedUsers);
+
+                                boolean mybol = false;
+                                for (User persistedUser : persistedUsers) {
+                                    if (currentUser.getEmail().equals(persistedUser.getEmail())) {
+                                        mybol = true;
+                                        Log.i(TAG, "initFabClickListener: interestedUsersFound");
+                                        break;
+                                    }
+                                }
+                                if (!mybol) {
+                                    Log.i(TAG, "initFabClickListener: interestedUsersChangeAdded");
+                                    mRestaurantViewModel.updateInterestedUsers(finalToday, selectedRestaurant.getName(), currentUser);
+                                }
+                            }));
         }
+
     }
-
-    private void getInterestedUsers(Restaurant restaurant, List<User> users) {
-        List<User> interestedUsers = new ArrayList<>();
-        for (User user : users) {
-            if (user.getSelectedRestaurant().getName().equals(restaurant.getName())) {
-                interestedUsers.add(user);
-            }
-        }
-        mAdapter.updateUsers(interestedUsers);
-    }
-
-    private void initFabClickListener(User user, Restaurant restaurant, List<User> interestedUsers) {
-        mBinding.checkIfSelectedDetailFab.setOnClickListener(v -> {
-
-            if (interestedUsers.isEmpty()) {
-                user.setSelectedRestaurant(restaurant);
-                mUserViewModel.addInterestedUser(user);
-                mUserViewModel.getInterestedColleague().observe(getViewLifecycleOwner(),
-                        users -> mAdapter.updateUsers(users));
-            }
-            User userToAdd = user;
-            for (User interestedUser : interestedUsers) {
-                if (interestedUser.getEmail().equals(user.getEmail())) {
-                    userToAdd = null;
-                    break;
-                }
-            }
-            if (userToAdd != null) {
-                user.setSelectedRestaurant(restaurant);
-                mUserViewModel.addInterestedUser(userToAdd);
-            }
-            mUserViewModel.getInterestedColleague().observe(getViewLifecycleOwner(),
-                    interestedUsers1 -> mAdapter.updateUsers(interestedUsers1));
-
-        });
-    }
-
 
     private void initRecyclerView() {
         mAdapter = new RecyclerViewAdapter(new ArrayList<>(), TAG);

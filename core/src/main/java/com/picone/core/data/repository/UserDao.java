@@ -1,6 +1,5 @@
 package com.picone.core.data.repository;
 
-import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 
 import java.util.List;
@@ -16,7 +15,4 @@ public interface UserDao {
 
     Completable AddUser(User user);
 
-    Observable<List<User>> interestedColleague();
-
-    Completable updateInterestedColleague(User user);
 }

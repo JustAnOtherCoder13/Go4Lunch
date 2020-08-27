@@ -6,10 +6,13 @@ import com.picone.core.data.repository.RestaurantRepository;
 import com.picone.core.data.repository.UserDaoImpl;
 import com.picone.core.data.repository.UserRepository;
 import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.interactors.restaurantInteractors.AddDailyScheduleInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.AddRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.GetAllRestaurantsInteractor;
-import com.picone.core.domain.interactors.userInteractors.GetInterestedColleagueInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.GetDailyScheduleInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.GetInterestedUsersForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.GetRestaurantInteractor;
-import com.picone.core.domain.interactors.userInteractors.UpdateInterestedColleagueInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.UpdateInterestedUsersInteractor;
 import com.picone.core.domain.interactors.userInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.userInteractors.GetAllUsersInteractor;
 import com.picone.core.domain.interactors.userInteractors.GetUserInteractor;
@@ -93,12 +96,28 @@ public final class coreModule {
     }
 
     @Provides
-    static GetInterestedColleagueInteractor provideGetInterestedColleague() {
-        return new GetInterestedColleagueInteractor(provideUserDataSource());
+    static AddRestaurantInteractor provideAddRestaurant(){
+        return  new AddRestaurantInteractor(provideRestaurantDataSource());
     }
 
     @Provides
-    static UpdateInterestedColleagueInteractor provideUpdateInterestedColleague() {
-        return new UpdateInterestedColleagueInteractor(provideUserDataSource());
+    static GetDailyScheduleInteractor provideGetDailySchedule(){
+        return new GetDailyScheduleInteractor(provideRestaurantDataSource());
+    }
+
+
+    @Provides
+    static AddDailyScheduleInteractor provideAddDailySchedule(){
+    return new AddDailyScheduleInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static GetInterestedUsersForRestaurantInteractor provideGetInterestedUsersForRestaurant(){
+        return new GetInterestedUsersForRestaurantInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static UpdateInterestedUsersInteractor provideUpdateInterestedUsers(){
+        return new UpdateInterestedUsersInteractor(provideRestaurantDataSource());
     }
 }

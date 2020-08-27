@@ -15,10 +15,8 @@ import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.databinding.RecyclerViewColleagueItemsBinding;
 import com.picone.go4lunch.databinding.RecyclerViewRestaurantItemsBinding;
-import com.picone.go4lunch.presentation.ui.fragment.RestaurantListFragment;
 import com.picone.go4lunch.presentation.ui.fragment.WorkmatesFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {

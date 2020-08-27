@@ -8,16 +8,20 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.picone.core.domain.entity.DailySchedule;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
+import com.picone.core.domain.interactors.restaurantInteractors.AddDailyScheduleInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.AddRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.GetAllRestaurantsInteractor;
-import com.picone.core.domain.interactors.userInteractors.GetInterestedColleagueInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.GetDailyScheduleInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.GetInterestedUsersForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.GetRestaurantInteractor;
-import com.picone.core.domain.interactors.userInteractors.UpdateInterestedColleagueInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.UpdateInterestedUsersInteractor;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -26,18 +30,79 @@ import io.reactivex.schedulers.Schedulers;
 
 public class RestaurantViewModel extends ViewModel {
 
+    public enum CompletionState {
+        RESTAURANT_ON_COMPLETE,
+        RESTAURANT_ON_ERROR,
+        DAILY_SCHEDULE_ON_COMPLETE,
+        DAILY_SCHEDULE_ON_ERROR,
+        USERS_ON_COMPLETE,
+        USERS_ON_ERROR
+    }
+
+    private final MutableLiveData<CompletionState> onCompleteStateMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<List<Restaurant>> allRestaurantsMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Restaurant> restaurantMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<Restaurant> selectedRestaurantMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<DailySchedule> dailyScheduleMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<User>> interestedUsersMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<User>> interestedColleagueMutableLiveData = new MutableLiveData<>();
+
     //interactors
+    private AddRestaurantInteractor addRestaurantInteractor;
     private GetAllRestaurantsInteractor getAllRestaurantsInteractor;
-    private GetRestaurantInteractor getRestaurant;
+    private GetRestaurantInteractor getRestaurantInteractor;
+    private GetDailyScheduleInteractor getDailyScheduleInteractor;
+    private AddDailyScheduleInteractor addDailyScheduleInteractor;
+    private GetInterestedUsersForRestaurantInteractor getInterestedUsersForRestaurantInteractor;
+    private UpdateInterestedUsersInteractor updateInterestedUsersInteractor;
 
 
     @ViewModelInject
-    public RestaurantViewModel(GetAllRestaurantsInteractor getAllRestaurantsInteractor, GetRestaurantInteractor getRestaurant) {
+    public RestaurantViewModel(GetAllRestaurantsInteractor getAllRestaurantsInteractor
+            , GetRestaurantInteractor getRestaurantInteractor, GetDailyScheduleInteractor getDailyScheduleInteractor
+            , UpdateInterestedUsersInteractor updateInterestedUsersInteractor
+            , AddDailyScheduleInteractor addDailyScheduleInteractor, GetInterestedUsersForRestaurantInteractor getInterestedUsersForRestaurantInteractor
+            , AddRestaurantInteractor addRestaurantInteractor) {
+
+        this.addRestaurantInteractor = addRestaurantInteractor;
         this.getAllRestaurantsInteractor = getAllRestaurantsInteractor;
-        this.getRestaurant = getRestaurant;
+        this.getRestaurantInteractor = getRestaurantInteractor;
+        this.getDailyScheduleInteractor = getDailyScheduleInteractor;
+        this.addDailyScheduleInteractor = addDailyScheduleInteractor;
+        this.updateInterestedUsersInteractor = updateInterestedUsersInteractor;
+        this.getInterestedUsersForRestaurantInteractor = getInterestedUsersForRestaurantInteractor;
         this.allRestaurantsMutableLiveData.setValue(new ArrayList<>());
+        this.interestedColleagueMutableLiveData.setValue(new ArrayList<>());
+    }
+
+    public LiveData<CompletionState> getCompletionState() {
+        return onCompleteStateMutableLiveData;
+    }
+
+    //----------------------------- Restaurant -----------------------------------
+
+    public void addRestaurant(Restaurant restaurant) {
+        addRestaurantInteractor.addRestaurant(restaurant)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i("test", "onComplete: restaurant added");
+                        onCompleteStateMutableLiveData.setValue(CompletionState.RESTAURANT_ON_COMPLETE);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onCompleteStateMutableLiveData.setValue(CompletionState.RESTAURANT_ON_ERROR);
+
+                    }
+                });
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -51,22 +116,105 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribe(restaurants -> allRestaurantsMutableLiveData.setValue(restaurants));
         return allRestaurantsMutableLiveData;
     }
-    public List<Restaurant> getGeneratedRestaurants(){
-        return getAllRestaurantsInteractor.getGeneratedRestaurants();
-    }
 
-    public LiveData<Restaurant> getRestaurant() {
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    //suppress warning is safe cause getDailyScheduleInteractor is used to set
+    //dailyScheduleMutableLiveData value
+    public LiveData<Restaurant> getRestaurant(String restaurantName) {
+        getRestaurantInteractor.getRestaurant(restaurantName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(restaurant -> restaurantMutableLiveData.setValue(restaurant));
         return restaurantMutableLiveData;
     }
 
-    public void selectRestaurant(User user) {
-        restaurantMutableLiveData.setValue(user.getSelectedRestaurant());
+    public List<Restaurant> getGeneratorRestaurants() {
+        return getAllRestaurantsInteractor.getGeneratedRestaurants();
     }
 
-    public void selectRestaurant(int position) {
-        restaurantMutableLiveData.setValue(getRestaurant.getRestaurant(position));
+    public void setSelectedRestaurant(int position) {
+        selectedRestaurantMutableLiveData.setValue(getRestaurantInteractor.getGeneratorRestaurant(position));
     }
 
+    public LiveData<Restaurant> getSelectedRestaurant() {
+        return selectedRestaurantMutableLiveData;
+    }
+
+    //-------------------------- Daily schedule ---------------------------------------
 
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    //suppress warning is safe cause getDailyScheduleInteractor is used to set
+    //dailyScheduleMutableLiveData value
+    public LiveData<DailySchedule> getDailyScheduleForRestaurant(String restaurantName) {
+        getDailyScheduleInteractor.getDailyScheduleForRestaurant(restaurantName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(dailySchedule -> dailyScheduleMutableLiveData.setValue(dailySchedule));
+        return dailyScheduleMutableLiveData;
+    }
+
+    public void addDailySchedule(Date today, List<User> interestedUsers, Restaurant restaurant) {
+        DailySchedule dailySchedule = new DailySchedule(today.toString(), interestedUsers);
+        addDailyScheduleInteractor.addDailySchedule(dailySchedule, restaurant)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        onCompleteStateMutableLiveData.setValue(CompletionState.DAILY_SCHEDULE_ON_COMPLETE);
+
+                        Log.i("daily schedule", "onComplete: DailySchedule Added");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onCompleteStateMutableLiveData.setValue(CompletionState.DAILY_SCHEDULE_ON_ERROR);
+
+                    }
+                });
+    }
+
+    //------------------------------ Interested users --------------------------------
+
+    public void updateInterestedUsers(Date today, String restaurantName, User user) {
+        updateInterestedUsersInteractor.updateInterestedUser(today, restaurantName, user)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        onCompleteStateMutableLiveData.setValue(CompletionState.USERS_ON_COMPLETE);
+                        Log.i("addInterestedUser", "onComplete:  user added");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onCompleteStateMutableLiveData.setValue(CompletionState.USERS_ON_ERROR);
+                    }
+                });
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    //suppress warning is safe cause getInterestedUsersForRestaurantInteractor is used to set
+    //interestedUsersMutableLiveData value
+    public LiveData<List<User>> getInterestedUsersForRestaurant(Date today, String restaurantName) {
+        getInterestedUsersForRestaurantInteractor.getInterestedUserForRestaurant(today, restaurantName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(interestedUsers -> interestedUsersMutableLiveData.setValue(interestedUsers));
+        return interestedUsersMutableLiveData;
+    }
 }

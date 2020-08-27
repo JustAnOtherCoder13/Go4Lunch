@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -49,12 +48,7 @@ public class RestaurantListFragment extends BaseFragment {
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mBinding.recyclerViewListFragment.setLayoutManager(linearLayoutManager);
         mBinding.recyclerViewListFragment.setAdapter(mAdapter);
-        /*mRestaurantViewModel.getAllRestaurants().observe(getViewLifecycleOwner(),
-                restaurants -> {
-                    mAdapter.updateRestaurants(restaurants);
-                    mRestaurantViewModel.addRestaurant();
-                });*/
-        List<Restaurant> restaurants = mRestaurantViewModel.getGeneratedRestaurants();
+        List<Restaurant> restaurants = mRestaurantViewModel.getGeneratorRestaurants();
         mAdapter.updateRestaurants(restaurants);
 
     }
