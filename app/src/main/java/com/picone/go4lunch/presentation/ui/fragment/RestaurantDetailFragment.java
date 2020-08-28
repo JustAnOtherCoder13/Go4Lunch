@@ -5,9 +5,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.picone.core.domain.entity.Restaurant;
@@ -15,6 +17,7 @@ import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.databinding.FragmentRestaurantDetailBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import com.picone.go4lunch.presentation.utils.RecyclerViewAdapter;
+import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,13 +34,19 @@ public class RestaurantDetailFragment extends BaseFragment {
     private FragmentRestaurantDetailBinding mBinding;
     private RecyclerViewAdapter mAdapter;
     private final static Calendar CALENDAR = Calendar.getInstance();
-    public final static int MY_DAY_OF_MONTH = CALENDAR.get(Calendar.DAY_OF_MONTH);
-    public final static int MY_MONTH = CALENDAR.get(Calendar.MONTH);
-    public final static int MY_YEAR = CALENDAR.get(Calendar.YEAR);
+    private final static int MY_DAY_OF_MONTH = CALENDAR.get(Calendar.DAY_OF_MONTH);
+    private final static int MY_MONTH = CALENDAR.get(Calendar.MONTH);
+    private final static int MY_YEAR = CALENDAR.get(Calendar.YEAR);
+    private Date today;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try {
+            today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(MY_DAY_OF_MONTH + "/" + MY_MONTH + "/" + MY_YEAR);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Nullable
@@ -53,108 +62,103 @@ public class RestaurantDetailFragment extends BaseFragment {
     @SuppressWarnings("ConstantConditions")
     //suppress warning is safe cause CurrentUser must be initialized to enter app
     private void initView() {
-
-        if (!mRestaurantViewModel.getSelectedRestaurant().hasObservers()) {
-            if (getArguments() != null) {
-                mRestaurantViewModel.setSelectedRestaurant(getArguments().getInt("position"));
-            }
-        }
-
-        Date today = null;
-        try {
-            today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(MY_DAY_OF_MONTH + "/" + MY_MONTH + "/" + MY_YEAR);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-
         Date finalToday = today;
+
+        if (getArguments() != null) {
+            mRestaurantViewModel.setSelectedRestaurant(getArguments().getInt("position"));
+        }
+
         mRestaurantViewModel.getSelectedRestaurant().observe(getViewLifecycleOwner(), selectedRestaurant -> {
-            Log.i(TAG, "initView: selected restaurantObserve");
             mUserViewModel.getAllUsers().observe(getViewLifecycleOwner(), allUsers -> {
                 User currentUser = null;
+                User finalCurrentUser = currentUser;
                 for (User user : allUsers) {
                     if (user.getEmail().equals(mAuth.getCurrentUser().getEmail())) {
                         currentUser = user;
                     }
                 }
-                initFabClickListener(currentUser, selectedRestaurant, null);
-                Log.i(TAG, "initView: getCurrentUser ");
-                User finalCurrentUser = currentUser;
-                mRestaurantViewModel.getInterestedUsersForRestaurant(finalToday, selectedRestaurant.getName()).observe(getViewLifecycleOwner(),
-                        persistedUsers -> {
-                            Log.i(TAG, "initView: persistedUsersObserve");
-                            initFabClickListener(finalCurrentUser, selectedRestaurant, persistedUsers);
-                            mAdapter.updateUsers(persistedUsers);
-                        });
+
+                mRestaurantViewModel.getGlobalInterestedUsers(currentUser).observe(getViewLifecycleOwner(), globalInterestedUser -> {
+                    mBinding.chooseRestaurantFab.setOnClickListener(v -> {
+                        //manage case in witch user want to change his choice
+                        Toast.makeText(getContext(), "you have already chose a restaurant" + globalInterestedUser.getSelectedRestaurant().getName(), Toast.LENGTH_SHORT).show();
+                    });
+                });
+
+                mRestaurantViewModel.isUserHasChoseRestaurant.observe(getViewLifecycleOwner(),
+                        aBoolean -> {
+                    if (!aBoolean) {
+                        initFabClickListener(finalCurrentUser, selectedRestaurant, null);
+
+                        mRestaurantViewModel.getInterestedUsersForRestaurant(finalToday, selectedRestaurant.getName()).observe(getViewLifecycleOwner(),
+                                persistedUsers -> {
+                                    initFabClickListener(finalCurrentUser, selectedRestaurant, persistedUsers);
+                                    mAdapter.updateUsers(persistedUsers);
+                                });
+                    }
+                });
 
             });
             mBinding.restaurantNameDetailTextView.setText(selectedRestaurant.getName());
             mBinding.foodStyleAndAddressDetailTextView.setText(selectedRestaurant.getFoodType()
                     .concat(" - ").concat(selectedRestaurant.getAddress()));
         });
-
     }
 
 
     private void initFabClickListener(User currentUser, Restaurant selectedRestaurant, List<User> interestedUsers) {
-        Date today = null;
-        try {
-            today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(MY_DAY_OF_MONTH + "/" + MY_MONTH + "/" + MY_YEAR);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+
         Date finalToday = today;
+
         if (interestedUsers == null) {
-            mBinding.checkIfSelectedDetailFab.setOnClickListener(v -> {
+            mBinding.chooseRestaurantFab.setOnClickListener(v -> {
 
                 mRestaurantViewModel.addRestaurant(selectedRestaurant);
                 mRestaurantViewModel.getCompletionState().observe(getViewLifecycleOwner(), completionState -> {
-                    Log.i(TAG, "onChanged: " + completionState);
                     switch (completionState) {
                         case RESTAURANT_ON_COMPLETE:
-                            Log.i(TAG, "initFabClickListener:  restaurant added");
                             assert finalToday != null;
                             mRestaurantViewModel.addDailySchedule(finalToday, null, selectedRestaurant);
                             break;
                         case DAILY_SCHEDULE_ON_COMPLETE:
-                            Log.i(TAG, "initFabClickListener:  dailySchedule added");
                             mRestaurantViewModel.updateInterestedUsers(finalToday, selectedRestaurant.getName(), currentUser);
                             break;
-                        case USERS_ON_COMPLETE:
-                            Log.i(TAG, "initFabClickListener: user added");
-                            mRestaurantViewModel.getInterestedUsersForRestaurant(finalToday,selectedRestaurant.getName()).observe(getViewLifecycleOwner(),
+                        case PERSISTED_USERS_FOR_RESTAURANT_ON_COMPLETE:
+                            mRestaurantViewModel.getInterestedUsersForRestaurant(finalToday, selectedRestaurant.getName()).observe(getViewLifecycleOwner(),
                                     persistedUsers -> {
-                                        mAdapter.updateUsers(persistedUsers);
-                                        Log.i(TAG, "initFabClickListener: update users");
+                                        for (User persistedUser : persistedUsers) {
+                                            if (persistedUser.getEmail().equals(currentUser.getEmail())) {
+                                                persistedUser.setSelectedRestaurant(selectedRestaurant);
+                                                mRestaurantViewModel.addUserInGlobalList(persistedUser);
+                                                break;
+                                            }
+                                        }
                                     });
                             break;
                     }
                 });
             });
         } else {
-            mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
+            mBinding.chooseRestaurantFab.setOnClickListener(v ->
 
                     mRestaurantViewModel.getInterestedUsersForRestaurant(finalToday, selectedRestaurant.getName())
                             .observe(getViewLifecycleOwner(), persistedUsers -> {
-                                Log.i(TAG, "initFabClickListener: persistedUsersObserve" + persistedUsers);
 
-                                boolean mybol = false;
+                                boolean isCurrentUserAlreadyExistForThisRestaurant = false;
                                 for (User persistedUser : persistedUsers) {
                                     if (currentUser.getEmail().equals(persistedUser.getEmail())) {
-                                        mybol = true;
-                                        Log.i(TAG, "initFabClickListener: interestedUsersFound");
+                                        isCurrentUserAlreadyExistForThisRestaurant = true;
                                         break;
                                     }
                                 }
-                                if (!mybol) {
-                                    Log.i(TAG, "initFabClickListener: interestedUsersChangeAdded");
+                                if (!isCurrentUserAlreadyExistForThisRestaurant) {
                                     mRestaurantViewModel.updateInterestedUsers(finalToday, selectedRestaurant.getName(), currentUser);
                                 }
                             }));
         }
 
     }
+
 
     private void initRecyclerView() {
         mAdapter = new RecyclerViewAdapter(new ArrayList<>(), TAG);

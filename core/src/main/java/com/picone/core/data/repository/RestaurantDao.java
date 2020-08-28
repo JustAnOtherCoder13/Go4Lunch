@@ -26,5 +26,8 @@ public interface RestaurantDao {
 
     Completable updateInterestedUsersForRestaurant(Date today, String restaurantName, User user);
 
+    Observable<User> getGlobalInterestedUser(User user);
+
+    Completable addInterestedUserInGlobalList(User user);
 
 }

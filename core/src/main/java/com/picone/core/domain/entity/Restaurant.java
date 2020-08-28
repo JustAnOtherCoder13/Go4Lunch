@@ -60,4 +60,5 @@ public class Restaurant {
     public List<DailySchedule> getDailySchedules() {
         return dailySchedules;
     }
+
 }

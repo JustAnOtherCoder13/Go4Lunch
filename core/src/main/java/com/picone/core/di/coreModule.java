@@ -8,8 +8,10 @@ import com.picone.core.data.repository.UserRepository;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.interactors.restaurantInteractors.AddDailyScheduleInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.AddRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.AddUserInGlobalListInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.GetAllRestaurantsInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.GetDailyScheduleInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.GetGlobalInterestedUserInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.GetInterestedUsersForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.GetRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.UpdateInterestedUsersInteractor;
@@ -119,5 +121,15 @@ public final class coreModule {
     @Provides
     static UpdateInterestedUsersInteractor provideUpdateInterestedUsers(){
         return new UpdateInterestedUsersInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static GetGlobalInterestedUserInteractor provideGetGlobalInterestedUsers(){
+        return new GetGlobalInterestedUserInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static AddUserInGlobalListInteractor provideAddUserInGlobalList(){
+        return new AddUserInGlobalListInteractor(provideRestaurantDataSource());
     }
 }

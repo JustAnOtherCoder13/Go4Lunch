@@ -7,7 +7,7 @@
     tools:context=".presentation.ui.fragment.RestaurantDetailFragment">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/check_if_selected_detail_fab"
+        android:id="@+id/choose_restaurant_fab"
         style="@style/selected_restaurant_fab_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

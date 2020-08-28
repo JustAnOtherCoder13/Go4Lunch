@@ -16,9 +16,9 @@ import io.reactivex.Observable;
 public class RestaurantRepository {
 
     @Inject
-    public RestaurantDaoImpl restaurantDao;
+    RestaurantDaoImpl restaurantDao;
     @Inject
-    public FirebaseDatabase dataBase;
+    FirebaseDatabase dataBase;
 
     public RestaurantRepository(FirebaseDatabase dataBase, RestaurantDaoImpl dao) {
         this.dataBase = dataBase;
@@ -29,28 +29,36 @@ public class RestaurantRepository {
         return restaurantDao.getAllRestaurants();
     }
 
-    public Observable<Restaurant> getRestaurant (String restaurantName){
+    public Observable<Restaurant> getRestaurant(String restaurantName) {
         return restaurantDao.getRestaurant(restaurantName);
     }
 
-    public Completable addRestaurant (Restaurant restaurant){
+    public Completable addRestaurant(Restaurant restaurant) {
         return restaurantDao.addRestaurant(restaurant);
     }
 
-    public Completable addDailySchedule(DailySchedule dailySchedule, Restaurant restaurant){
+    public Completable addDailySchedule(DailySchedule dailySchedule, Restaurant restaurant) {
         return restaurantDao.addDailyScheduleToRestaurant(dailySchedule, restaurant);
     }
-    public Observable<DailySchedule> getDailyScheduleForRestaurant(String restaurantName){
-        return restaurantDao.getDailyScheduleForRestaurant(restaurantName);}
 
-    public Observable<List<User>> getInterestedUsersForRestaurant(Date today, String restaurantName){
+    public Observable<DailySchedule> getDailyScheduleForRestaurant(String restaurantName) {
+        return restaurantDao.getDailyScheduleForRestaurant(restaurantName);
+    }
+
+    public Observable<List<User>> getInterestedUsersForRestaurant(Date today, String restaurantName) {
         return restaurantDao.getInterestedUsersForRestaurant(today, restaurantName);
     }
 
-    public Completable updateInterestedUsers(Date today, String restaurantName, User user){
-        return restaurantDao.updateInterestedUsersForRestaurant(today,restaurantName,user);}
+    public Completable updateInterestedUsers(Date today, String restaurantName, User user) {
+        return restaurantDao.updateInterestedUsersForRestaurant(today, restaurantName, user);
+    }
 
+    public Observable<User> getGlobalInterestedUser(User user){
+        return restaurantDao.getGlobalInterestedUser(user);
+    }
 
-
+    public Completable addInterestedUserInGlobalList(User currentUser){
+        return restaurantDao.addInterestedUserInGlobalList(currentUser);
+    }
 
 }

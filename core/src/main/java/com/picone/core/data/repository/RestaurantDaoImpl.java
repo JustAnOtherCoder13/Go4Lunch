@@ -23,13 +23,13 @@ public class RestaurantDaoImpl implements RestaurantDao {
     @Inject
     protected FirebaseDatabase database;
     private DatabaseReference restaurantDatabaseReference;
-    private DatabaseReference dailyScheduleDatabaseReference;
+    private DatabaseReference globalInterestedUsersDatabaseReference;
 
 
     public RestaurantDaoImpl(FirebaseDatabase database) {
         this.database = database;
         restaurantDatabaseReference = database.getReference().child("restaurants");
-        dailyScheduleDatabaseReference = restaurantDatabaseReference.child("daily_schedule");
+        globalInterestedUsersDatabaseReference = database.getReference().child("global_interested_users");
     }
 
     @Override
@@ -64,11 +64,11 @@ public class RestaurantDaoImpl implements RestaurantDao {
     public Observable<DailySchedule> getDailyScheduleForRestaurant(String restaurantName) {
         return RxFirebaseDatabase.observeSingleValueEvent(restaurantDatabaseReference
                         .child(restaurantName)
-                        , DailySchedule.class).toObservable();
+                , DailySchedule.class).toObservable();
     }
 
     @Override
-    public Observable<List<User>> getInterestedUsersForRestaurant( Date today,String restaurantName) {
+    public Observable<List<User>> getInterestedUsersForRestaurant(Date today, String restaurantName) {
         return RxFirebaseDatabase.observeSingleValueEvent(restaurantDatabaseReference
                         .child(restaurantName)
                         .child("daily_schedule")
@@ -80,10 +80,23 @@ public class RestaurantDaoImpl implements RestaurantDao {
     @Override
     public Completable updateInterestedUsersForRestaurant(Date today, String restaurantName, User user) {
         return RxFirebaseDatabase.setValue(restaurantDatabaseReference
-                .child(restaurantName)
-                .child("daily_schedule")
-                .child(today.toString())
-                .push()
+                        .child(restaurantName)
+                        .child("daily_schedule")
+                        .child(today.toString())
+                        .push()
                 , user);
+    }
+
+    @Override
+    public Observable<User> getGlobalInterestedUser(User user) {
+        return RxFirebaseDatabase.observeSingleValueEvent(globalInterestedUsersDatabaseReference
+                        .child(user.getName())
+                , User.class).toObservable();
+    }
+
+    @Override
+    public Completable addInterestedUserInGlobalList(User user) {
+        return RxFirebaseDatabase.setValue(globalInterestedUsersDatabaseReference
+                .child(user.getName()), user);
     }
 }
