@@ -61,11 +61,21 @@ public class RestaurantDaoImpl implements RestaurantDao {
     }
 
     @Override
+    public void deleteDailyScheduleForRestaurant(Restaurant selectedRestaurant) {
+        restaurantDatabaseReference
+                .child(selectedRestaurant.getName())
+                .child("daily_schedule")
+                .removeValue();
+    }
+
+    @Override
     public Observable<DailySchedule> getDailyScheduleForRestaurant(String restaurantName) {
         return RxFirebaseDatabase.observeSingleValueEvent(restaurantDatabaseReference
                         .child(restaurantName)
+                .child("daily_schedule")
                 , DailySchedule.class).toObservable();
     }
+
 
     @Override
     public Observable<List<User>> getInterestedUsersForRestaurant(Date today, String restaurantName) {
@@ -78,13 +88,34 @@ public class RestaurantDaoImpl implements RestaurantDao {
     }
 
     @Override
+    public Observable<User> getUserForRestaurant(Date today, Restaurant originalChosenRestaurant, User currentUser) {
+        return RxFirebaseDatabase.observeSingleValueEvent(restaurantDatabaseReference
+                        .child(originalChosenRestaurant.getName())
+                        .child("daily_schedule")
+                        .child(today.toString())
+                        .child(currentUser.getName())
+                , User.class)
+                .toObservable();
+    }
+
+    @Override
     public Completable updateInterestedUsersForRestaurant(Date today, String restaurantName, User user) {
         return RxFirebaseDatabase.setValue(restaurantDatabaseReference
                         .child(restaurantName)
                         .child("daily_schedule")
                         .child(today.toString())
-                        .push()
+                        .child(user.getName())
                 , user);
+    }
+
+    @Override
+    public void deleteUserInRestaurant(Date today, Restaurant originalChosenRestaurant,User currentUser) {
+       restaurantDatabaseReference
+               .child(originalChosenRestaurant.getName())
+               .child("daily_schedule")
+               .child(today.toString())
+               .child(currentUser.getName())
+               .removeValue();
     }
 
     @Override

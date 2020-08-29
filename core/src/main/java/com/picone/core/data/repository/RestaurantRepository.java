@@ -41,6 +41,9 @@ public class RestaurantRepository {
         return restaurantDao.addDailyScheduleToRestaurant(dailySchedule, restaurant);
     }
 
+    public void deleteDailySchedule(Restaurant selectedRestaurant){
+        restaurantDao.deleteDailyScheduleForRestaurant(selectedRestaurant);
+    }
     public Observable<DailySchedule> getDailyScheduleForRestaurant(String restaurantName) {
         return restaurantDao.getDailyScheduleForRestaurant(restaurantName);
     }
@@ -49,6 +52,9 @@ public class RestaurantRepository {
         return restaurantDao.getInterestedUsersForRestaurant(today, restaurantName);
     }
 
+    public void deleteUserInRestaurant (Date today, Restaurant originalChosenRestaurant, User currentUser){
+        restaurantDao.deleteUserInRestaurant(today,originalChosenRestaurant,currentUser);
+    }
     public Completable updateInterestedUsers(Date today, String restaurantName, User user) {
         return restaurantDao.updateInterestedUsersForRestaurant(today, restaurantName, user);
     }
@@ -59,6 +65,10 @@ public class RestaurantRepository {
 
     public Completable addInterestedUserInGlobalList(User currentUser){
         return restaurantDao.addInterestedUserInGlobalList(currentUser);
+    }
+
+    public Observable<User> getUserForRestaurant(Date today, Restaurant originalChosenRestaurant, User currentUser){
+        return restaurantDao.getUserForRestaurant(today, originalChosenRestaurant, currentUser);
     }
 
 }
