@@ -22,8 +22,10 @@ public class RestaurantDaoImpl implements RestaurantDao {
 
     @Inject
     protected FirebaseDatabase database;
+
     private DatabaseReference restaurantDatabaseReference;
     private DatabaseReference globalInterestedUsersDatabaseReference;
+    private final String DAILY_SCHEDULE = "daily_schedule";
 
 
     public RestaurantDaoImpl(FirebaseDatabase database) {
@@ -32,102 +34,75 @@ public class RestaurantDaoImpl implements RestaurantDao {
         globalInterestedUsersDatabaseReference = database.getReference().child("global_interested_users");
     }
 
+    //-----------------------RESTAURANT-------------------------------
+    @Override
+    public Observable<Restaurant> getPersistedRestaurant(String restaurantName) {
+        return RxFirebaseDatabase.observeSingleValueEvent(restaurantDatabaseReference.child(restaurantName), Restaurant.class).toObservable();
+    }
+
     @Override
     public Completable addRestaurant(Restaurant restaurant) {
-        Log.i("test", "addRestaurant: " + restaurant);
-        return RxFirebaseDatabase.setValue(restaurantDatabaseReference
-                        .child(restaurant.getName())
-                , restaurant);
+        return RxFirebaseDatabase.setValue(restaurantDatabaseReference.child(restaurant.getName()), restaurant);
+    }
+
+    //--------------------------------DAILY_SCHEDULE-----------------------------------
+    @Override
+    public Observable<DailySchedule> getDailyScheduleForRestaurant(String selectedRestaurantName) {
+        return RxFirebaseDatabase.observeSingleValueEvent(restaurantDatabaseReference.child(selectedRestaurantName)
+                .child(DAILY_SCHEDULE), DailySchedule.class).toObservable();
     }
 
     @Override
-    public Observable<List<Restaurant>> getAllRestaurants() {
-        return RxFirebaseDatabase.observeSingleValueEvent(restaurantDatabaseReference
-                , DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
+    public Completable addDailyScheduleToRestaurant(DailySchedule dailySchedule, String selectedRestaurantName) {
+        return RxFirebaseDatabase.setValue(restaurantDatabaseReference.child(selectedRestaurantName)
+                .child(DAILY_SCHEDULE), dailySchedule);
     }
 
     @Override
-    public Observable<Restaurant> getRestaurant(String restaurantName) {
+    public void deleteDailyScheduleFromRestaurant(String selectedRestaurantName) {
+        restaurantDatabaseReference.child(selectedRestaurantName)
+                .child(DAILY_SCHEDULE).removeValue();
+    }
+
+    //----------------------------INTERESTED_USER_FOR_RESTAURANT----------------------------------
+    @Override
+    public Observable<List<User>> getAllInterestedUsersForRestaurant(Date today, String restaurantName) {
         return RxFirebaseDatabase.observeSingleValueEvent(restaurantDatabaseReference.child(restaurantName)
-                , Restaurant.class).toObservable();
-    }
-
-    @Override
-    public Completable addDailyScheduleToRestaurant(DailySchedule dailySchedule, Restaurant restaurant) {
-        return RxFirebaseDatabase.setValue(restaurantDatabaseReference
-                        .child(restaurant.getName())
-                        .child("daily_schedule")
-                , dailySchedule);
-    }
-
-    @Override
-    public void deleteDailyScheduleForRestaurant(Restaurant selectedRestaurant) {
-        restaurantDatabaseReference
-                .child(selectedRestaurant.getName())
-                .child("daily_schedule")
-                .removeValue();
-    }
-
-    @Override
-    public Observable<DailySchedule> getDailyScheduleForRestaurant(String restaurantName) {
-        return RxFirebaseDatabase.observeSingleValueEvent(restaurantDatabaseReference
-                        .child(restaurantName)
-                .child("daily_schedule")
-                , DailySchedule.class).toObservable();
-    }
-
-
-    @Override
-    public Observable<List<User>> getInterestedUsersForRestaurant(Date today, String restaurantName) {
-        return RxFirebaseDatabase.observeSingleValueEvent(restaurantDatabaseReference
-                        .child(restaurantName)
-                        .child("daily_schedule")
-                        .child(today.toString())
-                , DataSnapshotMapper.listOf(User.class))
+                .child(DAILY_SCHEDULE).child(today.toString()), DataSnapshotMapper.listOf(User.class))
                 .toObservable();
     }
 
     @Override
-    public Observable<User> getUserForRestaurant(Date today, Restaurant originalChosenRestaurant, User currentUser) {
-        return RxFirebaseDatabase.observeSingleValueEvent(restaurantDatabaseReference
-                        .child(originalChosenRestaurant.getName())
-                        .child("daily_schedule")
-                        .child(today.toString())
-                        .child(currentUser.getName())
-                , User.class)
+    public Observable<User> getCurrentUserForRestaurant(Date today, String selectedRestaurantName, User currentUser) {
+        return RxFirebaseDatabase.observeSingleValueEvent(restaurantDatabaseReference.child(selectedRestaurantName)
+                .child(DAILY_SCHEDULE).child(today.toString()).child(currentUser.getName()), User.class)
                 .toObservable();
     }
 
     @Override
-    public Completable updateInterestedUsersForRestaurant(Date today, String restaurantName, User user) {
-        return RxFirebaseDatabase.setValue(restaurantDatabaseReference
-                        .child(restaurantName)
-                        .child("daily_schedule")
-                        .child(today.toString())
-                        .child(user.getName())
-                , user);
+    public Completable addCurrentUserToRestaurant(Date today, String restaurantName, User currentUser) {
+        return RxFirebaseDatabase.setValue(restaurantDatabaseReference.child(restaurantName)
+                .child(DAILY_SCHEDULE).child(today.toString()).child(currentUser.getName()), currentUser);
+    }
+
+    public void deleteCurrentUserFromRestaurant(Date today, String originalChosenRestaurantName, User currentUser) {
+        restaurantDatabaseReference.child(originalChosenRestaurantName).child(DAILY_SCHEDULE)
+                .child(today.toString()).child(currentUser.getName()).removeValue();
+    }
+
+    //-----------------------------GLOBAL_INTERESTED_USER----------------------------
+    @Override
+    public Observable<User> getGlobalCurrentUser(User currentUser) {
+        return RxFirebaseDatabase.observeSingleValueEvent(globalInterestedUsersDatabaseReference.child(currentUser.getName()), User.class).toObservable();
     }
 
     @Override
-    public void deleteUserInRestaurant(Date today, Restaurant originalChosenRestaurant,User currentUser) {
-       restaurantDatabaseReference
-               .child(originalChosenRestaurant.getName())
-               .child("daily_schedule")
-               .child(today.toString())
-               .child(currentUser.getName())
-               .removeValue();
+    public Completable addCurrentUserToGlobalList(User persistedCurrentUserWithRestaurantSet) {
+        return RxFirebaseDatabase.setValue(globalInterestedUsersDatabaseReference.child(persistedCurrentUserWithRestaurantSet.getName()), persistedCurrentUserWithRestaurantSet);
     }
 
     @Override
-    public Observable<User> getGlobalInterestedUser(User user) {
-        return RxFirebaseDatabase.observeSingleValueEvent(globalInterestedUsersDatabaseReference
-                        .child(user.getName())
-                , User.class).toObservable();
-    }
-
-    @Override
-    public Completable addInterestedUserInGlobalList(User user) {
-        return RxFirebaseDatabase.setValue(globalInterestedUsersDatabaseReference
-                .child(user.getName()), user);
+    public void deleteUserFromGlobalList(User globalPersistedUser) {
+        database.getReference().child("global_interested_users").child(globalPersistedUser.getName()).removeValue();
     }
 }

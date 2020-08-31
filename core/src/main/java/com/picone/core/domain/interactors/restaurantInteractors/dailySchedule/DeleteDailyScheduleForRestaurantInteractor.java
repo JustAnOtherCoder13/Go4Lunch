@@ -1,4 +1,4 @@
-package com.picone.core.domain.interactors.restaurantInteractors.restaurant;
+package com.picone.core.domain.interactors.restaurantInteractors.dailySchedule;
 
 import com.picone.core.data.repository.RestaurantRepository;
 import com.picone.core.domain.entity.Restaurant;
@@ -14,7 +14,7 @@ public class DeleteDailyScheduleForRestaurantInteractor {
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    public void deleteDailyScheduleForRestaurant(Restaurant selectedRestaurant){
-        restaurantDataSource.deleteDailySchedule(selectedRestaurant);
+    public void deleteDailyScheduleFromRestaurant(String selectedRestaurantName){
+        restaurantDataSource.deleteDailyScheduleFromRestaurant(selectedRestaurantName);
     }
 }

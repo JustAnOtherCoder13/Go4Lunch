@@ -14,13 +14,13 @@ public class Restaurant {
     private String address;
     private int openingHours;
     private double averageSatisfaction;
-    private List<DailySchedule> dailySchedules;
+    private DailySchedule dailySchedule;
 
     public Restaurant(){}
 
     public Restaurant(String name, int distance, String restaurantPhoto, String foodType,
                       String address, int openingHours,
-                      double averageSatisfaction,List<DailySchedule> dailySchedules) {
+                      double averageSatisfaction,DailySchedule dailySchedule) {
         this.name = name;
         this.distance = distance;
         this.restaurantPhoto = restaurantPhoto;
@@ -28,7 +28,7 @@ public class Restaurant {
         this.address = address;
         this.openingHours = openingHours;
         this.averageSatisfaction = averageSatisfaction;
-        this.dailySchedules = dailySchedules;
+        this.dailySchedule = dailySchedule;
     }
 
     public String getName() {
@@ -57,8 +57,5 @@ public class Restaurant {
         return averageSatisfaction;
     }
 
-    public List<DailySchedule> getDailySchedules() {
-        return dailySchedules;
-    }
-
+    public DailySchedule getDailySchedule() { return dailySchedule; }
 }

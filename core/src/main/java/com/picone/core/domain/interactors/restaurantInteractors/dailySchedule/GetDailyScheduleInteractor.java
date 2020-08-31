@@ -1,4 +1,4 @@
-package com.picone.core.domain.interactors.restaurantInteractors;
+package com.picone.core.domain.interactors.restaurantInteractors.dailySchedule;
 
 import com.picone.core.data.repository.RestaurantRepository;
 import com.picone.core.domain.entity.DailySchedule;
@@ -16,7 +16,7 @@ public class GetDailyScheduleInteractor {
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    public Observable<DailySchedule> getDailyScheduleForRestaurant(String restaurantName){
-        return restaurantDataSource.getDailyScheduleForRestaurant(restaurantName);
+    public Observable<DailySchedule> getDailyScheduleForRestaurant(String selectedRestaurantName){
+        return restaurantDataSource.getDailyScheduleForRestaurant(selectedRestaurantName);
     }
 }

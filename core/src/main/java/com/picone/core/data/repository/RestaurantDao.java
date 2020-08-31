@@ -12,28 +12,32 @@ import io.reactivex.Observable;
 
 public interface RestaurantDao {
 
-    Observable<List<Restaurant>> getAllRestaurants();
+    //--------------------------RESTAURANT---------------------------------
+    Observable<Restaurant> getPersistedRestaurant(String restaurantName);
 
-    Observable<Restaurant> getRestaurant(String restaurantName);
+    Completable addRestaurant(Restaurant selectedRestaurant);
 
-    Completable addRestaurant (Restaurant restaurant);
+    //------------------------------DAILY_SCHEDULE--------------------------------
+    Observable<DailySchedule> getDailyScheduleForRestaurant(String selectedRestaurantName);
 
-    Observable<DailySchedule> getDailyScheduleForRestaurant(String restaurantName);
+    Completable addDailyScheduleToRestaurant(DailySchedule dailySchedule, String selectedRestaurantName);
 
-    Completable addDailyScheduleToRestaurant(DailySchedule dailySchedule,Restaurant restaurant);
+    void deleteDailyScheduleFromRestaurant(String selectedRestaurantName);
 
-    void deleteDailyScheduleForRestaurant(Restaurant selectedRestaurant);
+    //------------------------------USER_FOR_RESTAURANT-----------------------------
+    Observable<List<User>> getAllInterestedUsersForRestaurant(Date today, String selectedRestaurantName);
 
-    Observable<User> getUserForRestaurant(Date today, Restaurant originalChosenRestaurant,User currentUser);
+    Observable<User> getCurrentUserForRestaurant(Date today, String selectedRestaurantName, User currentUser);
 
-    Observable<List<User>> getInterestedUsersForRestaurant(Date today,String restaurantName );
+    Completable addCurrentUserToRestaurant(Date today, String selectedRestaurantName, User currentUser);
 
-    Completable updateInterestedUsersForRestaurant(Date today, String restaurantName, User user);
+    void deleteCurrentUserFromRestaurant(Date today, String originalChosenRestaurantName, User currentUser);
 
-    void deleteUserInRestaurant(Date today, Restaurant originalChosenRestaurant, User currentUser);
+    //------------------------------GLOBAL_USER_FOR_RESTAURANT------------------------
+    Observable<User> getGlobalCurrentUser(User currentUser);
 
-    Observable<User> getGlobalInterestedUser(User user);
+    Completable addCurrentUserToGlobalList(User persistedInterestedUserWithRestaurantSet);
 
-    Completable addInterestedUserInGlobalList(User user);
+    void deleteUserFromGlobalList(User globalPersistedUser);
 
 }

@@ -10,16 +10,16 @@ import javax.inject.Inject;
 
 import io.reactivex.Observable;
 
-public class GetInterestedUsersForRestaurantInteractor {
+public class GetAllInterestedUsersForRestaurantInteractor {
 
     @Inject
     RestaurantRepository restaurantDataSource;
 
-    public GetInterestedUsersForRestaurantInteractor(RestaurantRepository restaurantDataSource){
+    public GetAllInterestedUsersForRestaurantInteractor(RestaurantRepository restaurantDataSource){
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    public Observable<List<User>> getInterestedUserForRestaurant(Date today,String restaurantName){
-        return restaurantDataSource.getInterestedUsersForRestaurant(today,restaurantName);
+    public Observable<List<User>> getAllInterestedUsersForRestaurant(Date today, String restaurantName){
+        return restaurantDataSource.getAllInterestedUsersForRestaurant(today,restaurantName);
     }
 }

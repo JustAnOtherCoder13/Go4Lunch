@@ -16,7 +16,7 @@ public class AddUserInteractor {
         this.userDataSource = userDataSource;
     }
 
-    public Completable addUser(User user) {
-        return userDataSource.addUser(user);
+    public Completable addUser(User currentUser) {
+        return userDataSource.addUser(currentUser);
     }
 }

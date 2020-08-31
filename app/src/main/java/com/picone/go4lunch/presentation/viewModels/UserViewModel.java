@@ -11,7 +11,6 @@ import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 import com.picone.core.domain.interactors.userInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.userInteractors.GetAllUsersInteractor;
-import com.picone.core.domain.interactors.userInteractors.GetUserInteractor;
 
 import java.util.List;
 
@@ -28,18 +27,21 @@ public class UserViewModel extends ViewModel {
     }
 
     private MutableLiveData<AddUserState> addUserStateMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<User>> usersMutableLiveData = new MutableLiveData<>();
+    public LiveData<AddUserState> getAddUserState = addUserStateMutableLiveData;
+
     private MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
+    public LiveData<User> getCurrentUser = userMutableLiveData;
+
+    private MutableLiveData<List<User>> usersMutableLiveData = new MutableLiveData<>();
+
     //interactors
     private GetAllUsersInteractor getAllUsersInteractor;
-    private GetUserInteractor getUserInteractor;
     private AddUserInteractor addUserInteractor;
 
     @ViewModelInject
-    public UserViewModel(GetAllUsersInteractor getAllUsersInteractor, GetUserInteractor getUserInteractor,
+    public UserViewModel(GetAllUsersInteractor getAllUsersInteractor,
                          AddUserInteractor addUserInteractor) {
         this.getAllUsersInteractor = getAllUsersInteractor;
-        this.getUserInteractor = getUserInteractor;
         this.addUserInteractor = addUserInteractor;
     }
 
@@ -52,10 +54,6 @@ public class UserViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(users -> usersMutableLiveData.setValue(users));
         return usersMutableLiveData;
-    }
-
-    public User getUser(int position) {
-        return getUserInteractor.getUser(position);
     }
 
     public void addUser(User user) {
@@ -81,13 +79,5 @@ public class UserViewModel extends ViewModel {
 
     public void setCurrentUser(String uid, String name, String email, String avatar, Restaurant selectedRestaurant) {
         userMutableLiveData.setValue(new User(uid, name, email, avatar, selectedRestaurant));
-    }
-
-    public LiveData<User> getCurrentUser() {
-        return userMutableLiveData;
-    }
-
-    public LiveData<AddUserState> getAddUserState() {
-        return addUserStateMutableLiveData;
     }
 }

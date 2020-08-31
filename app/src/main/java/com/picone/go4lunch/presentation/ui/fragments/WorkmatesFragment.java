@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.ui.fragment;
+package com.picone.go4lunch.presentation.ui.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,17 +12,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.databinding.FragmentWorkmatesBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
-import com.picone.go4lunch.presentation.utils.RecyclerViewAdapter;
+import com.picone.go4lunch.presentation.ui.fragments.adapters.ColleagueRecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WorkmatesFragment extends BaseFragment {
 
-    private FragmentWorkmatesBinding mBinding;
-    private RecyclerViewAdapter mAdapter;
-    private List<User> mUsers = new ArrayList<>();
     public static final String TAG = WorkmatesFragment.class.getName();
+
+    private FragmentWorkmatesBinding mBinding;
+    private ColleagueRecyclerViewAdapter mAdapter;
+
+    private List<User> mUsers = new ArrayList<>();
 
     @Nullable
     @Override
@@ -34,12 +36,9 @@ public class WorkmatesFragment extends BaseFragment {
     }
 
     private void initRecyclerView() {
-        mAdapter = new RecyclerViewAdapter(mUsers, TAG);
+        mAdapter = new ColleagueRecyclerViewAdapter(mUsers, TAG);
         mBinding.recyclerViewWorkmatesFragment.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.recyclerViewWorkmatesFragment.setAdapter(mAdapter);
-        mUserViewModel.getAllUsers().observe(getViewLifecycleOwner(), users -> {
-            mAdapter.updateUsers(users);
-        });
-
+        mUserViewModel.getAllUsers().observe(getViewLifecycleOwner(), users -> mAdapter.updateUsers(users));
     }
 }

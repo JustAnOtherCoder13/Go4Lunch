@@ -6,21 +6,21 @@ import com.picone.core.data.repository.RestaurantRepository;
 import com.picone.core.data.repository.UserDaoImpl;
 import com.picone.core.data.repository.UserRepository;
 import com.picone.core.domain.entity.Restaurant;
-import com.picone.core.domain.interactors.restaurantInteractors.AddDailyScheduleInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.dailySchedule.AddDailyScheduleToRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.GetGlobalCurrentUserInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.restaurant.AddRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.restaurant.DeleteDailyScheduleForRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.AddUserInGlobalListInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.dailySchedule.DeleteDailyScheduleForRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.AddCurrentUserToGlobalListInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.restaurant.GetAllRestaurantsInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.GetDailyScheduleInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.DeleteUserInRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.GetGlobalInterestedUserInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.GetInterestedUsersForRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.dailySchedule.GetDailyScheduleInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.DeleteUserFromGlobalListInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.AddCurrentUserToRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.DeleteCurrentUserFromRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.GetAllInterestedUsersForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.restaurant.GetRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.GetUserForRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.UpdateInterestedUsersInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.GetCurrentUserForRestaurantInteractor;
 import com.picone.core.domain.interactors.userInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.userInteractors.GetAllUsersInteractor;
-import com.picone.core.domain.interactors.userInteractors.GetUserInteractor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +38,7 @@ import static com.picone.core.data.mocks.Generator.RESTAURANTS;
 @Module
 public final class coreModule {
 
+    //--------------------------DATA---------------------------------
     @Singleton
     @Provides
     static FirebaseDatabase provideFireBaseDataBase() {
@@ -56,32 +57,25 @@ public final class coreModule {
         return new RestaurantRepository(provideFireBaseDataBase(), provideRestaurantDaoImpl());
     }
 
-    //DAO
+    //--------------------------DAO---------------------------------
     @Provides
     static UserDaoImpl provideUserDaoImpl() {
         return new UserDaoImpl(provideFireBaseDataBase());
     }
 
     @Provides
-    static RestaurantDaoImpl provideRestaurantDaoImpl() {
-        return new RestaurantDaoImpl(provideFireBaseDataBase());
-    }
+    static RestaurantDaoImpl provideRestaurantDaoImpl() { return new RestaurantDaoImpl(provideFireBaseDataBase()); }
 
-    //generator
+    //--------------------------GENERATOR---------------------------------
     @Provides
     static List<Restaurant> provideGenerateRestaurant() {
         return new ArrayList<>(RESTAURANTS);
     }
 
-    //user interactors
+    //--------------------------USER---------------------------------
     @Provides
     static GetAllUsersInteractor provideGetAllUsers() {
         return new GetAllUsersInteractor(provideUserDataSource());
-    }
-
-    @Provides
-    static GetUserInteractor provideGetUser() {
-        return new GetUserInteractor(provideUserDataSource());
     }
 
     @Provides
@@ -89,7 +83,7 @@ public final class coreModule {
         return new AddUserInteractor(provideUserDataSource());
     }
 
-    //restaurant interactors
+    //--------------------------RESTAURANT---------------------------------
     @Provides
     static GetAllRestaurantsInteractor provideGetAllRestaurants() {
         return new GetAllRestaurantsInteractor(provideRestaurantDataSource(), provideGenerateRestaurant());
@@ -105,49 +99,56 @@ public final class coreModule {
         return  new AddRestaurantInteractor(provideRestaurantDataSource());
     }
 
+    //--------------------------DAILY_SCHEDULE---------------------------------
     @Provides
     static GetDailyScheduleInteractor provideGetDailySchedule(){
         return new GetDailyScheduleInteractor(provideRestaurantDataSource());
     }
 
-
     @Provides
-    static AddDailyScheduleInteractor provideAddDailySchedule(){
-    return new AddDailyScheduleInteractor(provideRestaurantDataSource());
+    static AddDailyScheduleToRestaurantInteractor provideAddDailyScheduleToRestaurant(){
+    return new AddDailyScheduleToRestaurantInteractor(provideRestaurantDataSource());
     }
 
     @Provides
-    static GetInterestedUsersForRestaurantInteractor provideGetInterestedUsersForRestaurant(){
-        return new GetInterestedUsersForRestaurantInteractor(provideRestaurantDataSource());
-    }
-
-    @Provides
-    static UpdateInterestedUsersInteractor provideUpdateInterestedUsers(){
-        return new UpdateInterestedUsersInteractor(provideRestaurantDataSource());
-    }
-
-    @Provides
-    static GetGlobalInterestedUserInteractor provideGetGlobalInterestedUsers(){
-        return new GetGlobalInterestedUserInteractor(provideRestaurantDataSource());
-    }
-
-    @Provides
-    static AddUserInGlobalListInteractor provideAddUserInGlobalList(){
-        return new AddUserInGlobalListInteractor(provideRestaurantDataSource());
-    }
-
-    @Provides
-    static GetUserForRestaurantInteractor provideGetUserForRestaurant(){
-        return new GetUserForRestaurantInteractor(provideRestaurantDataSource());
-    }
-
-    @Provides
-    static DeleteUserInRestaurantInteractor provideDeleteUser(){
-        return new DeleteUserInRestaurantInteractor(provideRestaurantDataSource());
-    }
-
-    @Provides
-    static DeleteDailyScheduleForRestaurantInteractor provideDeleteDailySchedule(){
+    static DeleteDailyScheduleForRestaurantInteractor provideDeleteDailyScheduleForRestaurant(){
         return new DeleteDailyScheduleForRestaurantInteractor(provideRestaurantDataSource());
+    }
+
+    //--------------------------INTERESTED_USER---------------------------------
+    @Provides
+    static GetAllInterestedUsersForRestaurantInteractor provideGetAllInterestedUsersForRestaurant(){
+        return new GetAllInterestedUsersForRestaurantInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static GetCurrentUserForRestaurantInteractor provideGetCurrentUserForRestaurant(){
+        return new GetCurrentUserForRestaurantInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static AddCurrentUserToRestaurantInteractor provideAddCurrentUserToRestaurant(){
+        return new AddCurrentUserToRestaurantInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static DeleteCurrentUserFromRestaurantInteractor provideDeleteCurrentUserFromRestaurant(){
+        return new DeleteCurrentUserFromRestaurantInteractor(provideRestaurantDataSource());
+    }
+
+    //--------------------------GLOBAL_USER---------------------------------
+    @Provides
+    static GetGlobalCurrentUserInteractor provideGetGlobalCurrentUser(){
+        return new GetGlobalCurrentUserInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static AddCurrentUserToGlobalListInteractor provideAddCurrentUserToGlobalList(){
+        return new AddCurrentUserToGlobalListInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static DeleteUserFromGlobalListInteractor provideDeleteUserFromGlobalList(){
+        return new DeleteUserFromGlobalListInteractor(provideRestaurantDataSource());
     }
 }

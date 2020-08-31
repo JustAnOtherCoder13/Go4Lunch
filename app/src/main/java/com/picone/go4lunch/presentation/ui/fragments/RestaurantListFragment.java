@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.ui.fragment;
+package com.picone.go4lunch.presentation.ui.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentListBinding;
+import com.picone.go4lunch.presentation.ui.fragments.adapters.RestaurantListRecyclerViewAdapter;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
-import com.picone.go4lunch.presentation.utils.RecyclerViewAdapter;
 import com.picone.go4lunch.presentation.utils.RecyclerViewItemClickUtil;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import java.util.List;
 public class RestaurantListFragment extends BaseFragment {
 
     private FragmentListBinding mBinding;
-    private RecyclerViewAdapter mAdapter;
+    private RestaurantListRecyclerViewAdapter mAdapter;
 
     @Nullable
     @Override
@@ -44,12 +44,12 @@ public class RestaurantListFragment extends BaseFragment {
     }
 
     private void initRecyclerView() {
-        mAdapter = new RecyclerViewAdapter(new ArrayList<>());
+        mAdapter = new RestaurantListRecyclerViewAdapter(new ArrayList<>());
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mBinding.recyclerViewListFragment.setLayoutManager(linearLayoutManager);
         mBinding.recyclerViewListFragment.setAdapter(mAdapter);
-        List<Restaurant> restaurants = mRestaurantViewModel.getGeneratorRestaurants();
-        mAdapter.updateRestaurants(restaurants);
+        List<Restaurant> allRestaurants = mRestaurantViewModel.getGeneratedRestaurants();
+        mAdapter.updateRestaurants(allRestaurants);
 
     }
 

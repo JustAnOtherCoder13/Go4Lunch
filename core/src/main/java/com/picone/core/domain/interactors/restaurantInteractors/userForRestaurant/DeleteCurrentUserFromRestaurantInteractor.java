@@ -8,18 +8,16 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
-
-public class GetUserForRestaurantInteractor {
+public class DeleteCurrentUserFromRestaurantInteractor {
 
     @Inject
     RestaurantRepository restaurantDataSource;
 
-    public GetUserForRestaurantInteractor(RestaurantRepository restaurantDataSource) {
+    public DeleteCurrentUserFromRestaurantInteractor(RestaurantRepository restaurantDataSource){
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    public Observable<User> getUserForRestaurant(Date today, Restaurant originalChosenRestaurant, User currentUser){
-        return restaurantDataSource.getUserForRestaurant(today, originalChosenRestaurant, currentUser);
+    public void deleteCurrentUserFromRestaurant(Date today, String originalChosenRestaurantName, User currentUser){
+        restaurantDataSource.deleteCurrentUserFromRestaurant(today, originalChosenRestaurantName, currentUser);
     }
 }

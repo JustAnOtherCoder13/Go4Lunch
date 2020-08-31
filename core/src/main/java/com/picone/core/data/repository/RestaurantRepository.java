@@ -25,50 +25,55 @@ public class RestaurantRepository {
         this.restaurantDao = dao;
     }
 
-    public Observable<List<Restaurant>> getAllRestaurants() {
-        return restaurantDao.getAllRestaurants();
-    }
-
-    public Observable<Restaurant> getRestaurant(String restaurantName) {
-        return restaurantDao.getRestaurant(restaurantName);
+    //--------------------------------------RESTAURANT---------------------------------
+    public Observable<Restaurant> getPersistedRestaurant(String restaurantName) {
+        return restaurantDao.getPersistedRestaurant(restaurantName);
     }
 
     public Completable addRestaurant(Restaurant restaurant) {
         return restaurantDao.addRestaurant(restaurant);
     }
 
-    public Completable addDailySchedule(DailySchedule dailySchedule, Restaurant restaurant) {
-        return restaurantDao.addDailyScheduleToRestaurant(dailySchedule, restaurant);
+    //-----------------------------------------DAILY_SCHEDULE-------------------------------------------
+    public Observable<DailySchedule> getDailyScheduleForRestaurant(String selectedRestaurantName) {
+        return restaurantDao.getDailyScheduleForRestaurant(selectedRestaurantName);
     }
 
-    public void deleteDailySchedule(Restaurant selectedRestaurant){
-        restaurantDao.deleteDailyScheduleForRestaurant(selectedRestaurant);
-    }
-    public Observable<DailySchedule> getDailyScheduleForRestaurant(String restaurantName) {
-        return restaurantDao.getDailyScheduleForRestaurant(restaurantName);
+    public Completable addDailyScheduleToRestaurant(DailySchedule dailySchedule, String selectedRestaurantName) {
+        return restaurantDao.addDailyScheduleToRestaurant(dailySchedule, selectedRestaurantName);
     }
 
-    public Observable<List<User>> getInterestedUsersForRestaurant(Date today, String restaurantName) {
-        return restaurantDao.getInterestedUsersForRestaurant(today, restaurantName);
+    public void deleteDailyScheduleFromRestaurant(String  selectedRestaurantName) {
+        restaurantDao.deleteDailyScheduleFromRestaurant(selectedRestaurantName);
     }
 
-    public void deleteUserInRestaurant (Date today, Restaurant originalChosenRestaurant, User currentUser){
-        restaurantDao.deleteUserInRestaurant(today,originalChosenRestaurant,currentUser);
-    }
-    public Completable updateInterestedUsers(Date today, String restaurantName, User user) {
-        return restaurantDao.updateInterestedUsersForRestaurant(today, restaurantName, user);
+//----------------------------------------------INTERESTED_USER_FOR_RESTAURANT---------------------------
+    public Observable<List<User>> getAllInterestedUsersForRestaurant(Date today, String restaurantName) {
+        return restaurantDao.getAllInterestedUsersForRestaurant(today, restaurantName);
     }
 
-    public Observable<User> getGlobalInterestedUser(User user){
-        return restaurantDao.getGlobalInterestedUser(user);
+    public Observable<User> getCurrentUserForRestaurant(Date today, String selectedRestaurantName, User currentUser) {
+        return restaurantDao.getCurrentUserForRestaurant(today, selectedRestaurantName, currentUser);
     }
 
-    public Completable addInterestedUserInGlobalList(User currentUser){
-        return restaurantDao.addInterestedUserInGlobalList(currentUser);
+    public Completable addCurrentUserToRestaurant(Date today, String restaurantName, User currentUser) {
+        return restaurantDao.addCurrentUserToRestaurant(today, restaurantName, currentUser);
     }
 
-    public Observable<User> getUserForRestaurant(Date today, Restaurant originalChosenRestaurant, User currentUser){
-        return restaurantDao.getUserForRestaurant(today, originalChosenRestaurant, currentUser);
+    public void deleteCurrentUserFromRestaurant(Date today, String originalChosenRestaurantName, User currentUser) {
+        restaurantDao.deleteCurrentUserFromRestaurant(today, originalChosenRestaurantName, currentUser);
     }
 
+    //------------------------------------------GLOBAL_INTERESTED_USER-----------------------------------------
+    public Observable<User> getGlobalCurrentUser(User currentUser) {
+        return restaurantDao.getGlobalCurrentUser(currentUser);
+    }
+
+    public Completable addCurrentUserToGlobalList(User persistedCurrentUserWithRestaurantSet) {
+        return restaurantDao.addCurrentUserToGlobalList(persistedCurrentUserWithRestaurantSet);
+    }
+
+    public void deleteUserFromGlobalList(User globalPersistedUser) {
+        restaurantDao.deleteUserFromGlobalList(globalPersistedUser);
+    }
 }

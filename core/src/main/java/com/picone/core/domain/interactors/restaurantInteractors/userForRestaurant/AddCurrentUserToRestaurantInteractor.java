@@ -9,16 +9,16 @@ import javax.inject.Inject;
 
 import io.reactivex.Completable;
 
-public class UpdateInterestedUsersInteractor {
+public class AddCurrentUserToRestaurantInteractor {
 
     @Inject
     RestaurantRepository restaurantDataSource;
 
-    public UpdateInterestedUsersInteractor(RestaurantRepository restaurantDataSource){
+    public AddCurrentUserToRestaurantInteractor(RestaurantRepository restaurantDataSource){
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    public Completable updateInterestedUser (Date today, String restaurantName, User interestedUser){
-        return restaurantDataSource.updateInterestedUsers(today,restaurantName,interestedUser);
+    public Completable addCurrentUserToRestaurant(Date today, String restaurantName, User interestedUser){
+        return restaurantDataSource.addCurrentUserToRestaurant(today,restaurantName,interestedUser);
     }
 }

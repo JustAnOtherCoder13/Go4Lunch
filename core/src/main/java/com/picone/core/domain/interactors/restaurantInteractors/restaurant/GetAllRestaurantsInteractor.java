@@ -25,8 +25,4 @@ public class GetAllRestaurantsInteractor {
     public List<Restaurant> getGeneratedRestaurants() {
         return generatorRestaurant;
     }
-
-    public Observable <List<Restaurant>> getAllRestaurants(){
-        return restaurantDataSource.getAllRestaurants();
-    }
 }

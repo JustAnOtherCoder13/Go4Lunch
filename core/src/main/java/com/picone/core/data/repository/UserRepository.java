@@ -26,12 +26,9 @@ public class UserRepository {
         return userDao.getAllUsers();
     }
 
-    public User getUser(int position) {
-        return userDao.getUser(position);
-    }
 
-    public Completable addUser(User user) {
-        return userDao.AddUser(user);
+    public Completable addUser(User currentUser) {
+        return userDao.AddUser(currentUser);
     }
 
 }

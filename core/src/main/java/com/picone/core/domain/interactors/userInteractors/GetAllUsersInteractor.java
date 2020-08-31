@@ -18,7 +18,5 @@ public class GetAllUsersInteractor {
         this.userDataSource = userDataSource;
     }
 
-    public Observable<List<User>> getAllUsers() {
-        return userDataSource.getAllUsers();
-    }
+    public Observable<List<User>> getAllUsers() { return userDataSource.getAllUsers(); }
 }

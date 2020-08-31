@@ -27,7 +27,7 @@ public class GetRestaurantInteractor {
         return generatorRestaurant.get(position);
     }
 
-    public Observable<Restaurant> getRestaurant(String restaurantName){
-        return restaurantDataSource.getRestaurant(restaurantName);
+    public Observable<Restaurant> getPersistedRestaurant(String restaurantName){
+        return restaurantDataSource.getPersistedRestaurant(restaurantName);
     }
 }
