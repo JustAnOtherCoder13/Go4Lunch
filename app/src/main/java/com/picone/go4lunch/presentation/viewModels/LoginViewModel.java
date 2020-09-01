@@ -1,8 +1,10 @@
 package com.picone.go4lunch.presentation.viewModels;
 
+import androidx.hilt.Assisted;
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
 public class LoginViewModel extends ViewModel {
@@ -16,10 +18,13 @@ public class LoginViewModel extends ViewModel {
 
     private final MutableLiveData<AuthenticationState> authenticationState =
             new MutableLiveData<>();
+    private final SavedStateHandle savedStateHandle;
+
 
     @ViewModelInject
-    public LoginViewModel() {
+    public LoginViewModel(@Assisted SavedStateHandle savedStateHandle) {
         authenticationState.setValue(AuthenticationState.UNAUTHENTICATED);
+        this.savedStateHandle = savedStateHandle;
     }
 
     public LiveData<AuthenticationState> getAuthenticationState() {

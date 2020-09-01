@@ -8,18 +8,18 @@ import java.util.List;
 @IgnoreExtraProperties
 public class DailySchedule {
 
-    private String today;
+    private Date today;
     private List<User> interestedUser;
 
     public DailySchedule() {
     }
 
-    public DailySchedule(String today, List<User> interestedUser) {
+    public DailySchedule(Date today, List<User> interestedUser) {
         this.today = today;
         this.interestedUser = interestedUser;
     }
 
-    public String getToday() {
+    public Date getToday() {
         return today;
     }
 

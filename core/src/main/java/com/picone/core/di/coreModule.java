@@ -7,20 +7,20 @@ import com.picone.core.data.repository.UserDaoImpl;
 import com.picone.core.data.repository.UserRepository;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.interactors.restaurantInteractors.dailySchedule.AddDailyScheduleToRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.dailySchedule.DeleteDailyScheduleFromRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.dailySchedule.GetDailyScheduleInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.AddCurrentUserToGlobalListInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.DeleteUserFromGlobalListInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.GetGlobalCurrentUserInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.restaurant.AddRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.dailySchedule.DeleteDailyScheduleForRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.AddCurrentUserToGlobalListInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.restaurant.GetAllRestaurantsInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.dailySchedule.GetDailyScheduleInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.DeleteUserFromGlobalListInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.restaurant.GetRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.AddCurrentUserToRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.DeleteCurrentUserFromRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.GetAllInterestedUsersForRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.restaurant.GetRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.GetCurrentUserForRestaurantInteractor;
 import com.picone.core.domain.interactors.userInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.userInteractors.GetAllUsersInteractor;
+import com.picone.core.domain.interactors.userInteractors.GetCurrentUserForEmailInteractor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +79,11 @@ public final class coreModule {
     }
 
     @Provides
+    static GetCurrentUserForEmailInteractor provideGetCurrentUserForEmail(){
+        return new GetCurrentUserForEmailInteractor(provideUserDataSource());
+    }
+
+    @Provides
     static AddUserInteractor provideAddUser() {
         return new AddUserInteractor(provideUserDataSource());
     }
@@ -111,19 +116,14 @@ public final class coreModule {
     }
 
     @Provides
-    static DeleteDailyScheduleForRestaurantInteractor provideDeleteDailyScheduleForRestaurant(){
-        return new DeleteDailyScheduleForRestaurantInteractor(provideRestaurantDataSource());
+    static DeleteDailyScheduleFromRestaurantInteractor provideDeleteDailyScheduleForRestaurant(){
+        return new DeleteDailyScheduleFromRestaurantInteractor(provideRestaurantDataSource());
     }
 
     //--------------------------INTERESTED_USER---------------------------------
     @Provides
     static GetAllInterestedUsersForRestaurantInteractor provideGetAllInterestedUsersForRestaurant(){
         return new GetAllInterestedUsersForRestaurantInteractor(provideRestaurantDataSource());
-    }
-
-    @Provides
-    static GetCurrentUserForRestaurantInteractor provideGetCurrentUserForRestaurant(){
-        return new GetCurrentUserForRestaurantInteractor(provideRestaurantDataSource());
     }
 
     @Provides

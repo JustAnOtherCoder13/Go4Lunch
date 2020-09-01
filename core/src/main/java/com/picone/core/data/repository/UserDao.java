@@ -12,4 +12,6 @@ public interface UserDao {
     Observable<List<User>> getAllUsers();
 
     Completable AddUser(User currentUser);
+
+    Observable<List<User>> getCurrentUserForEmail(String authCurrentUserEmail);
 }

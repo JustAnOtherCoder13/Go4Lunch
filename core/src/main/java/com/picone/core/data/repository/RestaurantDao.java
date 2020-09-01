@@ -27,8 +27,6 @@ public interface RestaurantDao {
     //------------------------------USER_FOR_RESTAURANT-----------------------------
     Observable<List<User>> getAllInterestedUsersForRestaurant(Date today, String selectedRestaurantName);
 
-    Observable<User> getCurrentUserForRestaurant(Date today, String selectedRestaurantName, User currentUser);
-
     Completable addCurrentUserToRestaurant(Date today, String selectedRestaurantName, User currentUser);
 
     void deleteCurrentUserFromRestaurant(Date today, String originalChosenRestaurantName, User currentUser);

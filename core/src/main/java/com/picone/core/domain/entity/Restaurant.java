@@ -2,8 +2,6 @@ package com.picone.core.domain.entity;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
-import java.util.List;
-
 @IgnoreExtraProperties
 public class Restaurant {
 

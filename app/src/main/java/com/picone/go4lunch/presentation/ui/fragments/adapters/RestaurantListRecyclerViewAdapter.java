@@ -1,7 +1,6 @@
 package com.picone.go4lunch.presentation.ui.fragments.adapters;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -36,7 +35,6 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
         holder.restaurantBinding.foodStyleAndAddressTextView.setText(restaurant.getFoodType().concat(" - ")
                 .concat(restaurant.getAddress()));
         holder.restaurantBinding.distanceTextView.setText(String.valueOf(restaurant.getDistance()).concat(" M"));
-
     }
 
     @Override

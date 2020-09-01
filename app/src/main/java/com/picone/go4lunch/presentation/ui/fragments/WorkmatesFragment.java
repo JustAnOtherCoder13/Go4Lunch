@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.databinding.FragmentWorkmatesBinding;
-import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import com.picone.go4lunch.presentation.ui.fragments.adapters.ColleagueRecyclerViewAdapter;
+import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;

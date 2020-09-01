@@ -11,10 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.databinding.RecyclerViewColleagueItemsBinding;
-import com.picone.go4lunch.databinding.RecyclerViewRestaurantItemsBinding;
 import com.picone.go4lunch.presentation.ui.fragments.WorkmatesFragment;
 
 import java.util.List;
@@ -24,7 +22,6 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
     private List<User> mUsers;
     private String tag;
 
-
     public ColleagueRecyclerViewAdapter(List<User> items, String tag) {
         this.tag = tag;
         this.mUsers = items;
@@ -33,17 +30,13 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
     @NonNull
     @Override
     public ColleagueRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
             RecyclerViewColleagueItemsBinding binding = RecyclerViewColleagueItemsBinding
                     .inflate(LayoutInflater.from(parent.getContext()), parent, false);
             return new ViewHolder(binding);
-
     }
 
     @Override
     public void onBindViewHolder(@NonNull ColleagueRecyclerViewAdapter.ViewHolder holder, int position) {
-
-
             final User user = mUsers.get(position);
             if (tag.equals(WorkmatesFragment.TAG))
                 holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(" is eating ").concat("food type ").concat("(selected restaurant)"));
@@ -66,16 +59,11 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
     }
 
     @Override
-    public int getItemCount() {
-
-            return mUsers.size();
-
-    }
+    public int getItemCount() { return mUsers.size(); }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         private RecyclerViewColleagueItemsBinding colleagueBinding;
-
         ViewHolder(RecyclerViewColleagueItemsBinding colleagueBinding) {
             super(colleagueBinding.getRoot());
             this.colleagueBinding = colleagueBinding;

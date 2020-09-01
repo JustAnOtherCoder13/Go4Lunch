@@ -1,29 +1,29 @@
 package com.picone.go4lunch.presentation.viewModels;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 
+import androidx.hilt.Assisted;
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
 import com.picone.core.domain.entity.DailySchedule;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 import com.picone.core.domain.interactors.restaurantInteractors.dailySchedule.AddDailyScheduleToRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.dailySchedule.DeleteDailyScheduleFromRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.dailySchedule.GetDailyScheduleInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.AddCurrentUserToGlobalListInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.DeleteUserFromGlobalListInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.GetGlobalCurrentUserInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.restaurant.AddRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.dailySchedule.DeleteDailyScheduleForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.restaurant.GetAllRestaurantsInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.dailySchedule.GetDailyScheduleInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.DeleteUserFromGlobalListInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.DeleteCurrentUserFromRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.GetAllInterestedUsersForRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.GetCurrentUserForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.restaurant.GetRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.AddCurrentUserToRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.DeleteCurrentUserFromRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.userForRestaurant.GetAllInterestedUsersForRestaurantInteractor;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,21 +40,20 @@ public class RestaurantViewModel extends ViewModel {
     public enum CompletionState {
         RESTAURANT_ON_COMPLETE,
         RESTAURANT_ON_ERROR,
-        RESTAURANT_IS_PERSISTED,
         RESTAURANT_IS_NOT_PERSISTED,
         DAILY_SCHEDULE_ON_COMPLETE,
         DAILY_SCHEDULE_ON_ERROR,
-        DAILY_SCHEDULE_IS_PERSISTED,
-        DAILY_SCHEDULE_IS_NOT_PERSISTED,
+        DAILY_SCHEDULE_IS_LOADED,
+        DAILY_SCHEDULE_IS_NOT_LOADED,
         PERSISTED_USERS_FOR_RESTAURANT_ON_COMPLETE,
         PERSISTED_USERS_FOR_RESTAURANT_ON_ERROR,
-        INTERESTED_USERS_ARE_PERSISTED,
+        INTERESTED_USERS_LOADED,
         CURRENT_USER_TO_GLOBAL_LIST_ON_COMPLETE,
-        CURRENT_USER_TO_GLOBAL_LIST_ON_ERROR
+        CURRENT_USER_TO_GLOBAL_LIST_ON_ERROR,
     }
 
-    private final MutableLiveData<CompletionState> onCompleteStateMutableLiveData = new MutableLiveData<>();
-    public LiveData<CompletionState> getCompletionState = onCompleteStateMutableLiveData;
+    private final MutableLiveData<CompletionState> _getCompletionState = new MutableLiveData<>();
+    public LiveData<CompletionState> getCompletionState = _getCompletionState;
 
     private MutableLiveData<Restaurant> restaurantMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Restaurant> _getSelectedRestaurant = new MutableLiveData<>();
@@ -64,10 +63,7 @@ public class RestaurantViewModel extends ViewModel {
 
     private MutableLiveData<List<User>> interestedUsersMutableLiveData = new MutableLiveData<>(new ArrayList<>());
     private MutableLiveData<User> globalInterestedUserMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<User> userForRestaurantMutableLiveData = new MutableLiveData<>();
 
-    private MutableLiveData<Boolean> _isUserHasChoseRestaurant = new MutableLiveData<>(false);
-    public LiveData<Boolean> isUserHasChoseRestaurant = _isUserHasChoseRestaurant;
     //interactors
     private GetAllRestaurantsInteractor getAllRestaurantsInteractor;
     private GetRestaurantInteractor getRestaurantInteractor;
@@ -75,26 +71,26 @@ public class RestaurantViewModel extends ViewModel {
 
     private GetDailyScheduleInteractor getDailyScheduleInteractor;
     private AddDailyScheduleToRestaurantInteractor addDailyScheduleToRestaurantInteractor;
-    private DeleteDailyScheduleForRestaurantInteractor deleteDailyScheduleForRestaurantInteractor;
+    private DeleteDailyScheduleFromRestaurantInteractor deleteDailyScheduleFromRestaurantInteractor;
 
     private GetAllInterestedUsersForRestaurantInteractor getAllInterestedUsersForRestaurantInteractor;
-    private GetCurrentUserForRestaurantInteractor getCurrentUserForRestaurantInteractor;
     private AddCurrentUserToRestaurantInteractor addCurrentUserToRestaurantInteractor;
     private DeleteCurrentUserFromRestaurantInteractor deleteCurrentUserFromRestaurantInteractor;
 
     private GetGlobalCurrentUserInteractor getGlobalCurrentUserInteractor;
     private AddCurrentUserToGlobalListInteractor addCurrentUserToGlobalListInteractor;
     private DeleteUserFromGlobalListInteractor deleteUserFromGlobalListInteractor;
-
+    private final SavedStateHandle savedStateHandle;
 
     @ViewModelInject
     public RestaurantViewModel(GetAllRestaurantsInteractor getAllRestaurantsInteractor
             , GetRestaurantInteractor getRestaurantInteractor, AddRestaurantInteractor addRestaurantInteractor
             , GetDailyScheduleInteractor getDailyScheduleInteractor, AddDailyScheduleToRestaurantInteractor addDailyScheduleToRestaurantInteractor
-            , DeleteDailyScheduleForRestaurantInteractor deleteDailyScheduleForRestaurantInteractor, GetAllInterestedUsersForRestaurantInteractor getAllInterestedUsersForRestaurantInteractor
-            , GetCurrentUserForRestaurantInteractor getCurrentUserForRestaurantInteractor, AddCurrentUserToRestaurantInteractor addCurrentUserToRestaurantInteractor
+            , DeleteDailyScheduleFromRestaurantInteractor deleteDailyScheduleFromRestaurantInteractor, GetAllInterestedUsersForRestaurantInteractor getAllInterestedUsersForRestaurantInteractor
+            , AddCurrentUserToRestaurantInteractor addCurrentUserToRestaurantInteractor
             , DeleteCurrentUserFromRestaurantInteractor deleteCurrentUserFromRestaurantInteractor, GetGlobalCurrentUserInteractor getGlobalCurrentUserInteractor
-            , AddCurrentUserToGlobalListInteractor addCurrentUserToGlobalListInteractor, DeleteUserFromGlobalListInteractor deleteUserFromGlobalListInteractor) {
+            , AddCurrentUserToGlobalListInteractor addCurrentUserToGlobalListInteractor, DeleteUserFromGlobalListInteractor deleteUserFromGlobalListInteractor
+            , @Assisted SavedStateHandle savedStateHandle) {
 
         this.getAllRestaurantsInteractor = getAllRestaurantsInteractor;
         this.getRestaurantInteractor = getRestaurantInteractor;
@@ -102,16 +98,17 @@ public class RestaurantViewModel extends ViewModel {
 
         this.getDailyScheduleInteractor = getDailyScheduleInteractor;
         this.addDailyScheduleToRestaurantInteractor = addDailyScheduleToRestaurantInteractor;
-        this.deleteDailyScheduleForRestaurantInteractor = deleteDailyScheduleForRestaurantInteractor;
+        this.deleteDailyScheduleFromRestaurantInteractor = deleteDailyScheduleFromRestaurantInteractor;
 
         this.getAllInterestedUsersForRestaurantInteractor = getAllInterestedUsersForRestaurantInteractor;
-        this.getCurrentUserForRestaurantInteractor = getCurrentUserForRestaurantInteractor;
         this.addCurrentUserToRestaurantInteractor = addCurrentUserToRestaurantInteractor;
         this.deleteCurrentUserFromRestaurantInteractor = deleteCurrentUserFromRestaurantInteractor;
 
         this.getGlobalCurrentUserInteractor = getGlobalCurrentUserInteractor;
         this.addCurrentUserToGlobalListInteractor = addCurrentUserToGlobalListInteractor;
         this.deleteUserFromGlobalListInteractor = deleteUserFromGlobalListInteractor;
+
+        this.savedStateHandle = savedStateHandle;
     }
 
     //--------------------------RESTAURANT---------------------------------
@@ -119,27 +116,14 @@ public class RestaurantViewModel extends ViewModel {
     //suppress warning is safe cause getDailyScheduleInteractor is used to set
     //dailyScheduleMutableLiveData value
     public LiveData<Restaurant> getPersistedRestaurant(String restaurantName) {
-        onCompleteStateMutableLiveData.setValue(CompletionState.RESTAURANT_IS_NOT_PERSISTED);
+        _getCompletionState.setValue(CompletionState.RESTAURANT_IS_NOT_PERSISTED);
         getRestaurantInteractor.getPersistedRestaurant(restaurantName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Restaurant>() {
-                    @Override
-                    public void onSubscribe(Disposable d) { }
-
-                    @Override
-                    public void onNext(Restaurant restaurant) {
-                        restaurantMutableLiveData.setValue(restaurant);
-                        onCompleteStateMutableLiveData.setValue(CompletionState.RESTAURANT_IS_PERSISTED);
-                    }
-                    @Override
-                    public void onError(Throwable e) {}
-
-                    @Override
-                    public void onComplete() {}
-                });
+                .subscribe(restaurant -> restaurantMutableLiveData.setValue(restaurant));
         return restaurantMutableLiveData;
     }
+
     public void addRestaurant(Restaurant restaurant) {
         addRestaurantInteractor.addRestaurant(restaurant)
                 .subscribeOn(Schedulers.io())
@@ -151,12 +135,12 @@ public class RestaurantViewModel extends ViewModel {
 
                     @Override
                     public void onComplete() {
-                        onCompleteStateMutableLiveData.setValue(CompletionState.RESTAURANT_ON_COMPLETE);
+                        _getCompletionState.setValue(CompletionState.RESTAURANT_ON_COMPLETE);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        onCompleteStateMutableLiveData.setValue(CompletionState.RESTAURANT_ON_ERROR);
+                        _getCompletionState.setValue(CompletionState.RESTAURANT_ON_ERROR);
 
                     }
                 });
@@ -175,52 +159,56 @@ public class RestaurantViewModel extends ViewModel {
     //suppress warning is safe cause getDailyScheduleInteractor is used to set
     //dailyScheduleMutableLiveData value
     public LiveData<DailySchedule> getDailyScheduleForRestaurant(String restaurantName) {
-        onCompleteStateMutableLiveData.setValue(CompletionState.DAILY_SCHEDULE_IS_NOT_PERSISTED);
+        _getCompletionState.setValue(CompletionState.DAILY_SCHEDULE_IS_NOT_LOADED);
         getDailyScheduleInteractor.getDailyScheduleForRestaurant(restaurantName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<DailySchedule>() {
                     @Override
-                    public void onSubscribe(Disposable d) { }
+                    public void onSubscribe(Disposable d) {
+                    }
 
                     @Override
                     public void onNext(DailySchedule dailySchedule) {
                         dailyScheduleMutableLiveData.setValue(dailySchedule);
-                        onCompleteStateMutableLiveData.setValue(CompletionState.DAILY_SCHEDULE_IS_PERSISTED);
                     }
 
                     @Override
-                    public void onError(Throwable e) { }
+                    public void onError(Throwable e) {
+                    }
 
                     @Override
-                    public void onComplete() { }
+                    public void onComplete() {
+                        _getCompletionState.setValue(CompletionState.DAILY_SCHEDULE_IS_LOADED);
+                    }
                 });
         return dailyScheduleMutableLiveData;
     }
 
     public void addDailyScheduleToRestaurant(Date today, List<User> interestedUsers, String selectedRestaurantName) {
-        DailySchedule dailySchedule = new DailySchedule(today.toString(), interestedUsers);
+        DailySchedule dailySchedule = new DailySchedule(today, interestedUsers);
         addDailyScheduleToRestaurantInteractor.addDailyScheduleToRestaurant(dailySchedule, selectedRestaurantName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {
                     @Override
-                    public void onSubscribe(Disposable d) { }
+                    public void onSubscribe(Disposable d) {
+                    }
 
                     @Override
                     public void onComplete() {
-                        onCompleteStateMutableLiveData.setValue(CompletionState.DAILY_SCHEDULE_ON_COMPLETE);
+                        _getCompletionState.setValue(CompletionState.DAILY_SCHEDULE_ON_COMPLETE);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        onCompleteStateMutableLiveData.setValue(CompletionState.DAILY_SCHEDULE_ON_ERROR);
+                        _getCompletionState.setValue(CompletionState.DAILY_SCHEDULE_ON_ERROR);
                     }
                 });
     }
 
-    public void deleteDailyScheduleForRestaurant(String selectedRestaurantName) {
-        deleteDailyScheduleForRestaurantInteractor.deleteDailyScheduleFromRestaurant(selectedRestaurantName);
+    public void deleteDailyScheduleFromRestaurant(String selectedRestaurantName) {
+        deleteDailyScheduleFromRestaurantInteractor.deleteDailyScheduleFromRestaurant(selectedRestaurantName);
     }
 
     //----------------------------INTERESTED_USER_FOR_RESTAURANT----------------------------------
@@ -233,34 +221,28 @@ public class RestaurantViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<User>>() {
                     @Override
-                    public void onSubscribe(Disposable d) { }
+                    public void onSubscribe(Disposable d) {
 
-                    @Override
-                    public void onNext(List<User> users) {
-                        interestedUsersMutableLiveData.setValue(users);
-                        onCompleteStateMutableLiveData.setValue(CompletionState.INTERESTED_USERS_ARE_PERSISTED);
                     }
 
                     @Override
-                    public void onError(Throwable e) { }
+                    public void onNext(List<User> interestedUsersForRestaurant) {
+                        interestedUsersMutableLiveData.setValue(interestedUsersForRestaurant);
+                    }
 
                     @Override
-                    public void onComplete() {}
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        _getCompletionState.setValue(CompletionState.INTERESTED_USERS_LOADED);
+                    }
+
+
                 });
         return interestedUsersMutableLiveData;
-    }
-
-    //suppress warning is safe cause getCurrentUserForRestaurantInteractor is used to set
-    //userForRestaurantMutableLiveData value
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    @SuppressLint("CheckResult")
-    public LiveData<User> getCurrentUserForRestaurant(Date today, String selectedRestaurantName, User currentUser) {
-        getCurrentUserForRestaurantInteractor.getCurrentUserForRestaurant(today, selectedRestaurantName, currentUser)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(user -> userForRestaurantMutableLiveData.setValue(user));
-
-        return userForRestaurantMutableLiveData;
     }
 
     public void addCurrentUserToRestaurant(Date today, String restaurantName, User currentUser) {
@@ -269,16 +251,17 @@ public class RestaurantViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {
                     @Override
-                    public void onSubscribe(Disposable d) { }
+                    public void onSubscribe(Disposable d) {
+                    }
 
                     @Override
                     public void onComplete() {
-                        onCompleteStateMutableLiveData.setValue(CompletionState.PERSISTED_USERS_FOR_RESTAURANT_ON_COMPLETE);
+                        _getCompletionState.setValue(CompletionState.PERSISTED_USERS_FOR_RESTAURANT_ON_COMPLETE);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        onCompleteStateMutableLiveData.setValue(CompletionState.PERSISTED_USERS_FOR_RESTAURANT_ON_ERROR);
+                        _getCompletionState.setValue(CompletionState.PERSISTED_USERS_FOR_RESTAURANT_ON_ERROR);
                     }
                 });
     }
@@ -289,34 +272,19 @@ public class RestaurantViewModel extends ViewModel {
 
     //-----------------------------GLOBAL_INTERESTED_USER----------------------------
 
-    @SuppressLint("CheckResult")
-    //suppress warning is safe cause getGlobalInterestedUsersInteractor is used to set
+     //suppress warning is safe cause getGlobalInterestedUsersInteractor is used to set
     //globalInterestedUsersMutableLiveData value
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
     public LiveData<User> getGlobalCurrentUser(User currentUser) {
         getGlobalCurrentUserInteractor.getGlobalCurrentUser(currentUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<User>() {
-                    @Override
-                    public void onSubscribe(Disposable d) { }
-
-                    @Override
-                    public void onNext(User user) {
-                        globalInterestedUserMutableLiveData.setValue(user);
-                        _isUserHasChoseRestaurant.setValue(true);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        _isUserHasChoseRestaurant.setValue(false);
-                    }
-
-                    @Override
-                    public void onComplete() { }
+                .subscribe(user -> {
+                    globalInterestedUserMutableLiveData.setValue(user);
                 });
         return globalInterestedUserMutableLiveData;
     }
-
 
     public void addCurrentUserToGlobalList(User currentUser) {
         addCurrentUserToGlobalListInteractor.addCurrentUserToGlobalList(currentUser)
@@ -324,16 +292,17 @@ public class RestaurantViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {
                     @Override
-                    public void onSubscribe(Disposable d) { }
+                    public void onSubscribe(Disposable d) {
+                    }
 
                     @Override
                     public void onComplete() {
-                        onCompleteStateMutableLiveData.setValue(CompletionState.CURRENT_USER_TO_GLOBAL_LIST_ON_COMPLETE);
+                        _getCompletionState.setValue(CompletionState.CURRENT_USER_TO_GLOBAL_LIST_ON_COMPLETE);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        onCompleteStateMutableLiveData.setValue(CompletionState.CURRENT_USER_TO_GLOBAL_LIST_ON_ERROR);
+                        _getCompletionState.setValue(CompletionState.CURRENT_USER_TO_GLOBAL_LIST_ON_ERROR);
 
                     }
                 });

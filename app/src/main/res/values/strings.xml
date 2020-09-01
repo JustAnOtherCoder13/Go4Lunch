@@ -56,4 +56,11 @@
     <string name="i_am_hungry_title">I\'m Hungry!</string>
     <string name="available_workmates">Available workmates</string>
 
+    <!-- restaurant detail messages -->
+    <string name="you_have_already_chose_this_restaurant">You have already chose this restaurant</string>
+    <string name="you_have_already_choose_a_restaurant">You have already choose a restaurant :</string>
+    <string name="would_you_like_to_change">Would you like to change?</string>
+    <string name="positive_button">Yes</string>
+    <string name="negative_button">No</string>
+
 </resources>

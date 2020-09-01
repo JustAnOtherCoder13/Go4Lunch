@@ -52,10 +52,6 @@ public class RestaurantRepository {
         return restaurantDao.getAllInterestedUsersForRestaurant(today, restaurantName);
     }
 
-    public Observable<User> getCurrentUserForRestaurant(Date today, String selectedRestaurantName, User currentUser) {
-        return restaurantDao.getCurrentUserForRestaurant(today, selectedRestaurantName, currentUser);
-    }
-
     public Completable addCurrentUserToRestaurant(Date today, String restaurantName, User currentUser) {
         return restaurantDao.addCurrentUserToRestaurant(today, restaurantName, currentUser);
     }

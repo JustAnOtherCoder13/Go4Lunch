@@ -1,9 +1,8 @@
 package com.picone.core.data.repository;
 
-import android.util.Log;
-
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.picone.core.domain.entity.DailySchedule;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
@@ -69,13 +68,6 @@ public class RestaurantDaoImpl implements RestaurantDao {
     public Observable<List<User>> getAllInterestedUsersForRestaurant(Date today, String restaurantName) {
         return RxFirebaseDatabase.observeSingleValueEvent(restaurantDatabaseReference.child(restaurantName)
                 .child(DAILY_SCHEDULE).child(today.toString()), DataSnapshotMapper.listOf(User.class))
-                .toObservable();
-    }
-
-    @Override
-    public Observable<User> getCurrentUserForRestaurant(Date today, String selectedRestaurantName, User currentUser) {
-        return RxFirebaseDatabase.observeSingleValueEvent(restaurantDatabaseReference.child(selectedRestaurantName)
-                .child(DAILY_SCHEDULE).child(today.toString()).child(currentUser.getName()), User.class)
                 .toObservable();
     }
 
