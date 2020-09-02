@@ -43,8 +43,8 @@ public class RestaurantRepository {
         return restaurantDao.addDailyScheduleToRestaurant(dailySchedule, selectedRestaurantName);
     }
 
-    public void deleteDailyScheduleFromRestaurant(String  selectedRestaurantName) {
-        restaurantDao.deleteDailyScheduleFromRestaurant(selectedRestaurantName);
+    public Completable deleteDailyScheduleFromRestaurant(String  selectedRestaurantName) {
+        return restaurantDao.deleteDailyScheduleFromRestaurant(selectedRestaurantName);
     }
 
 //----------------------------------------------INTERESTED_USER_FOR_RESTAURANT---------------------------
@@ -56,8 +56,8 @@ public class RestaurantRepository {
         return restaurantDao.addCurrentUserToRestaurant(today, restaurantName, currentUser);
     }
 
-    public void deleteCurrentUserFromRestaurant(Date today, String originalChosenRestaurantName, User currentUser) {
-        restaurantDao.deleteCurrentUserFromRestaurant(today, originalChosenRestaurantName, currentUser);
+    public Completable deleteCurrentUserFromRestaurant(Date today, String originalChosenRestaurantName, User currentUser) {
+        return restaurantDao.deleteCurrentUserFromRestaurant(today, originalChosenRestaurantName, currentUser);
     }
 
     //------------------------------------------GLOBAL_INTERESTED_USER-----------------------------------------
@@ -69,7 +69,7 @@ public class RestaurantRepository {
         return restaurantDao.addCurrentUserToGlobalList(persistedCurrentUserWithRestaurantSet);
     }
 
-    public void deleteUserFromGlobalList(User globalPersistedUser) {
-        restaurantDao.deleteUserFromGlobalList(globalPersistedUser);
+    public Completable deleteUserFromGlobalList(User globalPersistedUser) {
+        return restaurantDao.deleteUserFromGlobalList(globalPersistedUser);
     }
 }

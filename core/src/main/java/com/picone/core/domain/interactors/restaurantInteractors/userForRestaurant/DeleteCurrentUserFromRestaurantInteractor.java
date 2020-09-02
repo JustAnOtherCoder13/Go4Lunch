@@ -7,6 +7,8 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
+
 public class DeleteCurrentUserFromRestaurantInteractor {
 
     @Inject
@@ -16,7 +18,7 @@ public class DeleteCurrentUserFromRestaurantInteractor {
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    public void deleteCurrentUserFromRestaurant(Date today, String originalChosenRestaurantName, User currentUser){
-        restaurantDataSource.deleteCurrentUserFromRestaurant(today, originalChosenRestaurantName, currentUser);
+    public Completable deleteCurrentUserFromRestaurant(Date today, String originalChosenRestaurantName, User currentUser){
+        return restaurantDataSource.deleteCurrentUserFromRestaurant(today, originalChosenRestaurantName, currentUser);
     }
 }

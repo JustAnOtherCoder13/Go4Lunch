@@ -4,6 +4,8 @@ import com.picone.core.data.repository.RestaurantRepository;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
+
 public class DeleteDailyScheduleFromRestaurantInteractor {
 
     @Inject
@@ -13,7 +15,7 @@ public class DeleteDailyScheduleFromRestaurantInteractor {
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    public void deleteDailyScheduleFromRestaurant(String selectedRestaurantName){
-        restaurantDataSource.deleteDailyScheduleFromRestaurant(selectedRestaurantName);
+    public Completable deleteDailyScheduleFromRestaurant(String selectedRestaurantName){
+        return restaurantDataSource.deleteDailyScheduleFromRestaurant(selectedRestaurantName);
     }
 }

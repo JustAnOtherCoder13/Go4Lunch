@@ -5,6 +5,8 @@ import com.picone.core.domain.entity.User;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
+
 public class DeleteUserFromGlobalListInteractor {
 
     @Inject
@@ -14,7 +16,7 @@ public class DeleteUserFromGlobalListInteractor {
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    public void deleteUserFromGlobalList(User globalPersistedUser){
-        restaurantDataSource.deleteUserFromGlobalList(globalPersistedUser);
+    public Completable deleteUserFromGlobalList(User globalPersistedUser) {
+        return restaurantDataSource.deleteUserFromGlobalList(globalPersistedUser);
     }
 }

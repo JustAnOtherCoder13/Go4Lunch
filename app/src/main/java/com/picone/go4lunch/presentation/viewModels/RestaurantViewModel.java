@@ -41,6 +41,7 @@ public class RestaurantViewModel extends ViewModel {
         RESTAURANT_ON_COMPLETE,
         RESTAURANT_ON_ERROR,
         RESTAURANT_IS_NOT_PERSISTED,
+        RESTAURANT_IS_PERSISTED,
         DAILY_SCHEDULE_ON_COMPLETE,
         DAILY_SCHEDULE_ON_ERROR,
         DAILY_SCHEDULE_IS_LOADED,
@@ -50,6 +51,12 @@ public class RestaurantViewModel extends ViewModel {
         INTERESTED_USERS_LOADED,
         CURRENT_USER_TO_GLOBAL_LIST_ON_COMPLETE,
         CURRENT_USER_TO_GLOBAL_LIST_ON_ERROR,
+        DELETE_USER_ON_COMPLETE,
+        DELETE_USER_ON_ERROR,
+        DELETE_DAILY_SCHEDULE_ON_COMPLETE,
+        DELETE_DAILY_SCHEDULE_ON_ERROR,
+        DELETE_GLOBAL_USER_ON_COMPLETE,
+        DELETE_GLOBAL_USER_ON_ERROR
     }
 
     private final MutableLiveData<CompletionState> _getCompletionState = new MutableLiveData<>();
@@ -116,11 +123,32 @@ public class RestaurantViewModel extends ViewModel {
     //suppress warning is safe cause getDailyScheduleInteractor is used to set
     //dailyScheduleMutableLiveData value
     public LiveData<Restaurant> getPersistedRestaurant(String restaurantName) {
-        _getCompletionState.setValue(CompletionState.RESTAURANT_IS_NOT_PERSISTED);
         getRestaurantInteractor.getPersistedRestaurant(restaurantName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(restaurant -> restaurantMutableLiveData.setValue(restaurant));
+                .subscribe(new Observer<Restaurant>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        _getCompletionState.setValue(CompletionState.RESTAURANT_IS_NOT_PERSISTED);
+                    }
+
+                    @Override
+                    public void onNext(Restaurant restaurant) {
+                        restaurantMutableLiveData.setValue(restaurant);
+                        _getCompletionState.setValue(CompletionState.RESTAURANT_IS_PERSISTED);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
         return restaurantMutableLiveData;
     }
 
@@ -208,7 +236,26 @@ public class RestaurantViewModel extends ViewModel {
     }
 
     public void deleteDailyScheduleFromRestaurant(String selectedRestaurantName) {
-        deleteDailyScheduleFromRestaurantInteractor.deleteDailyScheduleFromRestaurant(selectedRestaurantName);
+        deleteDailyScheduleFromRestaurantInteractor.deleteDailyScheduleFromRestaurant(selectedRestaurantName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        _getCompletionState.setValue(CompletionState.DELETE_DAILY_SCHEDULE_ON_COMPLETE);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        _getCompletionState.setValue(CompletionState.DELETE_DAILY_SCHEDULE_ON_ERROR);
+                    }
+                });
     }
 
     //----------------------------INTERESTED_USER_FOR_RESTAURANT----------------------------------
@@ -267,12 +314,32 @@ public class RestaurantViewModel extends ViewModel {
     }
 
     public void deleteCurrentUserFromRestaurant(Date today, String originalChosenRestaurantName, User currentUser) {
-        deleteCurrentUserFromRestaurantInteractor.deleteCurrentUserFromRestaurant(today, originalChosenRestaurantName, currentUser);
+        deleteCurrentUserFromRestaurantInteractor.deleteCurrentUserFromRestaurant(today, originalChosenRestaurantName, currentUser)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        _getCompletionState.setValue(CompletionState.DELETE_USER_ON_COMPLETE);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        _getCompletionState.setValue(CompletionState.DELETE_USER_ON_ERROR);
+
+                    }
+                })
+        ;
     }
 
     //-----------------------------GLOBAL_INTERESTED_USER----------------------------
 
-     //suppress warning is safe cause getGlobalInterestedUsersInteractor is used to set
+    //suppress warning is safe cause getGlobalInterestedUsersInteractor is used to set
     //globalInterestedUsersMutableLiveData value
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
@@ -309,6 +376,25 @@ public class RestaurantViewModel extends ViewModel {
     }
 
     public void deleteUserFromGlobalList(User globalPersistedUser) {
-        deleteUserFromGlobalListInteractor.deleteUserFromGlobalList(globalPersistedUser);
+        deleteUserFromGlobalListInteractor.deleteUserFromGlobalList(globalPersistedUser)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        _getCompletionState.setValue(CompletionState.DELETE_GLOBAL_USER_ON_COMPLETE);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        _getCompletionState.setValue(CompletionState.DELETE_GLOBAL_USER_ON_ERROR);
+
+                    }
+                });
     }
+    public void resetInterestedUsers(){interestedUsersMutableLiveData.setValue(new ArrayList<>());}
 }

@@ -15,6 +15,8 @@ import javax.inject.Inject;
 import durdinapps.rxfirebase2.DataSnapshotMapper;
 import durdinapps.rxfirebase2.RxFirebaseDatabase;
 import io.reactivex.Completable;
+import io.reactivex.CompletableEmitter;
+import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.Observable;
 
 public class RestaurantDaoImpl implements RestaurantDao {
@@ -58,9 +60,10 @@ public class RestaurantDaoImpl implements RestaurantDao {
     }
 
     @Override
-    public void deleteDailyScheduleFromRestaurant(String selectedRestaurantName) {
-        restaurantDatabaseReference.child(selectedRestaurantName)
-                .child(DAILY_SCHEDULE).removeValue();
+    public Completable deleteDailyScheduleFromRestaurant(String selectedRestaurantName) {
+        return Completable.create(emitter ->
+                restaurantDatabaseReference.child(selectedRestaurantName)
+                .child(DAILY_SCHEDULE).removeValue());
     }
 
     //----------------------------INTERESTED_USER_FOR_RESTAURANT----------------------------------
@@ -77,9 +80,9 @@ public class RestaurantDaoImpl implements RestaurantDao {
                 .child(DAILY_SCHEDULE).child(today.toString()).child(currentUser.getName()), currentUser);
     }
 
-    public void deleteCurrentUserFromRestaurant(Date today, String originalChosenRestaurantName, User currentUser) {
-        restaurantDatabaseReference.child(originalChosenRestaurantName).child(DAILY_SCHEDULE)
-                .child(today.toString()).child(currentUser.getName()).removeValue();
+    public Completable deleteCurrentUserFromRestaurant(Date today, String originalChosenRestaurantName, User currentUser) {
+        return Completable.create(emitter -> restaurantDatabaseReference.child(originalChosenRestaurantName).child(DAILY_SCHEDULE)
+                .child(today.toString()).child(currentUser.getName()).removeValue());
     }
 
     //-----------------------------GLOBAL_INTERESTED_USER----------------------------
@@ -94,7 +97,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
     }
 
     @Override
-    public void deleteUserFromGlobalList(User globalPersistedUser) {
-        database.getReference().child("global_interested_users").child(globalPersistedUser.getName()).removeValue();
+    public Completable deleteUserFromGlobalList(User globalPersistedUser) {
+        return Completable.create(emitter -> database.getReference().child("global_interested_users").child(globalPersistedUser.getName()).removeValue());
     }
 }
