@@ -26,13 +26,14 @@ public class RestaurantDaoImpl implements RestaurantDao {
 
     private DatabaseReference restaurantDatabaseReference;
     private DatabaseReference globalInterestedUsersDatabaseReference;
-    private final String DAILY_SCHEDULE = "daily_schedule";
+    private final String DAILY_SCHEDULE = "dailySchedule";
+    private final String INTERESTED_USERS = "interestedUsers";
 
 
     public RestaurantDaoImpl(FirebaseDatabase database) {
         this.database = database;
         restaurantDatabaseReference = database.getReference().child("restaurants");
-        globalInterestedUsersDatabaseReference = database.getReference().child("global_interested_users");
+        globalInterestedUsersDatabaseReference = database.getReference().child("globalInterestedUsers");
     }
 
     //-----------------------RESTAURANT-------------------------------
@@ -68,21 +69,21 @@ public class RestaurantDaoImpl implements RestaurantDao {
 
     //----------------------------INTERESTED_USER_FOR_RESTAURANT----------------------------------
     @Override
-    public Observable<List<User>> getAllInterestedUsersForRestaurant(Date today, String restaurantName) {
+    public Observable<List<User>> getAllInterestedUsersForRestaurant(String restaurantName) {
         return RxFirebaseDatabase.observeSingleValueEvent(restaurantDatabaseReference.child(restaurantName)
-                .child(DAILY_SCHEDULE).child(today.toString()), DataSnapshotMapper.listOf(User.class))
+                .child(DAILY_SCHEDULE).child(INTERESTED_USERS), DataSnapshotMapper.listOf(User.class))
                 .toObservable();
     }
 
     @Override
-    public Completable addCurrentUserToRestaurant(Date today, String restaurantName, User currentUser) {
+    public Completable addCurrentUserToRestaurant(String restaurantName, User currentUser) {
         return RxFirebaseDatabase.setValue(restaurantDatabaseReference.child(restaurantName)
-                .child(DAILY_SCHEDULE).child(today.toString()).child(currentUser.getName()), currentUser);
+                .child(DAILY_SCHEDULE).child(INTERESTED_USERS).child(currentUser.getName()), currentUser);
     }
 
-    public Completable deleteCurrentUserFromRestaurant(Date today, String originalChosenRestaurantName, User currentUser) {
+    public Completable deleteCurrentUserFromRestaurant(String originalChosenRestaurantName, User currentUser) {
         return Completable.create(emitter -> restaurantDatabaseReference.child(originalChosenRestaurantName)
-                .child(DAILY_SCHEDULE).child(today.toString()).child(currentUser.getName()).removeValue());
+                .child(DAILY_SCHEDULE).child(INTERESTED_USERS).child(currentUser.getName()).removeValue());
     }
 
     //-----------------------------GLOBAL_INTERESTED_USER----------------------------

@@ -19,7 +19,7 @@ public class GetAllInterestedUsersForRestaurantInteractor {
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    public Observable<List<User>> getAllInterestedUsersForRestaurant(Date today, String restaurantName){
-        return restaurantDataSource.getAllInterestedUsersForRestaurant(today,restaurantName);
+    public Observable<List<User>> getAllInterestedUsersForRestaurant(String restaurantName){
+        return restaurantDataSource.getAllInterestedUsersForRestaurant(restaurantName);
     }
 }

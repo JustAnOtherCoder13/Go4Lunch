@@ -25,11 +25,11 @@ public interface RestaurantDao {
     Completable deleteDailyScheduleFromRestaurant(String selectedRestaurantName);
 
     //------------------------------USER_FOR_RESTAURANT-----------------------------
-    Observable<List<User>> getAllInterestedUsersForRestaurant(Date today, String selectedRestaurantName);
+    Observable<List<User>> getAllInterestedUsersForRestaurant(String selectedRestaurantName);
 
-    Completable addCurrentUserToRestaurant(Date today, String selectedRestaurantName, User currentUser);
+    Completable addCurrentUserToRestaurant(String selectedRestaurantName, User currentUser);
 
-    Completable deleteCurrentUserFromRestaurant(Date today, String originalChosenRestaurantName, User currentUser);
+    Completable deleteCurrentUserFromRestaurant(String originalChosenRestaurantName, User currentUser);
 
     //------------------------------GLOBAL_USER_FOR_RESTAURANT------------------------
     Observable<User> getGlobalCurrentUser(User currentUser);

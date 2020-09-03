@@ -42,8 +42,9 @@ public class RestaurantViewModel extends ViewModel {
         START_STATE,
         RESTAURANT_ON_COMPLETE,
         RESTAURANT_ON_ERROR,
-        RESTAURANT_IS_NOT_PERSISTED,
-        RESTAURANT_IS_PERSISTED,
+        RESTAURANT_IS_SUBSCRIBE,
+        RESTAURANT_ON_NEXT,
+        RESTAURANT_LOAD_COMPLETE,
         DAILY_SCHEDULE_ON_COMPLETE,
         DAILY_SCHEDULE_ON_ERROR,
         DAILY_SCHEDULE_IS_LOADED,
@@ -147,13 +148,13 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribe(new Observer<Restaurant>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        _getCompletionState.setValue(CompletionState.RESTAURANT_IS_NOT_PERSISTED);
+                        _getCompletionState.setValue(CompletionState.RESTAURANT_IS_SUBSCRIBE);
                     }
 
                     @Override
                     public void onNext(Restaurant restaurant) {
                         restaurantMutableLiveData.setValue(restaurant);
-                        _getCompletionState.setValue(CompletionState.RESTAURANT_IS_PERSISTED);
+                        _getCompletionState.setValue(CompletionState.RESTAURANT_ON_NEXT);
 
                     }
 
@@ -164,6 +165,7 @@ public class RestaurantViewModel extends ViewModel {
 
                     @Override
                     public void onComplete() {
+                        _getCompletionState.setValue(CompletionState.RESTAURANT_LOAD_COMPLETE);
 
                     }
                 });
@@ -234,8 +236,7 @@ public class RestaurantViewModel extends ViewModel {
         return dailyScheduleMutableLiveData;
     }
 
-    public void addDailyScheduleToRestaurant(Date today, List<User> interestedUsers, String selectedRestaurantName) {
-        DailySchedule dailySchedule = new DailySchedule(today, interestedUsers);
+    public void addDailyScheduleToRestaurant(DailySchedule dailySchedule, String selectedRestaurantName) {
         addDailyScheduleToRestaurantInteractor.addDailyScheduleToRestaurant(dailySchedule, selectedRestaurantName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -283,8 +284,8 @@ public class RestaurantViewModel extends ViewModel {
     @SuppressLint("CheckResult")
     //suppress warning is safe cause getInterestedUsersForRestaurantInteractor is used to set
     //interestedUsersMutableLiveData value
-    public LiveData<List<User>> getAllInterestedUsersForRestaurant(Date today, String restaurantName) {
-        getAllInterestedUsersForRestaurantInteractor.getAllInterestedUsersForRestaurant(today, restaurantName)
+    public LiveData<List<User>> getAllInterestedUsersForRestaurant( String restaurantName) {
+        getAllInterestedUsersForRestaurantInteractor.getAllInterestedUsersForRestaurant( restaurantName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<User>>() {
@@ -313,8 +314,8 @@ public class RestaurantViewModel extends ViewModel {
         return interestedUsersMutableLiveData;
     }
 
-    public void addCurrentUserToRestaurant(Date today, String restaurantName, User currentUser) {
-        addCurrentUserToRestaurantInteractor.addCurrentUserToRestaurant(today, restaurantName, currentUser)
+    public void addCurrentUserToRestaurant(String restaurantName, User currentUser) {
+        addCurrentUserToRestaurantInteractor.addCurrentUserToRestaurant( restaurantName, currentUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {
@@ -334,8 +335,8 @@ public class RestaurantViewModel extends ViewModel {
                 });
     }
 
-    public void deleteCurrentUserFromRestaurant(Date today, String originalChosenRestaurantName, User currentUser) {
-        deleteCurrentUserFromRestaurantInteractor.deleteCurrentUserFromRestaurant(today, originalChosenRestaurantName, currentUser)
+    public void deleteCurrentUserFromRestaurant( String originalChosenRestaurantName, User currentUser) {
+        deleteCurrentUserFromRestaurantInteractor.deleteCurrentUserFromRestaurant(originalChosenRestaurantName, currentUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {

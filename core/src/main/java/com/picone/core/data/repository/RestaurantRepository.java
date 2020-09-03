@@ -48,16 +48,16 @@ public class RestaurantRepository {
     }
 
 //----------------------------------------------INTERESTED_USER_FOR_RESTAURANT---------------------------
-    public Observable<List<User>> getAllInterestedUsersForRestaurant(Date today, String restaurantName) {
-        return restaurantDao.getAllInterestedUsersForRestaurant(today, restaurantName);
+    public Observable<List<User>> getAllInterestedUsersForRestaurant( String restaurantName) {
+        return restaurantDao.getAllInterestedUsersForRestaurant( restaurantName);
     }
 
-    public Completable addCurrentUserToRestaurant(Date today, String restaurantName, User currentUser) {
-        return restaurantDao.addCurrentUserToRestaurant(today, restaurantName, currentUser);
+    public Completable addCurrentUserToRestaurant( String restaurantName, User currentUser) {
+        return restaurantDao.addCurrentUserToRestaurant( restaurantName, currentUser);
     }
 
-    public Completable deleteCurrentUserFromRestaurant(Date today, String originalChosenRestaurantName, User currentUser) {
-        return restaurantDao.deleteCurrentUserFromRestaurant(today, originalChosenRestaurantName, currentUser);
+    public Completable deleteCurrentUserFromRestaurant( String originalChosenRestaurantName, User currentUser) {
+        return restaurantDao.deleteCurrentUserFromRestaurant( originalChosenRestaurantName, currentUser);
     }
 
     //------------------------------------------GLOBAL_INTERESTED_USER-----------------------------------------

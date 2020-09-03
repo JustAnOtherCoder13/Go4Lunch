@@ -18,7 +18,7 @@ public class DeleteCurrentUserFromRestaurantInteractor {
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    public Completable deleteCurrentUserFromRestaurant(Date today, String originalChosenRestaurantName, User currentUser){
-        return restaurantDataSource.deleteCurrentUserFromRestaurant(today, originalChosenRestaurantName, currentUser);
+    public Completable deleteCurrentUserFromRestaurant(String originalChosenRestaurantName, User currentUser){
+        return restaurantDataSource.deleteCurrentUserFromRestaurant(originalChosenRestaurantName, currentUser);
     }
 }

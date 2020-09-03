@@ -18,7 +18,7 @@ public class AddCurrentUserToRestaurantInteractor {
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    public Completable addCurrentUserToRestaurant(Date today, String restaurantName, User interestedUser){
-        return restaurantDataSource.addCurrentUserToRestaurant(today,restaurantName,interestedUser);
+    public Completable addCurrentUserToRestaurant( String restaurantName, User interestedUser){
+        return restaurantDataSource.addCurrentUserToRestaurant(restaurantName,interestedUser);
     }
 }

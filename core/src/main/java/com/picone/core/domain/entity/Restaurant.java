@@ -56,4 +56,8 @@ public class Restaurant {
     }
 
     public DailySchedule getDailySchedule() { return dailySchedule; }
+
+    public void setDailySchedule(DailySchedule dailySchedule) {
+        this.dailySchedule = dailySchedule;
+    }
 }
