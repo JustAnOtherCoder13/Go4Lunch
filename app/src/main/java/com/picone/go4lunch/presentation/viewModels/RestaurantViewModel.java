@@ -17,6 +17,7 @@ import com.picone.core.domain.interactors.restaurantInteractors.dailySchedule.De
 import com.picone.core.domain.interactors.restaurantInteractors.dailySchedule.GetDailyScheduleInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.AddCurrentUserToGlobalListInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.DeleteUserFromGlobalListInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.GetAllGlobalUsersInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.GetGlobalCurrentUserInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.restaurant.AddRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.restaurant.GetAllRestaurantsInteractor;
@@ -38,6 +39,7 @@ import io.reactivex.schedulers.Schedulers;
 public class RestaurantViewModel extends ViewModel {
 
     public enum CompletionState {
+        START_STATE,
         RESTAURANT_ON_COMPLETE,
         RESTAURANT_ON_ERROR,
         RESTAURANT_IS_NOT_PERSISTED,
@@ -48,7 +50,7 @@ public class RestaurantViewModel extends ViewModel {
         DAILY_SCHEDULE_IS_NOT_LOADED,
         PERSISTED_USERS_FOR_RESTAURANT_ON_COMPLETE,
         PERSISTED_USERS_FOR_RESTAURANT_ON_ERROR,
-        INTERESTED_USERS_LOADED,
+        INTERESTED_USERS_LOAD_ON_COMPLETE,
         CURRENT_USER_TO_GLOBAL_LIST_ON_COMPLETE,
         CURRENT_USER_TO_GLOBAL_LIST_ON_ERROR,
         DELETE_USER_ON_COMPLETE,
@@ -56,11 +58,15 @@ public class RestaurantViewModel extends ViewModel {
         DELETE_DAILY_SCHEDULE_ON_COMPLETE,
         DELETE_DAILY_SCHEDULE_ON_ERROR,
         DELETE_GLOBAL_USER_ON_COMPLETE,
-        DELETE_GLOBAL_USER_ON_ERROR
+        DELETE_GLOBAL_USER_ON_ERROR,
+        GLOBAL_USERS_ON_NEXT,
+        GLOBAL_USER_SUBSCRIBE,
+        GLOBAL_USER_LOAD_COMPLETE
     }
 
     private final MutableLiveData<CompletionState> _getCompletionState = new MutableLiveData<>();
     public LiveData<CompletionState> getCompletionState = _getCompletionState;
+
 
     private MutableLiveData<Restaurant> restaurantMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Restaurant> _getSelectedRestaurant = new MutableLiveData<>();
@@ -69,6 +75,8 @@ public class RestaurantViewModel extends ViewModel {
     private MutableLiveData<DailySchedule> dailyScheduleMutableLiveData = new MutableLiveData<>();
 
     private MutableLiveData<List<User>> interestedUsersMutableLiveData = new MutableLiveData<>(new ArrayList<>());
+
+    private MutableLiveData<List<User>> allGlobalUsersMutableLiveData = new MutableLiveData<>(new ArrayList<>());
     private MutableLiveData<User> globalInterestedUserMutableLiveData = new MutableLiveData<>();
 
     //interactors
@@ -85,8 +93,11 @@ public class RestaurantViewModel extends ViewModel {
     private DeleteCurrentUserFromRestaurantInteractor deleteCurrentUserFromRestaurantInteractor;
 
     private GetGlobalCurrentUserInteractor getGlobalCurrentUserInteractor;
+    private GetAllGlobalUsersInteractor getAllGlobalUsersInteractor;
     private AddCurrentUserToGlobalListInteractor addCurrentUserToGlobalListInteractor;
     private DeleteUserFromGlobalListInteractor deleteUserFromGlobalListInteractor;
+
+
     private final SavedStateHandle savedStateHandle;
 
     @ViewModelInject
@@ -96,8 +107,8 @@ public class RestaurantViewModel extends ViewModel {
             , DeleteDailyScheduleFromRestaurantInteractor deleteDailyScheduleFromRestaurantInteractor, GetAllInterestedUsersForRestaurantInteractor getAllInterestedUsersForRestaurantInteractor
             , AddCurrentUserToRestaurantInteractor addCurrentUserToRestaurantInteractor
             , DeleteCurrentUserFromRestaurantInteractor deleteCurrentUserFromRestaurantInteractor, GetGlobalCurrentUserInteractor getGlobalCurrentUserInteractor
-            , AddCurrentUserToGlobalListInteractor addCurrentUserToGlobalListInteractor, DeleteUserFromGlobalListInteractor deleteUserFromGlobalListInteractor
-            , @Assisted SavedStateHandle savedStateHandle) {
+            , GetAllGlobalUsersInteractor getAllGlobalUsersInteractor, AddCurrentUserToGlobalListInteractor addCurrentUserToGlobalListInteractor
+            , DeleteUserFromGlobalListInteractor deleteUserFromGlobalListInteractor, @Assisted SavedStateHandle savedStateHandle) {
 
         this.getAllRestaurantsInteractor = getAllRestaurantsInteractor;
         this.getRestaurantInteractor = getRestaurantInteractor;
@@ -112,10 +123,17 @@ public class RestaurantViewModel extends ViewModel {
         this.deleteCurrentUserFromRestaurantInteractor = deleteCurrentUserFromRestaurantInteractor;
 
         this.getGlobalCurrentUserInteractor = getGlobalCurrentUserInteractor;
+        this.getAllGlobalUsersInteractor = getAllGlobalUsersInteractor;
         this.addCurrentUserToGlobalListInteractor = addCurrentUserToGlobalListInteractor;
         this.deleteUserFromGlobalListInteractor = deleteUserFromGlobalListInteractor;
 
         this.savedStateHandle = savedStateHandle;
+    }
+
+
+    public LiveData<CompletionState> resetCompletionState() {
+        _getCompletionState.setValue(CompletionState.START_STATE);
+        return _getCompletionState;
     }
 
     //--------------------------RESTAURANT---------------------------------
@@ -180,6 +198,9 @@ public class RestaurantViewModel extends ViewModel {
 
     public void setSelectedRestaurant(int position) {
         _getSelectedRestaurant.setValue(getRestaurantInteractor.getGeneratorRestaurant(position));
+    }
+    public void setSelectedRestaurant(Restaurant restaurant){
+        _getSelectedRestaurant.setValue(restaurant);
     }
 
     //--------------------------------DAILY_SCHEDULE-----------------------------------
@@ -284,7 +305,7 @@ public class RestaurantViewModel extends ViewModel {
 
                     @Override
                     public void onComplete() {
-                        _getCompletionState.setValue(CompletionState.INTERESTED_USERS_LOADED);
+                        _getCompletionState.setValue(CompletionState.INTERESTED_USERS_LOAD_ON_COMPLETE);
                     }
 
 
@@ -333,9 +354,13 @@ public class RestaurantViewModel extends ViewModel {
                         _getCompletionState.setValue(CompletionState.DELETE_USER_ON_ERROR);
 
                     }
-                })
-        ;
+                });
     }
+
+    public void resetInterestedUsers() {
+        interestedUsersMutableLiveData.setValue(new ArrayList<>());
+    }
+
 
     //-----------------------------GLOBAL_INTERESTED_USER----------------------------
 
@@ -347,8 +372,30 @@ public class RestaurantViewModel extends ViewModel {
         getGlobalCurrentUserInteractor.getGlobalCurrentUser(currentUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(user -> {
-                    globalInterestedUserMutableLiveData.setValue(user);
+                .subscribe(new Observer<User>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(User user) {
+                        globalInterestedUserMutableLiveData.setValue(user);
+                        _getCompletionState.setValue(CompletionState.GLOBAL_USERS_ON_NEXT);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        _getCompletionState.setValue(CompletionState.GLOBAL_USER_LOAD_COMPLETE);
+
+                    }
+
                 });
         return globalInterestedUserMutableLiveData;
     }
@@ -360,6 +407,7 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribe(new CompletableObserver() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        _getCompletionState.setValue(CompletionState.GLOBAL_USER_SUBSCRIBE);
                     }
 
                     @Override
@@ -396,5 +444,37 @@ public class RestaurantViewModel extends ViewModel {
                     }
                 });
     }
-    public void resetInterestedUsers(){interestedUsersMutableLiveData.setValue(new ArrayList<>());}
+
+    @SuppressLint("CheckResult")
+    public LiveData<List<User>> getAllGlobalUsers() {
+        getAllGlobalUsersInteractor.getAllGlobalUsers()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<User>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                    }
+
+                    @Override
+                    public void onNext(List<User> allGlobalUsers) {
+                        allGlobalUsersMutableLiveData.setValue(allGlobalUsers);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+
+
+                });
+        return allGlobalUsersMutableLiveData;
+    }
+
+    public void resetGlobalUsers(){
+        allGlobalUsersMutableLiveData.setValue(new ArrayList<>());
+    }
 }

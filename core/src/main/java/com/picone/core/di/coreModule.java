@@ -11,6 +11,7 @@ import com.picone.core.domain.interactors.restaurantInteractors.dailySchedule.De
 import com.picone.core.domain.interactors.restaurantInteractors.dailySchedule.GetDailyScheduleInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.AddCurrentUserToGlobalListInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.DeleteUserFromGlobalListInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.GetAllGlobalUsersInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.globalUserForRestaurant.GetGlobalCurrentUserInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.restaurant.AddRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.restaurant.GetAllRestaurantsInteractor;
@@ -142,6 +143,10 @@ public final class coreModule {
         return new GetGlobalCurrentUserInteractor(provideRestaurantDataSource());
     }
 
+    @Provides
+    GetAllGlobalUsersInteractor provideGetAllGlobalUsers (){
+        return new GetAllGlobalUsersInteractor(provideRestaurantDataSource());
+    }
     @Provides
     static AddCurrentUserToGlobalListInteractor provideAddCurrentUserToGlobalList(){
         return new AddCurrentUserToGlobalListInteractor(provideRestaurantDataSource());

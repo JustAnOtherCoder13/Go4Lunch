@@ -34,6 +34,8 @@ public interface RestaurantDao {
     //------------------------------GLOBAL_USER_FOR_RESTAURANT------------------------
     Observable<User> getGlobalCurrentUser(User currentUser);
 
+    Observable<List<User>> getAllGlobalInterestedUsers();
+
     Completable addCurrentUserToGlobalList(User persistedInterestedUserWithRestaurantSet);
 
     Completable deleteUserFromGlobalList(User globalPersistedUser);

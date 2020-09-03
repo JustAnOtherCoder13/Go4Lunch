@@ -28,6 +28,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RestaurantDetailFragment extends BaseFragment {
 
@@ -41,6 +42,7 @@ public class RestaurantDetailFragment extends BaseFragment {
     private FragmentRestaurantDetailBinding mBinding;
     private ColleagueRecyclerViewAdapter mAdapter;
     private Date today;
+    AtomicBoolean isUserHaveChoseRestaurant = new AtomicBoolean(false);
 
 
     @Override
@@ -88,31 +90,36 @@ public class RestaurantDetailFragment extends BaseFragment {
                         mRestaurantViewModel.setSelectedRestaurant(getArguments().getInt("position"));
                         mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), selectedRestaurant -> {
                             initRestaurantDetail(selectedRestaurant);
-                            deleteDailyScheduleAndAssociatedUsersForRestaurantWhenDateIsPassed(selectedRestaurant);
+                            deleteDailyScheduleAndAssociatedUsersForRestaurantWhenDateIsPassed(finalCurrentUser,selectedRestaurant);
                             mRestaurantViewModel.resetInterestedUsers();
                             mRestaurantViewModel.getAllInterestedUsersForRestaurant(today, selectedRestaurant.getName()).observe(getViewLifecycleOwner(),
                                     persistedUsers -> {
                                         mAdapter.updateUsers(persistedUsers);
-                                        mRestaurantViewModel.getCompletionState.observe(getViewLifecycleOwner(),
-                                                completionState -> {
-                                                    if (completionState.equals(RestaurantViewModel.CompletionState.INTERESTED_USERS_LOADED)) {
-                                                        initClickOnFirstTimeChoice(finalCurrentUser, selectedRestaurant, persistedUsers);
-                                                        //In case current user have already chose a restaurant
-                                                        mRestaurantViewModel.getGlobalCurrentUser(finalCurrentUser).observe(getViewLifecycleOwner(),
-                                                                globalInterestedUser -> mBinding.chooseRestaurantFab.setOnClickListener(v -> {
-                                                                    initClickOnUserHaveAlreadyChoseRestaurant(selectedRestaurant, persistedUsers, globalInterestedUser);
-                                                                }));
-                                                    }
-                                                });
+                                        initClickOnFirstTimeChoice(finalCurrentUser, selectedRestaurant, persistedUsers);
+                                        //In case current user have already chose a restaurant
+                                        //TODO resolve case where daily schedule is obsolete and global user delete
+                                        mRestaurantViewModel.getGlobalCurrentUser(finalCurrentUser).observe(getViewLifecycleOwner(),
+                                                globalUser -> mBinding.chooseRestaurantFab.setOnClickListener(v -> {
+                                                    initClickOnUserHaveAlreadyChoseRestaurant(selectedRestaurant, persistedUsers, globalUser);
+                                                }));
                                     });
+
                         });
                     } else {
                         //if user come from your lunch menu button
                         mRestaurantViewModel.getGlobalCurrentUser(finalCurrentUser).observe(getViewLifecycleOwner(),
                                 globalCurrentUser -> {
+                                    isUserHaveChoseRestaurant.set(true);
                                     initRestaurantDetail(globalCurrentUser.getSelectedRestaurant());
                                     mRestaurantViewModel.getAllInterestedUsersForRestaurant(today, globalCurrentUser.getSelectedRestaurant().getName()).observe(getViewLifecycleOwner(),
                                             persistedInterestedUsers -> mAdapter.updateUsers(persistedInterestedUsers));
+                                });
+                        mRestaurantViewModel.getCompletionState.observe(getViewLifecycleOwner(),
+                                completionState -> {
+                                    if (completionState.equals(RestaurantViewModel.CompletionState.GLOBAL_USER_LOAD_COMPLETE))
+                                        if (!isUserHaveChoseRestaurant.get()) {
+                                            Toast.makeText(getContext(), "You have not chose a restaurant yet", Toast.LENGTH_SHORT).show();
+                                        }
                                 });
                     }
                 });
@@ -129,10 +136,10 @@ public class RestaurantDetailFragment extends BaseFragment {
     private void initClickOnFirstTimeChoice(User finalCurrentUser, Restaurant selectedRestaurant, List<User> persistedUsers) {
         if (persistedUsers.isEmpty()) {
             mBinding.chooseRestaurantFab.setOnClickListener(v ->
-                    updateUsersWhenNoUserExistForThisRestaurant(today, selectedRestaurant, finalCurrentUser));
+                    updateUsersWhenNoUserExistForThisRestaurant(selectedRestaurant, finalCurrentUser));
         } else
             mBinding.chooseRestaurantFab.setOnClickListener(v ->
-                    updateUsersWhenInterestedUsersExistForThisRestaurant(today, selectedRestaurant, finalCurrentUser));
+                    updateUsersWhenInterestedUsersExistForThisRestaurant(selectedRestaurant, finalCurrentUser));
     }
 
     private void initRestaurantDetail(Restaurant selectedRestaurant) {
@@ -153,24 +160,28 @@ public class RestaurantDetailFragment extends BaseFragment {
     private void changeRestaurantForUser(User user, Restaurant selectedRestaurant, List<User> interestedUsers) {
         mRestaurantViewModel.deleteCurrentUserFromRestaurant(today, user.getSelectedRestaurant().getName(), user);
         if (interestedUsers.isEmpty()) {
-            updateUsersWhenNoUserExistForThisRestaurant(today, selectedRestaurant, user);
+            updateUsersWhenNoUserExistForThisRestaurant(selectedRestaurant, user);
         } else {
-            updateUsersWhenInterestedUsersExistForThisRestaurant(today, selectedRestaurant, user);
+            updateUsersWhenInterestedUsersExistForThisRestaurant(selectedRestaurant, user);
         }
         user.setSelectedRestaurant(selectedRestaurant);
         mRestaurantViewModel.addCurrentUserToGlobalList(user);
     }
 
-    private void deleteDailyScheduleAndAssociatedUsersForRestaurantWhenDateIsPassed(Restaurant selectedRestaurant) {
+    private void deleteDailyScheduleAndAssociatedUsersForRestaurantWhenDateIsPassed(User finalCurrentUser, Restaurant selectedRestaurant) {
         mRestaurantViewModel.getDailyScheduleForRestaurant(selectedRestaurant.getName()).observe(getViewLifecycleOwner(),
                 dailySchedule -> {
                     if (dailySchedule.getToday().before(today)) {
                         mRestaurantViewModel.getAllInterestedUsersForRestaurant(dailySchedule.getToday(), selectedRestaurant.getName()).observe(getViewLifecycleOwner(),
                                 persistedInterestedUsers -> {
                                     mAdapter.updateUsers(persistedInterestedUsers);
+                                    boolean isGlobalUserHaveBeenDelete = false;
                                     for (User persistedInterestedUser : persistedInterestedUsers) {
                                         mRestaurantViewModel.deleteUserFromGlobalList(persistedInterestedUser);
-                                        mRestaurantViewModel.deleteCurrentUserFromRestaurant(dailySchedule.getToday(), selectedRestaurant.getName(), persistedInterestedUser);
+                                        isGlobalUserHaveBeenDelete = true;
+                                    }
+                                    if (!persistedInterestedUsers.isEmpty() && isGlobalUserHaveBeenDelete) {
+                                        mRestaurantViewModel.deleteDailyScheduleFromRestaurant(selectedRestaurant.getName());
                                         mRestaurantViewModel.resetInterestedUsers();
                                     }
                                 });
@@ -178,16 +189,16 @@ public class RestaurantDetailFragment extends BaseFragment {
                 });
     }
 
-    private void updateUsersWhenInterestedUsersExistForThisRestaurant(Date finalToday, Restaurant selectedRestaurant, User currentUser) {
-        mRestaurantViewModel.getAllInterestedUsersForRestaurant(finalToday, selectedRestaurant.getName())
+    private void updateUsersWhenInterestedUsersExistForThisRestaurant(Restaurant selectedRestaurant, User currentUser) {
+        mRestaurantViewModel.getAllInterestedUsersForRestaurant(today, selectedRestaurant.getName())
                 .observe(getViewLifecycleOwner(), persistedUsers -> {
-                    mRestaurantViewModel.addCurrentUserToRestaurant(finalToday, selectedRestaurant.getName(), currentUser);
+                    mRestaurantViewModel.addCurrentUserToRestaurant(today, selectedRestaurant.getName(), currentUser);
                     currentUser.setSelectedRestaurant(selectedRestaurant);
                     mRestaurantViewModel.addCurrentUserToGlobalList(currentUser);
                 });
     }
 
-    private void updateUsersWhenNoUserExistForThisRestaurant(Date finalToday, Restaurant selectedRestaurant, User currentUser) {
+    private void updateUsersWhenNoUserExistForThisRestaurant(Restaurant selectedRestaurant, User currentUser) {
         mRestaurantViewModel.getPersistedRestaurant(selectedRestaurant.getName()).observe(getViewLifecycleOwner(), restaurant -> {
         });
 
@@ -198,14 +209,14 @@ public class RestaurantDetailFragment extends BaseFragment {
                     break;
                 case RESTAURANT_ON_COMPLETE:
                 case DAILY_SCHEDULE_IS_NOT_LOADED:
-                    mRestaurantViewModel.addDailyScheduleToRestaurant(finalToday, null, selectedRestaurant.getName());
+                    mRestaurantViewModel.addDailyScheduleToRestaurant(today, null, selectedRestaurant.getName());
                     break;
                 case DAILY_SCHEDULE_ON_COMPLETE:
                 case DAILY_SCHEDULE_IS_LOADED:
-                    mRestaurantViewModel.addCurrentUserToRestaurant(finalToday, selectedRestaurant.getName(), currentUser);
+                    mRestaurantViewModel.addCurrentUserToRestaurant(today, selectedRestaurant.getName(), currentUser);
                     break;
                 case PERSISTED_USERS_FOR_RESTAURANT_ON_COMPLETE:
-                    mRestaurantViewModel.getAllInterestedUsersForRestaurant(finalToday, selectedRestaurant.getName()).observe(getViewLifecycleOwner(),
+                    mRestaurantViewModel.getAllInterestedUsersForRestaurant(today, selectedRestaurant.getName()).observe(getViewLifecycleOwner(),
                             users -> {
                                 currentUser.setSelectedRestaurant(selectedRestaurant);
                                 mRestaurantViewModel.addCurrentUserToGlobalList(currentUser);

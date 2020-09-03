@@ -65,6 +65,10 @@ public class RestaurantRepository {
         return restaurantDao.getGlobalCurrentUser(currentUser);
     }
 
+    public Observable<List<User>> getAllGlobalUsers(){
+        return restaurantDao.getAllGlobalInterestedUsers();
+    }
+
     public Completable addCurrentUserToGlobalList(User persistedCurrentUserWithRestaurantSet) {
         return restaurantDao.addCurrentUserToGlobalList(persistedCurrentUserWithRestaurantSet);
     }

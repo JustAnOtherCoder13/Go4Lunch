@@ -81,14 +81,19 @@ public class RestaurantDaoImpl implements RestaurantDao {
     }
 
     public Completable deleteCurrentUserFromRestaurant(Date today, String originalChosenRestaurantName, User currentUser) {
-        return Completable.create(emitter -> restaurantDatabaseReference.child(originalChosenRestaurantName).child(DAILY_SCHEDULE)
-                .child(today.toString()).child(currentUser.getName()).removeValue());
+        return Completable.create(emitter -> restaurantDatabaseReference.child(originalChosenRestaurantName)
+                .child(DAILY_SCHEDULE).child(today.toString()).child(currentUser.getName()).removeValue());
     }
 
     //-----------------------------GLOBAL_INTERESTED_USER----------------------------
     @Override
     public Observable<User> getGlobalCurrentUser(User currentUser) {
         return RxFirebaseDatabase.observeSingleValueEvent(globalInterestedUsersDatabaseReference.child(currentUser.getName()), User.class).toObservable();
+    }
+
+    @Override
+    public Observable<List<User>> getAllGlobalInterestedUsers() {
+        return RxFirebaseDatabase.observeSingleValueEvent(globalInterestedUsersDatabaseReference,DataSnapshotMapper.listOf(User.class)).toObservable();
     }
 
     @Override
