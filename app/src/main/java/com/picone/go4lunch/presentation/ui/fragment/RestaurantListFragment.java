@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.ui.restaurant;
+package com.picone.go4lunch.presentation.ui.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.picone.go4lunch.databinding.FragmentListBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
+import com.picone.go4lunch.presentation.ui.fragment.adapters.RestaurantListRecyclerViewAdapter;
 
 
 public class RestaurantListFragment extends BaseFragment {

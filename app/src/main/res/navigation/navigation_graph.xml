@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/listFragment"
-        android:name="com.picone.go4lunch.presentation.ui.restaurant.RestaurantListFragment"
+        android:name="com.picone.go4lunch.presentation.ui.fragment.RestaurantListFragment"
         android:label="@string/i_am_hungry_title"
         tools:layout="@layout/fragment_list" />
     <fragment
@@ -17,7 +17,7 @@
         tools:layout="@layout/fragment_maps" />
     <fragment
         android:id="@+id/restaurantDetailFragment"
-        android:name="com.picone.go4lunch.presentation.ui.restaurant.RestaurantDetailFragment"
+        android:name="com.picone.go4lunch.presentation.ui.fragment.RestaurantDetailFragment"
         android:label=""
         tools:layout="@layout/fragment_restaurant_detail" />
     <fragment
@@ -27,7 +27,7 @@
         tools:layout="@layout/fragment_authentication" />
     <fragment
         android:id="@+id/workmatesFragment"
-        android:name="com.picone.go4lunch.presentation.ui.colleague.WorkmatesFragment"
+        android:name="com.picone.go4lunch.presentation.ui.fragment.WorkmatesFragment"
         android:label="@string/available_workmates"
         tools:layout="@layout/fragment_workmates" />
 

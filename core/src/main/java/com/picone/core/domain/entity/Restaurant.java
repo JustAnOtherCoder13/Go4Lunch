@@ -1,78 +1,63 @@
 package com.picone.core.domain.entity;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
+@IgnoreExtraProperties
 public class Restaurant {
 
-    String name;
-    int distance;
-    String restaurantPhoto;
-    String foodType;
-    int interestedColleague;
-    int openingHours;
-    double averageSatisfaction;
+    private String name;
+    private int distance;
+    private String restaurantPhoto;
+    private String foodType;
+    private String address;
+    private int openingHours;
+    private double averageSatisfaction;
+    private DailySchedule dailySchedule;
 
-    public Restaurant(String name, int distance, String restaurantPhoto, String foodType, int interestedColleague, int openingHours, double averageSatisfaction) {
+    public Restaurant(){}
+
+    public Restaurant(String name, int distance, String restaurantPhoto, String foodType,
+                      String address, int openingHours,
+                      double averageSatisfaction,DailySchedule dailySchedule) {
         this.name = name;
         this.distance = distance;
         this.restaurantPhoto = restaurantPhoto;
         this.foodType = foodType;
-        this.interestedColleague = interestedColleague;
+        this.address = address;
         this.openingHours = openingHours;
         this.averageSatisfaction = averageSatisfaction;
+        this.dailySchedule = dailySchedule;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public int getDistance() {
         return distance;
-    }
-
-    public void setDistance(int distance) {
-        this.distance = distance;
     }
 
     public String getRestaurantPhoto() {
         return restaurantPhoto;
     }
 
-    public void setRestaurantPhoto(String restaurantPhoto) {
-        this.restaurantPhoto = restaurantPhoto;
-    }
-
     public String getFoodType() {
         return foodType;
     }
 
-    public void setFoodType(String foodType) {
-        this.foodType = foodType;
-    }
-
-    public int getInterestedColleague() {
-        return interestedColleague;
-    }
-
-    public void setInterestedColleague(int interestedColleague) {
-        this.interestedColleague = interestedColleague;
-    }
+    public String getAddress(){ return address;}
 
     public int getOpeningHours() {
         return openingHours;
-    }
-
-    public void setOpeningHours(int openingHours) {
-        this.openingHours = openingHours;
     }
 
     public double getAverageSatisfaction() {
         return averageSatisfaction;
     }
 
-    public void setAverageSatisfaction(double averageSatisfaction) {
-        this.averageSatisfaction = averageSatisfaction;
+    public DailySchedule getDailySchedule() { return dailySchedule; }
+
+    public void setDailySchedule(DailySchedule dailySchedule) {
+        this.dailySchedule = dailySchedule;
     }
 }

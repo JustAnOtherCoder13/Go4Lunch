@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.ui.restaurant;
+package com.picone.go4lunch.presentation.ui.fragment.adapters;
 
 import android.view.View;
 import android.view.ViewGroup;
