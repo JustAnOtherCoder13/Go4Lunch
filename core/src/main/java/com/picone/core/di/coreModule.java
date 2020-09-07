@@ -6,11 +6,11 @@ import com.picone.core.data.repository.RestaurantRepository;
 import com.picone.core.data.repository.UserDaoImpl;
 import com.picone.core.data.repository.UserRepository;
 import com.picone.core.domain.entity.Restaurant;
-import com.picone.core.domain.interactors.AddUserInteractor;
-import com.picone.core.domain.interactors.GetAllRestaurantsInteractor;
-import com.picone.core.domain.interactors.GetAllUsersInteractor;
-import com.picone.core.domain.interactors.GetRestaurantInteractor;
-import com.picone.core.domain.interactors.GetUserInteractor;
+import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.GetAllRestaurantsInteractor;
+import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantInteractor;
+import com.picone.core.domain.interactors.usersInteractors.GetUserInteractor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +82,7 @@ public final class coreModule {
     //restaurant interactors
     @Provides
     static GetAllRestaurantsInteractor provideGetAllRestaurants() {
-        return new GetAllRestaurantsInteractor(provideRestaurantDataSource());
+        return new GetAllRestaurantsInteractor(provideRestaurantDataSource(),provideGenerateRestaurant());
     }
 
     @Provides

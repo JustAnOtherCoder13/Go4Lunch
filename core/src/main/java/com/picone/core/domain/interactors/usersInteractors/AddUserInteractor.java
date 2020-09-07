@@ -1,4 +1,4 @@
-package com.picone.core.domain.interactors;
+package com.picone.core.domain.interactors.usersInteractors;
 
 import com.picone.core.data.repository.UserRepository;
 import com.picone.core.domain.entity.User;
