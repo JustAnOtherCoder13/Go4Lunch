@@ -13,7 +13,6 @@ import java.util.List;
 
 public class RestaurantViewModel extends ViewModel {
 
-    private MutableLiveData<List<Restaurant>> restaurantsMutableLiveData = new MutableLiveData<>();
     private GetAllRestaurantsInteractor getAllRestaurantsInteractor;
     private GetRestaurantInteractor getRestaurant;
 
@@ -21,11 +20,10 @@ public class RestaurantViewModel extends ViewModel {
     public RestaurantViewModel(GetAllRestaurantsInteractor getAllRestaurantsInteractor, GetRestaurantInteractor getRestaurant) {
         this.getAllRestaurantsInteractor = getAllRestaurantsInteractor;
         this.getRestaurant = getRestaurant;
-        restaurantsMutableLiveData.setValue(getAllRestaurantsInteractor.getAllRestaurants());
     }
 
-    public LiveData<List<Restaurant>> getAllRestaurants() {
-        return restaurantsMutableLiveData;
+    public List<Restaurant> getAllRestaurants() {
+        return getAllRestaurantsInteractor.getGeneratedRestaurants();
     }
 
     public Restaurant getRestaurant(int position) {

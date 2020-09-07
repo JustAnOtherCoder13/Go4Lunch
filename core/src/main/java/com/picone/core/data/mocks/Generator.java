@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class Generator {
+
     public static List<Restaurant> RESTAURANTS = Arrays.asList(
 
             new Restaurant("chez jojo", 4, "ma photo", "french", "1", 10, 2,null),

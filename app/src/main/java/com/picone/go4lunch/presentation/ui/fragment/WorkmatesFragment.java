@@ -42,6 +42,5 @@ public class WorkmatesFragment extends BaseFragment {
         mUserViewModel.getAllUsers().observe(getViewLifecycleOwner(), users ->{
             mAdapter.updateUsers(users);
         });
-
     }
 }

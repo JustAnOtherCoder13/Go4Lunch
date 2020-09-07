@@ -26,6 +26,7 @@ import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
 import com.picone.go4lunch.databinding.DrawerMenuHeaderLayoutBinding;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
+import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
 import java.util.Objects;
@@ -49,6 +50,7 @@ public abstract class BaseFragment extends Fragment {
     //View Model
     protected LoginViewModel mLoginViewModel;
     protected UserViewModel mUserViewModel;
+    protected RestaurantViewModel mRestaurantViewModel;
 
 
     @Override
@@ -71,6 +73,7 @@ public abstract class BaseFragment extends Fragment {
     private void initVariables() {
         mLoginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
         mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
     }
 
     protected void showAppBars(boolean isVisible) {
