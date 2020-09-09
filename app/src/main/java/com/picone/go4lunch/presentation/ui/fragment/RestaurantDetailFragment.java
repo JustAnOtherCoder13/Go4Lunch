@@ -8,11 +8,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.picone.go4lunch.databinding.FragmentRestaurantDetailBinding;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.ColleagueRecyclerViewAdapter;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
+
+import java.util.ArrayList;
 
 public class RestaurantDetailFragment extends BaseFragment {
 
@@ -36,9 +37,32 @@ public class RestaurantDetailFragment extends BaseFragment {
         return mBinding.getRoot();
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(),
+                restaurant -> {
+                    mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
+                    mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getFoodType().concat(" - ").concat(restaurant.getAddress()));
+                });
+
+        mRestaurantViewModel.getAllInterestedUsersForRestaurant().observe(getViewLifecycleOwner(),
+                users -> {
+                    mAdapter.updateUsers(users);
+                });
+
+        mBinding.checkIfSelectedDetailFab.setOnClickListener(v -> {
+            mRestaurantViewModel.addCurrentUserToRestaurant();
+        });
+
+
+
+    }
+
     private void initRecyclerView() {
-        RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        mBinding.recyclerViewRestaurantDetail.setLayoutManager(linearLayoutManager);
+        mAdapter = new ColleagueRecyclerViewAdapter(new ArrayList<>(), TAG);
+        mBinding.recyclerViewRestaurantDetail.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.recyclerViewRestaurantDetail.setAdapter(mAdapter);
     }
 

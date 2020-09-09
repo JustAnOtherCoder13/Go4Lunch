@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentListBinding;
-import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.RestaurantListRecyclerViewAdapter;
+import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import com.picone.go4lunch.presentation.ui.utils.RecyclerViewItemClickUtil;
 
 import java.util.ArrayList;
@@ -25,11 +25,6 @@ public class RestaurantListFragment extends BaseFragment {
 
     private FragmentListBinding mBinding;
     private RestaurantListRecyclerViewAdapter mAdapter;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Nullable
     @Override
@@ -51,13 +46,19 @@ public class RestaurantListFragment extends BaseFragment {
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mBinding.recyclerViewListFragment.setLayoutManager(linearLayoutManager);
         mBinding.recyclerViewListFragment.setAdapter(mAdapter);
-        mAdapter.updateRestaurants(mRestaurantViewModel.getAllRestaurants());
+        mAdapter.updateRestaurants(mRestaurantViewModel.getAllGeneratedRestaurants());
+
     }
+
     public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewListFragment, R.layout.fragment_list)
                 .setOnItemClickListener((recyclerView, position, v) -> {
-                    NavController navController = Navigation.findNavController(v);
-                    navController.navigate(R.id.restaurantDetailFragment);
+                    mRestaurantViewModel.setSelectedRestaurant(position);
+                    mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(),
+                            restaurant -> {
+                                NavController navController = Navigation.findNavController(v);
+                                navController.navigate(R.id.restaurantDetailFragment);
+                            });
                 });
     }
 }

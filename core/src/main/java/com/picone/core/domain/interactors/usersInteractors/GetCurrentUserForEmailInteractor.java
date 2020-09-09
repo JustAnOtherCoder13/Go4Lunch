@@ -5,12 +5,12 @@ import com.picone.core.domain.entity.User;
 
 import javax.inject.Inject;
 
-public class GetUserInteractor {
+public class GetCurrentUserForEmailInteractor {
 
     @Inject
     UserRepository userDataSource;
 
-    public GetUserInteractor(UserRepository userDataSource) {
+    public GetCurrentUserForEmailInteractor(UserRepository userDataSource) {
         this.userDataSource = userDataSource;
     }
 

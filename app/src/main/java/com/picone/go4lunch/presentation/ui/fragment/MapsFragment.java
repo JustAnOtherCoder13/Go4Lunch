@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.ui;
+package com.picone.go4lunch.presentation.ui.fragment;
 
 import android.Manifest;
 import android.content.pm.PackageManager;

@@ -1,5 +1,7 @@
 package com.picone.go4lunch.presentation.viewModels;
 
+import android.annotation.SuppressLint;
+
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -8,7 +10,6 @@ import androidx.lifecycle.ViewModel;
 import com.picone.core.domain.entity.User;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
-import com.picone.core.domain.interactors.usersInteractors.GetUserInteractor;
 
 import java.util.List;
 
@@ -24,30 +25,28 @@ public class UserViewModel extends ViewModel {
         ON_ERROR              // Write on db failed
     }
 
-    private MutableLiveData<AddUserState> addUserStateMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<User>> usersMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
-    private GetAllUsersInteractor getAllUsersInteractor;
-    private GetUserInteractor getUserInteractor;
+    private MutableLiveData<AddUserState> _addUserState = new MutableLiveData<>();
+    private MutableLiveData<List<User>> _allUsers = new MutableLiveData<>();
+    private MutableLiveData<User> _currentUser = new MutableLiveData<>();
     private AddUserInteractor addUserInteractor;
 
 
+    @SuppressLint("CheckResult")
     @ViewModelInject
-    public UserViewModel(GetAllUsersInteractor getAllUsersInteractor, GetUserInteractor getUserInteractor,
+    public UserViewModel(GetAllUsersInteractor getAllUsersInteractor,
                          AddUserInteractor addUserInteractor) {
-        this.getAllUsersInteractor = getAllUsersInteractor;
-        this.getUserInteractor = getUserInteractor;
         this.addUserInteractor = addUserInteractor;
-        Disposable disposable = getAllUsersInteractor.getAllUsers().subscribe(users -> usersMutableLiveData.setValue(users));
+        getAllUsersInteractor.getAllUsers().subscribe(users -> _allUsers.setValue(users));
     }
 
+    public LiveData<User> getCurrentUser = _currentUser;
 
-    public LiveData<List<User>> getAllUsers() {
-        return usersMutableLiveData;
-    }
+    public LiveData<List<User>> getAllUsers = _allUsers;
 
-    public User getUser(int position) {
-        return getUserInteractor.getUser(position);
+    public void setCurrentUser(User currentUser) { _currentUser.setValue(currentUser); }
+
+    public LiveData<AddUserState> getAddUserState() {
+        return _addUserState;
     }
 
     public void addUser(User user) {
@@ -61,26 +60,14 @@ public class UserViewModel extends ViewModel {
 
                     @Override
                     public void onComplete() {
-                        addUserStateMutableLiveData.setValue(AddUserState.ON_COMPLETE);
+                        _addUserState.setValue(AddUserState.ON_COMPLETE);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        addUserStateMutableLiveData.setValue(AddUserState.ON_ERROR);
+                        _addUserState.setValue(AddUserState.ON_ERROR);
                     }
                 });
-    }
-
-    public void setCurrentUser(String uid, String name, String email, String avatar) {
-        userMutableLiveData.setValue(new User(uid, name, email, avatar));
-    }
-
-    public LiveData<User> getCurrentUser() {
-        return userMutableLiveData;
-    }
-
-    public LiveData<AddUserState> getAddUserState() {
-        return addUserStateMutableLiveData;
     }
 
 }

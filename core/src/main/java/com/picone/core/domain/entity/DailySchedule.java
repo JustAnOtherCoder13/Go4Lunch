@@ -18,14 +18,19 @@ public class DailySchedule {
     private final static int MY_YEAR = CALENDAR.get(Calendar.YEAR);
 
     private String date;
-    private Date today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(MY_DAY_OF_MONTH + "/" + MY_MONTH + "/" + MY_YEAR);
+    private Date today;
 
     private List<User> interestedUsers;
 
-    public DailySchedule() throws ParseException {
+    public DailySchedule() {
     }
 
-    public DailySchedule(List<User> interestedUser) throws ParseException {
+    public DailySchedule(List<User> interestedUser) {
+        try {
+            today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(MY_DAY_OF_MONTH + "/" + MY_MONTH + "/" + MY_YEAR);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         this.date = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(today);
         this.interestedUsers = interestedUser;
     }
@@ -42,9 +47,5 @@ public class DailySchedule {
         this.interestedUsers.remove(uninterestedUser);
     }
 
-    public Boolean isDateIsOnToday() throws ParseException {
-        Date dailyScheduleDate = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(this.date);
-        assert dailyScheduleDate != null;
-        return dailyScheduleDate.compareTo(today) >= 0;
-    }
+    public String getDate() { return date; }
 }

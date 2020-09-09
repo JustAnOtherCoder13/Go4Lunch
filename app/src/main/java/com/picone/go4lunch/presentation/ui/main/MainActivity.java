@@ -1,17 +1,11 @@
 package com.picone.go4lunch.presentation.ui.main;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -23,15 +17,12 @@ import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
 import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
-import com.picone.go4lunch.databinding.DrawerMenuHeaderLayoutBinding;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
-import com.picone.go4lunch.presentation.viewModels.UserViewModel;
+import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 
-import java.io.IOException;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -49,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     protected FirebaseAuth mFirebaseAuth;
 
     private LoginViewModel mLoginViewModel;
+    private RestaurantViewModel mRestaurantViewModel;
 
     public ActivityMainBinding mBinding;
     private NavController mNavController;
@@ -58,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLoginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -72,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (mFirebaseAuth.getCurrentUser() != null || accessToken != null && !accessToken.isExpired()) {
             mLoginViewModel.authenticate(true);
+            FirebaseUser authUser = mFirebaseAuth.getCurrentUser();
+            User currentUser = new User(authUser.getUid(),authUser.getDisplayName(),authUser.getEmail(),authUser.getPhotoUrl().toString());
+            mRestaurantViewModel.setCurrentUser(currentUser);
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
     }

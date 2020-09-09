@@ -1,7 +1,8 @@
-package com.picone.go4lunch.presentation.ui;
+package com.picone.go4lunch.presentation.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserInfo;
+import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentAuthenticationBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
@@ -55,7 +57,7 @@ public class AuthenticationFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initAuthenticationAborted();
-        mUserViewModel.getCurrentUser().observe(getViewLifecycleOwner(), currentUser -> {
+        mUserViewModel.getCurrentUser.observe(getViewLifecycleOwner(), currentUser -> {
             if (isNewUser) mUserViewModel.addUser(currentUser);
             mUserViewModel.getAddUserState().observe(getViewLifecycleOwner(), addUserState -> {
                 if (addUserState == UserViewModel.AddUserState.ON_COMPLETE){
@@ -166,19 +168,22 @@ public class AuthenticationFragment extends BaseFragment {
                     .getAdditionalUserInfo())
                     .isNewUser();
         }
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser mAuthCurrentUser = mAuth.getCurrentUser();
         String uid = "";
         String name = "";
         String email = "";
         String photoUrl = "";
-        if (currentUser != null) {
-            for (UserInfo profile : currentUser.getProviderData()) {
+        if (mAuthCurrentUser != null) {
+            for (UserInfo profile : mAuthCurrentUser.getProviderData()) {
                 uid = profile.getUid();
                 name = profile.getDisplayName();
                 email = profile.getEmail();
                 photoUrl = Objects.requireNonNull(profile.getPhotoUrl()).toString();
             }
-            mUserViewModel.setCurrentUser(uid, name, email, photoUrl);
+            User currentUser = new User(uid, name, email, photoUrl);
+            mUserViewModel.setCurrentUser(currentUser);
+            mRestaurantViewModel.setCurrentUser(currentUser);
+            Log.i("authFrag", "setCurrentUser: restauViMo setcurrentuser");
         }
     }
 }

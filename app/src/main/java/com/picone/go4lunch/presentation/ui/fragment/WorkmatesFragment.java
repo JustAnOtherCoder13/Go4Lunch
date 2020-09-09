@@ -39,8 +39,7 @@ public class WorkmatesFragment extends BaseFragment {
         mAdapter = new ColleagueRecyclerViewAdapter(mUsers,TAG);
         mBinding.recyclerViewWorkmatesFragment.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.recyclerViewWorkmatesFragment.setAdapter(mAdapter);
-        mUserViewModel.getAllUsers().observe(getViewLifecycleOwner(), users ->{
-            mAdapter.updateUsers(users);
-        });
+        mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(), users ->
+                mAdapter.updateUsers(users));
     }
 }
