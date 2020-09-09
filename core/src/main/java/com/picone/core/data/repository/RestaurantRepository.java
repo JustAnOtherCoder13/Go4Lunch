@@ -14,7 +14,7 @@ import io.reactivex.Observable;
 public class RestaurantRepository {
 
     @Inject
-    public RestaurantDao restaurantDao;
+    public RestaurantDaoImpl restaurantDao;
     @Inject
     public FirebaseDatabase dataBase;
 

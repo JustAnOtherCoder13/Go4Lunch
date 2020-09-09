@@ -33,12 +33,12 @@ public class RestaurantDaoImpl implements RestaurantDao{
     //-----------------------RESTAURANT-------------------------------
     @Override
     public Observable<Restaurant> getPersistedRestaurant(String restaurantName) {
-        return RxFirebaseDatabase.observeValueEvent(restaurantDatabaseReference.child(restaurantName), Restaurant.class).toObservable();
+        return RxFirebaseDatabase.observeSingleValueEvent(restaurantDatabaseReference.child(restaurantName), Restaurant.class).toObservable();
     }
 
     @Override
     public Observable<List<Restaurant>> getAllPersistedRestaurants() {
-        return RxFirebaseDatabase.observeValueEvent(restaurantDatabaseReference, DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
+        return RxFirebaseDatabase.observeSingleValueEvent(restaurantDatabaseReference,DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
     }
 
     @Override

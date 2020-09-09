@@ -41,23 +41,17 @@ public class RestaurantDetailFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(),
+        mRestaurantViewModel.getSelectedRestaurant().observe(getViewLifecycleOwner(),
                 restaurant -> {
                     mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
                     mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getFoodType().concat(" - ").concat(restaurant.getAddress()));
                 });
 
         mRestaurantViewModel.getAllInterestedUsersForRestaurant().observe(getViewLifecycleOwner(),
-                users -> {
-                    mAdapter.updateUsers(users);
-                });
+                users -> mAdapter.updateUsers(users));
 
-        mBinding.checkIfSelectedDetailFab.setOnClickListener(v -> {
-            mRestaurantViewModel.addCurrentUserToRestaurant();
-        });
-
-
-
+        mBinding.checkIfSelectedDetailFab.setOnClickListener(
+                v -> mRestaurantViewModel.addCurrentUserToRestaurant());
     }
 
     private void initRecyclerView() {
