@@ -27,7 +27,7 @@ public class UserRepository {
     }
 
     public User getUser(int position) {
-        return userDao.getUser(position);
+        return userDao.getCurrentUserForEmail(position);
     }
 
     public Completable addUser(User user) {

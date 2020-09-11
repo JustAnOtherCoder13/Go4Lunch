@@ -9,16 +9,18 @@ public class User {
     private String name;
     private String email;
     private String avatar;
+    private UserDailySchedule userDailySchedule;
 
 
     public User() {
     }
 
-    public User(String uid, String name, String email, String avatar) {
+    public User(String uid, String name, String email, String avatar, UserDailySchedule userDailySchedule) {
         this.uid = uid;
         this.name = name;
         this.email = email;
         this.avatar = avatar;
+        this.userDailySchedule = userDailySchedule;
     }
 
     public String getUid() {
@@ -29,7 +31,6 @@ public class User {
         return name;
     }
 
-
     public String getEmail() {
         return email;
     }
@@ -38,4 +39,9 @@ public class User {
         return avatar;
     }
 
+    public UserDailySchedule getUserDailySchedule() { return userDailySchedule; }
+
+    public void setUserDailySchedule(UserDailySchedule userDailySchedule) {
+        this.userDailySchedule = userDailySchedule;
+    }
 }
