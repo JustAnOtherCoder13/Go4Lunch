@@ -25,6 +25,7 @@ import com.google.firebase.auth.UserInfo;
 import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
 import com.picone.go4lunch.databinding.DrawerMenuHeaderLayoutBinding;
+import com.picone.go4lunch.presentation.viewModels.InterestedUserViewModel;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
@@ -51,6 +52,7 @@ public abstract class BaseFragment extends Fragment {
     protected LoginViewModel mLoginViewModel;
     protected UserViewModel mUserViewModel;
     protected RestaurantViewModel mRestaurantViewModel;
+    protected InterestedUserViewModel mInterestedUserViewModel;
 
 
     @Override
@@ -72,8 +74,9 @@ public abstract class BaseFragment extends Fragment {
 
     private void initVariables() {
         mLoginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
-        mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
+        mUserViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        mRestaurantViewModel = new ViewModelProvider(requireActivity()).get(RestaurantViewModel.class);
+        mInterestedUserViewModel = new ViewModelProvider(requireActivity()).get(InterestedUserViewModel.class);
     }
 
     protected void showAppBars(boolean isVisible) {

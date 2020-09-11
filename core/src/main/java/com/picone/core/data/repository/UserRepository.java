@@ -1,6 +1,7 @@
 package com.picone.core.data.repository;
 
 import com.google.firebase.database.FirebaseDatabase;
+import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 
 import java.util.List;
@@ -13,11 +14,11 @@ import io.reactivex.Observable;
 public class UserRepository {
 
     @Inject
-    public UserDao userDao;
+    public UserDaoImpl userDao;
     @Inject
     public FirebaseDatabase dataBase;
 
-    public UserRepository(FirebaseDatabase dataBase, UserDao dao) {
+    public UserRepository(FirebaseDatabase dataBase, UserDaoImpl dao) {
         this.dataBase = dataBase;
         userDao = dao;
     }
@@ -26,13 +27,16 @@ public class UserRepository {
         return userDao.getAllUsers();
     }
 
-    public User getUser(int position) {
-        return userDao.getCurrentUserForEmail(position);
+    public Observable<List<User>> getCurrentUserForEmail(String currentUserEmail) {
+        return userDao.getCurrentUserForEmail(currentUserEmail);
     }
 
     public Completable addUser(User user) {
         return userDao.AddUser(user);
     }
 
+    public Completable updateUserChosenRestaurant(User currentUser, Restaurant restaurant) {
+        return userDao.updateUserChosenRestaurant(currentUser, restaurant);
+    }
 
 }

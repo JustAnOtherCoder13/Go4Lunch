@@ -25,8 +25,6 @@ public class GetAllRestaurantsInteractor {
         return generatorRestaurant;
     }
 
-    public Restaurant getRestaurant(int position){
-        return restaurantDataSource.getRestaurant(position);
-    }
+
 
 }

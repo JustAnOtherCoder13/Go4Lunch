@@ -33,6 +33,8 @@ public class RestaurantDetailFragment extends BaseFragment {
         mBinding = FragmentRestaurantDetailBinding.inflate(inflater, container, false);
         initRecyclerView();
         showAppBars(false);
+        mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
+                mInterestedUserViewModel.updateCurrentUserChosenRestaurant(mRestaurantViewModel.selectedRestaurant.getValue()));
         return mBinding.getRoot();
     }
 

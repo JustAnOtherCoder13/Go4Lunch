@@ -20,10 +20,8 @@ public class RestaurantRepository {
     }
 
     public List<Restaurant> getAllRestaurants() {
-        return restaurantDao.getAllRestaurants();
+        return null;
     }
 
-    public Restaurant getRestaurant(int position) {
-        return restaurantDao.getRestaurant(position);
-    }
+
 }

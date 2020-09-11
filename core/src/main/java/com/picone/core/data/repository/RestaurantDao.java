@@ -4,9 +4,11 @@ import com.picone.core.domain.entity.Restaurant;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+
 public interface RestaurantDao {
 
-    List<Restaurant> getAllRestaurants();
+    Observable<List<Restaurant>> getAllRestaurants();
 
-    Restaurant getRestaurant(int position);
+    Observable<List<Restaurant>> getRestaurant(String restaurantKey);
 }

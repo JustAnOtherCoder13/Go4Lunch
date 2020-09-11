@@ -27,6 +27,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserInfo;
+import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentAuthenticationBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
@@ -55,9 +56,9 @@ public class AuthenticationFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initAuthenticationAborted();
-        mUserViewModel.getCurrentUser().observe(getViewLifecycleOwner(), currentUser -> {
+        mUserViewModel.getCurrentUser.observe(getViewLifecycleOwner(), currentUser -> {
             if (isNewUser) mUserViewModel.addUser(currentUser);
-            mUserViewModel.getAddUserState().observe(getViewLifecycleOwner(), addUserState -> {
+            mUserViewModel.getAddUserState.observe(getViewLifecycleOwner(), addUserState -> {
                 if (addUserState == UserViewModel.AddUserState.ON_COMPLETE){
                     mNavController.navigateUp();
                 }
@@ -166,19 +167,20 @@ public class AuthenticationFragment extends BaseFragment {
                     .getAdditionalUserInfo())
                     .isNewUser();
         }
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser authCurrentUser = mAuth.getCurrentUser();
         String uid = "";
         String name = "";
         String email = "";
         String photoUrl = "";
-        if (currentUser != null) {
-            for (UserInfo profile : currentUser.getProviderData()) {
+        if (authCurrentUser != null) {
+            for (UserInfo profile : authCurrentUser.getProviderData()) {
                 uid = profile.getUid();
                 name = profile.getDisplayName();
                 email = profile.getEmail();
                 photoUrl = Objects.requireNonNull(profile.getPhotoUrl()).toString();
             }
-            mUserViewModel.setCurrentUser(uid, name, email, photoUrl);
+            User currentUser = new User(uid,name,email,photoUrl,null);
+            mUserViewModel.setCurrentUser(currentUser);
         }
     }
 }

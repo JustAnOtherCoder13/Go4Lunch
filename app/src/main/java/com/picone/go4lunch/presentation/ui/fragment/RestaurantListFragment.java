@@ -1,17 +1,20 @@
 package com.picone.go4lunch.presentation.ui.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentListBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
@@ -29,6 +32,7 @@ public class RestaurantListFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mInterestedUserViewModel.setCurrentUserForEmail(mAuth.getCurrentUser().getEmail());
     }
 
     @Nullable
@@ -38,6 +42,12 @@ public class RestaurantListFragment extends BaseFragment {
         initRecyclerView();
         showAppBars(true);
         configureOnClickRecyclerView();
+        mInterestedUserViewModel.currentUser.observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                Log.i("TAG", "onChanged: "+user);
+            }
+        });
         return mBinding.getRoot();
     }
 
@@ -58,6 +68,7 @@ public class RestaurantListFragment extends BaseFragment {
                 .setOnItemClickListener((recyclerView, position, v) -> {
                     NavController navController = Navigation.findNavController(v);
                     navController.navigate(R.id.restaurantDetailFragment);
+                    mRestaurantViewModel.setSelectedRestaurant(position);
                 });
     }
 }

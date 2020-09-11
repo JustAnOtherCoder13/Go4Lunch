@@ -1,5 +1,7 @@
 package com.picone.go4lunch.presentation.viewModels;
 
+import android.annotation.SuppressLint;
+
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -8,11 +10,12 @@ import androidx.lifecycle.ViewModel;
 import com.picone.core.domain.entity.User;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
-import com.picone.core.domain.interactors.usersInteractors.GetUserInteractor;
+import com.picone.core.domain.interactors.usersInteractors.UpdateUserChosenRestaurantInteractor;
 
 import java.util.List;
 
 import io.reactivex.CompletableObserver;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -25,30 +28,30 @@ public class UserViewModel extends ViewModel {
     }
 
     private MutableLiveData<AddUserState> addUserStateMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<User>> usersMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
-    private GetAllUsersInteractor getAllUsersInteractor;
-    private GetUserInteractor getUserInteractor;
+    private MutableLiveData<List<User>> allUsersMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<User> currentUserMutableLiveData = new MutableLiveData<>();
+
     private AddUserInteractor addUserInteractor;
 
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
     @ViewModelInject
-    public UserViewModel(GetAllUsersInteractor getAllUsersInteractor, GetUserInteractor getUserInteractor,
+    public UserViewModel(GetAllUsersInteractor getAllUsersInteractor,
                          AddUserInteractor addUserInteractor) {
-        this.getAllUsersInteractor = getAllUsersInteractor;
-        this.getUserInteractor = getUserInteractor;
         this.addUserInteractor = addUserInteractor;
-        Disposable disposable = getAllUsersInteractor.getAllUsers().subscribe(users -> usersMutableLiveData.setValue(users));
+        getAllUsersInteractor.getAllUsers()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(users ->
+                allUsersMutableLiveData.setValue(users));
     }
 
+    public LiveData<User> getCurrentUser = currentUserMutableLiveData;
 
-    public LiveData<List<User>> getAllUsers() {
-        return usersMutableLiveData;
-    }
+    public LiveData<AddUserState> getAddUserState = addUserStateMutableLiveData;
 
-    public User getUser(int position) {
-        return getUserInteractor.getUser(position);
-    }
+    public LiveData<List<User>> getAllUsers = allUsersMutableLiveData;
 
     public void addUser(User user) {
         addUserInteractor.addUser(user)
@@ -71,16 +74,7 @@ public class UserViewModel extends ViewModel {
                 });
     }
 
-    public void setCurrentUser(String uid, String name, String email, String avatar) {
-        userMutableLiveData.setValue(new User(uid, name, email, avatar));
+    public void setCurrentUser(User currentUser) {
+        currentUserMutableLiveData.setValue(currentUser);
     }
-
-    public LiveData<User> getCurrentUser() {
-        return userMutableLiveData;
-    }
-
-    public LiveData<AddUserState> getAddUserState() {
-        return addUserStateMutableLiveData;
-    }
-
 }

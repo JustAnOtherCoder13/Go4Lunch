@@ -10,7 +10,8 @@ import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetAllRestaurantsInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantInteractor;
-import com.picone.core.domain.interactors.usersInteractors.GetUserInteractor;
+import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
+import com.picone.core.domain.interactors.usersInteractors.UpdateUserChosenRestaurantInteractor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,8 +71,8 @@ public final class coreModule {
     }
 
     @Provides
-    static GetUserInteractor provideGetUser() {
-        return new GetUserInteractor(provideUserDataSource());
+    static GetCurrentUserForEmailInteractor provideGetCurrentUserForEmail() {
+        return new GetCurrentUserForEmailInteractor(provideUserDataSource());
     }
 
     @Provides
@@ -79,6 +80,10 @@ public final class coreModule {
         return new AddUserInteractor(provideUserDataSource());
     }
 
+    @Provides
+    static UpdateUserChosenRestaurantInteractor provideUpdateUserChosenRestaurant(){
+        return new UpdateUserChosenRestaurantInteractor(provideUserDataSource());
+    }
     //restaurant interactors
     @Provides
     static GetAllRestaurantsInteractor provideGetAllRestaurants() {
@@ -87,6 +92,6 @@ public final class coreModule {
 
     @Provides
     static GetRestaurantInteractor provideGetRestaurant() {
-        return new GetRestaurantInteractor(provideRestaurantDataSource());
+        return new GetRestaurantInteractor(provideRestaurantDataSource(),provideGenerateRestaurant());
     }
 }
