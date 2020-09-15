@@ -42,6 +42,7 @@ public class RestaurantDetailFragment extends BaseFragment {
                 public void onChanged(Restaurant restaurant) {
                     mRestaurantViewModel.getRestaurantForName(restaurant.getName());
                     mRestaurantViewModel.addRestaurant(restaurant);
+                    mRestaurantViewModel.updateUserChosenRestaurant();
 
                     Log.i(TAG, "onChanged: selected restaurant exist");
                 }

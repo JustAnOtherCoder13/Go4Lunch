@@ -2,6 +2,7 @@ package com.picone.core.data.repository;
 
 import com.google.firebase.database.FirebaseDatabase;
 import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.entity.UserDailySchedule;
 
 import java.util.List;
 
@@ -36,5 +37,9 @@ public class RestaurantRepository {
 
     public Completable addRestaurant (Restaurant restaurant) {
         return restaurantDao.addRestaurant(restaurant);
+    }
+
+    public Completable updateUserChosenRestaurant(String currentUserEmail, UserDailySchedule userDailySchedule){
+        return restaurantDao.updateUserChosenRestaurant(currentUserEmail,userDailySchedule);
     }
     }

@@ -11,10 +11,12 @@ import androidx.lifecycle.ViewModel;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.RestaurantDailySchedule;
 import com.picone.core.domain.entity.User;
+import com.picone.core.domain.entity.UserDailySchedule;
 import com.picone.core.domain.interactors.restaurantsInteractors.AddRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetAllRestaurantsInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForNameInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.UpdateUserChosenRestaurantInteractor;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,15 +51,17 @@ public class RestaurantViewModel extends ViewModel {
     private GetRestaurantInteractor getRestaurant;
     private GetRestaurantForNameInteractor getRestaurantForNameInteractor;
     private AddRestaurantInteractor addRestaurantInteractor;
+    private UpdateUserChosenRestaurantInteractor updateUserChosenRestaurantInteractor;
 
     @ViewModelInject
     public RestaurantViewModel(GetAllRestaurantsInteractor getAllRestaurantsInteractor
             , GetRestaurantInteractor getRestaurant, GetRestaurantForNameInteractor getRestaurantForNameInteractor
-            , AddRestaurantInteractor addRestaurantInteractor) {
+            , AddRestaurantInteractor addRestaurantInteractor, UpdateUserChosenRestaurantInteractor updateUserChosenRestaurantInteractor) {
         this.getAllRestaurantsInteractor = getAllRestaurantsInteractor;
         this.getRestaurant = getRestaurant;
         this.getRestaurantForNameInteractor = getRestaurantForNameInteractor;
         this.addRestaurantInteractor = addRestaurantInteractor;
+        this.updateUserChosenRestaurantInteractor = updateUserChosenRestaurantInteractor;
     }
 
     public LiveData<User> getCurrentUser = _currentUser;
@@ -150,6 +154,38 @@ public class RestaurantViewModel extends ViewModel {
                 });
     }
 
+    public void updateUserChosenRestaurant(){
+
+        try {
+            today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(MY_DAY_OF_MONTH + "/" + MY_MONTH + "/" + MY_YEAR);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String date = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(today);
+        UserDailySchedule dailySchedule = new UserDailySchedule(date, "abc");
+
+        assert _currentUser.getValue() != null:"_current user not set yet";
+        updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(_currentUser.getValue().getEmail(),dailySchedule)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new CompletableObserver() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onComplete() {
+                Log.i("TAG", "onComplete: updateUserComplete");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+        });
+
+    }
 
     public void setSelectedRestaurant(int position) {
         selectedRestaurantMutableLiveData.setValue(getRestaurant.getRestaurant(position));
