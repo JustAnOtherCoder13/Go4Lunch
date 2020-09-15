@@ -55,9 +55,9 @@ public class AuthenticationFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initAuthenticationAborted();
-        mUserViewModel.getCurrentUser().observe(getViewLifecycleOwner(), currentUser -> {
+        mUserViewModel.getCurrentUser.observe(getViewLifecycleOwner(), currentUser -> {
             if (isNewUser) mUserViewModel.addUser(currentUser);
-            mUserViewModel.getAddUserState().observe(getViewLifecycleOwner(), addUserState -> {
+            mUserViewModel.getAddUserState.observe(getViewLifecycleOwner(), addUserState -> {
                 if (addUserState == UserViewModel.AddUserState.ON_COMPLETE){
                     mNavController.navigateUp();
                 }

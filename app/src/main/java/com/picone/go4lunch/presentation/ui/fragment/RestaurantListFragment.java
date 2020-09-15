@@ -50,8 +50,7 @@ public class RestaurantListFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mUserViewModel.getCurrentUserForEmail(mAuth.getCurrentUser().getEmail()).observe(getViewLifecycleOwner(),
-                user -> mRestaurantViewModel.setCurrentUser(user));
+        mRestaurantViewModel.getCurrentUserForEmail(mAuth.getCurrentUser().getEmail());
     }
 
     private void initRecyclerView() {

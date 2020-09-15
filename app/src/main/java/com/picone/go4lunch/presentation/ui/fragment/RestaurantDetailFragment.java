@@ -36,16 +36,15 @@ public class RestaurantDetailFragment extends BaseFragment {
         mBinding = FragmentRestaurantDetailBinding.inflate(inflater, container, false);
         initRecyclerView();
         showAppBars(false);
-        mBinding.checkIfSelectedDetailFab.setOnClickListener(v -> {
-            mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(),
-                    restaurant -> {
-                //mRestaurantViewModel.getRestaurantForName(restaurant.getName());
-                mRestaurantViewModel.addRestaurant(restaurant);
-               // mRestaurantViewModel.updateUserChosenRestaurant();
 
-                Log.i(TAG, "onChanged: selected restaurant exist");
-            });
-        });
+        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(),
+                restaurant -> {
+                    mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
+                    mBinding.checkIfSelectedDetailFab.setOnClickListener(v -> {
+                        mRestaurantViewModel.addRestaurant(restaurant);
+                        Log.i(TAG, "onChanged: selected restaurant exist");
+                    });
+                });
         return mBinding.getRoot();
     }
 

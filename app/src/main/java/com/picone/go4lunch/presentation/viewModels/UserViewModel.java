@@ -10,13 +10,11 @@ import androidx.lifecycle.ViewModel;
 import com.picone.core.domain.entity.User;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
-import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetUserInteractor;
 
 import java.util.List;
 
 import io.reactivex.CompletableObserver;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -29,34 +27,34 @@ public class UserViewModel extends ViewModel {
     }
 
     private MutableLiveData<AddUserState> addUserStateMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<User>> usersMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<User>> allUsersMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
-    private GetAllUsersInteractor getAllUsersInteractor;
-    private GetUserInteractor getUserInteractor;
+
     private AddUserInteractor addUserInteractor;
-    private GetCurrentUserForEmailInteractor getCurrentUserForEmailInteractor;
 
 
+    //suppress warning is safe cause subscribe is used to set allUsersMutableLiveData
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     @ViewModelInject
     public UserViewModel(GetAllUsersInteractor getAllUsersInteractor, GetUserInteractor getUserInteractor,
-                         AddUserInteractor addUserInteractor, GetCurrentUserForEmailInteractor getCurrentUserForEmailInteractor) {
-        this.getAllUsersInteractor = getAllUsersInteractor;
-        this.getUserInteractor = getUserInteractor;
+                         AddUserInteractor addUserInteractor) {
         this.addUserInteractor = addUserInteractor;
-        this.getCurrentUserForEmailInteractor = getCurrentUserForEmailInteractor;
         getAllUsersInteractor.getAllUsers()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(users -> usersMutableLiveData.setValue(users));
+                .subscribe(users -> allUsersMutableLiveData.setValue(users));
     }
 
 
-    public LiveData<List<User>> getAllUsers = usersMutableLiveData;
+    public LiveData<List<User>> getAllUsers = allUsersMutableLiveData;
 
-    public User getUser(int position) {
-        return getUserInteractor.getUser(position);
+    public LiveData<User> getCurrentUser = userMutableLiveData;
+
+    public LiveData<AddUserState> getAddUserState = addUserStateMutableLiveData;
+
+    public void setCurrentUser(String uid, String name, String email, String avatar) {
+        userMutableLiveData.setValue(new User(uid, name, email, avatar, null));
     }
 
     public void addUser(User user) {
@@ -78,26 +76,6 @@ public class UserViewModel extends ViewModel {
                         addUserStateMutableLiveData.setValue(AddUserState.ON_ERROR);
                     }
                 });
-    }
-
-    public void setCurrentUser(String uid, String name, String email, String avatar) {
-        userMutableLiveData.setValue(new User(uid, name, email, avatar,null));
-    }
-
-    public LiveData<User> getCurrentUserForEmail(String authUserEmail){
-        getCurrentUserForEmailInteractor.getCurrentUserForEmail(authUserEmail)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(users -> {userMutableLiveData.setValue(users.get(0));});
-        return userMutableLiveData;
-    }
-
-    public LiveData<User> getCurrentUser() {
-        return userMutableLiveData;
-    }
-
-    public LiveData<AddUserState> getAddUserState() {
-        return addUserStateMutableLiveData;
     }
 
 }
