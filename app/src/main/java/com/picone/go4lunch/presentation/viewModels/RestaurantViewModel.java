@@ -1,5 +1,6 @@
 package com.picone.go4lunch.presentation.viewModels;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import androidx.hilt.lifecycle.ViewModelInject;
@@ -40,8 +41,6 @@ public class RestaurantViewModel extends ViewModel {
     private Date today;
 
 
-
-
     private MutableLiveData<User> _currentUser = new MutableLiveData<>();
     private MutableLiveData<Restaurant> selectedRestaurantMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Restaurant> persistedRestaurantMutableLiveData = new MutableLiveData<>();
@@ -54,12 +53,16 @@ public class RestaurantViewModel extends ViewModel {
     @ViewModelInject
     public RestaurantViewModel(GetAllRestaurantsInteractor getAllRestaurantsInteractor
             , GetRestaurantInteractor getRestaurant, GetRestaurantForNameInteractor getRestaurantForNameInteractor
-    ,AddRestaurantInteractor addRestaurantInteractor) {
+            , AddRestaurantInteractor addRestaurantInteractor) {
         this.getAllRestaurantsInteractor = getAllRestaurantsInteractor;
         this.getRestaurant = getRestaurant;
         this.getRestaurantForNameInteractor = getRestaurantForNameInteractor;
         this.addRestaurantInteractor = addRestaurantInteractor;
     }
+
+    public LiveData<User> getCurrentUser = _currentUser;
+
+    public void setCurrentUser (User currentUser){_currentUser.setValue(currentUser);}
 
     public List<Restaurant> getAllRestaurants() {
         return getAllRestaurantsInteractor.getGeneratedRestaurants();
@@ -67,7 +70,7 @@ public class RestaurantViewModel extends ViewModel {
 
     public LiveData<Restaurant> getSelectedRestaurant = selectedRestaurantMutableLiveData;
 
-    public void getRestaurantForName(String restaurantName){
+    public void getRestaurantForName(String restaurantName) {
         getRestaurantForNameInteractor.getRestaurantForName(restaurantName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -79,10 +82,12 @@ public class RestaurantViewModel extends ViewModel {
 
                     @Override
                     public void onNext(List<Restaurant> restaurants) {
-                        if (restaurants.isEmpty()) {Log.i("TAG", "onNext: restaurant not exist"+restaurants);}
-                        else{
+                        if (restaurants.isEmpty()) {
+                            Log.i("TAG", "onNext: restaurant not exist" + restaurants);
+                        } else {
                             persistedRestaurantMutableLiveData.setValue(restaurants.get(0));
-                            Log.i("TAG", "onNext: restaurant exist"+restaurants.get(0));}
+                            Log.i("TAG", "onNext: restaurant exist" + restaurants.get(0));
+                        }
 
                     }
 
@@ -99,73 +104,54 @@ public class RestaurantViewModel extends ViewModel {
     }
 
 
-    public void addRestaurant(Restaurant restaurant){
-
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    public void addRestaurant(Restaurant restaurant) {
 
         getRestaurantForNameInteractor.getRestaurantForName(restaurant.getName())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Restaurant>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+                .subscribe(restaurants -> {
 
+                    if (restaurants.isEmpty()) {
+                        try {
+                            today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(MY_DAY_OF_MONTH + "/" + MY_MONTH + "/" + MY_YEAR);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        String date = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(today);
+                        RestaurantDailySchedule dailySchedule = new RestaurantDailySchedule(date, new ArrayList<>());
+                        restaurant.setRestaurantDailySchedule(dailySchedule);
+                        Log.i("TAG", "onNext: restaurant not exist" + restaurants + " " + dailySchedule);
+                        addRestaurantInteractor.addRestaurant(restaurant)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new CompletableObserver() {
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
+
+                                    }
+
+                                    @Override
+                                    public void onComplete() {
+                                        Log.i("TAG", "onComplete: restaurant added");
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+
+                                    }
+                                });
+                    } else {
+                        persistedRestaurantMutableLiveData.setValue(restaurants.get(0));
+                        Log.i("TAG", "onNext: restaurant exist" + restaurants.get(0));
                     }
 
-                    @Override
-                    public void onNext(List<Restaurant> restaurants) {
-                        if (restaurants.isEmpty()) {
-                            try {
-                                today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(MY_DAY_OF_MONTH + "/" + MY_MONTH + "/" + MY_YEAR);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            String date = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(today);
-                            RestaurantDailySchedule dailySchedule = new RestaurantDailySchedule(date,new ArrayList<>());
-                            restaurant.setRestaurantDailySchedule(dailySchedule);
-                            Log.i("TAG", "onNext: restaurant not exist"+restaurants+" "+dailySchedule);
-                            addRestaurantInteractor.addRestaurant(restaurant)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new CompletableObserver() {
-                                        @Override
-                                        public void onSubscribe(Disposable d) {
-
-                                        }
-
-                                        @Override
-                                        public void onComplete() {
-                                            Log.i("TAG", "onComplete: restaurant added");
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable e) {
-
-                                        }
-                                    });
-                            }
-                        else{
-                            persistedRestaurantMutableLiveData.setValue(restaurants.get(0));
-                            Log.i("TAG", "onNext: restaurant exist"+restaurants.get(0));}
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
                 });
-
-        /**/
     }
 
 
-
-    public void setSelectedRestaurant (int position){
+    public void setSelectedRestaurant(int position) {
         selectedRestaurantMutableLiveData.setValue(getRestaurant.getRestaurant(position));
     }
 

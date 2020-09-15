@@ -12,6 +12,7 @@ import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetAllRestaurantsInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantInteractor;
+import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetUserInteractor;
 
 import java.util.ArrayList;
@@ -81,6 +82,10 @@ public final class coreModule {
         return new AddUserInteractor(provideUserDataSource());
     }
 
+    @Provides
+    static GetCurrentUserForEmailInteractor provideGetUserForEmail(){
+        return new GetCurrentUserForEmailInteractor(provideUserDataSource());
+    }
     //restaurant interactors
     @Provides
     static GetAllRestaurantsInteractor provideGetAllRestaurants() {

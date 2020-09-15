@@ -1,17 +1,20 @@
 package com.picone.go4lunch.presentation.ui.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentListBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
@@ -19,6 +22,7 @@ import com.picone.go4lunch.presentation.ui.fragment.adapters.RestaurantListRecyc
 import com.picone.go4lunch.presentation.ui.utils.RecyclerViewItemClickUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class RestaurantListFragment extends BaseFragment {
@@ -41,9 +45,13 @@ public class RestaurantListFragment extends BaseFragment {
         return mBinding.getRoot();
     }
 
+    @SuppressWarnings("ConstantConditions")
+    //mAuth.getCurrentUser().getEmail() can't be null cause needed to enter the app
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mUserViewModel.getCurrentUserForEmail(mAuth.getCurrentUser().getEmail()).observe(getViewLifecycleOwner(),
+                user -> mRestaurantViewModel.setCurrentUser(user));
     }
 
     private void initRecyclerView() {

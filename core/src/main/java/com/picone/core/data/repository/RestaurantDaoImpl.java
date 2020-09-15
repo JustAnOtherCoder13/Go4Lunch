@@ -36,11 +36,13 @@ public class RestaurantDaoImpl implements RestaurantDao{
         return null;
     }
 
+    @Override
     public Observable <List<Restaurant>> getRestaurantForName(String restaurantName){
         Query query = restaurantsDataBaseReference.orderByChild("name").equalTo(restaurantName);
-        return RxFirebaseDatabase.observeValueEvent(query, DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
+        return RxFirebaseDatabase.observeSingleValueEvent(query, DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
     }
 
+    @Override
     public Completable addRestaurant (Restaurant restaurant){
         restaurant.setKey(restaurantsDataBaseReference.child(restaurant.getName()).push().getKey());
         return RxFirebaseDatabase.setValue(restaurantsDataBaseReference

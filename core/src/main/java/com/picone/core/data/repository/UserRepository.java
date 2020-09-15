@@ -13,11 +13,11 @@ import io.reactivex.Observable;
 public class UserRepository {
 
     @Inject
-    public UserDao userDao;
+    public UserDaoImpl userDao;
     @Inject
     public FirebaseDatabase dataBase;
 
-    public UserRepository(FirebaseDatabase dataBase, UserDao dao) {
+    public UserRepository(FirebaseDatabase dataBase, UserDaoImpl dao) {
         this.dataBase = dataBase;
         userDao = dao;
     }
@@ -32,6 +32,10 @@ public class UserRepository {
 
     public Completable addUser(User user) {
         return userDao.AddUser(user);
+    }
+
+    public Observable<List<User>> getCurrentUserForEmail (String authUserEmail){
+        return userDao.getCurrentUserForEmail(authUserEmail);
     }
 
 
