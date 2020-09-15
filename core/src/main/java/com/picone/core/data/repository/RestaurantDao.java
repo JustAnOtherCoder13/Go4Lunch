@@ -16,6 +16,8 @@ public interface RestaurantDao {
 
     Observable<List<Restaurant>> getRestaurantForName(String restaurantName);
 
+    Observable<List<Restaurant>> getRestaurantForKey(String restaurantKey);
+
     Completable addRestaurant(Restaurant restaurant);
 
     Completable updateUserChosenRestaurant(String currentUserEmail, UserDailySchedule userDailySchedule);

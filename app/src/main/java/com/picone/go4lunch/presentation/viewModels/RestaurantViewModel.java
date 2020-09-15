@@ -13,7 +13,10 @@ import com.picone.core.domain.entity.RestaurantDailySchedule;
 import com.picone.core.domain.entity.User;
 import com.picone.core.domain.entity.UserDailySchedule;
 import com.picone.core.domain.interactors.restaurantsInteractors.AddRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.AddUserToRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.DeleteUserFromRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetAllRestaurantsInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForKeyInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForNameInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.UpdateUserChosenRestaurantInteractor;
@@ -28,6 +31,7 @@ import java.util.List;
 import java.util.Locale;
 
 import io.reactivex.CompletableObserver;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -50,47 +54,58 @@ public class RestaurantViewModel extends ViewModel {
     private AddRestaurantInteractor addRestaurantInteractor;
     private UpdateUserChosenRestaurantInteractor updateUserChosenRestaurantInteractor;
     private GetCurrentUserForEmailInteractor getCurrentUserForEmailInteractor;
+    private GetRestaurantForKeyInteractor getRestaurantForKeyInteractor;
+    private AddUserToRestaurantInteractor addUserToRestaurantInteractor;
+    private DeleteUserFromRestaurantInteractor deleteUserFromRestaurantInteractor;
 
 
     @ViewModelInject
     public RestaurantViewModel(GetAllRestaurantsInteractor getAllRestaurantsInteractor
             , GetRestaurantInteractor getRestaurant, GetRestaurantForNameInteractor getRestaurantForNameInteractor
             , AddRestaurantInteractor addRestaurantInteractor, UpdateUserChosenRestaurantInteractor updateUserChosenRestaurantInteractor
-            , GetCurrentUserForEmailInteractor getCurrentUserForEmailInteractor) {
+            , GetCurrentUserForEmailInteractor getCurrentUserForEmailInteractor, GetRestaurantForKeyInteractor getRestaurantForKeyInteractor
+            , AddUserToRestaurantInteractor addUserToRestaurantInteractor, DeleteUserFromRestaurantInteractor deleteUserFromRestaurantInteractor) {
         this.getAllRestaurantsInteractor = getAllRestaurantsInteractor;
         this.getRestaurant = getRestaurant;
         this.getRestaurantForNameInteractor = getRestaurantForNameInteractor;
         this.addRestaurantInteractor = addRestaurantInteractor;
         this.updateUserChosenRestaurantInteractor = updateUserChosenRestaurantInteractor;
         this.getCurrentUserForEmailInteractor = getCurrentUserForEmailInteractor;
+        this.getRestaurantForKeyInteractor = getRestaurantForKeyInteractor;
+        this.addUserToRestaurantInteractor = addUserToRestaurantInteractor;
+        this.deleteUserFromRestaurantInteractor = deleteUserFromRestaurantInteractor;
         setDate();
     }
 
-
-    public void setSelectedRestaurant(int position) { selectedRestaurantMutableLiveData.setValue(getRestaurant.getRestaurant(position)); }
+    public void setSelectedRestaurant(int position) {
+        selectedRestaurantMutableLiveData.setValue(getRestaurant.getRestaurant(position));
+    }
 
     public LiveData<Restaurant> getSelectedRestaurant = selectedRestaurantMutableLiveData;
 
-    public List<Restaurant> getAllRestaurants() { return getAllRestaurantsInteractor.getGeneratedRestaurants();}
+    public List<Restaurant> getAllRestaurants() {
+        return getAllRestaurantsInteractor.getGeneratedRestaurants();
+    }
 
     //Suppress warning is safe cause current user can't be nul, already set in restaurantListFragment
-    //And subscribe is used to check if restaurant is persisted.
+    //And subscribe is used to check if User has already set a restaurant.
     @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
     @SuppressLint("CheckResult")
     public void addRestaurant(Restaurant restaurant) {
         if (currentUserMutableLiveData.getValue().getUserDailySchedule() != null) {
-            Log.i("TAG", "updateUserChosenRestaurant: user have chose restaurant" + currentUserMutableLiveData.getValue().getUserDailySchedule().getRestaurantKey());
-        } else {
-            getRestaurantForNameInteractor.getRestaurantForName(restaurant.getName())
+            getRestaurantForKeyInteractor.getRestaurantForKey(currentUserMutableLiveData.getValue().getUserDailySchedule().getRestaurantKey())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(restaurants -> {
-                        if (restaurants.isEmpty()) {
-                            addRestaurantWhenNotPersisted(restaurant);
+                    .subscribe(restaurantsForKey -> {
+                        Restaurant originalChosenRestaurant = restaurantsForKey.get(0);
+                        if (originalChosenRestaurant.getName().equals(selectedRestaurantMutableLiveData.getValue().getName())) {
+                            Log.i("TAG", "addRestaurant: same restaurant");
                         } else {
-                            Log.i("TAG", "onNext: restaurant exist" + restaurants.get(0));
+                            checkIfRestaurantExistAndUpdateReservation(restaurant);
                         }
                     });
+        } else {
+            checkIfRestaurantExistAndUpdateReservation(restaurant);
         }
     }
 
@@ -104,26 +119,19 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribe(users -> currentUserMutableLiveData.setValue(users.get(0)));
     }
 
-    //Suppress warning is safe cause currentUser can't be null, already set in restaurantListFragment
-    @SuppressWarnings("ConstantConditions")
-    private void updateUserChosenRestaurant(String restaurantKey) {
-        updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(currentUserMutableLiveData.getValue().getEmail(), new UserDailySchedule(DATE, restaurantKey))
+    //Suppress warning is safe cause subscribe is used to check if restaurant exist in db
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    private void checkIfRestaurantExistAndUpdateReservation(Restaurant restaurant) {
+        getRestaurantForNameInteractor.getRestaurantForName(restaurant.getName())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.i("TAG", "onComplete: updateUserComplete");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
+                .subscribe(restaurantsForName -> {
+                    if (restaurantsForName.isEmpty()) {
+                        addRestaurantWhenNotPersisted(restaurant);
+                    } else {
+                        Log.i("TAG", "onNext: restaurant exist" + restaurantsForName.get(0));
+                        updateUserForRestaurant(restaurant, restaurantsForName.get(0).getKey());
                     }
                 });
     }
@@ -141,8 +149,46 @@ public class RestaurantViewModel extends ViewModel {
 
                     @Override
                     public void onComplete() {
-                        updateUserChosenRestaurant(restaurant.getKey());
                         Log.i("TAG", "onComplete: restaurant added");
+                        updateUserForRestaurant(restaurant, restaurant.getKey());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
+    }
+
+    private void updateUserForRestaurant(Restaurant restaurant, String restaurantKey) {
+        addUserToRestaurantInteractor.addCurrentUserToRestaurant(currentUserMutableLiveData.getValue(), restaurant.getName())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) { }
+                    //Suppress Warning is safe cause current user can't be null.
+                    @SuppressWarnings("ConstantConditions")
+                    @Override
+                    public void onComplete() {
+                        updateUserChosenRestaurantInteractor.updateUserChosenRestaurant
+                                (currentUserMutableLiveData.getValue().getEmail(), new UserDailySchedule(DATE, restaurantKey))
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new CompletableObserver() {
+                                    @Override
+                                    public void onSubscribe(Disposable d) { }
+
+                                    @Override
+                                    public void onComplete() {
+                                        Log.i("TAG", "onComplete: updateUserComplete");
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+
+                                    }
+                                });
                     }
 
                     @Override

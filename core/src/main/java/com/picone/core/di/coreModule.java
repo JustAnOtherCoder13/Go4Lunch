@@ -7,6 +7,9 @@ import com.picone.core.data.repository.UserDaoImpl;
 import com.picone.core.data.repository.UserRepository;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.interactors.restaurantsInteractors.AddRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.AddUserToRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.DeleteUserFromRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForKeyInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForNameInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.UpdateUserChosenRestaurantInteractor;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
@@ -109,7 +112,22 @@ public final class coreModule {
     }
 
     @Provides
-    UpdateUserChosenRestaurantInteractor provideUpdateUserChosenRestaurant(){
+    static UpdateUserChosenRestaurantInteractor provideUpdateUserChosenRestaurant(){
         return new UpdateUserChosenRestaurantInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static GetRestaurantForKeyInteractor provideGetRestaurantForKey(){
+        return new GetRestaurantForKeyInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static AddUserToRestaurantInteractor provideAddUserToRestaurant(){
+        return new AddUserToRestaurantInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static DeleteUserFromRestaurantInteractor provideDeleteUserFromRestaurant(){
+        return  new DeleteUserFromRestaurantInteractor(provideRestaurantDataSource());
     }
 }

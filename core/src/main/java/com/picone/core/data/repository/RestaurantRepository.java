@@ -2,12 +2,14 @@ package com.picone.core.data.repository;
 
 import com.google.firebase.database.FirebaseDatabase;
 import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.entity.User;
 import com.picone.core.domain.entity.UserDailySchedule;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import durdinapps.rxfirebase2.RxFirebaseDatabase;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 
@@ -18,7 +20,7 @@ public class RestaurantRepository {
     @Inject
     public FirebaseDatabase dataBase;
 
-    public RestaurantRepository(FirebaseDatabase dataBase,RestaurantDaoImpl dao) {
+    public RestaurantRepository(FirebaseDatabase dataBase, RestaurantDaoImpl dao) {
         this.dataBase = dataBase;
         restaurantDao = dao;
     }
@@ -35,11 +37,23 @@ public class RestaurantRepository {
         return restaurantDao.getRestaurantForName(restaurantName);
     }
 
-    public Completable addRestaurant (Restaurant restaurant) {
+    public Completable addRestaurant(Restaurant restaurant) {
         return restaurantDao.addRestaurant(restaurant);
     }
 
-    public Completable updateUserChosenRestaurant(String currentUserEmail, UserDailySchedule userDailySchedule){
-        return restaurantDao.updateUserChosenRestaurant(currentUserEmail,userDailySchedule);
+    public Completable updateUserChosenRestaurant(String currentUserEmail, UserDailySchedule userDailySchedule) {
+        return restaurantDao.updateUserChosenRestaurant(currentUserEmail, userDailySchedule);
     }
+
+    public Observable<List<Restaurant>> getRestaurantForKey(String restaurantKey) {
+        return restaurantDao.getRestaurantForKey(restaurantKey);
     }
+
+    public Completable addCurrentUserToRestaurant(User currentUser, String restaurantName){
+        return restaurantDao.addCurrentUserToRestaurant(currentUser, restaurantName);
+    }
+
+    public Completable deleteCurrentUserFromRestaurant(String currentUserName, String originalChosenRestaurantName) {
+        return restaurantDao.deleteCurrentUserFromRestaurant(currentUserName, originalChosenRestaurantName);
+    }
+}

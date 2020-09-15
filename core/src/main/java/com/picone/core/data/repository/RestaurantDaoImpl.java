@@ -13,6 +13,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.entity.User;
 import com.picone.core.domain.entity.UserDailySchedule;
 
 import java.util.List;
@@ -55,6 +56,12 @@ public class RestaurantDaoImpl implements RestaurantDao {
     }
 
     @Override
+    public Observable<List<Restaurant>> getRestaurantForKey(String restaurantKey){
+        Query query = restaurantsDataBaseReference.orderByChild("key").equalTo(restaurantKey);
+        return RxFirebaseDatabase.observeValueEvent(query, DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
+    }
+
+    @Override
     public Completable addRestaurant(Restaurant restaurant) {
         restaurant.setKey(restaurantsDataBaseReference.child(restaurant.getName()).push().getKey());
         return RxFirebaseDatabase.setValue(restaurantsDataBaseReference
@@ -86,5 +93,15 @@ public class RestaurantDaoImpl implements RestaurantDao {
 
                     }
                 }));
+    }
+
+    public Completable addCurrentUserToRestaurant(User currentUser, String restaurantName){
+        return  RxFirebaseDatabase.setValue(restaurantsDataBaseReference.child(restaurantName)
+                .child("restaurantDailySchedule").child(currentUser.getName()),currentUser);
+    }
+
+    public Completable deleteCurrentUserFromRestaurant(String currentUserName, String originalChosenRestaurantName){
+        return  RxFirebaseDatabase.setValue(restaurantsDataBaseReference.child(originalChosenRestaurantName)
+                .child("restaurantDailySchedule").child(currentUserName),null);
     }
 }
