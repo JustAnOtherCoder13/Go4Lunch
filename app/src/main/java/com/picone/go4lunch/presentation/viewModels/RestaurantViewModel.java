@@ -117,7 +117,7 @@ public class RestaurantViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(restaurants -> {
 
-                    if (restaurants.isEmpty()) {
+                    if (restaurants.isEmpty() ) {
                         try {
                             today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(MY_DAY_OF_MONTH + "/" + MY_MONTH + "/" + MY_YEAR);
                         } catch (ParseException e) {
@@ -138,6 +138,7 @@ public class RestaurantViewModel extends ViewModel {
 
                                     @Override
                                     public void onComplete() {
+                                        updateUserChosenRestaurant(restaurant.getKey(),today);
                                         Log.i("TAG", "onComplete: restaurant added");
                                     }
 
@@ -154,15 +155,15 @@ public class RestaurantViewModel extends ViewModel {
                 });
     }
 
-    public void updateUserChosenRestaurant(){
+    public void updateUserChosenRestaurant(String restaurantKey,Date today){
 
-        try {
+       /* try {
             today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(MY_DAY_OF_MONTH + "/" + MY_MONTH + "/" + MY_YEAR);
         } catch (ParseException e) {
             e.printStackTrace();
-        }
+        }*/
         String date = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(today);
-        UserDailySchedule dailySchedule = new UserDailySchedule(date, "abc");
+        UserDailySchedule dailySchedule = new UserDailySchedule(date,restaurantKey);
 
         assert _currentUser.getValue() != null:"_current user not set yet";
         updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(_currentUser.getValue().getEmail(),dailySchedule)

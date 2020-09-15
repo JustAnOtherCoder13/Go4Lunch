@@ -51,7 +51,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
     @Override
     public Observable<List<Restaurant>> getRestaurantForName(String restaurantName) {
         Query query = restaurantsDataBaseReference.orderByChild("name").equalTo(restaurantName);
-        return RxFirebaseDatabase.observeSingleValueEvent(query, DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
+        return RxFirebaseDatabase.observeValueEvent(query, DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
     }
 
     @Override
@@ -69,7 +69,6 @@ public class RestaurantDaoImpl implements RestaurantDao {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            Log.i("TAG", "onDataChange: dataSnapshot" + dataSnapshot.getValue());
                             dataSnapshot.getRef().child("userDailySchedule").setValue(userDailySchedule)
                                     .addOnSuccessListener(
                                             aVoid -> emitter.onComplete())
