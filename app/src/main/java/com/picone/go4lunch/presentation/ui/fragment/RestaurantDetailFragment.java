@@ -40,6 +40,7 @@ public class RestaurantDetailFragment extends BaseFragment {
             mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), new Observer<Restaurant>() {
                 @Override
                 public void onChanged(Restaurant restaurant) {
+                    mRestaurantViewModel.getRestaurantForName(restaurant.getName());
                     mRestaurantViewModel.addRestaurant(restaurant);
 
                     Log.i(TAG, "onChanged: selected restaurant exist");

@@ -30,7 +30,7 @@ public class RestaurantRepository {
         return restaurantDao.getRestaurant(position);
     }
 
-    public Observable<Restaurant> getRestaurantForName(String restaurantName) {
+    public Observable<List<Restaurant>> getRestaurantForName(String restaurantName) {
         return restaurantDao.getRestaurantForName(restaurantName);
     }
 
