@@ -6,6 +6,8 @@ import com.picone.core.data.repository.RestaurantRepository;
 import com.picone.core.data.repository.UserDaoImpl;
 import com.picone.core.data.repository.UserRepository;
 import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.interactors.restaurantsInteractors.AddRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForNameInteractor;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetAllRestaurantsInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
@@ -87,6 +89,16 @@ public final class coreModule {
 
     @Provides
     static GetRestaurantInteractor provideGetRestaurant() {
-        return new GetRestaurantInteractor(provideRestaurantDataSource());
+        return new GetRestaurantInteractor(provideRestaurantDataSource(),provideGenerateRestaurant());
+    }
+
+    @Provides
+    static GetRestaurantForNameInteractor provideGetRestaurantForName(){
+        return new GetRestaurantForNameInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static AddRestaurantInteractor provideAddRestaurant(){
+        return new AddRestaurantInteractor(provideRestaurantDataSource());
     }
 }

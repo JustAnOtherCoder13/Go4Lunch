@@ -72,8 +72,8 @@ public abstract class BaseFragment extends Fragment {
 
     private void initVariables() {
         mLoginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
-        mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
+        mUserViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        mRestaurantViewModel = new ViewModelProvider(requireActivity()).get(RestaurantViewModel.class);
     }
 
     protected void showAppBars(boolean isVisible) {
