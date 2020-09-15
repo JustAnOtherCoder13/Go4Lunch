@@ -61,6 +61,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
                 .child(restaurant.getName()), restaurant);
     }
 
+    @Override
     public Completable updateUserChosenRestaurant(String currentUserEmail, UserDailySchedule userDailySchedule) {
         Query query = database.getReference().child("users").orderByChild("email").equalTo(currentUserEmail);
 

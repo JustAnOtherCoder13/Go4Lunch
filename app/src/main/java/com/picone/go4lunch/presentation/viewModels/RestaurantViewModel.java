@@ -66,7 +66,9 @@ public class RestaurantViewModel extends ViewModel {
 
     public LiveData<User> getCurrentUser = _currentUser;
 
-    public void setCurrentUser (User currentUser){_currentUser.setValue(currentUser);}
+    public void setCurrentUser(User currentUser) {
+        _currentUser.setValue(currentUser);
+    }
 
     public List<Restaurant> getAllRestaurants() {
         return getAllRestaurantsInteractor.getGeneratedRestaurants();
@@ -74,50 +76,21 @@ public class RestaurantViewModel extends ViewModel {
 
     public LiveData<Restaurant> getSelectedRestaurant = selectedRestaurantMutableLiveData;
 
-    public void getRestaurantForName(String restaurantName) {
-        getRestaurantForNameInteractor.getRestaurantForName(restaurantName)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Restaurant>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(List<Restaurant> restaurants) {
-                        if (restaurants.isEmpty()) {
-                            Log.i("TAG", "onNext: restaurant not exist" + restaurants);
-                        } else {
-                            persistedRestaurantMutableLiveData.setValue(restaurants.get(0));
-                            Log.i("TAG", "onNext: restaurant exist" + restaurants.get(0));
-                        }
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
-
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void addRestaurant(Restaurant restaurant) {
+        if (_currentUser.getValue().getUserDailySchedule() != null) {
+            Log.i("TAG", "updateUserChosenRestaurant: user have chose restaurant" + _currentUser.getValue().getUserDailySchedule().getRestaurantKey());
+        }
+        else{
 
         getRestaurantForNameInteractor.getRestaurantForName(restaurant.getName())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(restaurants -> {
 
-                    if (restaurants.isEmpty() ) {
+                    if (restaurants.isEmpty()) {
                         try {
                             today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(MY_DAY_OF_MONTH + "/" + MY_MONTH + "/" + MY_YEAR);
                         } catch (ParseException e) {
@@ -138,7 +111,7 @@ public class RestaurantViewModel extends ViewModel {
 
                                     @Override
                                     public void onComplete() {
-                                        updateUserChosenRestaurant(restaurant.getKey(),today);
+                                        updateUserChosenRestaurant(restaurant.getKey(), today);
                                         Log.i("TAG", "onComplete: restaurant added");
                                     }
 
@@ -153,38 +126,34 @@ public class RestaurantViewModel extends ViewModel {
                     }
 
                 });
+        }
     }
 
-    public void updateUserChosenRestaurant(String restaurantKey,Date today){
+    public void updateUserChosenRestaurant(String restaurantKey, Date today) {
 
-       /* try {
-            today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(MY_DAY_OF_MONTH + "/" + MY_MONTH + "/" + MY_YEAR);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }*/
-        String date = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(today);
-        UserDailySchedule dailySchedule = new UserDailySchedule(date,restaurantKey);
+            String date = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(today);
+            UserDailySchedule dailySchedule = new UserDailySchedule(date, restaurantKey);
+            updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(_currentUser.getValue().getEmail(), dailySchedule)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new CompletableObserver() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-        assert _currentUser.getValue() != null:"_current user not set yet";
-        updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(_currentUser.getValue().getEmail(),dailySchedule)
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new CompletableObserver() {
-            @Override
-            public void onSubscribe(Disposable d) {
+                        }
 
-            }
+                        @Override
+                        public void onComplete() {
+                            Log.i("TAG", "onComplete: updateUserComplete");
+                        }
 
-            @Override
-            public void onComplete() {
-                Log.i("TAG", "onComplete: updateUserComplete");
-            }
+                        @Override
+                        public void onError(Throwable e) {
 
-            @Override
-            public void onError(Throwable e) {
+                        }
+                    });
 
-            }
-        });
+
 
     }
 

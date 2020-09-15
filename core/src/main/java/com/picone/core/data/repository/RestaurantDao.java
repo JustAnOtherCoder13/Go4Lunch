@@ -1,6 +1,7 @@
 package com.picone.core.data.repository;
 
 import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.entity.UserDailySchedule;
 
 import java.util.List;
 
@@ -15,5 +16,7 @@ public interface RestaurantDao {
 
     Observable<List<Restaurant>> getRestaurantForName(String restaurantName);
 
-    Completable addRestaurant (Restaurant restaurant);
+    Completable addRestaurant(Restaurant restaurant);
+
+    Completable updateUserChosenRestaurant(String currentUserEmail, UserDailySchedule userDailySchedule);
 }
