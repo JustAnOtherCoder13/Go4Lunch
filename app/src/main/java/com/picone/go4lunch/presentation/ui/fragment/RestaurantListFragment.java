@@ -1,34 +1,30 @@
 package com.picone.go4lunch.presentation.ui.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentListBinding;
-import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.RestaurantListRecyclerViewAdapter;
+import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import com.picone.go4lunch.presentation.ui.utils.RecyclerViewItemClickUtil;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 
 public class RestaurantListFragment extends BaseFragment {
 
     private FragmentListBinding mBinding;
-    private RestaurantListRecyclerViewAdapter mAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,20 +41,19 @@ public class RestaurantListFragment extends BaseFragment {
         return mBinding.getRoot();
     }
 
-    @SuppressWarnings("ConstantConditions")
-    //mAuth.getCurrentUser().getEmail() can't be null cause needed to enter the app
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mRestaurantViewModel.getCurrentUserForEmail(mAuth.getCurrentUser().getEmail());
+        mRestaurantViewModel.getCurrentUserForEmail(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail());
     }
 
     private void initRecyclerView() {
-        mAdapter = new RestaurantListRecyclerViewAdapter(new ArrayList<>());
+        RestaurantListRecyclerViewAdapter adapter = new RestaurantListRecyclerViewAdapter(new ArrayList<>());
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mBinding.recyclerViewListFragment.setLayoutManager(linearLayoutManager);
-        mBinding.recyclerViewListFragment.setAdapter(mAdapter);
-        mAdapter.updateRestaurants(mRestaurantViewModel.getAllRestaurants());
+        mBinding.recyclerViewListFragment.setAdapter(adapter);
+        adapter.updateRestaurants(mRestaurantViewModel.getAllRestaurants());
     }
     public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewListFragment, R.layout.fragment_list)

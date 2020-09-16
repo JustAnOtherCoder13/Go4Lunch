@@ -13,9 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.databinding.FragmentRestaurantDetailBinding;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.ColleagueRecyclerViewAdapter;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RestaurantDetailFragment extends BaseFragment {
 
@@ -37,18 +41,22 @@ public class RestaurantDetailFragment extends BaseFragment {
         initRecyclerView();
         showAppBars(false);
 
+        mRestaurantViewModel.getInterestedUsersForRestaurant.observe(getViewLifecycleOwner(),
+                users -> {
+                    mAdapter.updateUsers(users);
+                });
+
         mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(),
                 restaurant -> {
                     mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
-                    mBinding.checkIfSelectedDetailFab.setOnClickListener(v -> {
-                        mRestaurantViewModel.addRestaurant(restaurant);
-                        Log.i(TAG, "onChanged: selected restaurant exist");
-                    });
+                    mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
+                            mRestaurantViewModel.addRestaurant(restaurant));
                 });
         return mBinding.getRoot();
     }
 
     private void initRecyclerView() {
+        mAdapter = new ColleagueRecyclerViewAdapter(new ArrayList<>(), TAG);
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mBinding.recyclerViewRestaurantDetail.setLayoutManager(linearLayoutManager);
         mBinding.recyclerViewRestaurantDetail.setAdapter(mAdapter);

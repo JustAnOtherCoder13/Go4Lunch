@@ -13,9 +13,9 @@ import io.reactivex.Observable;
 public class UserRepository {
 
     @Inject
-    public UserDaoImpl userDao;
+    protected UserDaoImpl userDao;
     @Inject
-    public FirebaseDatabase dataBase;
+    protected FirebaseDatabase dataBase;
 
     public UserRepository(FirebaseDatabase dataBase, UserDaoImpl dao) {
         this.dataBase = dataBase;
@@ -36,6 +36,10 @@ public class UserRepository {
 
     public Observable<List<User>> getCurrentUserForEmail (String authUserEmail){
         return userDao.getCurrentUserForEmail(authUserEmail);
+    }
+
+    public Observable<List<User>> getInterestedUsersForRestaurantKey(String restaurantKey){
+        return userDao.getInterestedUsersForRestaurantKey(restaurantKey);
     }
 
 

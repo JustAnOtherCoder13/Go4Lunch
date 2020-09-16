@@ -17,6 +17,7 @@ import com.picone.core.domain.interactors.restaurantsInteractors.GetAllRestauran
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
+import com.picone.core.domain.interactors.usersInteractors.GetInterestedUsersForRestaurantKeyInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetUserInteractor;
 
 import java.util.ArrayList;
@@ -129,5 +130,10 @@ public final class coreModule {
     @Provides
     static DeleteUserFromRestaurantInteractor provideDeleteUserFromRestaurant(){
         return  new DeleteUserFromRestaurantInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static GetInterestedUsersForRestaurantKeyInteractor provideGetInterestedUsersForRestaurantKey(){
+        return  new GetInterestedUsersForRestaurantKeyInteractor(provideUserDataSource());
     }
 }
