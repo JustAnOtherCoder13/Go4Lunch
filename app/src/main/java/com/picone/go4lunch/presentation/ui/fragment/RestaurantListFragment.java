@@ -58,7 +58,7 @@ public class RestaurantListFragment extends BaseFragment {
     public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewListFragment, R.layout.fragment_list)
                 .setOnItemClickListener((recyclerView, position, v) -> {
-                    mRestaurantViewModel.setSelectedRestaurant(position);
+                    mRestaurantViewModel.initSelectedRestaurant(position);
                     NavController navController = Navigation.findNavController(v);
                     navController.navigate(R.id.restaurantDetailFragment);
                 });

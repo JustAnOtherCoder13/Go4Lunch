@@ -1,6 +1,7 @@
 package com.picone.core.data.repository;
 
 import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.entity.User;
 import com.picone.core.domain.entity.UserDailySchedule;
 
 import java.util.List;
@@ -20,5 +21,5 @@ public interface RestaurantDao {
 
     Completable addRestaurant(Restaurant restaurant);
 
-    Completable updateUserChosenRestaurant(String currentUserEmail, UserDailySchedule userDailySchedule);
+    Completable updateUserChosenRestaurant(User currentUser);
 }

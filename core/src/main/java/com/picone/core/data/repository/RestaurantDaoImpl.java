@@ -69,15 +69,15 @@ public class RestaurantDaoImpl implements RestaurantDao {
     }
 
     @Override
-    public Completable updateUserChosenRestaurant(String currentUserEmail, UserDailySchedule userDailySchedule) {
-        Query query = database.getReference().child("users").orderByChild("email").equalTo(currentUserEmail);
+    public Completable updateUserChosenRestaurant(User currentUser) {
+        Query query = database.getReference().child("users").orderByChild("email").equalTo(currentUser.getEmail());
 
         return Completable.create(emitter ->
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            dataSnapshot.getRef().child("userDailySchedule").setValue(userDailySchedule)
+                            dataSnapshot.getRef().child("userDailySchedule").setValue(currentUser.getUserDailySchedule())
                                     .addOnSuccessListener(
                                             aVoid -> emitter.onComplete())
                                     .addOnFailureListener(

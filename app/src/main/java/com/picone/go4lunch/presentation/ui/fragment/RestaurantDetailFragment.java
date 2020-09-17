@@ -41,17 +41,15 @@ public class RestaurantDetailFragment extends BaseFragment {
         initRecyclerView();
         showAppBars(false);
 
-        mRestaurantViewModel.getInterestedUsersForRestaurant.observe(getViewLifecycleOwner(),
-                users -> {
-                    mAdapter.updateUsers(users);
-                });
+        mRestaurantViewModel.getInterestedUsersForRestaurant.observe(getViewLifecycleOwner(), users ->
+                mAdapter.updateUsers(users));
 
-        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(),
-                restaurant -> {
-                    mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
-                    mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
-                            mRestaurantViewModel.addRestaurant(restaurant));
-                });
+        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant ->
+                mBinding.restaurantNameDetailTextView.setText(restaurant.getName()));
+
+        mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
+                mRestaurantViewModel.addRestaurant());
+
         return mBinding.getRoot();
     }
 
@@ -61,6 +59,4 @@ public class RestaurantDetailFragment extends BaseFragment {
         mBinding.recyclerViewRestaurantDetail.setLayoutManager(linearLayoutManager);
         mBinding.recyclerViewRestaurantDetail.setAdapter(mAdapter);
     }
-
-
 }

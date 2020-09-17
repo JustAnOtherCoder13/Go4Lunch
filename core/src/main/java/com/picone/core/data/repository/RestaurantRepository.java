@@ -41,8 +41,8 @@ public class RestaurantRepository {
         return restaurantDao.addRestaurant(restaurant);
     }
 
-    public Completable updateUserChosenRestaurant(String currentUserEmail, UserDailySchedule userDailySchedule) {
-        return restaurantDao.updateUserChosenRestaurant(currentUserEmail, userDailySchedule);
+    public Completable updateUserChosenRestaurant(User currentUser) {
+        return restaurantDao.updateUserChosenRestaurant(currentUser);
     }
 
     public Observable<List<Restaurant>> getRestaurantForKey(String restaurantKey) {
