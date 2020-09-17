@@ -9,12 +9,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.picone.core.domain.entity.Restaurant;
-import com.picone.core.domain.entity.RestaurantDailySchedule;
 import com.picone.core.domain.entity.User;
 import com.picone.core.domain.entity.UserDailySchedule;
 import com.picone.core.domain.interactors.restaurantsInteractors.AddRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.AddUserToRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.DeleteUserFromRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetAllRestaurantsInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForKeyInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForNameInteractor;
@@ -42,6 +39,7 @@ public class RestaurantViewModel extends ViewModel {
     private MutableLiveData<User> currentUserMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Restaurant> selectedRestaurantMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<List<User>> interestedUsersMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<String> selectedRestaurantKeyMutableLiveData = new MutableLiveData<>();
 
     private GetAllRestaurantsInteractor getAllRestaurantsInteractor;
     private GetRestaurantInteractor getRestaurant;
@@ -79,11 +77,12 @@ public class RestaurantViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(restaurants -> {
                     if (!restaurants.isEmpty()) {
+                        selectedRestaurantKeyMutableLiveData.setValue(restaurants.get(0).getKey());
                         getInterestedUsersForRestaurantKeyInteractor.getInterestedUsersForRestaurantKey(restaurants.get(0).getKey())
-                                .subscribeOn(Schedulers.io())
                                 .subscribe(users -> {
                                     interestedUsersMutableLiveData.setValue(users);});
                     } else {
+                        addRestaurantWhenNotPersisted(getRestaurant.getRestaurant(position));
                         interestedUsersMutableLiveData.setValue(new ArrayList<>());}
                 });
     }
@@ -110,11 +109,11 @@ public class RestaurantViewModel extends ViewModel {
                         if (originalChosenRestaurant.getName().equals(selectedRestaurantMutableLiveData.getValue().getName())) {
                             Log.i("TAG", "addRestaurant: same restaurant");
                         } else {
-                            checkIfRestaurantExistAndUpdateReservation(restaurant);
+                            updateUserChosenRestaurant();
                         }
                     });
         } else {
-            checkIfRestaurantExistAndUpdateReservation(restaurant);
+            updateUserChosenRestaurant();
         }
     }
 
@@ -128,47 +127,19 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribe(users -> currentUserMutableLiveData.setValue(users.get(0)));
     }
 
-    //Suppress warning is safe cause subscribe is used to check if restaurant exist in db
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    @SuppressLint("CheckResult")
-    private void checkIfRestaurantExistAndUpdateReservation(Restaurant restaurant) {
-        getRestaurantForNameInteractor.getRestaurantForName(restaurant.getName())
-                .subscribe(restaurantsForName -> {
-                    if (restaurantsForName.isEmpty()) {
-                        addRestaurantWhenNotPersisted(restaurant);
-                    } else {
-                        Log.i("TAG", "onNext: restaurant exist" + restaurantsForName.get(0));
-                        updateUserChosenRestaurant( restaurantsForName.get(0).getKey());
-                    }
-                });
-    }
 
     private void addRestaurantWhenNotPersisted(Restaurant restaurant) {
         addRestaurantInteractor.addRestaurant(restaurant)
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.i("TAG", "onComplete: restaurant added");
-                        updateUserChosenRestaurant(restaurant.getKey());
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-                });
+                .doOnError(throwable -> {})
+                .subscribe();
     }
 
     //currentUserMutableLiveData.getValue().getEmail() can't be null cause already set in restaurant list fragment
     @SuppressWarnings("ConstantConditions")
-    private void updateUserChosenRestaurant(String restaurantKey) {
+    private void updateUserChosenRestaurant() {
 
         updateUserChosenRestaurantInteractor.updateUserChosenRestaurant
-                (currentUserMutableLiveData.getValue().getEmail(), new UserDailySchedule(DATE, restaurantKey))
+                (currentUserMutableLiveData.getValue().getEmail(), new UserDailySchedule(DATE, selectedRestaurantKeyMutableLiveData.getValue()))
                 .subscribe(new CompletableObserver() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -178,7 +149,7 @@ public class RestaurantViewModel extends ViewModel {
                     @SuppressLint("CheckResult")
                     @Override
                     public void onComplete() {
-                        getInterestedUsersForRestaurantKeyInteractor.getInterestedUsersForRestaurantKey(restaurantKey)
+                        getInterestedUsersForRestaurantKeyInteractor.getInterestedUsersForRestaurantKey(selectedRestaurantKeyMutableLiveData.getValue())
                                 .subscribe(users -> interestedUsersMutableLiveData.setValue(users));
                         Log.i("TAG", "onComplete: updateUserComplete");
                     }

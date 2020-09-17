@@ -94,14 +94,4 @@ public class RestaurantDaoImpl implements RestaurantDao {
                     }
                 }));
     }
-
-    public Completable addCurrentUserToRestaurant(User currentUser, String restaurantName){
-        return  RxFirebaseDatabase.setValue(restaurantsDataBaseReference.child(restaurantName)
-                .child("restaurantDailySchedule").child(currentUser.getName()),currentUser);
-    }
-
-    public Completable deleteCurrentUserFromRestaurant(String currentUserName, String originalChosenRestaurantName){
-        return  RxFirebaseDatabase.setValue(restaurantsDataBaseReference.child(originalChosenRestaurantName)
-                .child("restaurantDailySchedule").child(currentUserName),null);
-    }
 }

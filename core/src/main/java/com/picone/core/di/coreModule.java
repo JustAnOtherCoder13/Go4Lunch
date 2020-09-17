@@ -7,15 +7,13 @@ import com.picone.core.data.repository.UserDaoImpl;
 import com.picone.core.data.repository.UserRepository;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.interactors.restaurantsInteractors.AddRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.AddUserToRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.DeleteUserFromRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.GetAllRestaurantsInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForKeyInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForNameInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.UpdateUserChosenRestaurantInteractor;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.GetAllRestaurantsInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetInterestedUsersForRestaurantKeyInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetUserInteractor;
@@ -120,16 +118,6 @@ public final class coreModule {
     @Provides
     static GetRestaurantForKeyInteractor provideGetRestaurantForKey(){
         return new GetRestaurantForKeyInteractor(provideRestaurantDataSource());
-    }
-
-    @Provides
-    static AddUserToRestaurantInteractor provideAddUserToRestaurant(){
-        return new AddUserToRestaurantInteractor(provideRestaurantDataSource());
-    }
-
-    @Provides
-    static DeleteUserFromRestaurantInteractor provideDeleteUserFromRestaurant(){
-        return  new DeleteUserFromRestaurantInteractor(provideRestaurantDataSource());
     }
 
     @Provides

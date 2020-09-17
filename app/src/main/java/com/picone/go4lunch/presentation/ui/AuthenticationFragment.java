@@ -57,11 +57,9 @@ public class AuthenticationFragment extends BaseFragment {
         initAuthenticationAborted();
         mUserViewModel.getCurrentUser.observe(getViewLifecycleOwner(), currentUser -> {
             if (isNewUser) mUserViewModel.addUser(currentUser);
-            mUserViewModel.getAddUserState.observe(getViewLifecycleOwner(), addUserState -> {
-                if (addUserState == UserViewModel.AddUserState.ON_COMPLETE){
-                    mNavController.navigateUp();
-                }
-            });
+        });
+        mUserViewModel.getAddUserState.observe(getViewLifecycleOwner(), addUserState -> {
+            if (addUserState == UserViewModel.AddUserState.ON_COMPLETE) mNavController.navigateUp();
         });
     }
 

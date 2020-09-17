@@ -48,12 +48,4 @@ public class RestaurantRepository {
     public Observable<List<Restaurant>> getRestaurantForKey(String restaurantKey) {
         return restaurantDao.getRestaurantForKey(restaurantKey);
     }
-
-    public Completable addCurrentUserToRestaurant(User currentUser, String restaurantName){
-        return restaurantDao.addCurrentUserToRestaurant(currentUser, restaurantName);
-    }
-
-    public Completable deleteCurrentUserFromRestaurant(String currentUserName, String originalChosenRestaurantName) {
-        return restaurantDao.deleteCurrentUserFromRestaurant(currentUserName, originalChosenRestaurantName);
-    }
 }
