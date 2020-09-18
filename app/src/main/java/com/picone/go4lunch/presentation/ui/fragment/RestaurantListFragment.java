@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,7 +40,6 @@ public class RestaurantListFragment extends BaseFragment {
         return mBinding.getRoot();
     }
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -55,12 +53,12 @@ public class RestaurantListFragment extends BaseFragment {
         mBinding.recyclerViewListFragment.setAdapter(adapter);
         adapter.updateRestaurants(mRestaurantViewModel.getAllRestaurants());
     }
+
     public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewListFragment, R.layout.fragment_list)
                 .setOnItemClickListener((recyclerView, position, v) -> {
                     mRestaurantViewModel.initSelectedRestaurant(position);
-                    NavController navController = Navigation.findNavController(v);
-                    navController.navigate(R.id.restaurantDetailFragment);
+                    Navigation.findNavController(v).navigate(R.id.restaurantDetailFragment);
                 });
     }
 }

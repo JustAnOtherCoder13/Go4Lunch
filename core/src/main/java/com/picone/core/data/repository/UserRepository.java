@@ -26,19 +26,15 @@ public class UserRepository {
         return userDao.getAllUsers();
     }
 
-    public User getUser(int position) {
-        return userDao.getUser(position);
-    }
-
     public Completable addUser(User user) {
         return userDao.AddUser(user);
     }
 
-    public Observable<List<User>> getCurrentUserForEmail (String authUserEmail){
+    public Observable<List<User>> getCurrentUserForEmail(String authUserEmail) {
         return userDao.getCurrentUserForEmail(authUserEmail);
     }
 
-    public Observable<List<User>> getInterestedUsersForRestaurantKey(String restaurantKey){
+    public Observable<List<User>> getInterestedUsersForRestaurantKey(String restaurantKey) {
         return userDao.getInterestedUsersForRestaurantKey(restaurantKey);
     }
 

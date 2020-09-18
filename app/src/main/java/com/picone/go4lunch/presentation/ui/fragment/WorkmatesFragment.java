@@ -19,11 +19,9 @@ import java.util.List;
 
 public class WorkmatesFragment extends BaseFragment {
 
+    public static final String TAG = WorkmatesFragment.class.getName();
     private FragmentWorkmatesBinding mBinding;
     private ColleagueRecyclerViewAdapter mAdapter;
-    public static final String TAG = WorkmatesFragment.class.getName();
-
-
     private List<User> mUsers = new ArrayList<>();
 
     @Nullable

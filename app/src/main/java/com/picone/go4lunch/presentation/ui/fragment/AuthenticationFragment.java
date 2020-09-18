@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.ui;
+package com.picone.go4lunch.presentation.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -97,7 +97,7 @@ public class AuthenticationFragment extends BaseFragment {
                 });
     }
 
-    //--------------------Authentication with google----------------------------
+    //----------------------------------Google authentication----------------------------
 
     private void signInWithGoogle() {
         playLoadingAnimation(true, mAnimationView);

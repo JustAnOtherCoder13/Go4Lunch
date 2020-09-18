@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:facebook="http://schemas.android.com/apk/res-auto"
-    tools:context=".presentation.ui.AuthenticationFragment">
+    tools:context=".presentation.ui.fragment.AuthenticationFragment">
 
     <ImageView
         android:id="@+id/go_4_lunch_logo"

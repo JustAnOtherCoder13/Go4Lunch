@@ -2,7 +2,6 @@ package com.picone.core.domain.interactors.restaurantsInteractors;
 
 import com.picone.core.data.repository.RestaurantRepository;
 import com.picone.core.domain.entity.User;
-import com.picone.core.domain.entity.UserDailySchedule;
 
 import javax.inject.Inject;
 

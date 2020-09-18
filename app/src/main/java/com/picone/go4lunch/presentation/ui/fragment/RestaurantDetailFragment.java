@@ -8,24 +8,18 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.picone.core.domain.entity.Restaurant;
-import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.databinding.FragmentRestaurantDetailBinding;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.ColleagueRecyclerViewAdapter;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RestaurantDetailFragment extends BaseFragment {
 
     public static final String TAG = RestaurantDetailFragment.class.getName();
-
-
     private FragmentRestaurantDetailBinding mBinding;
     private ColleagueRecyclerViewAdapter mAdapter;
 
@@ -41,6 +35,8 @@ public class RestaurantDetailFragment extends BaseFragment {
         initRecyclerView();
         showAppBars(false);
 
+        mRestaurantViewModel.isDataLoading.observe(getViewLifecycleOwner(), isDataLoading -> Log.i(TAG, "onChanged: "+isDataLoading));
+
         mRestaurantViewModel.getInterestedUsersForRestaurant.observe(getViewLifecycleOwner(), users ->
                 mAdapter.updateUsers(users));
 
@@ -48,7 +44,7 @@ public class RestaurantDetailFragment extends BaseFragment {
                 mBinding.restaurantNameDetailTextView.setText(restaurant.getName()));
 
         mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
-                mRestaurantViewModel.addRestaurant());
+                mRestaurantViewModel.setUserToRestaurant());
 
         return mBinding.getRoot();
     }

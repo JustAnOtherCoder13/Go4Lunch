@@ -10,13 +10,10 @@ import androidx.lifecycle.ViewModel;
 import com.picone.core.domain.entity.User;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
-import com.picone.core.domain.interactors.usersInteractors.GetUserInteractor;
 
 import java.util.List;
 
-import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class UserViewModel extends ViewModel {
@@ -37,15 +34,13 @@ public class UserViewModel extends ViewModel {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     @ViewModelInject
-    public UserViewModel(GetAllUsersInteractor getAllUsersInteractor, GetUserInteractor getUserInteractor,
-                         AddUserInteractor addUserInteractor) {
+    public UserViewModel(GetAllUsersInteractor getAllUsersInteractor, AddUserInteractor addUserInteractor) {
         this.addUserInteractor = addUserInteractor;
         getAllUsersInteractor.getAllUsers()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(users -> allUsersMutableLiveData.setValue(users));
     }
-
 
     public LiveData<List<User>> getAllUsers = allUsersMutableLiveData;
 
@@ -57,25 +52,14 @@ public class UserViewModel extends ViewModel {
         userMutableLiveData.setValue(new User(uid, name, email, avatar, null));
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
     public void addUser(User user) {
         addUserInteractor.addUser(user)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        addUserStateMutableLiveData.setValue(AddUserState.ON_COMPLETE);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        addUserStateMutableLiveData.setValue(AddUserState.ON_ERROR);
-                    }
-                });
+                .subscribe(() -> addUserStateMutableLiveData.setValue(AddUserState.ON_COMPLETE)
+                        , throwable -> addUserStateMutableLiveData.setValue(AddUserState.ON_ERROR)
+                );
     }
-
 }
