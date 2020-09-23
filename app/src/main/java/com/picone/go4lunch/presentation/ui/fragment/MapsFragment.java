@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.ui;
+package com.picone.go4lunch.presentation.ui.fragment;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -74,7 +74,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         }
     }
 
-
     private void getLocationPermission() {
         if (ContextCompat.checkSelfPermission(this.requireContext(),
                 ACCESS_FINE_LOCATION)
@@ -113,9 +112,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     }
 
     private void updateLocationUI() {
-        if (mMap == null) {
-            return;
-        }
+        if (mMap == null) return;
         try {
             if (mLocationPermissionGranted) {
                 mMap.setMyLocationEnabled(true);

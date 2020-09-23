@@ -13,11 +13,11 @@ import io.reactivex.Observable;
 public class UserRepository {
 
     @Inject
-    public UserDao userDao;
+    protected UserDaoImpl userDao;
     @Inject
-    public FirebaseDatabase dataBase;
+    protected FirebaseDatabase dataBase;
 
-    public UserRepository(FirebaseDatabase dataBase, UserDao dao) {
+    public UserRepository(FirebaseDatabase dataBase, UserDaoImpl dao) {
         this.dataBase = dataBase;
         userDao = dao;
     }
@@ -26,12 +26,16 @@ public class UserRepository {
         return userDao.getAllUsers();
     }
 
-    public User getUser(int position) {
-        return userDao.getUser(position);
-    }
-
     public Completable addUser(User user) {
         return userDao.AddUser(user);
+    }
+
+    public Observable<List<User>> getCurrentUserForEmail(String authUserEmail) {
+        return userDao.getCurrentUserForEmail(authUserEmail);
+    }
+
+    public Observable<List<User>> getInterestedUsersForRestaurantKey(String restaurantKey) {
+        return userDao.getInterestedUsersForRestaurantKey(restaurantKey);
     }
 
 

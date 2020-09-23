@@ -4,88 +4,22 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorOnPrimary">@color/onPrimaryColor</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
-    <!-- fragment_authentication-->
-    <style name="LoginWithGoogle">
-        <item name="icon">@drawable/ic_google_logo</item>
-        <item name="iconGravity">start</item>
-        <item name="iconSize">17dp</item>
-        <item name="android:text">@string/sign_in_with_google_authentication</item>
-        <item name="android:textColor">@color/onPrimaryColor</item>
-        <item name="textAllCaps">false</item>
-        <item name="android:textSize">13sp</item>
-        <item name="fontFamily">sans-serif</item>
-        <item name="android:background">#F44336</item>
-        <item name="android:layout_marginLeft">@dimen/login_button_horizontal_margin</item>
-        <item name="android:layout_marginRight">@dimen/login_button_horizontal_margin</item>
-        <item name="android:layout_marginTop">@dimen/basic_marge</item>
-        <item name="android:padding">@dimen/basic_marge</item>
-    </style>
-
-    <style name="LoginWithFacebook">
-        <item name="textAllCaps">false</item>
-        <item name="android:textSize">13sp</item>
-        <item name="android:layout_marginLeft">@dimen/login_button_horizontal_margin</item>
-        <item name="android:layout_marginRight">@dimen/login_button_horizontal_margin</item>
-        <item name="android:layout_marginTop">@dimen/basic_marge</item>
-        <item name="android:paddingTop">@dimen/basic_marge</item>
-        <item name="android:paddingBottom">@dimen/basic_marge</item>
-    </style>
-
-    <!-- fragment_restaurant_detail -->
-    <style name="action_button_text_detail_fragment">
-        <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <!-- fragment_maps -->
-    <style name="maps_widget_fragment_maps">
+    <style name="fragment_margin">
         <item name="android:layout_marginTop">?attr/actionBarSize</item>
         <item name="android:layout_marginBottom">?attr/actionBarSize</item>
     </style>
 
-    <!-- restaurant detail fragment -->
-    <style name="selected_restaurant_fab_style">
-        <item name="android:layout_marginTop">@dimen/xl_marge</item>
-        <item name="android:layout_marginEnd">@dimen/basic_marge</item>
-        <item name="android:padding">@dimen/little_marge</item>
-        <item name="android:src">@drawable/ic_check_icon</item>
-    </style>
-    <style name="restaurant_name">
-        <item name="android:text">@string/restaurant_name_restaurant_detail</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/onPrimaryColor</item>
-    </style>
-    <style name="food_and_address">
-        <item name="android:text">@string/food_style_address_restaurant_detail</item>
-        <item name="android:textColor">@color/onPrimaryColor</item>
-    </style>
-    <style name="average_satisfaction">
-        <item name="android:layout_marginStart">@dimen/basic_marge</item>
-    </style>
-    <style name="call_button">
-        <item name="android:background">@color/onPrimaryColor</item>
-        <item name="android:src">@drawable/ic_phone_icon</item>
-    </style>
-    <style name="like_button">
-        <item name="android:background">@color/onPrimaryColor</item>
-        <item name="android:src">@drawable/ic_star_icon</item>
-        <item name="android:tint">@color/colorPrimary</item>
-    </style>
-    <style name="website_button">
-        <item name="android:background">@color/onPrimaryColor</item>
-        <item name="android:src">@drawable/ic_phone_icon</item>
-    </style>
-
-    <!-- toolbar -->
     <style name="top_nav_bar_style">
         <item name="titleTextColor">@color/onPrimaryColor</item>
         <item name="menu">@menu/top_nav_bar_menu</item>
         <item name="android:background">@color/colorPrimary</item>
     </style>
 
-    <!-- drawer menu -->
+    <!-- *************************DRAWER MENU********************************* -->
     <style name="drawer_menu_style">
         <item name="android:layout_gravity">start</item>
         <item name="android:background">@color/colorPrimaryLight</item>
@@ -94,11 +28,210 @@
         <item name="menu">@menu/drawer_menu</item>
         <item name="headerLayout">@layout/drawer_menu_header_layout</item>
     </style>
+
     <style name="drawer_title">
         <item name="android:text">@string/app_name</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">30sp</item>
+        <item name="android:textSize">@dimen/big_title</item>
+        <item name="android:layout_marginTop">@dimen/basic_marge</item>
+        <item name="android:layout_marginBottom">@dimen/xxl_marge</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+    </style>
+
+    <style name="drawer_avatar">
+        <item name="android:layout_marginStart">@dimen/basic_marge</item>
+        <item name="android:layout_marginBottom">@dimen/big_marge</item>
+    </style>
+
+    <style name="drawer_user_name">
+        <item name="android:layout_marginStart">@dimen/basic_marge</item>
+        <item name="android:text">@string/user_name_drawer_menu</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="drawer_user_mail">
+        <item name="android:layout_marginStart">@dimen/basic_marge</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:text">@string/user_mail_drawer_menu</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+        <item name="android:textSize">@dimen/small_txt</item>
+    </style>
+
+    <!-- *************************AUTHENTICATION FRAGMENT********************************* -->
+    <style name="authentication_go4lunch_title">
+        <item name="android:paddingBottom">@dimen/little_marge</item>
+        <item name="android:text">@string/app_name</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+        <item name="android:textSize">@dimen/xl_title</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="catchphrase">
+        <item name="android:text">
+            @string/find_a_nice_restaurant_and_invite_your_co_workers_for_lunch
+        </item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+        <item name="android:textSize">@dimen/xs_text</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="LoginWithFacebook" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">#3b5998</item>
+        <item name="icon">@drawable/ic_facebook_logo</item>
+        <item name="iconGravity">start</item>
+        <item name="iconSize">@dimen/sign_in_logo_size</item>
+        <item name="android:text">@string/sign_in_with_facebook_authentication</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textSize">@dimen/sign_in_text</item>
+        <item name="fontFamily">sans-serif</item>
+        <item name="android:layout_marginLeft">@dimen/login_button_horizontal_margin</item>
+        <item name="android:layout_marginRight">@dimen/login_button_horizontal_margin</item>
+        <item name="android:layout_marginBottom">@dimen/big_marge</item>
+        <item name="cornerRadius">@dimen/basic_marge</item>
+    </style>
+
+    <style name="LoginWithGoogle" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">#DB4437</item>
+        <item name="icon">@drawable/ic_google_logo</item>
+        <item name="iconGravity">start</item>
+        <item name="iconSize">@dimen/sign_in_logo_size</item>
+        <item name="android:text">@string/sign_in_with_google_authentication</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textSize">@dimen/sign_in_text</item>
+        <item name="fontFamily">sans-serif</item>
+        <item name="android:layout_marginLeft">@dimen/login_button_horizontal_margin</item>
+        <item name="android:layout_marginRight">@dimen/login_button_horizontal_margin</item>
+        <item name="cornerRadius">@dimen/basic_marge</item>
+    </style>
+
+    <!-- *************************RESTAURANT DETAIL FRAGMENT********************************* -->
+    <style name="fab_style">
+        <item name="android:layout_marginEnd">@dimen/basic_marge</item>
+        <item name="android:layout_marginBottom">@dimen/fab_marge</item>
+        <item name="android:scaleType">center</item>
+        <item name="backgroundTint">@color/onPrimaryColor</item>
+        <item name="maxImageSize">28dp</item>
+        <item name="srcCompat">@drawable/ic_custom_check_icon</item>
+        <item name="tint">@null</item>
+    </style>
+
+    <style name="restaurant_detail_description">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:paddingStart">@dimen/basic_marge</item>
+        <item name="android:paddingTop">@dimen/basic_marge</item>
+        <item name="android:paddingBottom">25dp</item>
+    </style>
+
+    <style name="restaurant_name">
+        <item name="android:text">@string/restaurant_name_restaurant_detail</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+        <item name="android:textSize">@dimen/title</item>
+    </style>
+
+    <style name="food_and_address">
+        <item name="android:text">@string/food_style_address_restaurant_detail</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+    </style>
+
+
+    <style name="call_button">
+        <item name="android:background">@color/onPrimaryColor</item>
+        <item name="android:src">@drawable/ic_baseline_call_24</item>
+        <item name="android:layout_marginStart">@dimen/xxl_marge</item>
+    </style>
+
+    <style name="call_button_text_detail_fragment">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginTop">@dimen/basic_marge</item>
+        <item name="android:text">@string/text_for_call_button_restaurant_detail</item>
+    </style>
+
+    <style name="like_button">
+        <item name="android:background">@color/onPrimaryColor</item>
+        <item name="android:src">@drawable/ic_star_icon</item>
+        <item name="android:tint">@color/colorPrimary</item>
+    </style>
+
+    <style name="like_button_text_detail_fragment">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginTop">@dimen/basic_marge</item>
+        <item name="android:text">@string/text_for_like_button_restaurant_detail</item>
+    </style>
+
+    <style name="website_button">
+        <item name="android:background">@color/onPrimaryColor</item>
+        <item name="android:src">@drawable/ic_web_site_24</item>
+    </style>
+
+    <style name="website_button_text_detail_fragment">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginTop">@dimen/basic_marge</item>
+        <item name="android:text">@string/text_for_website_button_restaurant_detail</item>
+    </style>
+
+    <style name="restaurant_detail_separator">
+        <item name="android:layout_height">@dimen/separator</item>
+        <item name="android:layout_marginTop">@dimen/basic_marge</item>
+        <item name="android:layout_marginBottom">@dimen/little_marge</item>
+        <item name="android:alpha">0.3</item>
+        <item name="android:background">@color/lightGrey</item>
+    </style>
+
+    <!-- *************************COLLEAGUE ITEM********************************* -->
+    <style name="user_selected_restaurant">
+        <item name="android:layout_marginStart">@dimen/basic_marge</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:text">@string/user_selected_restaurant_text_colleague_items</item>
+    </style>
+
+    <style name="workmate_separator">
+        <item name="android:layout_height">@dimen/separator</item>
+        <item name="android:layout_marginTop">@dimen/xl_marge</item>
+        <item name="android:alpha">0.4</item>
+        <item name="android:background">@color/lightGrey</item>
+    </style>
+
+    <!-- *************************RESTAURANT ITEM********************************* -->
+    <style name="restaurant_item_name_txt">
+        <item name="android:layout_marginLeft">@dimen/basic_marge</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:text">@string/restaurant_name_text_restaurant_items</item>
+    </style>
+
+    <style name="restaurant_item_distance_txt">
+        <item name="android:layout_marginEnd">@dimen/big_marge</item>
+        <item name="android:text">@string/distance_text_restaurant_items</item>
+        <item name="android:textColor">@color/lightGrey</item>
+    </style>
+
+    <style name="restaurant_item_opening_time_txt">
+        <item name="android:layout_marginBottom">@dimen/little_marge</item>
+        <item name="android:text">@string/opening_time_text_restaurant_items</item>
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="restaurant_item_photo_img">
+        <item name="android:layout_margin">@dimen/basic_marge</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:src">@drawable/dinner_with_friends</item>
+    </style>
+
+    <style name="restaurant_item_separator">
+        <item name="android:layout_height">@dimen/separator</item>
+        <item name="android:layout_marginTop">@dimen/basic_marge</item>
+        <item name="android:alpha">0.2</item>
+        <item name="android:background">@color/lightGrey</item>
     </style>
 
 </resources>

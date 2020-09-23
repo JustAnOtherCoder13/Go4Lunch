@@ -6,11 +6,16 @@ import com.picone.core.data.repository.RestaurantRepository;
 import com.picone.core.data.repository.UserDaoImpl;
 import com.picone.core.data.repository.UserRepository;
 import com.picone.core.domain.entity.Restaurant;
-import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.AddRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetAllRestaurantsInteractor;
-import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForKeyInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForNameInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantInteractor;
-import com.picone.core.domain.interactors.usersInteractors.GetUserInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.UpdateUserChosenRestaurantInteractor;
+import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
+import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
+import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
+import com.picone.core.domain.interactors.usersInteractors.GetInterestedUsersForRestaurantKeyInteractor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +33,8 @@ import static com.picone.core.data.mocks.Generator.RESTAURANTS;
 @Module
 public final class coreModule {
 
+
+    //-----------------------------------DATA SOURCE------------------------------------------------
     @Singleton
     @Provides
     static FirebaseDatabase provideFireBaseDataBase() {
@@ -46,7 +53,7 @@ public final class coreModule {
         return new RestaurantRepository(provideFireBaseDataBase(), provideRestaurantDaoImpl());
     }
 
-    //DAO
+    //--------------------------------------DAO-----------------------------------------------------
     @Provides
     static UserDaoImpl provideUserDaoImpl() {
         return new UserDaoImpl(provideFireBaseDataBase());
@@ -57,21 +64,16 @@ public final class coreModule {
         return new RestaurantDaoImpl(provideFireBaseDataBase());
     }
 
-    //generator
+    //-----------------------------------GENERATOR--------------------------------------------------
     @Provides
     static List<Restaurant> provideGenerateRestaurant() {
         return new ArrayList<>(RESTAURANTS);
     }
 
-    //user interactors
+    //--------------------------------USERS INTERACTORS---------------------------------------------
     @Provides
     static GetAllUsersInteractor provideGetAllUsers() {
         return new GetAllUsersInteractor(provideUserDataSource());
-    }
-
-    @Provides
-    static GetUserInteractor provideGetUser() {
-        return new GetUserInteractor(provideUserDataSource());
     }
 
     @Provides
@@ -79,7 +81,17 @@ public final class coreModule {
         return new AddUserInteractor(provideUserDataSource());
     }
 
-    //restaurant interactors
+    @Provides
+    static GetCurrentUserForEmailInteractor provideGetUserForEmail(){
+        return new GetCurrentUserForEmailInteractor(provideUserDataSource());
+    }
+
+    @Provides
+    static UpdateUserChosenRestaurantInteractor provideUpdateUserChosenRestaurant(){
+        return new UpdateUserChosenRestaurantInteractor(provideRestaurantDataSource());
+    }
+
+    //-----------------------------RESTAURANTS INTERACTORS------------------------------------------
     @Provides
     static GetAllRestaurantsInteractor provideGetAllRestaurants() {
         return new GetAllRestaurantsInteractor(provideRestaurantDataSource(),provideGenerateRestaurant());
@@ -87,6 +99,26 @@ public final class coreModule {
 
     @Provides
     static GetRestaurantInteractor provideGetRestaurant() {
-        return new GetRestaurantInteractor(provideRestaurantDataSource());
+        return new GetRestaurantInteractor(provideRestaurantDataSource(),provideGenerateRestaurant());
+    }
+
+    @Provides
+    static AddRestaurantInteractor provideAddRestaurant(){
+        return new AddRestaurantInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static GetRestaurantForNameInteractor provideGetRestaurantForName(){
+        return new GetRestaurantForNameInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static GetRestaurantForKeyInteractor provideGetRestaurantForKey(){
+        return new GetRestaurantForKeyInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static GetInterestedUsersForRestaurantKeyInteractor provideGetInterestedUsersForRestaurantKey(){
+        return  new GetInterestedUsersForRestaurantKeyInteractor(provideUserDataSource());
     }
 }

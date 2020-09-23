@@ -55,7 +55,6 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
                     public void onLoadCleared(@Nullable Drawable placeholder) {
                     }
                 });
-
     }
 
     @Override

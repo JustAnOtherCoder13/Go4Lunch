@@ -19,11 +19,9 @@ import java.util.List;
 
 public class WorkmatesFragment extends BaseFragment {
 
+    public static final String TAG = WorkmatesFragment.class.getName();
     private FragmentWorkmatesBinding mBinding;
     private ColleagueRecyclerViewAdapter mAdapter;
-    public static final String TAG = WorkmatesFragment.class.getName();
-
-
     private List<User> mUsers = new ArrayList<>();
 
     @Nullable
@@ -39,7 +37,7 @@ public class WorkmatesFragment extends BaseFragment {
         mAdapter = new ColleagueRecyclerViewAdapter(mUsers,TAG);
         mBinding.recyclerViewWorkmatesFragment.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.recyclerViewWorkmatesFragment.setAdapter(mAdapter);
-        mUserViewModel.getAllUsers().observe(getViewLifecycleOwner(), users ->{
+        mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(), users ->{
             mAdapter.updateUsers(users);
         });
     }

@@ -5,6 +5,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class Restaurant {
 
+    private String key;
     private String name;
     private int distance;
     private String restaurantPhoto;
@@ -12,13 +13,14 @@ public class Restaurant {
     private String address;
     private int openingHours;
     private double averageSatisfaction;
-    private DailySchedule dailySchedule;
 
-    public Restaurant(){}
+    public Restaurant() {
+    }
 
-    public Restaurant(String name, int distance, String restaurantPhoto, String foodType,
+    public Restaurant(String key, String name, int distance, String restaurantPhoto, String foodType,
                       String address, int openingHours,
-                      double averageSatisfaction,DailySchedule dailySchedule) {
+                      double averageSatisfaction) {
+        this.key = key;
         this.name = name;
         this.distance = distance;
         this.restaurantPhoto = restaurantPhoto;
@@ -26,7 +28,6 @@ public class Restaurant {
         this.address = address;
         this.openingHours = openingHours;
         this.averageSatisfaction = averageSatisfaction;
-        this.dailySchedule = dailySchedule;
     }
 
     public String getName() {
@@ -45,7 +46,7 @@ public class Restaurant {
         return foodType;
     }
 
-    public String getAddress(){ return address;}
+    public String getAddress() { return address; }
 
     public int getOpeningHours() {
         return openingHours;
@@ -55,9 +56,9 @@ public class Restaurant {
         return averageSatisfaction;
     }
 
-    public DailySchedule getDailySchedule() { return dailySchedule; }
+    public String getKey() { return key; }
 
-    public void setDailySchedule(DailySchedule dailySchedule) {
-        this.dailySchedule = dailySchedule;
+    public void setKey(String key) {
+        this.key = key;
     }
 }

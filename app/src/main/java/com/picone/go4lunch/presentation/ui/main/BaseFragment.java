@@ -1,35 +1,27 @@
 package com.picone.go4lunch.presentation.ui.main;
 
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
-import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
 import com.picone.go4lunch.databinding.DrawerMenuHeaderLayoutBinding;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
-
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -45,12 +37,13 @@ public abstract class BaseFragment extends Fragment {
     protected GoogleSignInClient mGoogleSignInClient;
     @Inject
     protected CallbackManager mCallbackManager;
-    protected LottieAnimationView mAnimationView;
-
     //View Model
     protected LoginViewModel mLoginViewModel;
     protected UserViewModel mUserViewModel;
     protected RestaurantViewModel mRestaurantViewModel;
+
+    protected LottieAnimationView mAnimationView;
+
 
 
     @Override
@@ -59,6 +52,8 @@ public abstract class BaseFragment extends Fragment {
         initVariables();
     }
 
+    //Current user can't be null cause set when enter app
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -68,12 +63,6 @@ public abstract class BaseFragment extends Fragment {
             }
         });
 
-    }
-
-    private void initVariables() {
-        mLoginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
-        mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
     }
 
     protected void showAppBars(boolean isVisible) {
@@ -95,9 +84,16 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
-    protected void populateDrawerMenu(FirebaseUser currentUser) {
+    private void initVariables() {
+        mLoginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
+        mUserViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        mRestaurantViewModel = new ViewModelProvider(requireActivity()).get(RestaurantViewModel.class);
+    }
+
+    private void populateDrawerMenu(FirebaseUser currentUser) {
 
         MainActivity mainActivity = (MainActivity) getActivity();
+        assert mainActivity != null : "main activity don't exist when try to populate drawer menu";
         ActivityMainBinding mBinding = mainActivity.mBinding;
         View hView = mBinding.navView.getHeaderView(0);
         DrawerMenuHeaderLayoutBinding headerLayoutBinding = DrawerMenuHeaderLayoutBinding.bind(hView);

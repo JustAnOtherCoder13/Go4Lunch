@@ -2,7 +2,10 @@
 <resources>
     <color name="colorPrimary">#FF5722</color>
     <color name="colorPrimaryLight">#F87E58</color>
+    <color name="colorPrimaryDark">#B42B00</color>
     <color name="onPrimaryColor">#fff</color>
     <color name="colorAccent">#69F0AE</color>
-    <color name="uncheckedIconBottomNav">#000000</color>
-</resources>
+    <color name="black">#000000</color>
+    <color name="grey">#666666</color>
+    <color name="lightGrey">#AAAAAA</color>
+    </resources>

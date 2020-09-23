@@ -1,6 +1,5 @@
 package com.picone.core.domain.interactors.restaurantsInteractors;
 
-import com.picone.core.data.mocks.Generator;
 import com.picone.core.data.repository.RestaurantRepository;
 import com.picone.core.domain.entity.Restaurant;
 
@@ -23,10 +22,6 @@ public class GetAllRestaurantsInteractor {
 
     public List<Restaurant> getGeneratedRestaurants() {
         return generatorRestaurant;
-    }
-
-    public Restaurant getRestaurant(int position){
-        return restaurantDataSource.getRestaurant(position);
     }
 
 }
