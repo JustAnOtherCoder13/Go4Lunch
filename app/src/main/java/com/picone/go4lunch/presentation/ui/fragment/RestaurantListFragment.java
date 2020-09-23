@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.picone.go4lunch.R;
-import com.picone.go4lunch.databinding.FragmentListBinding;
+import com.picone.go4lunch.databinding.FragmentRestaurantListBinding;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.RestaurantListRecyclerViewAdapter;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import com.picone.go4lunch.presentation.ui.utils.RecyclerViewItemClickUtil;
@@ -23,7 +23,7 @@ import java.util.Objects;
 
 public class RestaurantListFragment extends BaseFragment {
 
-    private FragmentListBinding mBinding;
+    private FragmentRestaurantListBinding mBinding;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class RestaurantListFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mBinding = FragmentListBinding.inflate(inflater, container, false);
+        mBinding = FragmentRestaurantListBinding.inflate(inflater, container, false);
         initRecyclerView();
         showAppBars(true);
         configureOnClickRecyclerView();
@@ -55,7 +55,7 @@ public class RestaurantListFragment extends BaseFragment {
     }
 
     public void configureOnClickRecyclerView() {
-        RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewListFragment, R.layout.fragment_list)
+        RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewListFragment, R.layout.fragment_restaurant_list)
                 .setOnItemClickListener((recyclerView, position, v) -> {
                     mRestaurantViewModel.initSelectedRestaurant(position);
                     Navigation.findNavController(v).navigate(R.id.restaurantDetailFragment);

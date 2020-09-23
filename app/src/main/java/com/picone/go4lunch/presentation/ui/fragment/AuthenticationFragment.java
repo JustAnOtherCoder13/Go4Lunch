@@ -14,9 +14,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.facebook.AccessToken;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;
@@ -80,10 +77,10 @@ public class AuthenticationFragment extends BaseFragment {
     }
 
     private void initView() {
-        mAnimationView = mBinding.animationView;
+        mAnimationView = mBinding.animationViewInclude.animationView;
         mAnimationView.setAnimation(R.raw.loading_animation);
         mAnimationView.setVisibility(View.GONE);
-        mBinding.loginWithFacebook.setOnClickListener(v -> signInWithFacebook());
+        //mBinding.loginWithFacebook.setOnClickListener(v -> signInWithFacebook());
         mBinding.loginWithGoogle.setOnClickListener(v -> signInWithGoogle());
     }
 
@@ -136,7 +133,9 @@ public class AuthenticationFragment extends BaseFragment {
                 });
     }
 
-    private void signInWithFacebook() {
+
+    //TODO pass with facebook login manager
+    /*private void signInWithFacebook() {
         playLoadingAnimation(true, mAnimationView);
         mBinding.loginWithFacebook.setReadPermissions("email", "public_profile");
         mBinding.loginWithFacebook.setFragment(this);
@@ -156,7 +155,7 @@ public class AuthenticationFragment extends BaseFragment {
                 Toast.makeText(requireContext(), R.string.facebook_auth_failed, Toast.LENGTH_SHORT).show();
             }
         });
-    }
+    }*/
 
     private void setCurrentUser(Task<AuthResult> task) {
         if (task.isSuccessful()) {

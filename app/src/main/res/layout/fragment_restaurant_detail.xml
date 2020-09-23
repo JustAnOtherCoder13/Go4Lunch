@@ -6,31 +6,29 @@
     android:layout_height="match_parent"
     tools:context=".presentation.ui.fragment.RestaurantDetailFragment">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/check_if_selected_detail_fab"
-        style="@style/selected_restaurant_fab_style"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/restaurant_description_layout"
+    <ImageView
+        android:id="@+id/restaurant_photo_detail_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:contentDescription="@string/restaurant_photo_content_description_restaurant_detail"
+        android:src="@drawable/dinner_with_friends"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/restaurant_photo_detail_image_view"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/check_if_selected_detail_fab"
+        style="@style/fab_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/restaurant_photo_content_description_restaurant_detail"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+        app:layout_constraintBottom_toBottomOf="@id/restaurant_description_layout"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/restaurant_description_layout"
+        style="@style/restaurant_detail_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:padding="@dimen/basic_marge"
         app:layout_constraintTop_toBottomOf="@id/restaurant_photo_detail_image_view">
 
         <TextView
@@ -39,8 +37,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@id/food_style_and_address_detail_text_view"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/opinion_star_detail_image_view"
-            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -54,21 +52,22 @@
 
         <ImageView
             android:id="@+id/opinion_star_detail_image_view"
-            style=""
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/basic_marge"
             android:contentDescription="@string/opinion_star_detail_content_description_restaurant_detail"
-            android:src="@drawable/ic_star_icon"
             app:layout_constraintBottom_toTopOf="@id/food_style_and_address_detail_text_view"
             app:layout_constraintLeft_toRightOf="@id/restaurant_name_detail_text_view"
-            app:layout_constraintTop_toTopOf="@id/restaurant_name_detail_text_view" />
+            app:layout_constraintTop_toTopOf="@id/restaurant_name_detail_text_view"
+            app:srcCompat="@drawable/ic_star_icon" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/action_button_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/basic_marge"
+        android:paddingBottom="@dimen/basic_marge"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/restaurant_description_layout">
@@ -81,14 +80,12 @@
             android:contentDescription="@string/restaurant_button_content_description_restaurant_detail"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/like_detail_image_button"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            style="@style/action_button_text_detail_fragment"
+            style="@style/call_button_text_detail_fragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_for_call_button_restaurant_detail"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="@id/call_number_detail_image_button"
             app:layout_constraintRight_toRightOf="@id/call_number_detail_image_button"
@@ -106,10 +103,9 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            style="@style/action_button_text_detail_fragment"
+            style="@style/like_button_text_detail_fragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_for_like_button_restaurant_detail"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="@id/like_detail_image_button"
             app:layout_constraintRight_toRightOf="@id/like_detail_image_button"
@@ -120,17 +116,16 @@
             style="@style/website_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/xxl_marge"
             android:contentDescription="@string/web_site_button_content_description_restaurant_detail"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/like_detail_image_button"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            style="@style/action_button_text_detail_fragment"
+            style="@style/website_button_text_detail_fragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_for_website_button_restaurant_detail"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="@id/web_site_detail_image_button"
             app:layout_constraintRight_toRightOf="@id/web_site_detail_image_button"
@@ -138,12 +133,23 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <FrameLayout
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        style="@style/restaurant_detail_separator"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/action_button_layout" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_restaurant_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/action_button_layout" />
+        app:layout_constraintTop_toBottomOf="@id/separator" />
+    <include
+        android:id="@+id/animation_view_include"
+        layout="@layout/lottie_loader_animation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

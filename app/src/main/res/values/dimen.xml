@@ -2,10 +2,21 @@
 <resources>
     <!--Button-->
     <dimen name="login_button_horizontal_margin">30dp</dimen>
-    <dimen name="animation_loader_size">150dp</dimen>
+    <dimen name="animation_loader_size">130dp</dimen>
+    <dimen name="sign_in_logo_size">25dp</dimen>
+    <dimen name="sign_in_text">13sp</dimen>
     <!-- common dimens -->
+    <dimen name="separator">1dp</dimen>
     <dimen name="little_marge">5dp</dimen>
     <dimen name="basic_marge">10dp</dimen>
     <dimen name="big_marge">20dp</dimen>
-    <dimen name="xl_marge">40dp</dimen>
+    <dimen name="xl_marge">30dp</dimen>
+    <dimen name="xxl_marge">40dp</dimen>
+    <dimen name="fab_marge">60dp</dimen>
+    <!--text-->
+    <dimen name="xl_title">50sp</dimen>
+    <dimen name="big_title">30sp</dimen>
+    <dimen name="title">17sp</dimen>
+    <dimen name="small_txt">10sp</dimen>
+    <dimen name="xs_text">8.9sp</dimen>
 </resources>

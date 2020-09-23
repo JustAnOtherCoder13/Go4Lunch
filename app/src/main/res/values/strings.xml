@@ -20,6 +20,8 @@
     <string name="distance_text_restaurant_items">distance</string>
     <string name="food_style_address_text_restaurant_items">food style - address</string>
     <string name="opening_time_text_restaurant_items">opening time</string>
+    <string name="find_a_nice_restaurant_and_invite_your_co_workers_for_lunch">Find a nice restaurant and invite your co-workers for lunch!</string>
+    <string name="_2">(2)</string>
 
     <!-- CONTENT DESCRIPTION -->
     <string name="restaurant_photo_content_description_restaurant_detail">Photo of the restaurant</string>
@@ -30,21 +32,24 @@
     <string name="colleague_avatar_content_description_colleague_items">Colleague avatar</string>
     <string name="restaurant_photo_content_description_restaurant_items">Restaurant photo</string>
     <string name="toolbar_menu_icon_content_description_activity_main">Menu Icon</string>
+    <string name="dinner_with_friend_background">dinner with friend background</string>
+    <string name="interested_colleague_logo">interested colleague logo</string>
+    <string name="star_logo">star logo</string>
 
-    <!-- maps -->
+    <!-- MAPS -->
     <string name="maps_token_title">My position</string>
 
-    <!-- Warning message -->
+    <!-- WARNING MESSAGES -->
     <string name="google_auth_failed">Your authentication with Google have failed, please try again</string>
     <string name="facebook_auth_failed">Your authentication with Facebook have failed, please try again</string>
     <string name="facebook_auth_canceled">Your authentication with Facebook has been canceled, please try again</string>
     <string name="invalid_authentication">"You are not authenticate, please authenticate."</string>
 
-    <!-- login message -->
+    <!-- LOGIN MESSAGES -->
     <string name="welcome_message">"Welcome "</string>
     <string name="welcome_back_message">"Welcome back "</string>
 
-    <!-- drawer menu -->
+    <!-- DRAWER MENU -->
     <string name="user_avatar_drawer_menu">User Avatar</string>
     <string name="user_name_drawer_menu">User Name</string>
     <string name="user_mail_drawer_menu">User Mail</string>
@@ -52,7 +57,7 @@
     <string name="settings_drawer_menu_title">SETTINGS</string>
     <string name="logout_drawer_menu_title">LOGOUT</string>
 
-    <!-- nav graph label -->
+    <!-- NAV GRAPH LABEL -->
     <string name="i_am_hungry_title">I\'m Hungry!</string>
     <string name="available_workmates">Available workmates</string>
 
