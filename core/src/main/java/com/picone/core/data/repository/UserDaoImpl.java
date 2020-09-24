@@ -33,7 +33,8 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Completable AddUser(User user) {
-        return RxFirebaseDatabase.setValue(usersDatabaseReference.push(),user);
+        user.setUid(usersDatabaseReference.push().getKey());
+        return RxFirebaseDatabase.setValue(usersDatabaseReference.child(user.getUid()),user);
     }
 
     @Override

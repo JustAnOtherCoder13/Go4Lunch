@@ -1,5 +1,7 @@
 package com.picone.core.data.repository;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
@@ -32,9 +34,8 @@ public class RestaurantDaoImpl implements RestaurantDao {
     }
 
     @Override
-    public Observable<List<Restaurant>> getRestaurantForName(String restaurantName) {
-        Query query = restaurantsDataBaseReference.orderByChild("name").equalTo(restaurantName);
-        return RxFirebaseDatabase.observeValueEvent(query, DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
+    public Observable<Restaurant> getRestaurantForName(String restaurantName) {
+        return RxFirebaseDatabase.observeSingleValueEvent(restaurantsDataBaseReference.child(restaurantName), Restaurant.class).toObservable();
     }
 
     @Override
@@ -46,34 +47,13 @@ public class RestaurantDaoImpl implements RestaurantDao {
     @Override
     public Completable addRestaurant(Restaurant restaurant) {
         restaurant.setKey(restaurantsDataBaseReference.child(restaurant.getName()).push().getKey());
+        Log.i("TAG", "addRestaurant: restaurant added");
         return RxFirebaseDatabase.setValue(restaurantsDataBaseReference
                 .child(restaurant.getName()), restaurant);
     }
 
     @Override
     public Completable updateUserChosenRestaurant(User currentUser) {
-        Query query = database.getReference().child("users").orderByChild("email").equalTo(currentUser.getEmail());
-
-        return Completable.create(emitter ->
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            dataSnapshot.getRef().child("userDailySchedule").setValue(currentUser.getUserDailySchedule())
-                                    .addOnSuccessListener(
-                                            aVoid -> emitter.onComplete())
-                                    .addOnFailureListener(
-                                            e -> {
-                                                if (!emitter.isDisposed())
-                                                    emitter.onError(e);
-                                            });
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                }));
+        return RxFirebaseDatabase.setValue(database.getReference().child("users").child(currentUser.getUid()), currentUser);
     }
 }

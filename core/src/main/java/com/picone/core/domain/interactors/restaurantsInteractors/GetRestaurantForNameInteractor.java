@@ -18,7 +18,7 @@ public class GetRestaurantForNameInteractor {
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    public Observable<List<Restaurant>> getRestaurantForName(String restaurantName){
+    public Observable<Restaurant> getRestaurantForName(String restaurantName){
         return restaurantDataSource.getRestaurantForName(restaurantName);
     }
 }

@@ -23,7 +23,7 @@ public class RestaurantRepository {
         restaurantDao = dao;
     }
 
-    public Observable<List<Restaurant>> getRestaurantForName(String restaurantName) {
+    public Observable<Restaurant> getRestaurantForName(String restaurantName) {
         return restaurantDao.getRestaurantForName(restaurantName);
     }
 
