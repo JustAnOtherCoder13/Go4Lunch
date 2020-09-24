@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -85,13 +86,17 @@ public class RestaurantViewModel extends ViewModel {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void initSelectedRestaurant(int position) {
-        selectedRestaurantKeyMutableLiveData.setValue("unknown");
         Restaurant selectedRestaurant = getRestaurant.getRestaurant(position);
         selectedRestaurantMutableLiveData.setValue(selectedRestaurant);
-        getRestaurantForNameInteractor.getRestaurantForName(selectedRestaurant.getName())
+        getRestaurantForNameInteractor.getRestaurantForName(selectedRestaurant.getName()).isEmpty().toObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .switchIfEmpty(addRestaurantInteractor.addRestaurant(selectedRestaurant).toObservable())
+                .flatMap(aBoolean -> {
+                    if (aBoolean) return Completable.fromObservable(addRestaurantInteractor.addRestaurant(selectedRestaurant).toObservable())
+                            .andThen(getRestaurantForNameInteractor.getRestaurantForName(selectedRestaurant.getName()));
+                    else
+                    return getRestaurantForNameInteractor.getRestaurantForName(selectedRestaurant.getName());
+                })
                 .flatMap(restaurant -> {
                     selectedRestaurantKeyMutableLiveData.setValue(restaurant.getKey());
                     return getInterestedUsersForRestaurantKeyInteractor.getInterestedUsersForRestaurantKey(restaurant.getKey());
