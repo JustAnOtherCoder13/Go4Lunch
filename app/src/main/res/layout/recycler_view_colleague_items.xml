@@ -12,40 +12,29 @@
         android:layout_margin="@dimen/basic_marge"
         android:contentDescription="@string/colleague_avatar_content_description_colleague_items"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/chosen_restaurant_layout"
+    <TextView
+        android:id="@+id/user_selected_restaurant"
+        style="@style/user_selected_restaurant"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@id/avatar_image_view"
-        app:layout_constraintLeft_toRightOf="@+id/avatar_image_view"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/avatar_image_view">
+        app:layout_constraintStart_toEndOf="@id/avatar_image_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/avatar_image_view" />
 
-        <TextView
-            android:id="@+id/user_selected_restaurant"
-            style="@style/user_selected_restaurant"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/separator"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- TODO separator is not visible on restaurant detail -->
-
-        <FrameLayout
-            android:id="@+id/separator"
-            style="@style/workmate_separator"
-            android:layout_width="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/user_selected_restaurant" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <FrameLayout
+        android:id="@+id/separator"
+        style="@style/workmate_separator"
+        android:layout_width="0dp"
+        android:layout_marginStart="@dimen/basic_marge"
+        android:layout_marginTop="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/avatar_image_view"
+        app:layout_constraintTop_toBottomOf="@id/avatar_image_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
