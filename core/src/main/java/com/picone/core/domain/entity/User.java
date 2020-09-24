@@ -15,7 +15,7 @@ public class User {
     public User() {
     }
 
-    public User(String uid, String name, String email, String avatar,UserDailySchedule userDailySchedule) {
+    public User(String uid, String name, String email, String avatar, UserDailySchedule userDailySchedule) {
         this.uid = uid;
         this.name = name;
         this.email = email;
@@ -47,4 +47,6 @@ public class User {
     public void setUserDailySchedule(UserDailySchedule userDailySchedule) {
         this.userDailySchedule = userDailySchedule;
     }
+
+    public void setUid(String uid) { this.uid = uid;}
 }

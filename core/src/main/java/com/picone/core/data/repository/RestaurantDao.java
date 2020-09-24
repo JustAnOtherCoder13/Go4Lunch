@@ -10,7 +10,7 @@ import io.reactivex.Observable;
 
 public interface RestaurantDao {
 
-    Observable<List<Restaurant>> getRestaurantForName(String restaurantName);
+    Observable<Restaurant> getRestaurantForName(String restaurantName);
 
     Observable<List<Restaurant>> getRestaurantForKey(String restaurantKey);
 
