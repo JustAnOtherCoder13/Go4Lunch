@@ -1,7 +1,6 @@
 package com.picone.go4lunch.presentation.viewModels;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
@@ -21,19 +20,12 @@ import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmai
 import com.picone.core.domain.interactors.usersInteractors.GetInterestedUsersForRestaurantKeyInteractor;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import io.reactivex.Completable;
-import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.BooleanSupplier;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class RestaurantViewModel extends ViewModel {
@@ -88,15 +80,10 @@ public class RestaurantViewModel extends ViewModel {
     public void initSelectedRestaurant(int position) {
         Restaurant selectedRestaurant = getRestaurant.getRestaurant(position);
         selectedRestaurantMutableLiveData.setValue(selectedRestaurant);
-        getRestaurantForNameInteractor.getRestaurantForName(selectedRestaurant.getName()).isEmpty().toObservable()
+        getRestaurantForNameInteractor.getRestaurantForName(selectedRestaurant.getName())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(aBoolean -> {
-                    if (aBoolean) return Completable.fromObservable(addRestaurantInteractor.addRestaurant(selectedRestaurant).toObservable())
-                            .andThen(getRestaurantForNameInteractor.getRestaurantForName(selectedRestaurant.getName()));
-                    else
-                    return getRestaurantForNameInteractor.getRestaurantForName(selectedRestaurant.getName());
-                })
+                .switchIfEmpty(addRestaurantInteractor.addRestaurant(selectedRestaurant).andThen(getRestaurantForNameInteractor.getRestaurantForName(selectedRestaurant.getName())))
                 .flatMap(restaurant -> {
                     selectedRestaurantKeyMutableLiveData.setValue(restaurant.getKey());
                     return getInterestedUsersForRestaurantKeyInteractor.getInterestedUsersForRestaurantKey(restaurant.getKey());
