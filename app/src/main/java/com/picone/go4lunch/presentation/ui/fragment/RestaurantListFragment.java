@@ -51,10 +51,9 @@ public class RestaurantListFragment extends BaseFragment {
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mBinding.recyclerViewListFragment.setLayoutManager(linearLayoutManager);
         mBinding.recyclerViewListFragment.setAdapter(adapter);
-        adapter.updateRestaurants(mRestaurantViewModel.getAllRestaurants());
+        mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), adapter::updateRestaurants);
     }
 
-    //TODO pass navigation to on createdView when selected restaurant exist make back press unusable
     public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewListFragment, R.layout.fragment_restaurant_list)
                 .setOnItemClickListener((recyclerView, position, v) -> {

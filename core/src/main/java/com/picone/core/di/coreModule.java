@@ -7,10 +7,12 @@ import com.picone.core.data.repository.UserDaoImpl;
 import com.picone.core.data.repository.UserRepository;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.interactors.restaurantsInteractors.AddRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.GetAllPersistedRestaurantsInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetAllRestaurantsInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForKeyInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForNameInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.UpdateNumberOfInterestedUsersForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.UpdateUserChosenRestaurantInteractor;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
@@ -120,5 +122,15 @@ public final class coreModule {
     @Provides
     static GetInterestedUsersForRestaurantKeyInteractor provideGetInterestedUsersForRestaurantKey(){
         return  new GetInterestedUsersForRestaurantKeyInteractor(provideUserDataSource());
+    }
+
+    @Provides
+    static UpdateNumberOfInterestedUsersForRestaurantInteractor provideUpdateNumberOfInterestedUsersForRestaurant(){
+        return new UpdateNumberOfInterestedUsersForRestaurantInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static GetAllPersistedRestaurantsInteractor provideGetAllPersistedRestaurant(){
+        return new GetAllPersistedRestaurantsInteractor(provideRestaurantDataSource());
     }
 }

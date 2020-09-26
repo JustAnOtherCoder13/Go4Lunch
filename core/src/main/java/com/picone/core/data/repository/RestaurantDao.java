@@ -17,4 +17,8 @@ public interface RestaurantDao {
     Completable addRestaurant(Restaurant restaurant);
 
     Completable updateUserChosenRestaurant(User currentUser);
+
+    Completable updateNumberOfInterestedUsersForRestaurant(String restaurantName, int numberOfInterestedUsers);
+
+    Observable<List<Restaurant>> getAllPersistedRestaurants();
 }

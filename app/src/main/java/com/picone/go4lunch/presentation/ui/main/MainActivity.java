@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
+import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 
 import java.util.Objects;
 
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     protected FirebaseAuth mFirebaseAuth;
 
     private LoginViewModel mLoginViewModel;
+    private RestaurantViewModel mRestaurantViewModel;
     private NavController mNavController;
 
 
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLoginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -124,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initLoginViewModel() {
+        mRestaurantViewModel.setInterestedUsersToRestaurants();
         mLoginViewModel.getAuthenticationState().observe(this,
                 authenticationState -> {
                     switch (authenticationState) {

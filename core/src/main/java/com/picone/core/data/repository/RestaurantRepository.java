@@ -38,4 +38,10 @@ public class RestaurantRepository {
     public Observable<List<Restaurant>> getRestaurantForKey(String restaurantKey) {
         return restaurantDao.getRestaurantForKey(restaurantKey);
     }
+    public Completable updateNumberOfInterestedUsersForRestaurant(String restaurantName, int numberOfInterestedUsers){
+        return restaurantDao.updateNumberOfInterestedUsersForRestaurant(restaurantName, numberOfInterestedUsers);
+    }
+    public Observable<List<Restaurant>> getAllPersistedRestaurants (){
+        return restaurantDao.getAllPersistedRestaurants();
+    }
 }

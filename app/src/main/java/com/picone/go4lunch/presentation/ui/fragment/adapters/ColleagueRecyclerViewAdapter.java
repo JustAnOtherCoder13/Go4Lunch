@@ -1,7 +1,10 @@
 package com.picone.go4lunch.presentation.ui.fragment.adapters;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -38,10 +41,19 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
     @Override
     public void onBindViewHolder(@NonNull ColleagueRecyclerViewAdapter.ViewHolder holder, int position) {
         final User user = mUsers.get(position);
-        if (tag.equals(WorkmatesFragment.TAG))
-            holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(" is eating ").concat("food type ").concat("(selected restaurant)"));
-        else
+        if (tag.equals(WorkmatesFragment.TAG)){
+            if (user.getUserDailySchedule()!=null)
+                holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(" is eating ").concat("food type ").concat("(selected restaurant)"));
+            else{
+                holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(" hasn't decided yet"));
+                holder.colleagueBinding.userSelectedRestaurant.setTextColor(Color.LTGRAY);
+                holder.colleagueBinding.userSelectedRestaurant.setTypeface(holder.colleagueBinding.userSelectedRestaurant.getTypeface(), Typeface.ITALIC);
+            }
+        }
+        else{
             holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(" is joining!"));
+            holder.colleagueBinding.separator.setVisibility(View.GONE);
+        }
         Glide.with(holder.colleagueBinding.avatarImageView.getContext())
                 .load(user.getAvatar())
                 .circleCrop()
@@ -58,11 +70,14 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
     }
 
     @Override
-    public int getItemCount() { return mUsers.size(); }
+    public int getItemCount() {
+        return mUsers.size();
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         private RecyclerViewColleagueItemsBinding colleagueBinding;
+
         ViewHolder(RecyclerViewColleagueItemsBinding colleagueBinding) {
             super(colleagueBinding.getRoot());
             this.colleagueBinding = colleagueBinding;

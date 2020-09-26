@@ -1,8 +1,13 @@
 package com.picone.go4lunch.presentation.ui.fragment;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -20,10 +26,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
+import com.picone.core.domain.entity.Restaurant;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentMapsBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
@@ -56,6 +64,11 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         showAppBars(true);
         fetchLastLocation();
         return mBinding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -104,11 +117,10 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
 
     private void setUpMapCurrentPosition() {
         LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(latLng).title(getString(R.string.maps_token_title)));
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(latLng).zoom(12).build();
+                .target(latLng).zoom(16).build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        playLoadingAnimation(false,mAnimationView);
+        playLoadingAnimation(false, mAnimationView);
     }
 
     private void updateLocationUI() {
@@ -118,6 +130,27 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
                 mMap.setMyLocationEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
                 setUpMapCurrentPosition();
+                //TODO make error when no users exist yet caused by view is not created
+                mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), restaurants -> {
+                    Log.i("TAG", "updateLocationUI: "+restaurants);
+                    for (Restaurant restaurant : restaurants) {
+                        LatLng restaurantLatLng = new LatLng
+                                (restaurant.getRestaurantPosition().getLatitude()
+                                        , restaurant.getRestaurantPosition().getLongitude());
+                        Log.i("TAG", "updateLocationUI: " + restaurant.getName() + " " + restaurant.getRestaurantPosition().getLongitude());
+                        if (restaurant.getNumberOfInterestedUsers() > 0) {
+                            mMap.addMarker(new MarkerOptions()
+                                    .position(restaurantLatLng)
+                                    .title(restaurant.getName())
+                                    .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_user))));
+                        } else {
+                            mMap.addMarker(new MarkerOptions()
+                                    .position(restaurantLatLng)
+                                    .title(restaurant.getName())
+                                    .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_no_user))));
+                        }
+                    }
+                });
             } else {
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -126,5 +159,23 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         } catch (SecurityException e) {
             Log.e("Exception: %s", Objects.requireNonNull(e.getMessage()));
         }
+    }
+
+
+    private Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {
+
+        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
+        assert drawable != null;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            drawable = (DrawableCompat.wrap(drawable)).mutate();
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
     }
 }

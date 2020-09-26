@@ -1,6 +1,7 @@
 package com.picone.go4lunch.presentation.ui.fragment.adapters;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -34,7 +35,12 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
         holder.restaurantBinding.openingTimeTextView.setText(String.valueOf(restaurant.getOpeningHours()).concat(" h"));
         holder.restaurantBinding.foodStyleAndAddressTextView.setText(restaurant.getFoodType().concat(" - ")
                 .concat(restaurant.getAddress()));
-        holder.restaurantBinding.distanceTextView.setText(String.valueOf(restaurant.getDistance()).concat(" M"));
+        holder.restaurantBinding.distanceTextView.setText(String.valueOf(restaurant.getDistance()).concat(" m"));
+        if (restaurant.getNumberOfInterestedUsers()>0)
+            holder.restaurantBinding.interestedColleagueNumber.setText("(".concat(String.valueOf(restaurant.getNumberOfInterestedUsers())).concat(")"));
+        else {
+            holder.restaurantBinding.interestedColleague.setVisibility(View.GONE);
+            holder.restaurantBinding.interestedColleagueNumber.setVisibility(View.GONE);}
     }
 
     @Override

@@ -37,6 +37,7 @@ public class WorkmatesFragment extends BaseFragment {
         mAdapter = new ColleagueRecyclerViewAdapter(mUsers,TAG);
         mBinding.recyclerViewWorkmatesFragment.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.recyclerViewWorkmatesFragment.setAdapter(mAdapter);
+        //TODO doesn't update user when has choose restaurant due to SingleValueEvent
         mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(), users ->{
             mAdapter.updateUsers(users);
         });
