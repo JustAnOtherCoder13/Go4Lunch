@@ -212,7 +212,6 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(persistedRestaurants -> {
-                    Log.i("TAG", "updateRestaurant: ");
                     for (Restaurant persistedRestaurant : persistedRestaurants) {
                         for (Restaurant generatedRestaurant : getAllRestaurantsInteractor.getGeneratedRestaurants()) {
                             if (persistedRestaurant.getName().equals(generatedRestaurant.getName())) {

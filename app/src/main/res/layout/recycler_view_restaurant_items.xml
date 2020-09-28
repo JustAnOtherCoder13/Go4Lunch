@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/interested_colleague_logo"
-        app:layout_constraintBottom_toTopOf="@id/opinion"
+        app:layout_constraintBottom_toTopOf="@id/star_constraint"
         app:layout_constraintEnd_toStartOf="@id/interested_colleague_number"
         app:layout_constraintTop_toBottomOf="@id/distance_text_view"
         app:srcCompat="@drawable/ic_baseline_perm_identity_24" />
@@ -49,20 +49,25 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/little_marge"
         android:text="@string/_2"
-        app:layout_constraintBottom_toTopOf="@id/opinion"
+        app:layout_constraintBottom_toTopOf="@id/star_constraint"
         app:layout_constraintEnd_toStartOf="@id/restaurant_photo_image_view"
         app:layout_constraintTop_toBottomOf="@id/distance_text_view" />
 
-    <ImageView
-        android:id="@+id/opinion"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/star_constraint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/little_marge"
-        android:contentDescription="@string/star_logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/restaurant_photo_image_view"
         app:layout_constraintTop_toBottomOf="@id/interested_colleague"
-        app:srcCompat="@drawable/ic_star_icon" />
+        >
+        <include
+            android:id="@+id/opinion_star_detail_image_view"
+            layout="@layout/star_layout"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/opening_time_text_view"

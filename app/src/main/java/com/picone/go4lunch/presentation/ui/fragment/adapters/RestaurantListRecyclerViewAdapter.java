@@ -8,9 +8,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.picone.core.domain.entity.Restaurant;
+import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.RecyclerViewRestaurantItemsBinding;
+import com.picone.go4lunch.databinding.StarLayoutBinding;
 
 import java.util.List;
+
+import static com.picone.go4lunch.presentation.ui.utils.ManageStarUtil.manageStar;
 
 public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantListRecyclerViewAdapter.ViewHolder> {
 
@@ -41,6 +45,7 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
         else {
             holder.restaurantBinding.interestedColleague.setVisibility(View.GONE);
             holder.restaurantBinding.interestedColleagueNumber.setVisibility(View.GONE);}
+        manageStar(holder.restaurantBinding.opinionStarDetailImageView, (int)restaurant.getAverageSatisfaction());
     }
 
     @Override

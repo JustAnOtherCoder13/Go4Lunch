@@ -32,11 +32,16 @@ public class WorkmatesFragment extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentWorkmatesBinding.inflate(getLayoutInflater());
+        showAppBars(true);
+        return mBinding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mUserViewModel.updateUsersList();
         initRecyclerView();
-        showAppBars(true);
         configureOnClickRecyclerView();
-        return mBinding.getRoot();
     }
 
     private void initRecyclerView() {

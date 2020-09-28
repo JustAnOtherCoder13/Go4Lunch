@@ -17,6 +17,8 @@ import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 import java.util.ArrayList;
 
+import static com.picone.go4lunch.presentation.ui.utils.ManageStarUtil.manageStar;
+
 public class RestaurantDetailFragment extends BaseFragment {
 
     public static final String TAG = RestaurantDetailFragment.class.getName();
@@ -46,6 +48,7 @@ public class RestaurantDetailFragment extends BaseFragment {
             mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getFoodType()
                     .concat(" restaurant")
                     .concat(" - ").concat(restaurant.getAddress()));
+            manageStar(mBinding.opinionStarDetailImageView, (int) restaurant.getAverageSatisfaction());
         });
 
         mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
