@@ -17,6 +17,8 @@ import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 import java.util.ArrayList;
 
+import static com.picone.go4lunch.presentation.ui.utils.ManageStarUtil.manageStar;
+
 public class RestaurantDetailFragment extends BaseFragment {
 
     public static final String TAG = RestaurantDetailFragment.class.getName();
@@ -28,6 +30,7 @@ public class RestaurantDetailFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
     }
 
+    //TODO find a way to make fab unusable when on chosen restaurant?
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -35,13 +38,18 @@ public class RestaurantDetailFragment extends BaseFragment {
         initRecyclerView();
         showAppBars(false);
 
-        mRestaurantViewModel.isDataLoading.observe(getViewLifecycleOwner(), isDataLoading -> Log.i(TAG, "onChanged: "+isDataLoading));
+        mRestaurantViewModel.isDataLoading.observe(getViewLifecycleOwner(), isDataLoading -> Log.i(TAG, "onChanged: " + isDataLoading));
 
         mRestaurantViewModel.getInterestedUsersForRestaurant.observe(getViewLifecycleOwner(), users ->
                 mAdapter.updateUsers(users));
 
-        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant ->
-                mBinding.restaurantNameDetailTextView.setText(restaurant.getName()));
+        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant -> {
+            mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
+            mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getFoodType()
+                    .concat(" restaurant")
+                    .concat(" - ").concat(restaurant.getAddress()));
+            manageStar(mBinding.opinionStarDetailImageView, (int) restaurant.getAverageSatisfaction());
+        });
 
         mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
                 mRestaurantViewModel.setUserToRestaurant());

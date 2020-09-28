@@ -20,10 +20,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
+import com.picone.core.domain.entity.Restaurant;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentMapsBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
@@ -31,6 +33,7 @@ import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import java.util.Objects;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static com.picone.go4lunch.presentation.ui.utils.GetBitmapFromVectorUtil.getBitmapFromVectorDrawable;
 
 
 public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
@@ -55,13 +58,24 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         initMapView(savedInstanceState);
         showAppBars(true);
         fetchLastLocation();
+        if (mAuth.getCurrentUser() != null) {
+            mRestaurantViewModel.initRestaurants(mAuth.getCurrentUser().getEmail());
+            mRestaurantViewModel.initUsers(mAuth.getCurrentUser().getEmail());
+        }
         return mBinding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         updateLocationUI();
+        if (this.getView() != null)
+            initCustomMarker();
     }
 
     private void initMapView(@Nullable Bundle savedInstanceState) {
@@ -104,11 +118,10 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
 
     private void setUpMapCurrentPosition() {
         LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(latLng).title(getString(R.string.maps_token_title)));
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(latLng).zoom(12).build();
+                .target(latLng).zoom(16).build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        playLoadingAnimation(false,mAnimationView);
+        playLoadingAnimation(false, mAnimationView);
     }
 
     private void updateLocationUI() {
@@ -126,5 +139,26 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         } catch (SecurityException e) {
             Log.e("Exception: %s", Objects.requireNonNull(e.getMessage()));
         }
+    }
+
+    private void initCustomMarker() {
+        mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), restaurants -> {
+            for (Restaurant restaurant : restaurants) {
+                LatLng restaurantLatLng = new LatLng
+                        (restaurant.getRestaurantPosition().getLatitude()
+                                , restaurant.getRestaurantPosition().getLongitude());
+                if (restaurant.getNumberOfInterestedUsers() > 0) {
+                    mMap.addMarker(new MarkerOptions()
+                            .position(restaurantLatLng)
+                            .title(restaurant.getName())
+                            .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_user))));
+                } else {
+                    mMap.addMarker(new MarkerOptions()
+                            .position(restaurantLatLng)
+                            .title(restaurant.getName())
+                            .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_no_user))));
+                }
+            }
+        });
     }
 }

@@ -1,7 +1,5 @@
 package com.picone.core.data.repository;
 
-import android.util.Log;
-
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -36,13 +34,12 @@ public class RestaurantDaoImpl implements RestaurantDao {
     @Override
     public Observable<List<Restaurant>> getRestaurantForKey(String restaurantKey) {
         Query query = restaurantsDataBaseReference.orderByChild("key").equalTo(restaurantKey);
-        return RxFirebaseDatabase.observeValueEvent(query, DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
+        return RxFirebaseDatabase.observeSingleValueEvent(query, DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
     }
 
     @Override
     public Completable addRestaurant(Restaurant restaurant) {
         restaurant.setKey(restaurantsDataBaseReference.child(restaurant.getName()).push().getKey());
-        Log.i("TAG", "addRestaurant: restaurant added");
         return RxFirebaseDatabase.setValue(restaurantsDataBaseReference
                 .child(restaurant.getName()), restaurant);
     }
@@ -50,5 +47,15 @@ public class RestaurantDaoImpl implements RestaurantDao {
     @Override
     public Completable updateUserChosenRestaurant(User currentUser) {
         return RxFirebaseDatabase.setValue(database.getReference().child("users").child(currentUser.getUid()), currentUser);
+    }
+
+    @Override
+    public Completable updateNumberOfInterestedUsersForRestaurant(String restaurantName, int numberOfInterestedUsers){
+        return RxFirebaseDatabase.setValue(restaurantsDataBaseReference.child(restaurantName).child("numberOfInterestedUsers"),numberOfInterestedUsers);
+    }
+
+    @Override
+    public Observable<List<Restaurant>> getAllPersistedRestaurants(){
+        return RxFirebaseDatabase.observeValueEvent(restaurantsDataBaseReference,DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
     }
 }

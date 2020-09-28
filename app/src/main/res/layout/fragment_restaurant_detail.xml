@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@id/food_style_and_address_detail_text_view"
-            app:layout_constraintEnd_toStartOf="@id/opinion_star_detail_image_view"
+            app:layout_constraintEnd_toStartOf="@id/star_constraint"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -50,16 +50,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/restaurant_name_detail_text_view" />
 
-        <ImageView
-            android:id="@+id/opinion_star_detail_image_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/star_constraint"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginStart="@dimen/basic_marge"
-            android:contentDescription="@string/opinion_star_detail_content_description_restaurant_detail"
-            app:layout_constraintBottom_toTopOf="@id/food_style_and_address_detail_text_view"
             app:layout_constraintStart_toEndOf="@id/restaurant_name_detail_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/restaurant_name_detail_text_view"
-            app:srcCompat="@drawable/ic_star_icon" />
+            app:layout_constraintBottom_toBottomOf="@id/restaurant_name_detail_text_view"
+            >
+        <include
+            android:id="@+id/opinion_star_detail_image_view"
+            layout="@layout/star_layout"
+            />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

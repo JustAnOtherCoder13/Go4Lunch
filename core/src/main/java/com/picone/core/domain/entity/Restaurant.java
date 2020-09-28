@@ -13,13 +13,15 @@ public class Restaurant {
     private String address;
     private int openingHours;
     private double averageSatisfaction;
+    private RestaurantPosition restaurantPosition;
+    private int numberOfInterestedUsers;
 
     public Restaurant() {
     }
 
     public Restaurant(String key, String name, int distance, String restaurantPhoto, String foodType,
                       String address, int openingHours,
-                      double averageSatisfaction) {
+                      double averageSatisfaction, RestaurantPosition restaurantPosition, int numberOfInterestedUsers) {
         this.key = key;
         this.name = name;
         this.distance = distance;
@@ -28,6 +30,8 @@ public class Restaurant {
         this.address = address;
         this.openingHours = openingHours;
         this.averageSatisfaction = averageSatisfaction;
+        this.restaurantPosition = restaurantPosition;
+        this.numberOfInterestedUsers = numberOfInterestedUsers;
     }
 
     public String getName() {
@@ -60,5 +64,21 @@ public class Restaurant {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public RestaurantPosition getRestaurantPosition() {
+        return restaurantPosition;
+    }
+
+    public void setRestaurantPosition(RestaurantPosition restaurantPosition) {
+        this.restaurantPosition = restaurantPosition;
+    }
+
+    public int getNumberOfInterestedUsers() {
+        return numberOfInterestedUsers;
+    }
+
+    public void setNumberOfInterestedUsers(int numberOfInterestedUsers) {
+        this.numberOfInterestedUsers = numberOfInterestedUsers;
     }
 }
