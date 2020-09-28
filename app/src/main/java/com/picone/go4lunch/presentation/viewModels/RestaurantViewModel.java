@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -86,6 +87,21 @@ public class RestaurantViewModel extends ViewModel {
     public LiveData<Restaurant> getUserChosenRestaurant = userChosenRestaurantMutableLiveData;
 
     public LiveData<List<Restaurant>> getAllRestaurants = allRestaurantsMutableLiveData;
+
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    public void setClickedUserChosenRestaurant(String restaurantKey) {
+        getRestaurantForKeyInteractor.getRestaurantForKey(restaurantKey)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(restaurants -> {
+                    selectedRestaurantMutableLiveData.setValue(restaurants.get(0));
+                    return getInterestedUsersForRestaurantKeyInteractor
+                            .getInterestedUsersForRestaurantKey(restaurantKey);
+                })
+                .subscribe(users -> interestedUsersMutableLiveData.setValue(users));
+    }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")

@@ -28,6 +28,7 @@ public class RestaurantDetailFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
     }
 
+    //TODO find a way to make fab unusable when on chosen restaurant?
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
