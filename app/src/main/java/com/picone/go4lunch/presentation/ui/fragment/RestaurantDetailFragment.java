@@ -35,13 +35,17 @@ public class RestaurantDetailFragment extends BaseFragment {
         initRecyclerView();
         showAppBars(false);
 
-        mRestaurantViewModel.isDataLoading.observe(getViewLifecycleOwner(), isDataLoading -> Log.i(TAG, "onChanged: "+isDataLoading));
+        mRestaurantViewModel.isDataLoading.observe(getViewLifecycleOwner(), isDataLoading -> Log.i(TAG, "onChanged: " + isDataLoading));
 
         mRestaurantViewModel.getInterestedUsersForRestaurant.observe(getViewLifecycleOwner(), users ->
                 mAdapter.updateUsers(users));
 
-        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant ->
-                mBinding.restaurantNameDetailTextView.setText(restaurant.getName()));
+        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant -> {
+            mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
+            mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getFoodType()
+                    .concat(" restaurant")
+                    .concat(" - ").concat(restaurant.getAddress()));
+        });
 
         mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
                 mRestaurantViewModel.setUserToRestaurant());

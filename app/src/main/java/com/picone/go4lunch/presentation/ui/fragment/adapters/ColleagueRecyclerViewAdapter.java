@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.databinding.RecyclerViewColleagueItemsBinding;
 import com.picone.go4lunch.presentation.ui.fragment.WorkmatesFragment;
@@ -23,6 +24,7 @@ import java.util.List;
 public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<ColleagueRecyclerViewAdapter.ViewHolder> {
 
     private List<User> mUsers;
+    private Restaurant userChosenRestaurant;
     private String tag;
 
     public ColleagueRecyclerViewAdapter(List<User> items, String tag) {
@@ -41,18 +43,16 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
     @Override
     public void onBindViewHolder(@NonNull ColleagueRecyclerViewAdapter.ViewHolder holder, int position) {
         final User user = mUsers.get(position);
-        if (tag.equals(WorkmatesFragment.TAG)){
-            if (user.getUserDailySchedule()!=null){
-                holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(" is eating ").concat("food type ").concat("(selected restaurant)"));
+        if (tag.equals(WorkmatesFragment.TAG)) {
+            if (userChosenRestaurant != null) {
+                holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(" is eating ").concat(userChosenRestaurant.getFoodType()).concat(" ").concat(userChosenRestaurant.getName()));
                 holder.colleagueBinding.userSelectedRestaurant.setTextColor(Color.BLACK);
-            }
-            else{
+            } else {
                 holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(" hasn't decided yet"));
                 holder.colleagueBinding.userSelectedRestaurant.setTextColor(Color.LTGRAY);
                 holder.colleagueBinding.userSelectedRestaurant.setTypeface(holder.colleagueBinding.userSelectedRestaurant.getTypeface(), Typeface.ITALIC);
             }
-        }
-        else{
+        } else {
             holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(" is joining!"));
             holder.colleagueBinding.separator.setVisibility(View.GONE);
         }
@@ -89,5 +89,9 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
     public void updateUsers(List<User> users) {
         this.mUsers = users;
         notifyDataSetChanged();
+    }
+
+    public void getUserChosenRestaurant(Restaurant userChosenRestaurant) {
+        this.userChosenRestaurant = userChosenRestaurant;
     }
 }

@@ -1,13 +1,8 @@
 package com.picone.go4lunch.presentation.ui.fragment;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -64,7 +58,10 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         initMapView(savedInstanceState);
         showAppBars(true);
         fetchLastLocation();
-        mRestaurantViewModel.setInterestedUsersToRestaurants();
+        if (mAuth.getCurrentUser() != null) {
+            mRestaurantViewModel.initRestaurants(mAuth.getCurrentUser().getEmail());
+            mRestaurantViewModel.initUsers(mAuth.getCurrentUser().getEmail());
+        }
         return mBinding.getRoot();
     }
 
@@ -77,8 +74,8 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         updateLocationUI();
-        if (this.getView()!=null)
-        initCustomMarker();
+        if (this.getView() != null)
+            initCustomMarker();
     }
 
     private void initMapView(@Nullable Bundle savedInstanceState) {

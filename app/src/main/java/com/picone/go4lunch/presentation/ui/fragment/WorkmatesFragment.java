@@ -35,11 +35,11 @@ public class WorkmatesFragment extends BaseFragment {
     }
 
     private void initRecyclerView() {
-        mAdapter = new ColleagueRecyclerViewAdapter(mUsers,TAG);
+        mAdapter = new ColleagueRecyclerViewAdapter(mUsers, TAG);
         mBinding.recyclerViewWorkmatesFragment.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.recyclerViewWorkmatesFragment.setAdapter(mAdapter);
-        mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(), users ->{
-            mAdapter.updateUsers(users);
-        });
+        mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(), users -> mAdapter.updateUsers(users));
+        mRestaurantViewModel.getUserChosenRestaurant.observe(getViewLifecycleOwner()
+                , userChosenRestaurant -> mAdapter.getUserChosenRestaurant(userChosenRestaurant));
     }
 }

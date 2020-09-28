@@ -18,7 +18,6 @@ import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import com.picone.go4lunch.presentation.ui.utils.RecyclerViewItemClickUtil;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 
 public class RestaurantListFragment extends BaseFragment {
@@ -43,7 +42,10 @@ public class RestaurantListFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mRestaurantViewModel.getCurrentUserForEmail(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail());
+        if (mAuth.getCurrentUser() != null) {
+            mRestaurantViewModel.initRestaurants(mAuth.getCurrentUser().getEmail());
+            mRestaurantViewModel.initUsers(mAuth.getCurrentUser().getEmail());
+        }
     }
 
     private void initRecyclerView() {
