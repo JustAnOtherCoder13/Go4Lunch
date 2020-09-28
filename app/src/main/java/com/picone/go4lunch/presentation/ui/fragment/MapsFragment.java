@@ -39,6 +39,7 @@ import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import java.util.Objects;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static com.picone.go4lunch.presentation.ui.utils.GetBitmapFromVectorUtil.getBitmapFromVectorDrawable;
 
 
 public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
@@ -63,6 +64,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         initMapView(savedInstanceState);
         showAppBars(true);
         fetchLastLocation();
+        mRestaurantViewModel.setInterestedUsersToRestaurants();
         return mBinding.getRoot();
     }
 
@@ -75,6 +77,8 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         updateLocationUI();
+        if (this.getView()!=null)
+        initCustomMarker();
     }
 
     private void initMapView(@Nullable Bundle savedInstanceState) {
@@ -130,27 +134,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
                 mMap.setMyLocationEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
                 setUpMapCurrentPosition();
-                //TODO make error when no users exist yet caused by view is not created
-                mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), restaurants -> {
-                    Log.i("TAG", "updateLocationUI: "+restaurants);
-                    for (Restaurant restaurant : restaurants) {
-                        LatLng restaurantLatLng = new LatLng
-                                (restaurant.getRestaurantPosition().getLatitude()
-                                        , restaurant.getRestaurantPosition().getLongitude());
-                        Log.i("TAG", "updateLocationUI: " + restaurant.getName() + " " + restaurant.getRestaurantPosition().getLongitude());
-                        if (restaurant.getNumberOfInterestedUsers() > 0) {
-                            mMap.addMarker(new MarkerOptions()
-                                    .position(restaurantLatLng)
-                                    .title(restaurant.getName())
-                                    .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_user))));
-                        } else {
-                            mMap.addMarker(new MarkerOptions()
-                                    .position(restaurantLatLng)
-                                    .title(restaurant.getName())
-                                    .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_no_user))));
-                        }
-                    }
-                });
             } else {
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -161,21 +144,24 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         }
     }
 
-
-    private Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {
-
-        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
-        assert drawable != null;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            drawable = (DrawableCompat.wrap(drawable)).mutate();
-        }
-
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-
-        return bitmap;
+    private void initCustomMarker() {
+        mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), restaurants -> {
+            for (Restaurant restaurant : restaurants) {
+                LatLng restaurantLatLng = new LatLng
+                        (restaurant.getRestaurantPosition().getLatitude()
+                                , restaurant.getRestaurantPosition().getLongitude());
+                if (restaurant.getNumberOfInterestedUsers() > 0) {
+                    mMap.addMarker(new MarkerOptions()
+                            .position(restaurantLatLng)
+                            .title(restaurant.getName())
+                            .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_user))));
+                } else {
+                    mMap.addMarker(new MarkerOptions()
+                            .position(restaurantLatLng)
+                            .title(restaurant.getName())
+                            .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_no_user))));
+                }
+            }
+        });
     }
 }

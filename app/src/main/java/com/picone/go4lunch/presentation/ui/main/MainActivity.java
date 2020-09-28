@@ -1,6 +1,7 @@
 package com.picone.go4lunch.presentation.ui.main;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -19,7 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
-import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
+import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
 import java.util.Objects;
 
@@ -39,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     protected FirebaseAuth mFirebaseAuth;
 
+    private UserViewModel mUserViewModel;
     private LoginViewModel mLoginViewModel;
-    private RestaurantViewModel mRestaurantViewModel;
     private NavController mNavController;
 
 
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLoginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
-        mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
+        mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -124,10 +125,10 @@ public class MainActivity extends AppCompatActivity {
         LoginManager.getInstance().logOut();
         mFirebaseAuth.signOut();
         mLoginViewModel.authenticate(false);
+        mUserViewModel.resetUserCompletionState();
     }
 
     private void initLoginViewModel() {
-        mRestaurantViewModel.setInterestedUsersToRestaurants();
         mLoginViewModel.getAuthenticationState().observe(this,
                 authenticationState -> {
                     switch (authenticationState) {

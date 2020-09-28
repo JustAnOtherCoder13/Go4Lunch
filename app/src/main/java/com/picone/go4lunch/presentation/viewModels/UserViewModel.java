@@ -18,16 +18,18 @@ import io.reactivex.schedulers.Schedulers;
 
 public class UserViewModel extends ViewModel {
 
-    public enum AddUserState {
+    public enum UserCompletionState {
+        START_STATE,
         ON_COMPLETE,          // The user has been add successfully
         ON_ERROR              // Write on db failed
     }
 
-    private MutableLiveData<AddUserState> addUserStateMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<UserCompletionState> UserCompletionStateMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<List<User>> allUsersMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
 
     private AddUserInteractor addUserInteractor;
+    GetAllUsersInteractor getAllUsersInteractor;
 
 
     //suppress warning is safe cause subscribe is used to set allUsersMutableLiveData
@@ -36,17 +38,18 @@ public class UserViewModel extends ViewModel {
     @ViewModelInject
     public UserViewModel(GetAllUsersInteractor getAllUsersInteractor, AddUserInteractor addUserInteractor) {
         this.addUserInteractor = addUserInteractor;
-        getAllUsersInteractor.getAllUsers()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(users -> allUsersMutableLiveData.setValue(users));
+        this.getAllUsersInteractor = getAllUsersInteractor;
     }
 
     public LiveData<List<User>> getAllUsers = allUsersMutableLiveData;
 
     public LiveData<User> getCurrentUser = userMutableLiveData;
 
-    public LiveData<AddUserState> getAddUserState = addUserStateMutableLiveData;
+    public LiveData<UserCompletionState> getAddUserState = UserCompletionStateMutableLiveData;
+
+    public void resetUserCompletionState (){
+        UserCompletionStateMutableLiveData.setValue(UserCompletionState.START_STATE);
+    }
 
     public void setCurrentUser(String uid, String name, String email, String avatar) {
         userMutableLiveData.setValue(new User(uid, name, email, avatar, null));
@@ -54,12 +57,20 @@ public class UserViewModel extends ViewModel {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
+    public void updateUsersList(){
+        getAllUsersInteractor.getAllUsers()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(users -> allUsersMutableLiveData.setValue(users));
+    }
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
     public void addUser(User user) {
         addUserInteractor.addUser(user)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> addUserStateMutableLiveData.setValue(AddUserState.ON_COMPLETE)
-                        , throwable -> addUserStateMutableLiveData.setValue(AddUserState.ON_ERROR)
+                .subscribe(() -> UserCompletionStateMutableLiveData.setValue(UserCompletionState.ON_COMPLETE)
+                        , throwable -> UserCompletionStateMutableLiveData.setValue(UserCompletionState.ON_ERROR)
                 );
     }
 }
