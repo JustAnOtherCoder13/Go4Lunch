@@ -53,12 +53,14 @@ public class WorkmatesFragment extends BaseFragment {
                 , userChosenRestaurant -> mAdapter.getUserChosenRestaurant(userChosenRestaurant));
     }
 
+    //TODO get the restaurant for evry user
     public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewWorkmatesFragment, R.layout.fragment_restaurant_list)
                 .setOnItemClickListener((recyclerView, position, v) ->
                         mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(),
                         users -> {
                     if (!users.isEmpty() && users.get(position).getUserDailySchedule()!= null){
+                        //-->
                         mRestaurantViewModel.setClickedUserChosenRestaurant
                                 (users.get(position).getUserDailySchedule().getRestaurantKey());
                         Navigation.findNavController(v).navigate(R.id.restaurantDetailFragment);

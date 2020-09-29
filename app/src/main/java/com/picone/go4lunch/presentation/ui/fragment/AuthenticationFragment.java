@@ -14,6 +14,10 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.facebook.AccessToken;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;
@@ -29,6 +33,7 @@ import com.picone.go4lunch.databinding.FragmentAuthenticationBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class AuthenticationFragment extends BaseFragment {
@@ -80,7 +85,7 @@ public class AuthenticationFragment extends BaseFragment {
         mAnimationView = mBinding.animationViewInclude.animationView;
         mAnimationView.setAnimation(R.raw.loading_animation);
         mAnimationView.setVisibility(View.GONE);
-        //mBinding.loginWithFacebook.setOnClickListener(v -> signInWithFacebook());
+        mBinding.loginWithFacebook.setOnClickListener(v -> signInWithFacebook());
         mBinding.loginWithGoogle.setOnClickListener(v -> signInWithGoogle());
     }
 
@@ -133,13 +138,10 @@ public class AuthenticationFragment extends BaseFragment {
                 });
     }
 
-
-    //TODO pass with facebook login manager
-    /*private void signInWithFacebook() {
+    private void signInWithFacebook() {
         playLoadingAnimation(true, mAnimationView);
-        mBinding.loginWithFacebook.setReadPermissions("email", "public_profile");
-        mBinding.loginWithFacebook.setFragment(this);
-        mBinding.loginWithFacebook.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "public_profile"));
+        LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 handleFacebookAccessToken(loginResult.getAccessToken());
@@ -155,7 +157,7 @@ public class AuthenticationFragment extends BaseFragment {
                 Toast.makeText(requireContext(), R.string.facebook_auth_failed, Toast.LENGTH_SHORT).show();
             }
         });
-    }*/
+    }
 
     private void setCurrentUser(Task<AuthResult> task) {
         if (task.isSuccessful()) {
