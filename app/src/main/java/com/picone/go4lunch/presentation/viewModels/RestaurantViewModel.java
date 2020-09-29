@@ -89,7 +89,7 @@ public class RestaurantViewModel extends ViewModel {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
-    public void setClickedUserChosenRestaurant(String restaurantKey) {
+    public void setUserChosenRestaurant(String restaurantKey) {
         getRestaurantForKeyInteractor.getRestaurantForKey(restaurantKey)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -186,7 +186,9 @@ public class RestaurantViewModel extends ViewModel {
     @SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
     public void updateUserChosenRestaurant() {
         User user = currentUserMutableLiveData.getValue();
-        user.setUserDailySchedule(new UserDailySchedule(DATE, selectedRestaurantKeyMutableLiveData.getValue()));
+        user.setUserDailySchedule(new UserDailySchedule(DATE
+                , selectedRestaurantKeyMutableLiveData.getValue()
+                ,selectedRestaurantMutableLiveData.getValue().getName()));
         updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(user)
                 .doFinally(() -> isDataLoadingMutableLiveData.setValue(false))
                 .andThen(getInterestedUsersForRestaurantKeyInteractor

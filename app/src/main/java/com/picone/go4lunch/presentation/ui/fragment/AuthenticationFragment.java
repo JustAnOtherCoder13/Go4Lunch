@@ -76,6 +76,7 @@ public class AuthenticationFragment extends BaseFragment {
                 assert account != null;
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
+                playLoadingAnimation(false, mAnimationView);
                 Toast.makeText(getContext(), R.string.google_auth_failed, Toast.LENGTH_SHORT).show();
             }
         }
@@ -138,7 +139,6 @@ public class AuthenticationFragment extends BaseFragment {
                 });
     }
 
-    //TODO stop loader on cancel auth
     private void signInWithFacebook() {
         playLoadingAnimation(true, mAnimationView);
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "public_profile"));
@@ -150,6 +150,7 @@ public class AuthenticationFragment extends BaseFragment {
 
             @Override
             public void onCancel() {
+                playLoadingAnimation(false, mAnimationView);
                 Toast.makeText(requireContext(), R.string.facebook_auth_canceled, Toast.LENGTH_SHORT).show();
             }
 

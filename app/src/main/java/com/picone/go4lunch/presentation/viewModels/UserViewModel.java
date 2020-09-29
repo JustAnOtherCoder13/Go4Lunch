@@ -55,6 +55,7 @@ public class UserViewModel extends ViewModel {
         userMutableLiveData.setValue(new User(uid, name, email, avatar, null));
     }
 
+    //TODO manage daily schedule on date passed.
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void updateUsersList(){
