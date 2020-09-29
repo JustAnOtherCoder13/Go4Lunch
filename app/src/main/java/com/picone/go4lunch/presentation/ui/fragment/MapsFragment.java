@@ -47,8 +47,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     private Location mCurrentLocation;
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
-    //TODO customize geolocation button
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +64,8 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
             mRestaurantViewModel.initRestaurants(mAuth.getCurrentUser().getEmail());
             mRestaurantViewModel.initUsers(mAuth.getCurrentUser().getEmail());
         }
+        mBinding.locationFab.setOnClickListener(v -> setUpMapCurrentPosition());
+
         return mBinding.getRoot();
     }
 
@@ -131,13 +131,11 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     private void updateLocationUI() {
         if (mMap == null) return;
         try {
+            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);
             if (mLocationPermissionGranted) {
-                mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
                 setUpMapCurrentPosition();
             } else {
-                mMap.setMyLocationEnabled(false);
-                mMap.getUiSettings().setMyLocationButtonEnabled(false);
                 getLocationPermission();
             }
         } catch (SecurityException e) {
@@ -147,7 +145,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
 
     private void initCustomMarker() {
         mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), restaurants -> {
-
             for (Restaurant restaurant : restaurants) {
                 LatLng restaurantLatLng = new LatLng
                         (restaurant.getRestaurantPosition().getLatitude()

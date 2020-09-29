@@ -43,9 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private LoginViewModel mLoginViewModel;
     private NavController mNavController;
 
-//TODO force portrait mode
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
