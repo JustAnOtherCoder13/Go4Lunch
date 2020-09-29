@@ -37,7 +37,6 @@ public class RestaurantViewModel extends ViewModel {
 
     private MutableLiveData<User> currentUserMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Restaurant> selectedRestaurantMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<Restaurant> persistedRestaurantMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<List<User>> interestedUsersMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<String> selectedRestaurantKeyMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> isDataLoadingMutableLiveData = new MutableLiveData<>();
@@ -152,7 +151,19 @@ public class RestaurantViewModel extends ViewModel {
                         .andThen(getRestaurantForNameInteractor.getRestaurantForName(selectedRestaurant.getName())))
                 .flatMap(restaurantForName -> {
                     selectedRestaurantKeyMutableLiveData.setValue(restaurantForName.getKey());
-                    persistedRestaurantMutableLiveData.setValue(restaurantForName);
+                    return getInterestedUsersForRestaurantKeyInteractor.getInterestedUsersForRestaurantKey(restaurantForName.getKey());
+                })
+                .subscribe(usersForRestaurant -> interestedUsersMutableLiveData.setValue(usersForRestaurant));
+    }
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    public void initSelectedRestaurant(String restaurantName) {
+        getRestaurantForNameInteractor.getRestaurantForName(restaurantName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(restaurantForName -> {
+                    selectedRestaurantMutableLiveData.setValue(restaurantForName);
+                    selectedRestaurantKeyMutableLiveData.setValue(restaurantForName.getKey());
                     return getInterestedUsersForRestaurantKeyInteractor.getInterestedUsersForRestaurantKey(restaurantForName.getKey());
                 })
                 .subscribe(usersForRestaurant -> interestedUsersMutableLiveData.setValue(usersForRestaurant));
@@ -190,7 +201,6 @@ public class RestaurantViewModel extends ViewModel {
                 .andThen(getInterestedUsersForRestaurantKeyInteractor
                         .getInterestedUsersForRestaurantKey(selectedRestaurantKeyMutableLiveData.getValue()))
                 .flatMapCompletable(usersForRestaurant -> {
-                    persistedRestaurantMutableLiveData.getValue().setNumberOfInterestedUsers(usersForRestaurant.size());
                     interestedUsersMutableLiveData.setValue(usersForRestaurant);
                     return updateNumberOfInterestedUsersForRestaurantInteractor
                             .updateNumberOfInterestedUsersForRestaurant(selectedRestaurantMutableLiveData.getValue().getName(), usersForRestaurant.size());

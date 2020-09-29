@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.navigation.Navigation;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -23,6 +24,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.picone.core.domain.entity.Restaurant;
@@ -143,9 +145,9 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         }
     }
 
-    //TODO make marker clickable, go to restaurant detail
     private void initCustomMarker() {
         mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), restaurants -> {
+
             for (Restaurant restaurant : restaurants) {
                 LatLng restaurantLatLng = new LatLng
                         (restaurant.getRestaurantPosition().getLatitude()
@@ -163,6 +165,11 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
                             .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_no_user))));
                 }
             }
+            mMap.setOnMarkerClickListener(marker -> {
+                mRestaurantViewModel.initSelectedRestaurant(marker.getTitle());
+                Navigation.findNavController(requireView()).navigate(R.id.restaurantDetailFragment);
+                return false;
+            });
         });
     }
 }

@@ -38,7 +38,7 @@ public class RestaurantDetailFragment extends BaseFragment {
         showAppBars(false);
 
         mRestaurantViewModel.isDataLoading.observe(getViewLifecycleOwner(), isDataLoading ->
-                playLoadingAnimation(isDataLoading,mBinding.animationViewInclude.animationView));
+                playLoadingAnimation(isDataLoading, mBinding.animationViewInclude.animationView));
 
         mRestaurantViewModel.getInterestedUsersForRestaurant.observe(getViewLifecycleOwner(), users ->
                 mAdapter.updateUsers(users));
