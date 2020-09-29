@@ -34,11 +34,7 @@ public class UserDailySchedule {
         this.restaurantKey = restaurantKey;
     }
 
-    public String getRestaurantName() {
-        return restaurantName;
-    }
+    public String getRestaurantName() { return restaurantName; }
 
-    public void setRestaurantName(String restaurantName) {
-        this.restaurantName = restaurantName;
-    }
+    public void setRestaurantName(String restaurantName) { this.restaurantName = restaurantName;}
 }

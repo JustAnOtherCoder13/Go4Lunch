@@ -1,7 +1,6 @@
 package com.picone.go4lunch.presentation.ui.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +29,6 @@ public class RestaurantDetailFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
     }
 
-    //TODO find a way to make fab unusable when on chosen restaurant?
     //TODO how like button does work?
     @Nullable
     @Override
@@ -39,7 +37,8 @@ public class RestaurantDetailFragment extends BaseFragment {
         initRecyclerView();
         showAppBars(false);
 
-        mRestaurantViewModel.isDataLoading.observe(getViewLifecycleOwner(), isDataLoading -> Log.i(TAG, "onChanged: " + isDataLoading));
+        mRestaurantViewModel.isDataLoading.observe(getViewLifecycleOwner(), isDataLoading ->
+                playLoadingAnimation(isDataLoading,mBinding.animationViewInclude.animationView));
 
         mRestaurantViewModel.getInterestedUsersForRestaurant.observe(getViewLifecycleOwner(), users ->
                 mAdapter.updateUsers(users));

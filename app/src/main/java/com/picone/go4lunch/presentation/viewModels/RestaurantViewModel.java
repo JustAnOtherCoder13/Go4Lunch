@@ -38,7 +38,6 @@ public class RestaurantViewModel extends ViewModel {
     private MutableLiveData<User> currentUserMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Restaurant> selectedRestaurantMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Restaurant> persistedRestaurantMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<Restaurant> userChosenRestaurantMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<List<User>> interestedUsersMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<String> selectedRestaurantKeyMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> isDataLoadingMutableLiveData = new MutableLiveData<>();
@@ -82,8 +81,6 @@ public class RestaurantViewModel extends ViewModel {
 
     public LiveData<Restaurant> getSelectedRestaurant = selectedRestaurantMutableLiveData;
 
-    public LiveData<Restaurant> getUserChosenRestaurant = userChosenRestaurantMutableLiveData;
-
     public LiveData<List<Restaurant>> getAllRestaurants = allRestaurantsMutableLiveData;
 
 
@@ -118,7 +115,6 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribe(restaurantsForKey -> {
                     if (!restaurantsForKey.isEmpty()) {
                         Restaurant chosenRestaurant = restaurantsForKey.get(0);
-                        userChosenRestaurantMutableLiveData.setValue(chosenRestaurant);
                         selectedRestaurantMutableLiveData.setValue(chosenRestaurant);
                     }
                     updateRestaurant();

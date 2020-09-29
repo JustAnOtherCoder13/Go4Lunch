@@ -150,15 +150,16 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
                 LatLng restaurantLatLng = new LatLng
                         (restaurant.getRestaurantPosition().getLatitude()
                                 , restaurant.getRestaurantPosition().getLongitude());
+
+                MarkerOptions customMarkerOption = new MarkerOptions()
+                        .position(restaurantLatLng)
+                        .title(restaurant.getName());
+
                 if (restaurant.getNumberOfInterestedUsers() > 0) {
-                    mMap.addMarker(new MarkerOptions()
-                            .position(restaurantLatLng)
-                            .title(restaurant.getName())
+                    mMap.addMarker(customMarkerOption
                             .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_user))));
                 } else {
-                    mMap.addMarker(new MarkerOptions()
-                            .position(restaurantLatLng)
-                            .title(restaurant.getName())
+                    mMap.addMarker(customMarkerOption
                             .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_no_user))));
                 }
             }
