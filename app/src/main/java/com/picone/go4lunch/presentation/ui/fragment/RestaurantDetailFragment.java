@@ -31,6 +31,7 @@ public class RestaurantDetailFragment extends BaseFragment {
     }
 
     //TODO find a way to make fab unusable when on chosen restaurant?
+    //TODO how like button does work?
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

@@ -45,6 +45,8 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     private Location mCurrentLocation;
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
+    //TODO customize geolocation button
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,6 +143,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         }
     }
 
+    //TODO make marker clickable, go to restaurant detail
     private void initCustomMarker() {
         mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), restaurants -> {
             for (Restaurant restaurant : restaurants) {

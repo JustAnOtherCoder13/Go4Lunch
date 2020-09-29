@@ -138,6 +138,7 @@ public class AuthenticationFragment extends BaseFragment {
                 });
     }
 
+    //TODO stop loader on cancel auth
     private void signInWithFacebook() {
         playLoadingAnimation(true, mAnimationView);
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "public_profile"));

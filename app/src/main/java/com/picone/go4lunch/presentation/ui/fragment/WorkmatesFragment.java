@@ -53,7 +53,7 @@ public class WorkmatesFragment extends BaseFragment {
                 , userChosenRestaurant -> mAdapter.getUserChosenRestaurant(userChosenRestaurant));
     }
 
-    //TODO get the restaurant for evry user
+    //TODO get the restaurant for every user
     public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewWorkmatesFragment, R.layout.fragment_restaurant_list)
                 .setOnItemClickListener((recyclerView, position, v) ->
