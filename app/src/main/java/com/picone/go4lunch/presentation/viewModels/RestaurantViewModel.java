@@ -1,7 +1,6 @@
 package com.picone.go4lunch.presentation.viewModels;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
@@ -22,6 +21,7 @@ import com.picone.core.domain.interactors.restaurantsInteractors.UpdateUserChose
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetInterestedUsersForRestaurantKeyInteractor;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -73,7 +73,7 @@ public class RestaurantViewModel extends ViewModel {
         this.getInterestedUsersForRestaurantKeyInteractor = getInterestedUsersForRestaurantKeyInteractor;
         this.updateNumberOfInterestedUsersForRestaurantInteractor = updateNumberOfInterestedUsersForRestaurantInteractor;
         this.getAllPersistedRestaurantsInteractor = getAllPersistedRestaurantsInteractor;
-        setDate();
+        DATE = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(Calendar.getInstance().getTime());
     }
 
     public LiveData<Boolean> isDataLoading = isDataLoadingMutableLiveData;
@@ -130,6 +130,7 @@ public class RestaurantViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(currentUsers -> {
                     currentUserMutableLiveData.setValue(currentUsers.get(0));
+                    resetDbOnDailyScheduleDatePassed(currentUsers.get(0));
                     if (!currentUsers.isEmpty() && currentUsers.get(0).getUserDailySchedule() != null)
                         return getInterestedUsersForRestaurantKeyInteractor
                                 .getInterestedUsersForRestaurantKey
@@ -144,8 +145,10 @@ public class RestaurantViewModel extends ViewModel {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public <T> void initSelectedRestaurant(T param) {
+
         Restaurant selectedRestaurant = new Restaurant();
         String selectedRestaurantName = "";
+
         if (param instanceof Integer) {
             selectedRestaurant = getRestaurant.getRestaurant((Integer) param);
             selectedRestaurantName = selectedRestaurant.getName();
@@ -232,8 +235,32 @@ public class RestaurantViewModel extends ViewModel {
                 });
     }
 
-    private void setDate() {
-        Date today = Calendar.getInstance().getTime();
-        DATE = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(today);
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    private void resetDbOnDailyScheduleDatePassed(User currentUser) {
+        Date dailyScheduleDate = new Date();
+        if (currentUser.getUserDailySchedule() != null) {
+            try {
+                dailyScheduleDate = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(currentUser.getUserDailySchedule().getDate());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            assert dailyScheduleDate != null;
+            if (dailyScheduleDate.compareTo(Calendar.getInstance().getTime()) < 0) {
+                getRestaurantForKeyInteractor.getRestaurantForKey(currentUser.getUserDailySchedule().getRestaurantKey())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .flatMapCompletable(restaurantsForKey -> {
+                            int interestedUsers = restaurantsForKey.get(0).getNumberOfInterestedUsers() - 1;
+                            currentUser.setUserDailySchedule(new UserDailySchedule());
+                            return updateNumberOfInterestedUsersForRestaurantInteractor
+                                    .updateNumberOfInterestedUsersForRestaurant(restaurantsForKey.get(0).getName(), interestedUsers);
+                        })
+                        .andThen(updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(currentUser))
+                        .subscribe(() -> {
+                        }, throwable -> {
+                        });
+            }
+        }
     }
 }
