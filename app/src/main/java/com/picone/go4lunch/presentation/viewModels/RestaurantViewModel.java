@@ -96,6 +96,25 @@ public class RestaurantViewModel extends ViewModel {
     public LiveData<List<Restaurant>> getAllRestaurants = allRestaurantsMutableLiveData;
 
 
+    @SuppressLint("CheckResult")
+    public void updateFanList(){
+        Restaurant restaurant = selectedRestaurantMutableLiveData.getValue();
+        User currentUser = currentUserMutableLiveData.getValue();
+        List<String> fanList = new ArrayList<>();
+        fanList.add(currentUser.getUid());
+        getFanListForRestaurantInteractor.getFanListForRestaurant(restaurant.getName())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .switchIfEmpty(updateFanListForRestaurantInteractor.updateFanListForRestaurant(restaurant.getName(),fanList)
+                        .andThen(getFanListForRestaurantInteractor.getFanListForRestaurant(restaurant.getName())))
+                .flatMapCompletable(strings -> {
+                    if (!strings.contains(currentUser.getUid()))
+                        strings.add(currentUser.getUid());
+                    return updateFanListForRestaurantInteractor.updateFanListForRestaurant(restaurant.getName(),strings);
+                })
+                .subscribe();
+
+    }
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void setClickedUserChosenRestaurant(String restaurantKey) {

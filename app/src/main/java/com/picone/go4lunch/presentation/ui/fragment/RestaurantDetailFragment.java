@@ -54,6 +54,9 @@ public class RestaurantDetailFragment extends BaseFragment {
         mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
                 mRestaurantViewModel.setUserToRestaurant());
 
+        mBinding.likeDetailImageButton.setOnClickListener(v->
+                mRestaurantViewModel.updateFanList());
+
         return mBinding.getRoot();
     }
 
