@@ -1,5 +1,6 @@
 package com.picone.go4lunch.presentation.ui.fragment;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,11 +49,23 @@ public class RestaurantDetailFragment extends BaseFragment {
             mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getFoodType()
                     .concat(" restaurant")
                     .concat(" - ").concat(restaurant.getAddress()));
-            manageStar(mBinding.opinionStarDetailImageView, (int) restaurant.getAverageSatisfaction());
+            int numberOfLike = 0;
+            if (restaurant.getFanList() != null && !restaurant.getFanList().isEmpty())
+                numberOfLike = restaurant.getFanList().size();
+            manageStar(mBinding.opinionStarDetailImageView, numberOfLike);
         });
 
         mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
                 mRestaurantViewModel.setUserToRestaurant());
+
+        mBinding.likeDetailImageButton.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+            builder.setTitle("Like this restaurant ?")
+                    .setNegativeButton("No",null)
+                    .setPositiveButton("Yes", (dialog, which) -> mRestaurantViewModel.updateFanList())
+                    .create()
+                    .show();
+        });
 
         return mBinding.getRoot();
     }

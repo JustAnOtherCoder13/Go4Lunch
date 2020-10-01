@@ -44,4 +44,11 @@ public class RestaurantRepository {
     public Observable<List<Restaurant>> getAllPersistedRestaurants (){
         return restaurantDao.getAllPersistedRestaurants();
     }
+    public Completable updateFanListForRestaurant(String restaurantName,List<String> fanList) {
+        return restaurantDao.updateFanListForRestaurant(restaurantName, fanList);
+    }
+
+    public Observable<List<String>> getFanListForRestaurant(String restaurantName) {
+        return restaurantDao.getFanListForRestaurant(restaurantName);
+    }
 }

@@ -58,4 +58,12 @@ public class RestaurantDaoImpl implements RestaurantDao {
     public Observable<List<Restaurant>> getAllPersistedRestaurants(){
         return RxFirebaseDatabase.observeValueEvent(restaurantsDataBaseReference,DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
     }
+
+    public Completable updateFanListForRestaurant(String restaurantName,List<String> fanList){
+        return RxFirebaseDatabase.setValue(restaurantsDataBaseReference.child(restaurantName).child("fanList"),fanList);
+    }
+
+    public Observable<List<String>> getFanListForRestaurant(String restaurantName){
+        return  RxFirebaseDatabase.observeSingleValueEvent(restaurantsDataBaseReference.child(restaurantName).child("fanList"),DataSnapshotMapper.listOf(String.class)).toObservable();
+    }
 }

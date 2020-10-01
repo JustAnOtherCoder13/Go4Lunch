@@ -13,9 +13,11 @@ import com.picone.core.domain.entity.UserDailySchedule;
 import com.picone.core.domain.interactors.restaurantsInteractors.AddRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetAllPersistedRestaurantsInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetAllRestaurantsInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.GetFanListForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForKeyInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForNameInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.UpdateFanListForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.UpdateNumberOfInterestedUsersForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.UpdateUserChosenRestaurantInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
@@ -54,6 +56,8 @@ public class RestaurantViewModel extends ViewModel {
     private GetInterestedUsersForRestaurantKeyInteractor getInterestedUsersForRestaurantKeyInteractor;
     private UpdateNumberOfInterestedUsersForRestaurantInteractor updateNumberOfInterestedUsersForRestaurantInteractor;
     private GetAllPersistedRestaurantsInteractor getAllPersistedRestaurantsInteractor;
+    private UpdateFanListForRestaurantInteractor updateFanListForRestaurantInteractor;
+    private GetFanListForRestaurantInteractor getFanListForRestaurantInteractor;
 
     @ViewModelInject
     public RestaurantViewModel(GetAllRestaurantsInteractor getAllRestaurantsInteractor
@@ -62,7 +66,8 @@ public class RestaurantViewModel extends ViewModel {
             , GetCurrentUserForEmailInteractor getCurrentUserForEmailInteractor, GetRestaurantForKeyInteractor getRestaurantForKeyInteractor
             , GetInterestedUsersForRestaurantKeyInteractor getInterestedUsersForRestaurantKeyInteractor
             , UpdateNumberOfInterestedUsersForRestaurantInteractor updateNumberOfInterestedUsersForRestaurantInteractor
-            , GetAllPersistedRestaurantsInteractor getAllPersistedRestaurantsInteractor) {
+            , GetAllPersistedRestaurantsInteractor getAllPersistedRestaurantsInteractor
+            ,UpdateFanListForRestaurantInteractor updateFanListForRestaurantInteractor,GetFanListForRestaurantInteractor getFanListForRestaurantInteractor) {
         this.getAllRestaurantsInteractor = getAllRestaurantsInteractor;
         this.getRestaurant = getRestaurant;
         this.getRestaurantForNameInteractor = getRestaurantForNameInteractor;
@@ -73,6 +78,8 @@ public class RestaurantViewModel extends ViewModel {
         this.getInterestedUsersForRestaurantKeyInteractor = getInterestedUsersForRestaurantKeyInteractor;
         this.updateNumberOfInterestedUsersForRestaurantInteractor = updateNumberOfInterestedUsersForRestaurantInteractor;
         this.getAllPersistedRestaurantsInteractor = getAllPersistedRestaurantsInteractor;
+        this.getFanListForRestaurantInteractor = getFanListForRestaurantInteractor;
+        this.updateFanListForRestaurantInteractor = updateFanListForRestaurantInteractor;
         DATE = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(Calendar.getInstance().getTime());
     }
 
@@ -84,6 +91,26 @@ public class RestaurantViewModel extends ViewModel {
 
     public LiveData<List<Restaurant>> getAllRestaurants = allRestaurantsMutableLiveData;
 
+
+
+    @SuppressLint("CheckResult")
+    public void updateFanList(){
+        Restaurant restaurant = selectedRestaurantMutableLiveData.getValue();
+        User currentUser = currentUserMutableLiveData.getValue();
+        List<String> fanList = new ArrayList<>();
+        fanList.add(currentUser.getUid());
+        getFanListForRestaurantInteractor.getFanListForRestaurant(restaurant.getName())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .switchIfEmpty(updateFanListForRestaurantInteractor.updateFanListForRestaurant(restaurant.getName(),fanList)
+                        .andThen(getFanListForRestaurantInteractor.getFanListForRestaurant(restaurant.getName())))
+                .flatMapCompletable(strings -> {
+                    if (!strings.contains(currentUser.getUid()))
+                        strings.add(currentUser.getUid());
+                    return updateFanListForRestaurantInteractor.updateFanListForRestaurant(restaurant.getName(),strings);
+                })
+                .subscribe();
+    }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
@@ -239,14 +266,16 @@ public class RestaurantViewModel extends ViewModel {
     @SuppressLint("CheckResult")
     private void resetDbOnDailyScheduleDatePassed(User currentUser) {
         Date dailyScheduleDate = new Date();
+        Date today = new Date();
         if (currentUser.getUserDailySchedule() != null) {
             try {
                 dailyScheduleDate = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(currentUser.getUserDailySchedule().getDate());
+                today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(DATE);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             assert dailyScheduleDate != null;
-            if (dailyScheduleDate.compareTo(Calendar.getInstance().getTime()) < 0) {
+            if (dailyScheduleDate.compareTo(today) < 0) {
                 getRestaurantForKeyInteractor.getRestaurantForKey(currentUser.getUserDailySchedule().getRestaurantKey())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
