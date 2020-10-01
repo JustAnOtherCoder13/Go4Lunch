@@ -56,7 +56,7 @@ public class RestaurantDetailFragment extends BaseFragment {
         });
 
         mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
-                mRestaurantViewModel.setUserToRestaurant());
+                mRestaurantViewModel.addUserToRestaurant());
 
         mBinding.likeDetailImageButton.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());

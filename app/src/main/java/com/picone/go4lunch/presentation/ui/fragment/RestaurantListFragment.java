@@ -37,10 +37,7 @@ public class RestaurantListFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         initRecyclerView();
         configureOnClickRecyclerView();
-        if (mAuth.getCurrentUser() != null) {
-            mRestaurantViewModel.initRestaurants(mAuth.getCurrentUser().getEmail());
-            mRestaurantViewModel.initUsers(mAuth.getCurrentUser().getEmail());
-        }
+        if (mAuth.getCurrentUser() != null) mRestaurantViewModel.initData(mAuth.getCurrentUser().getEmail());
     }
 
     private void initRecyclerView() {
