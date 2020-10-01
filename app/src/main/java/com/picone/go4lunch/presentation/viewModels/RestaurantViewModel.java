@@ -14,9 +14,11 @@ import com.picone.core.domain.entity.UserDailySchedule;
 import com.picone.core.domain.interactors.restaurantsInteractors.AddRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetAllPersistedRestaurantsInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetAllRestaurantsInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.GetFanListForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForKeyInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForNameInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.UpdateFanListForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.UpdateNumberOfInterestedUsersForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.UpdateUserChosenRestaurantInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
@@ -56,6 +58,8 @@ public class RestaurantViewModel extends ViewModel {
     private GetInterestedUsersForRestaurantKeyInteractor getInterestedUsersForRestaurantKeyInteractor;
     private UpdateNumberOfInterestedUsersForRestaurantInteractor updateNumberOfInterestedUsersForRestaurantInteractor;
     private GetAllPersistedRestaurantsInteractor getAllPersistedRestaurantsInteractor;
+    private UpdateFanListForRestaurantInteractor updateFanListForRestaurantInteractor;
+    private GetFanListForRestaurantInteractor getFanListForRestaurantInteractor;
 
     @ViewModelInject
     public RestaurantViewModel(GetAllRestaurantsInteractor getAllRestaurantsInteractor
@@ -64,7 +68,8 @@ public class RestaurantViewModel extends ViewModel {
             , GetCurrentUserForEmailInteractor getCurrentUserForEmailInteractor, GetRestaurantForKeyInteractor getRestaurantForKeyInteractor
             , GetInterestedUsersForRestaurantKeyInteractor getInterestedUsersForRestaurantKeyInteractor
             , UpdateNumberOfInterestedUsersForRestaurantInteractor updateNumberOfInterestedUsersForRestaurantInteractor
-            , GetAllPersistedRestaurantsInteractor getAllPersistedRestaurantsInteractor) {
+            , GetAllPersistedRestaurantsInteractor getAllPersistedRestaurantsInteractor
+    ,UpdateFanListForRestaurantInteractor updateFanListForRestaurantInteractor,GetFanListForRestaurantInteractor getFanListForRestaurantInteractor) {
         this.getAllRestaurantsInteractor = getAllRestaurantsInteractor;
         this.getRestaurant = getRestaurant;
         this.getRestaurantForNameInteractor = getRestaurantForNameInteractor;
@@ -75,6 +80,8 @@ public class RestaurantViewModel extends ViewModel {
         this.getInterestedUsersForRestaurantKeyInteractor = getInterestedUsersForRestaurantKeyInteractor;
         this.updateNumberOfInterestedUsersForRestaurantInteractor = updateNumberOfInterestedUsersForRestaurantInteractor;
         this.getAllPersistedRestaurantsInteractor = getAllPersistedRestaurantsInteractor;
+        this.getFanListForRestaurantInteractor = getFanListForRestaurantInteractor;
+        this.updateFanListForRestaurantInteractor = updateFanListForRestaurantInteractor;
         setDate();
     }
 
