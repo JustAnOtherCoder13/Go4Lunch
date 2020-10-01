@@ -242,4 +242,13 @@
         <item name="android:background">@color/lightGrey</item>
     </style>
 
+    <!-- *************************MAPS********************************* -->
+    <style name="mapsFab">
+        <item name="android:layout_marginBottom">70dp</item>
+        <item name="android:layout_marginEnd">@dimen/big_marge</item>
+        <item name="backgroundTint">@color/onPrimaryColor</item>
+        <item name="borderWidth">0dp</item>
+        <item name="srcCompat">@drawable/ic_baseline_my_location_24</item>
+    </style>
+
 </resources>

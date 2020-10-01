@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.navigation.Navigation;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -23,6 +24,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.picone.core.domain.entity.Restaurant;
@@ -62,6 +64,8 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
             mRestaurantViewModel.initRestaurants(mAuth.getCurrentUser().getEmail());
             mRestaurantViewModel.initUsers(mAuth.getCurrentUser().getEmail());
         }
+        mBinding.locationFab.setOnClickListener(v -> setUpMapCurrentPosition());
+
         return mBinding.getRoot();
     }
 
@@ -127,13 +131,11 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     private void updateLocationUI() {
         if (mMap == null) return;
         try {
+            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);
             if (mLocationPermissionGranted) {
-                mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
                 setUpMapCurrentPosition();
             } else {
-                mMap.setMyLocationEnabled(false);
-                mMap.getUiSettings().setMyLocationButtonEnabled(false);
                 getLocationPermission();
             }
         } catch (SecurityException e) {
@@ -147,18 +149,24 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
                 LatLng restaurantLatLng = new LatLng
                         (restaurant.getRestaurantPosition().getLatitude()
                                 , restaurant.getRestaurantPosition().getLongitude());
+
+                MarkerOptions customMarkerOption = new MarkerOptions()
+                        .position(restaurantLatLng)
+                        .title(restaurant.getName());
+
                 if (restaurant.getNumberOfInterestedUsers() > 0) {
-                    mMap.addMarker(new MarkerOptions()
-                            .position(restaurantLatLng)
-                            .title(restaurant.getName())
+                    mMap.addMarker(customMarkerOption
                             .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_user))));
                 } else {
-                    mMap.addMarker(new MarkerOptions()
-                            .position(restaurantLatLng)
-                            .title(restaurant.getName())
+                    mMap.addMarker(customMarkerOption
                             .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_no_user))));
                 }
             }
+            mMap.setOnMarkerClickListener(marker -> {
+                mRestaurantViewModel.initSelectedRestaurant(marker.getTitle());
+                Navigation.findNavController(requireView()).navigate(R.id.restaurantDetailFragment);
+                return false;
+            });
         });
     }
 }

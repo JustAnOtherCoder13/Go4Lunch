@@ -5,6 +5,9 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class Restaurant {
 
+    //TODO add like manager
+    //TODO add phone number, reorganize?
+
     private String key;
     private String name;
     private int distance;

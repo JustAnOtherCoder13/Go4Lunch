@@ -1,6 +1,5 @@
 package com.picone.go4lunch.presentation.ui.utils;
 
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -10,19 +9,18 @@ import com.picone.go4lunch.databinding.StarLayoutBinding;
 public class ManageStarUtil {
 
     public static void manageStar(@NonNull StarLayoutBinding starLayoutBinding, int averageSatisfaction) {
-        Log.i("TAG", "manageStar: "+averageSatisfaction);
-        switch (averageSatisfaction){
-            case 0 :
+        switch (averageSatisfaction) {
+            case 0:
                 starLayoutBinding.opinionStar1.setVisibility(View.GONE);
                 starLayoutBinding.opinionStar2.setVisibility(View.GONE);
                 starLayoutBinding.opinionStar3.setVisibility(View.GONE);
                 break;
-            case 1 :
+            case 1:
                 starLayoutBinding.opinionStar1.setVisibility(View.VISIBLE);
                 starLayoutBinding.opinionStar2.setVisibility(View.GONE);
                 starLayoutBinding.opinionStar3.setVisibility(View.GONE);
                 break;
-            case 2 :
+            case 2:
                 starLayoutBinding.opinionStar1.setVisibility(View.VISIBLE);
                 starLayoutBinding.opinionStar2.setVisibility(View.VISIBLE);
                 starLayoutBinding.opinionStar3.setVisibility(View.GONE);

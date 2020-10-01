@@ -7,13 +7,15 @@ public class UserDailySchedule {
 
     private String date;
     private String restaurantKey;
+    private String restaurantName;
 
     public UserDailySchedule() {
     }
 
-    public UserDailySchedule(String date, String restaurantKey) {
+    public UserDailySchedule(String date, String restaurantKey,String restaurantName) {
         this.date = date;
         this.restaurantKey = restaurantKey;
+        this.restaurantName = restaurantName;
     }
 
     public String getDate() {
@@ -31,4 +33,8 @@ public class UserDailySchedule {
     public void setRestaurantKey(String restaurantKey) {
         this.restaurantKey = restaurantKey;
     }
+
+    public String getRestaurantName() { return restaurantName; }
+
+    public void setRestaurantName(String restaurantName) { this.restaurantName = restaurantName;}
 }

@@ -8,9 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.picone.core.domain.entity.Restaurant;
-import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.RecyclerViewRestaurantItemsBinding;
-import com.picone.go4lunch.databinding.StarLayoutBinding;
 
 import java.util.List;
 

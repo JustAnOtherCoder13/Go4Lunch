@@ -1,7 +1,6 @@
 package com.picone.go4lunch.presentation.ui.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,8 +48,6 @@ public class WorkmatesFragment extends BaseFragment {
         mBinding.recyclerViewWorkmatesFragment.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.recyclerViewWorkmatesFragment.setAdapter(mAdapter);
         mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(), users -> mAdapter.updateUsers(users));
-        mRestaurantViewModel.getUserChosenRestaurant.observe(getViewLifecycleOwner()
-                , userChosenRestaurant -> mAdapter.getUserChosenRestaurant(userChosenRestaurant));
     }
 
     public void configureOnClickRecyclerView() {
@@ -59,7 +56,7 @@ public class WorkmatesFragment extends BaseFragment {
                         mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(),
                         users -> {
                     if (!users.isEmpty() && users.get(position).getUserDailySchedule()!= null){
-                        mRestaurantViewModel.setClickedUserChosenRestaurant
+                        mRestaurantViewModel.setUserChosenRestaurant
                                 (users.get(position).getUserDailySchedule().getRestaurantKey());
                         Navigation.findNavController(v).navigate(R.id.restaurantDetailFragment);
                     }
