@@ -17,14 +17,14 @@ public class Restaurant {
     private double averageSatisfaction;
     private RestaurantPosition restaurantPosition;
     private int numberOfInterestedUsers;
-    private List<String> uid;
+    private List<String> fanList;
 
     public Restaurant() {
     }
 
     public Restaurant(String key, String name, int distance, String restaurantPhoto, String foodType,
                       String address, int openingHours,
-                      double averageSatisfaction, RestaurantPosition restaurantPosition, int numberOfInterestedUsers,List<String> uid) {
+                      double averageSatisfaction, RestaurantPosition restaurantPosition, int numberOfInterestedUsers,List<String> fanList) {
         this.key = key;
         this.name = name;
         this.distance = distance;
@@ -35,7 +35,7 @@ public class Restaurant {
         this.averageSatisfaction = averageSatisfaction;
         this.restaurantPosition = restaurantPosition;
         this.numberOfInterestedUsers = numberOfInterestedUsers;
-        this.uid = uid;
+        this.fanList = fanList;
     }
 
     public String getName() {
@@ -86,11 +86,11 @@ public class Restaurant {
         this.numberOfInterestedUsers = numberOfInterestedUsers;
     }
 
-    public List<String> getUid() {
-        return uid;
+    public List<String> getFanList() {
+        return fanList;
     }
 
-    public void setUid(List<String> uid) {
-        this.uid = uid;
+    public void setFanList(List<String> fanList) {
+        this.fanList = fanList;
     }
 }
