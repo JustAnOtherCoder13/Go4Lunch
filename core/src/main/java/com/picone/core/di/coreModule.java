@@ -9,9 +9,11 @@ import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.interactors.restaurantsInteractors.AddRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetAllPersistedRestaurantsInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetAllRestaurantsInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.GetFanListForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForKeyInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForNameInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.UpdateFanListForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.UpdateNumberOfInterestedUsersForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.UpdateUserChosenRestaurantInteractor;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
@@ -132,5 +134,15 @@ public final class coreModule {
     @Provides
     static GetAllPersistedRestaurantsInteractor provideGetAllPersistedRestaurant(){
         return new GetAllPersistedRestaurantsInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    GetFanListForRestaurantInteractor provideGetFanListForRestaurant(){
+        return new GetFanListForRestaurantInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    UpdateFanListForRestaurantInteractor provideUpdateFanListForRestaurant(){
+        return new UpdateFanListForRestaurantInteractor(provideRestaurantDataSource());
     }
 }

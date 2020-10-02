@@ -24,7 +24,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.picone.core.domain.entity.Restaurant;
@@ -60,10 +59,8 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         initMapView(savedInstanceState);
         showAppBars(true);
         fetchLastLocation();
-        if (mAuth.getCurrentUser() != null) {
-            mRestaurantViewModel.initRestaurants(mAuth.getCurrentUser().getEmail());
-            mRestaurantViewModel.initUsers(mAuth.getCurrentUser().getEmail());
-        }
+        if (mAuth.getCurrentUser() != null) mRestaurantViewModel.initData(mAuth.getCurrentUser().getEmail());
+
         mBinding.locationFab.setOnClickListener(v -> setUpMapCurrentPosition());
 
         return mBinding.getRoot();

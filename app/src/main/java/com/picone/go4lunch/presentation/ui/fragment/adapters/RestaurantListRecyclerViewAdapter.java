@@ -38,12 +38,15 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
         holder.restaurantBinding.foodStyleAndAddressTextView.setText(restaurant.getFoodType().concat(" - ")
                 .concat(restaurant.getAddress()));
         holder.restaurantBinding.distanceTextView.setText(String.valueOf(restaurant.getDistance()).concat(" m"));
-        if (restaurant.getNumberOfInterestedUsers()>0)
+        if (restaurant.getNumberOfInterestedUsers() > 0)
             holder.restaurantBinding.interestedColleagueNumber.setText("(".concat(String.valueOf(restaurant.getNumberOfInterestedUsers())).concat(")"));
         else {
             holder.restaurantBinding.interestedColleague.setVisibility(View.GONE);
-            holder.restaurantBinding.interestedColleagueNumber.setVisibility(View.GONE);}
-        manageStar(holder.restaurantBinding.opinionStarDetailImageView, (int)restaurant.getAverageSatisfaction());
+            holder.restaurantBinding.interestedColleagueNumber.setVisibility(View.GONE);
+        }
+        int numberOfLike = 0;
+        if (restaurant.getFanList()!=null) numberOfLike = restaurant.getFanList().size();
+        manageStar(holder.restaurantBinding.opinionStarDetailImageView, numberOfLike);
     }
 
     @Override
