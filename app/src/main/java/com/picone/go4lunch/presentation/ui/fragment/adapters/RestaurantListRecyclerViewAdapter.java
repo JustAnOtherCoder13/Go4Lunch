@@ -45,7 +45,7 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
             holder.restaurantBinding.interestedColleagueNumber.setVisibility(View.GONE);
         }
         int numberOfLike = 0;
-        if (!restaurant.getFanList().isEmpty()) numberOfLike = restaurant.getFanList().size();
+        if (restaurant.getFanList()!=null) numberOfLike = restaurant.getFanList().size();
         manageStar(holder.restaurantBinding.opinionStarDetailImageView, numberOfLike);
     }
 

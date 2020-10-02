@@ -68,7 +68,7 @@ public class RestaurantViewModel extends ViewModel {
             , GetInterestedUsersForRestaurantKeyInteractor getInterestedUsersForRestaurantKeyInteractor
             , UpdateNumberOfInterestedUsersForRestaurantInteractor updateNumberOfInterestedUsersForRestaurantInteractor
             , GetAllPersistedRestaurantsInteractor getAllPersistedRestaurantsInteractor
-            ,UpdateFanListForRestaurantInteractor updateFanListForRestaurantInteractor,GetFanListForRestaurantInteractor getFanListForRestaurantInteractor) {
+            , UpdateFanListForRestaurantInteractor updateFanListForRestaurantInteractor, GetFanListForRestaurantInteractor getFanListForRestaurantInteractor) {
         this.getAllRestaurantsInteractor = getAllRestaurantsInteractor;
         this.getRestaurant = getRestaurant;
         this.getRestaurantForNameInteractor = getRestaurantForNameInteractor;
@@ -94,7 +94,7 @@ public class RestaurantViewModel extends ViewModel {
 
     @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
     @SuppressLint("CheckResult")
-    public void updateFanList(){
+    public void updateFanList() {
         Restaurant restaurant = selectedRestaurantMutableLiveData.getValue();
         User currentUser = currentUserMutableLiveData.getValue();
         List<String> fanList = new ArrayList<>();
@@ -102,12 +102,12 @@ public class RestaurantViewModel extends ViewModel {
         getFanListForRestaurantInteractor.getFanListForRestaurant(restaurant.getName())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .switchIfEmpty(updateFanListForRestaurantInteractor.updateFanListForRestaurant(restaurant.getName(),fanList)
+                .switchIfEmpty(updateFanListForRestaurantInteractor.updateFanListForRestaurant(restaurant.getName(), fanList)
                         .andThen(getFanListForRestaurantInteractor.getFanListForRestaurant(restaurant.getName())))
                 .flatMapCompletable(strings -> {
                     if (!strings.contains(currentUser.getUid()))
                         strings.add(currentUser.getUid());
-                    return updateFanListForRestaurantInteractor.updateFanListForRestaurant(restaurant.getName(),strings);
+                    return updateFanListForRestaurantInteractor.updateFanListForRestaurant(restaurant.getName(), strings);
                 })
                 .andThen(getRestaurantForNameInteractor.getRestaurantForName(restaurant.getName()))
                 .subscribe(persistedRestaurant -> selectedRestaurantMutableLiveData.setValue(persistedRestaurant));
@@ -127,7 +127,7 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribe(users -> interestedUsersMutableLiveData.setValue(users));
     }
 
-    public void initData(String authUserMail){
+    public void initData(String authUserMail) {
         initRestaurants(authUserMail);
         initUsers(authUserMail);
     }
@@ -153,7 +153,7 @@ public class RestaurantViewModel extends ViewModel {
 
         if (!(param instanceof String))
             if (!(param instanceof Integer))
-                Log.e("WRONG_PARAMETER", "initSelectedRestaurant: Must pass a string restaurantName or an int restaurantPosition ",new Throwable());
+                Log.e("WRONG_PARAMETER", "initSelectedRestaurant: Must pass a string restaurantName or an int restaurantPosition ", new Throwable());
 
         getRestaurantForNameInteractor.getRestaurantForName(selectedRestaurantName)
                 .subscribeOn(Schedulers.io())
@@ -217,6 +217,7 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(currentUsers -> {
+                    updateAllRestaurantsWithPersistedValues();
                     String restaurantKey;
                     if (!currentUsers.isEmpty() && currentUsers.get(0).getUserDailySchedule() != null)
                         restaurantKey = currentUsers.get(0).getUserDailySchedule().getRestaurantKey();
@@ -224,7 +225,6 @@ public class RestaurantViewModel extends ViewModel {
                     return getRestaurantForKeyInteractor.getRestaurantForKey(restaurantKey);
                 })
                 .subscribe(restaurantsForKey -> {
-                    updateAllRestaurantsWithPersistedValues();
                     if (!restaurantsForKey.isEmpty())
                         selectedRestaurantMutableLiveData.setValue(restaurantsForKey.get(0));
                 });
@@ -259,17 +259,21 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(persistedRestaurants -> {
-                    for (Restaurant persistedRestaurant : persistedRestaurants) {
-                        for (Restaurant generatedRestaurant : getAllRestaurantsInteractor.getGeneratedRestaurants()) {
-                            if (persistedRestaurant.getName().equals(generatedRestaurant.getName())) {
-                                generatedRestaurant.setNumberOfInterestedUsers(persistedRestaurant.getNumberOfInterestedUsers());
-                                generatedRestaurant.setFanList(persistedRestaurant.getFanList());
+                    if (!persistedRestaurants.isEmpty()) {
+                        for (Restaurant persistedRestaurant : persistedRestaurants) {
+                            for (Restaurant generatedRestaurant : getAllRestaurantsInteractor.getGeneratedRestaurants()) {
+                                if (persistedRestaurant.getName().equals(generatedRestaurant.getName())) {
+                                    generatedRestaurant.setNumberOfInterestedUsers(persistedRestaurant.getNumberOfInterestedUsers());
+                                    generatedRestaurant.setFanList(persistedRestaurant.getFanList());
+                                }
+                                if (!updatedRestaurants.contains(generatedRestaurant))
+                                    updatedRestaurants.add(generatedRestaurant);
                             }
-                            if (!updatedRestaurants.contains(generatedRestaurant))
-                                updatedRestaurants.add(generatedRestaurant);
                         }
-                    }
-                    allRestaurantsMutableLiveData.setValue(updatedRestaurants);
+                        allRestaurantsMutableLiveData.setValue(updatedRestaurants);
+
+                    } else
+                        allRestaurantsMutableLiveData.setValue(getAllRestaurantsInteractor.getGeneratedRestaurants());
                 });
     }
 
