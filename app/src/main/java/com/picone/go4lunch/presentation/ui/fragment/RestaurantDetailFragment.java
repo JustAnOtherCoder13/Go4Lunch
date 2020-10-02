@@ -46,6 +46,8 @@ public class RestaurantDetailFragment extends BaseFragment {
 
         mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant -> {
             mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
+            mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getAddress());
+            manageStar(mBinding.opinionStarDetailImageView, (int) restaurant.getAverageSatisfaction());
             mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getFoodType()
                     .concat(" restaurant")
                     .concat(" - ").concat(restaurant.getAddress()));

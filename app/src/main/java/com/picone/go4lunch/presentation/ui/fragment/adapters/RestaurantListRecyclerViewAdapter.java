@@ -1,12 +1,17 @@
 package com.picone.go4lunch.presentation.ui.fragment.adapters;
 
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.go4lunch.databinding.RecyclerViewRestaurantItemsBinding;
 
@@ -35,8 +40,7 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
         final Restaurant restaurant = mRestaurants.get(position);
         holder.restaurantBinding.restaurantNameTextView.setText(restaurant.getName());
         holder.restaurantBinding.openingTimeTextView.setText(String.valueOf(restaurant.getOpeningHours()).concat(" h"));
-        holder.restaurantBinding.foodStyleAndAddressTextView.setText(restaurant.getFoodType().concat(" - ")
-                .concat(restaurant.getAddress()));
+        holder.restaurantBinding.foodStyleAndAddressTextView.setText(restaurant.getAddress());
         holder.restaurantBinding.distanceTextView.setText(String.valueOf(restaurant.getDistance()).concat(" m"));
         if (restaurant.getNumberOfInterestedUsers() > 0)
             holder.restaurantBinding.interestedColleagueNumber.setText("(".concat(String.valueOf(restaurant.getNumberOfInterestedUsers())).concat(")"));
@@ -45,9 +49,34 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
             holder.restaurantBinding.interestedColleagueNumber.setVisibility(View.GONE);
         }
         int numberOfLike = 0;
-        if (restaurant.getFanList()!=null) numberOfLike = restaurant.getFanList().size();
+        if (restaurant.getFanList() != null) numberOfLike = restaurant.getFanList().size();
         manageStar(holder.restaurantBinding.opinionStarDetailImageView, numberOfLike);
+        holder.restaurantBinding.interestedColleagueNumber.setVisibility(View.GONE);
+
+        manageStar(holder.restaurantBinding.opinionStarDetailImageView, (int)restaurant.getAverageSatisfaction());
+
+        Glide.with(holder.restaurantBinding.restaurantPhotoImageView.getContext())
+                .load(restaurant.getRestaurantPhoto())
+                .circleCrop()
+                .into(new CustomTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady (@NonNull Drawable resource, @Nullable Transition < ? super
+                            Drawable > transition){
+                        holder.restaurantBinding.restaurantPhotoImageView.setImageDrawable(resource);
+                    }
+
+                    @Override
+                    public void onLoadCleared (@Nullable Drawable placeholder){
+                    }
+
+                });
     }
+
+
+
+
+
+
 
     @Override
     public int getItemCount() {

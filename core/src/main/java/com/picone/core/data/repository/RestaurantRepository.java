@@ -1,8 +1,11 @@
 package com.picone.core.data.repository;
 
+import android.location.Location;
+
 import com.google.firebase.database.FirebaseDatabase;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
+import com.picone.core.domain.entity.retrofitRestaurant.NearBySearch;
 
 import java.util.List;
 
@@ -17,6 +20,8 @@ public class RestaurantRepository {
     protected RestaurantDaoImpl restaurantDao;
     @Inject
     protected FirebaseDatabase dataBase;
+    @Inject
+    RetrofitClient retrofitClient;
 
     public RestaurantRepository(FirebaseDatabase dataBase, RestaurantDaoImpl dao) {
         this.dataBase = dataBase;
@@ -44,10 +49,15 @@ public class RestaurantRepository {
     public Observable<List<Restaurant>> getAllPersistedRestaurants (){
         return restaurantDao.getAllPersistedRestaurants();
     }
+
+    public Observable<List<Restaurant>> googleMethods(Location mCurrentLocation) {
+        return restaurantDao.googleMethods(mCurrentLocation);
+    }
     public Completable updateFanListForRestaurant(String restaurantName,List<String> fanList) {
         return restaurantDao.updateFanListForRestaurant(restaurantName, fanList);
     }
 
+    //Obvervable<List<NearBySearch>> return retrofitClient.getNearBySearch
     public Observable<List<String>> getFanListForRestaurant(String restaurantName) {
         return restaurantDao.getFanListForRestaurant(restaurantName);
     }

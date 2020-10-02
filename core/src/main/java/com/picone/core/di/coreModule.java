@@ -13,6 +13,7 @@ import com.picone.core.domain.interactors.restaurantsInteractors.GetFanListForRe
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForKeyInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForNameInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.GooglePlaceInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.UpdateFanListForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.UpdateNumberOfInterestedUsersForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.UpdateUserChosenRestaurantInteractor;
@@ -144,5 +145,10 @@ public final class coreModule {
     @Provides
     UpdateFanListForRestaurantInteractor provideUpdateFanListForRestaurant(){
         return new UpdateFanListForRestaurantInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static GooglePlaceInteractor provideGetRetrofitClient(){
+        return new GooglePlaceInteractor(provideRestaurantDataSource());
     }
 }
