@@ -20,12 +20,10 @@ public class RestaurantRepository {
     protected RestaurantDaoImpl restaurantDao;
     @Inject
     protected FirebaseDatabase dataBase;
-    @Inject
-    RetrofitClient retrofitClient;
 
     public RestaurantRepository(FirebaseDatabase dataBase, RestaurantDaoImpl dao) {
         this.dataBase = dataBase;
-        restaurantDao = dao;
+        this.restaurantDao = dao;
     }
 
     public Observable<Restaurant> getRestaurantForName(String restaurantName) {
@@ -50,14 +48,13 @@ public class RestaurantRepository {
         return restaurantDao.getAllPersistedRestaurants();
     }
 
-    public Observable<List<Restaurant>> googleMethods(Location mCurrentLocation) {
+    public Observable<NearBySearch> googleMethods(Location mCurrentLocation) {
         return restaurantDao.googleMethods(mCurrentLocation);
     }
     public Completable updateFanListForRestaurant(String restaurantName,List<String> fanList) {
         return restaurantDao.updateFanListForRestaurant(restaurantName, fanList);
     }
 
-    //Obvervable<List<NearBySearch>> return retrofitClient.getNearBySearch
     public Observable<List<String>> getFanListForRestaurant(String restaurantName) {
         return restaurantDao.getFanListForRestaurant(restaurantName);
     }

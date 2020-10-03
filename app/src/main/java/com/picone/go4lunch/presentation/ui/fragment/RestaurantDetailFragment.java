@@ -30,7 +30,6 @@ public class RestaurantDetailFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
     }
 
-    //TODO how like button does work?
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

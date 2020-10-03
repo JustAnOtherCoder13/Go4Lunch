@@ -33,12 +33,14 @@ public class RestaurantDaoImpl implements RestaurantDao {
 
     @Inject
     protected FirebaseDatabase database;
+    @Inject
+    protected RetrofitClient retrofitClient;
     private DatabaseReference restaurantsDataBaseReference;
-    private final String URL = "https://maps.googleapis.com/maps/";
 
 
-    public RestaurantDaoImpl(FirebaseDatabase database) {
+    public RestaurantDaoImpl(FirebaseDatabase database, RetrofitClient retrofitClient) {
         this.database = database;
+        this.retrofitClient = retrofitClient;
         this.restaurantsDataBaseReference = database.getReference().child("restaurants");
     }
 
@@ -75,65 +77,34 @@ public class RestaurantDaoImpl implements RestaurantDao {
         return RxFirebaseDatabase.observeValueEvent(restaurantsDataBaseReference, DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
     }
 
-    public Observable<List<Restaurant>> googleMethods(Location mCurrentLocation) {
-            List<Restaurant> restaurantsFromMap = new ArrayList<>();
-            GooglePlaceService googlePlaceService = new Retrofit.Builder()
-                    .baseUrl(URL)
-                    .client(new OkHttpClient().newBuilder().build())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-                    .create(GooglePlaceService.class);
+    public Observable<NearBySearch> googleMethods(Location mCurrentLocation) {
 
-            return Observable.create(emitter -> {
-                googlePlaceService
-                        .getNearbySearch
-                                ("restaurant"
-                                        , mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude()
-                                        ,700)
-                        .enqueue(new Callback<NearBySearch>() {
-                            @Override
-                            public void onResponse(Call<NearBySearch> call, Response<NearBySearch> response) {
-                                NearBySearch nearBySearch = response.body();
-                                if (nearBySearch.getStatus().equals("OK")){
-                                    for (RestaurantPOJO restaurantPOJO : nearBySearch.getRestaurantPOJOS()) {
-                                        String name = restaurantPOJO.getName();
-                                        int distance = 0;
-                                        Photo photo = restaurantPOJO.getPhotos().get(0);
-                                        //TODO hide apiKey
-                                        String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?"
-                                                .concat("maxwidth="+photo.getWidth())
-                                                .concat("&photoreference="+photo.getPhotoReference())
-                                                .concat("&key=AIzaSyBPfbZ_poV0QGgdifNxGzHHz2yS4L2evTI");
+        return Observable.create(emitter ->
+                retrofitClient.googleMethods()
+                .getNearbySearch("restaurant"
+                                , mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude()
+                                , 700)
+                .enqueue(new Callback<NearBySearch>() {
+                    @Override
+                    public void onResponse(Call<NearBySearch> call, Response<NearBySearch> response) {
+                        emitter.onNext(response.body());
+                    }
 
-                                        Double lat = restaurantPOJO.getGeometry().getLocation().getLat();
-                                        Double lng = restaurantPOJO.getGeometry().getLocation().getLng();
-                                        String address = restaurantPOJO.getVicinity();
-
-                                        Log.i("TAG", "onResponse: "+photoUrl);
-                                        Restaurant restaurant = new Restaurant(null,name,distance,photoUrl,"",address,0,0,new RestaurantPosition(lat,lng),0,new ArrayList<>());
-                                        if (!restaurantsFromMap.contains(restaurant))
-                                            restaurantsFromMap.add(restaurant);
-                                    }
-                                }
-                                emitter.onNext(restaurantsFromMap);
-                            }
-
-                            @Override
-                            public void onFailure(Call<NearBySearch> call, Throwable t) {
-                                emitter.onError(t);
-                                Log.d("onFailure", t.toString());
-                            }
-                        });
-            });
+                    @Override
+                    public void onFailure(Call<NearBySearch> call, Throwable t) {
+                        emitter.onError(t);
+                        Log.d("onFailure", t.toString());
+                    }
+                }));
 
 
     }
 
-    public Completable updateFanListForRestaurant(String restaurantName,List<String> fanList){
-        return RxFirebaseDatabase.setValue(restaurantsDataBaseReference.child(restaurantName).child("fanList"),fanList);
+    public Completable updateFanListForRestaurant(String restaurantName, List<String> fanList) {
+        return RxFirebaseDatabase.setValue(restaurantsDataBaseReference.child(restaurantName).child("fanList"), fanList);
     }
 
-    public Observable<List<String>> getFanListForRestaurant(String restaurantName){
-        return  RxFirebaseDatabase.observeSingleValueEvent(restaurantsDataBaseReference.child(restaurantName).child("fanList"),DataSnapshotMapper.listOf(String.class)).toObservable();
+    public Observable<List<String>> getFanListForRestaurant(String restaurantName) {
+        return RxFirebaseDatabase.observeSingleValueEvent(restaurantsDataBaseReference.child(restaurantName).child("fanList"), DataSnapshotMapper.listOf(String.class)).toObservable();
     }
 }

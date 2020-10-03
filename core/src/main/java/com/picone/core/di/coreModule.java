@@ -3,6 +3,7 @@ package com.picone.core.di;
 import com.google.firebase.database.FirebaseDatabase;
 import com.picone.core.data.repository.RestaurantDaoImpl;
 import com.picone.core.data.repository.RestaurantRepository;
+import com.picone.core.data.repository.RetrofitClient;
 import com.picone.core.data.repository.UserDaoImpl;
 import com.picone.core.data.repository.UserRepository;
 import com.picone.core.domain.entity.Restaurant;
@@ -66,7 +67,7 @@ public final class coreModule {
 
     @Provides
     static RestaurantDaoImpl provideRestaurantDaoImpl(){
-        return new RestaurantDaoImpl(provideFireBaseDataBase());
+        return new RestaurantDaoImpl(provideFireBaseDataBase(),provideRetrofitClient());
     }
 
     //-----------------------------------GENERATOR--------------------------------------------------
@@ -150,5 +151,10 @@ public final class coreModule {
     @Provides
     static GooglePlaceInteractor provideGetRetrofitClient(){
         return new GooglePlaceInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static RetrofitClient provideRetrofitClient(){
+        return new RetrofitClient();
     }
 }

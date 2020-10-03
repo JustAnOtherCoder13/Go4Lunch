@@ -9,7 +9,6 @@ import retrofit2.http.Query;
 public interface GooglePlaceService {
 
     //TODO find a way to hide key
-    //Observable <nearBySearch>
     @GET("api/place/nearbysearch/json?sensor=true&key=AIzaSyBPfbZ_poV0QGgdifNxGzHHz2yS4L2evTI")
     Call<NearBySearch> getNearbySearch(
             @Query("type") String type,

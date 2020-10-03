@@ -90,6 +90,34 @@ public class RestaurantViewModel extends ViewModel {
 
     public LiveData<List<Restaurant>> getAllRestaurants = allRestaurantsMutableLiveData;
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    public void getRestaurantFromMaps(Location mCurrentLocation){
+        Log.i("TAG", "getRestaurantFromMaps: enter methode");
+        googlePlaceInteractor.googleMethods(mCurrentLocation)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(restaurants -> {
+                    Log.i("TAG", "getRestaurantFromMaps: "+allRestaurantsMutableLiveData.getValue());
+                    if (allRestaurantsMutableLiveData.getValue()==null)
+                        allRestaurantsMutableLiveData.setValue(restaurants);
+                });
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    public void updateRestaurantForKey(String restaurantKey) {
+        getRestaurantForKeyInteractor.getRestaurantForKey(restaurantKey)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(restaurants -> {
+                    selectedRestaurantMutableLiveData.setValue(restaurants.get(0));
+                    return getInterestedUsersForRestaurantKeyInteractor
+                            .getInterestedUsersForRestaurantKey(restaurantKey);
+                })
+                .subscribe(users -> interestedUsersMutableLiveData.setValue(users));
+    }
+
     @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
     @SuppressLint("CheckResult")
     public void updateFanList() {
@@ -111,33 +139,6 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribe(persistedRestaurant -> selectedRestaurantMutableLiveData.setValue(persistedRestaurant));
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    @SuppressLint("CheckResult")
-    public void getRestaurantFromMaps(Location mCurrentLocation){
-        Log.i("TAG", "getRestaurantFromMaps: enter methode");
-        googlePlaceInteractor.googleMethods(mCurrentLocation)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(restaurants -> {
-                    Log.i("TAG", "getRestaurantFromMaps: "+allRestaurantsMutableLiveData.getValue());
-                    if (allRestaurantsMutableLiveData.getValue()==null)
-                    allRestaurantsMutableLiveData.setValue(restaurants);
-                });
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    @SuppressLint("CheckResult")
-    public void updateRestaurantForKey(String restaurantKey) {
-        getRestaurantForKeyInteractor.getRestaurantForKey(restaurantKey)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(restaurants -> {
-                    selectedRestaurantMutableLiveData.setValue(restaurants.get(0));
-                    return getInterestedUsersForRestaurantKeyInteractor
-                            .getInterestedUsersForRestaurantKey(restaurantKey);
-                })
-                .subscribe(users -> interestedUsersMutableLiveData.setValue(users));
-    }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
@@ -153,10 +154,8 @@ public class RestaurantViewModel extends ViewModel {
                     return getRestaurantForKeyInteractor.getRestaurantForKey(restaurantKey);
                 })
                 .subscribe(restaurantsForKey -> {
-                    if (!restaurantsForKey.isEmpty()) {
-                        Restaurant chosenRestaurant = restaurantsForKey.get(0);
-                        selectedRestaurantMutableLiveData.setValue(chosenRestaurant);
-                    }
+                    if (!restaurantsForKey.isEmpty())
+                        selectedRestaurantMutableLiveData.setValue(restaurantsForKey.get(0));
                     updateAllRestaurantsWithPersistedValues();
                 });
     }
@@ -169,7 +168,7 @@ public class RestaurantViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(currentUsers -> {
                     currentUserMutableLiveData.setValue(currentUsers.get(0));
-                    //resetDbOnDailyScheduleDatePassed(currentUsers.get(0));
+                    resetDbOnDailyScheduleDatePassed(currentUsers.get(0));
                     if (!currentUsers.isEmpty() && currentUsers.get(0).getUserDailySchedule() != null)
                         return getInterestedUsersForRestaurantKeyInteractor
                                 .getInterestedUsersForRestaurantKey
@@ -277,6 +276,7 @@ public class RestaurantViewModel extends ViewModel {
                         for (Restaurant generatedRestaurant : allRestaurantsMutableLiveData.getValue()) {
                             if (persistedRestaurant.getName().equals(generatedRestaurant.getName())) {
                                 generatedRestaurant.setNumberOfInterestedUsers(persistedRestaurant.getNumberOfInterestedUsers());
+                                generatedRestaurant.setFanList(persistedRestaurant.getFanList());
                             }
                             if (!updatedRestaurants.contains(generatedRestaurant))
                                 updatedRestaurants.add(generatedRestaurant);

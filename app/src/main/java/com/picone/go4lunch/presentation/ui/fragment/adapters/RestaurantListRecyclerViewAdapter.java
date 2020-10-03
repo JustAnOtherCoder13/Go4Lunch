@@ -1,6 +1,7 @@
 package com.picone.go4lunch.presentation.ui.fragment.adapters;
 
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,7 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
         holder.restaurantBinding.foodStyleAndAddressTextView.setText(restaurant.getAddress());
         holder.restaurantBinding.distanceTextView.setText(String.valueOf(restaurant.getDistance()).concat(" m"));
         if (restaurant.getNumberOfInterestedUsers() > 0)
-            holder.restaurantBinding.interestedColleagueNumber.setText("(".concat(String.valueOf(restaurant.getNumberOfInterestedUsers())).concat(")"));
+            holder.restaurantBinding.interestedColleagueNumber.setText(("(").concat(String.valueOf(restaurant.getNumberOfInterestedUsers())).concat(")"));
         else {
             holder.restaurantBinding.interestedColleague.setVisibility(View.GONE);
             holder.restaurantBinding.interestedColleagueNumber.setVisibility(View.GONE);
@@ -51,32 +52,23 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
         int numberOfLike = 0;
         if (restaurant.getFanList() != null) numberOfLike = restaurant.getFanList().size();
         manageStar(holder.restaurantBinding.opinionStarDetailImageView, numberOfLike);
-        holder.restaurantBinding.interestedColleagueNumber.setVisibility(View.GONE);
-
-        manageStar(holder.restaurantBinding.opinionStarDetailImageView, (int)restaurant.getAverageSatisfaction());
 
         Glide.with(holder.restaurantBinding.restaurantPhotoImageView.getContext())
                 .load(restaurant.getRestaurantPhoto())
                 .circleCrop()
                 .into(new CustomTarget<Drawable>() {
                     @Override
-                    public void onResourceReady (@NonNull Drawable resource, @Nullable Transition < ? super
-                            Drawable > transition){
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super
+                            Drawable> transition) {
                         holder.restaurantBinding.restaurantPhotoImageView.setImageDrawable(resource);
                     }
 
                     @Override
-                    public void onLoadCleared (@Nullable Drawable placeholder){
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
                     }
 
                 });
     }
-
-
-
-
-
-
 
     @Override
     public int getItemCount() {
