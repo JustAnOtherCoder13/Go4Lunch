@@ -6,7 +6,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 import com.picone.core.domain.entity.retrofitRestaurant.NearBySearch;
-import com.picone.core.domain.entity.retrofitRestaurant.RestaurantDetail;
+import com.picone.core.domain.entity.RetrofitRestaurantDetail.RestaurantDetail;
 import com.picone.core.domain.entity.retrofitRestaurant.RestaurantPOJO;
 
 import java.util.List;

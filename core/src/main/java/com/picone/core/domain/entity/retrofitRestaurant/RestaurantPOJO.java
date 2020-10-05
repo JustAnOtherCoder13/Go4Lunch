@@ -2,9 +2,6 @@ package com.picone.core.domain.entity.retrofitRestaurant;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.picone.core.domain.entity.retrofitRestaurant.Geometry;
-import com.picone.core.domain.entity.retrofitRestaurant.OpeningHours;
-import com.picone.core.domain.entity.retrofitRestaurant.Photo;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,12 +1,10 @@
 package com.picone.core.data.repository;
 
 import com.picone.core.domain.entity.retrofitRestaurant.NearBySearch;
-import com.picone.core.domain.entity.retrofitRestaurant.RestaurantDetail;
-import com.picone.core.domain.entity.retrofitRestaurant.RestaurantPOJO;
+import com.picone.core.domain.entity.RetrofitRestaurantDetail.RestaurantDetail;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface GooglePlaceService {

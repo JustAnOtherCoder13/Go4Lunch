@@ -41,9 +41,8 @@ public class GooglePlaceInteractor {
                                     restaurantDataSource.getPlaceRestaurantDetail(restaurantPOJO)
                                             .subscribeOn(Schedulers.io())
                                             .observeOn(AndroidSchedulers.mainThread())
-
-                                            .subscribe(restaurantPOJO1 -> {
-                                                Log.i("TAG", "googlePlaceService: "+restaurantPOJO1.getWebsite());
+                                            .subscribe(restaurantDetail -> {
+                                                Log.i("TAG", "googlePlaceService: "+restaurantDetail.getResult().getFormattedPhoneNumber());
                                             });
                                     String name = restaurantPOJO.getName();
                                     int distance = 0;
