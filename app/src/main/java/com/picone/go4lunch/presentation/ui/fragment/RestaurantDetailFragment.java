@@ -1,6 +1,7 @@
 package com.picone.go4lunch.presentation.ui.fragment;
 
 import android.app.AlertDialog;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,9 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.picone.go4lunch.databinding.FragmentRestaurantDetailBinding;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.ColleagueRecyclerViewAdapter;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
@@ -36,7 +40,27 @@ public class RestaurantDetailFragment extends BaseFragment {
         mBinding = FragmentRestaurantDetailBinding.inflate(inflater, container, false);
         initRecyclerView();
         showAppBars(false);
+        initView();
+        initButtons();
 
+        return mBinding.getRoot();
+    }
+
+    private void initButtons() {
+        mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
+                mRestaurantViewModel.addUserToRestaurant());
+
+        mBinding.likeDetailImageButton.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+            builder.setTitle("Like this restaurant ?")
+                    .setNegativeButton("No",null)
+                    .setPositiveButton("Yes", (dialog, which) -> mRestaurantViewModel.updateFanList())
+                    .create()
+                    .show();
+        });
+    }
+
+    private void initView() {
         mRestaurantViewModel.isDataLoading.observe(getViewLifecycleOwner(), isDataLoading ->
                 playLoadingAnimation(isDataLoading, mBinding.animationViewInclude.animationView));
 
@@ -54,21 +78,22 @@ public class RestaurantDetailFragment extends BaseFragment {
             if (restaurant.getFanList() != null && !restaurant.getFanList().isEmpty())
                 numberOfLike = restaurant.getFanList().size();
             manageStar(mBinding.opinionStarDetailImageView, numberOfLike);
+            Glide.with(mBinding.restaurantPhotoDetailImageView.getContext())
+                    .load(restaurant.getRestaurantPhoto())
+                    .circleCrop()
+                    .into(new CustomTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super
+                                Drawable> transition) {
+                            mBinding.restaurantPhotoDetailImageView.setImageDrawable(resource);
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
+
+                    });
         });
-
-        mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
-                mRestaurantViewModel.addUserToRestaurant());
-
-        mBinding.likeDetailImageButton.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-            builder.setTitle("Like this restaurant ?")
-                    .setNegativeButton("No",null)
-                    .setPositiveButton("Yes", (dialog, which) -> mRestaurantViewModel.updateFanList())
-                    .create()
-                    .show();
-        });
-
-        return mBinding.getRoot();
     }
 
     private void initRecyclerView() {

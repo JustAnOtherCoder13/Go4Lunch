@@ -48,8 +48,8 @@ public class RestaurantRepository {
         return restaurantDao.getAllPersistedRestaurants();
     }
 
-    public Observable<NearBySearch> googleMethods(Location mCurrentLocation) {
-        return restaurantDao.googleMethods(mCurrentLocation);
+    public Observable<NearBySearch> googlePlaceService(Location mCurrentLocation) {
+        return restaurantDao.googlePlaceService(mCurrentLocation);
     }
     public Completable updateFanListForRestaurant(String restaurantName,List<String> fanList) {
         return restaurantDao.updateFanListForRestaurant(restaurantName, fanList);

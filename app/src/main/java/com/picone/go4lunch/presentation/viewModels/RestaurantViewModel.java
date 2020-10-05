@@ -94,7 +94,7 @@ public class RestaurantViewModel extends ViewModel {
     @SuppressLint("CheckResult")
     public void getRestaurantFromMaps(Location mCurrentLocation){
         Log.i("TAG", "getRestaurantFromMaps: enter methode");
-        googlePlaceInteractor.googleMethods(mCurrentLocation)
+        googlePlaceInteractor.googlePlaceService(mCurrentLocation)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(restaurants -> {
@@ -190,30 +190,13 @@ public class RestaurantViewModel extends ViewModel {
     @SuppressLint("CheckResult")
     public <T> void initSelectedRestaurant(T param) {
 
-        Restaurant selectedRestaurant = new Restaurant();
-        String selectedRestaurantName = "";
+        Restaurant selectedRestaurant = getRestaurantOnUserClick(param);
 
-        if (param instanceof Integer) {
-            selectedRestaurant = allRestaurantsMutableLiveData.getValue().get((Integer) param);
-            selectedRestaurantName = selectedRestaurant.getName();
-            selectedRestaurantMutableLiveData.setValue(selectedRestaurant);
-        }
-        if (param instanceof String) {
-            selectedRestaurantName = (String) param;
-            for (Restaurant restaurant : Objects.requireNonNull(allRestaurantsMutableLiveData.getValue()))
-                if (restaurant.getName().equals(param)) selectedRestaurant = restaurant;
-            selectedRestaurantMutableLiveData.setValue(selectedRestaurant);
-        }
-
-        if (!(param instanceof String))
-            if (!(param instanceof Integer))
-                Log.e("WRONG_PARAMETER", "initSelectedRestaurant: Must pass a string restaurantName or an int restaurantPosition ", new Throwable());
-
-        getRestaurantForNameInteractor.getRestaurantForName(selectedRestaurantName)
+        getRestaurantForNameInteractor.getRestaurantForName(selectedRestaurant.getName())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .switchIfEmpty(addRestaurantInteractor.addRestaurant(selectedRestaurant)
-                        .andThen(getRestaurantForNameInteractor.getRestaurantForName(selectedRestaurantName)))
+                        .andThen(getRestaurantForNameInteractor.getRestaurantForName(selectedRestaurant.getName())))
                 .flatMap(restaurantForName -> {
                     updateRestaurantForKey(restaurantForName.getKey());
                     selectedRestaurantKeyMutableLiveData.setValue(restaurantForName.getKey());
@@ -315,5 +298,25 @@ public class RestaurantViewModel extends ViewModel {
                         });
             }
         }
+    }
+
+    private <T> Restaurant getRestaurantOnUserClick(T param){
+        Restaurant selectedRestaurant = new Restaurant();
+
+        if (param instanceof Integer) {
+            selectedRestaurant = allRestaurantsMutableLiveData.getValue().get((Integer) param);
+            selectedRestaurantMutableLiveData.setValue(selectedRestaurant);
+        }
+        if (param instanceof String) {
+            for (Restaurant restaurant : Objects.requireNonNull(allRestaurantsMutableLiveData.getValue()))
+                if (restaurant.getName().equals(param)) selectedRestaurant = restaurant;
+            selectedRestaurantMutableLiveData.setValue(selectedRestaurant);
+        }
+
+        if (!(param instanceof String))
+            if (!(param instanceof Integer))
+                Log.e("WRONG_PARAMETER", "initSelectedRestaurant: Must pass a string restaurantName or an int restaurantPosition ", new Throwable());
+
+        return selectedRestaurant;
     }
 }

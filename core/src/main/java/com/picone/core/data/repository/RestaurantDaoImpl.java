@@ -7,13 +7,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.picone.core.domain.entity.Restaurant;
-import com.picone.core.domain.entity.RestaurantPosition;
 import com.picone.core.domain.entity.User;
 import com.picone.core.domain.entity.retrofitRestaurant.NearBySearch;
-import com.picone.core.domain.entity.retrofitRestaurant.Photo;
-import com.picone.core.domain.entity.retrofitRestaurant.RestaurantPOJO;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -22,12 +18,9 @@ import durdinapps.rxfirebase2.DataSnapshotMapper;
 import durdinapps.rxfirebase2.RxFirebaseDatabase;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RestaurantDaoImpl implements RestaurantDao {
 
@@ -77,10 +70,10 @@ public class RestaurantDaoImpl implements RestaurantDao {
         return RxFirebaseDatabase.observeValueEvent(restaurantsDataBaseReference, DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
     }
 
-    public Observable<NearBySearch> googleMethods(Location mCurrentLocation) {
+    public Observable<NearBySearch> googlePlaceService(Location mCurrentLocation) {
 
         return Observable.create(emitter ->
-                retrofitClient.googleMethods()
+                retrofitClient.googlePlaceService()
                 .getNearbySearch("restaurant"
                                 , mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude()
                                 , 700)

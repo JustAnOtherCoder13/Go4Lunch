@@ -16,9 +16,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -32,9 +29,9 @@ public class GooglePlaceInteractor {
     }
 
     @SuppressLint("CheckResult")
-    public Observable<List<Restaurant>> googleMethods(Location mCurrentLocation) {
+    public Observable<List<Restaurant>> googlePlaceService(Location mCurrentLocation) {
         List<Restaurant> restaurantsFromMap = new ArrayList<>();
-        return restaurantDataSource.googleMethods(mCurrentLocation)
+        return restaurantDataSource.googlePlaceService(mCurrentLocation)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .flatMap(nearBySearch -> {

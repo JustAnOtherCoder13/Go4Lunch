@@ -6,11 +6,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient{
 
-     private final String URL = "https://maps.googleapis.com/maps/";
-
-     public GooglePlaceService googleMethods(){
+     public GooglePlaceService googlePlaceService(){
          Retrofit retrofit = new Retrofit.Builder()
-                 .baseUrl(URL)
+                 .baseUrl("https://maps.googleapis.com/maps/")
                  .client(new OkHttpClient().newBuilder().build())
                  .addConverterFactory(GsonConverterFactory.create())
                  .build();
