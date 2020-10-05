@@ -28,6 +28,7 @@ public class GooglePlaceInteractor {
         this.restaurantDataSource = restaurantDataSource;
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public Observable<List<Restaurant>> googlePlaceService(Location mCurrentLocation) {
         List<Restaurant> restaurantsFromMap = new ArrayList<>();
@@ -37,6 +38,13 @@ public class GooglePlaceInteractor {
                         .flatMap(nearBySearch -> {
                             if (nearBySearch.getStatus().equals("OK")) {
                                 for (RestaurantPOJO restaurantPOJO : nearBySearch.getRestaurantPOJOS()) {
+                                    restaurantDataSource.getPlaceRestaurantDetail(restaurantPOJO)
+                                            .subscribeOn(Schedulers.io())
+                                            .observeOn(AndroidSchedulers.mainThread())
+
+                                            .subscribe(restaurantPOJO1 -> {
+                                                Log.i("TAG", "googlePlaceService: "+restaurantPOJO1.getWebsite());
+                                            });
                                     String name = restaurantPOJO.getName();
                                     int distance = 0;
                                     Photo photo = restaurantPOJO.getPhotos().get(0);
@@ -49,8 +57,6 @@ public class GooglePlaceInteractor {
                                     Double lat = restaurantPOJO.getGeometry().getLocation().getLat();
                                     Double lng = restaurantPOJO.getGeometry().getLocation().getLng();
                                     String address = restaurantPOJO.getVicinity();
-
-                                    Log.i("TAG", "onResponse: " + photoUrl);
                                     Restaurant restaurant = new Restaurant(null, name, distance, photoUrl, "", address, 0, 0, new RestaurantPosition(lat, lng), 0, new ArrayList<>());
                                     if (!restaurantsFromMap.contains(restaurant))
                                         restaurantsFromMap.add(restaurant);

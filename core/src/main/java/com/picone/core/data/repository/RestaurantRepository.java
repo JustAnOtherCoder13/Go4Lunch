@@ -6,6 +6,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 import com.picone.core.domain.entity.retrofitRestaurant.NearBySearch;
+import com.picone.core.domain.entity.retrofitRestaurant.RestaurantDetail;
+import com.picone.core.domain.entity.retrofitRestaurant.RestaurantPOJO;
 
 import java.util.List;
 
@@ -41,17 +43,24 @@ public class RestaurantRepository {
     public Observable<List<Restaurant>> getRestaurantForKey(String restaurantKey) {
         return restaurantDao.getRestaurantForKey(restaurantKey);
     }
-    public Completable updateNumberOfInterestedUsersForRestaurant(String restaurantName, int numberOfInterestedUsers){
+
+    public Completable updateNumberOfInterestedUsersForRestaurant(String restaurantName, int numberOfInterestedUsers) {
         return restaurantDao.updateNumberOfInterestedUsersForRestaurant(restaurantName, numberOfInterestedUsers);
     }
-    public Observable<List<Restaurant>> getAllPersistedRestaurants (){
+
+    public Observable<List<Restaurant>> getAllPersistedRestaurants() {
         return restaurantDao.getAllPersistedRestaurants();
     }
 
     public Observable<NearBySearch> googlePlaceService(Location mCurrentLocation) {
         return restaurantDao.googlePlaceService(mCurrentLocation);
     }
-    public Completable updateFanListForRestaurant(String restaurantName,List<String> fanList) {
+
+    public Observable<RestaurantDetail> getPlaceRestaurantDetail(RestaurantPOJO restaurantPOJO) {
+        return restaurantDao.getPlaceRestaurantDetail(restaurantPOJO);
+    }
+
+    public Completable updateFanListForRestaurant(String restaurantName, List<String> fanList) {
         return restaurantDao.updateFanListForRestaurant(restaurantName, fanList);
     }
 

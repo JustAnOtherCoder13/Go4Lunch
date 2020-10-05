@@ -1,9 +1,12 @@
 package com.picone.core.data.repository;
 
 import com.picone.core.domain.entity.retrofitRestaurant.NearBySearch;
+import com.picone.core.domain.entity.retrofitRestaurant.RestaurantDetail;
+import com.picone.core.domain.entity.retrofitRestaurant.RestaurantPOJO;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface GooglePlaceService {
@@ -14,4 +17,11 @@ public interface GooglePlaceService {
             @Query("type") String type,
             @Query("location") String location,
             @Query("radius") int radius);
+
+    @GET("api/place/details/json?sensor=true&key=AIzaSyBPfbZ_poV0QGgdifNxGzHHz2yS4L2evTI&fields=formatted_phone_number,opening_hours,website")
+    Call<RestaurantDetail> getRestaurantDetail(
+            @Query("place_id") String placeId
+    );
 }
+
+

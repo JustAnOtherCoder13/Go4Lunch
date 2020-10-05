@@ -9,6 +9,8 @@ import com.google.firebase.database.Query;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 import com.picone.core.domain.entity.retrofitRestaurant.NearBySearch;
+import com.picone.core.domain.entity.retrofitRestaurant.RestaurantDetail;
+import com.picone.core.domain.entity.retrofitRestaurant.RestaurantPOJO;
 
 import java.util.List;
 
@@ -74,25 +76,42 @@ public class RestaurantDaoImpl implements RestaurantDao {
 
         return Observable.create(emitter ->
                 retrofitClient.googlePlaceService()
-                .getNearbySearch("restaurant"
+                        .getNearbySearch("restaurant"
                                 , mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude()
-                                , 700)
-                .enqueue(new Callback<NearBySearch>() {
-                    @Override
-                    public void onResponse(Call<NearBySearch> call, Response<NearBySearch> response) {
-                        emitter.onNext(response.body());
-                    }
+                                , 400)
+                        .enqueue(new Callback<NearBySearch>() {
+                            @Override
+                            public void onResponse(Call<NearBySearch> call, Response<NearBySearch> response) {
+                                emitter.onNext(response.body());
+                            }
 
-                    @Override
-                    public void onFailure(Call<NearBySearch> call, Throwable t) {
-                        emitter.onError(t);
-                        Log.d("onFailure", t.toString());
-                    }
-                }));
-
-
+                            @Override
+                            public void onFailure(Call<NearBySearch> call, Throwable t) {
+                                emitter.onError(t);
+                                Log.d("onFailure", t.toString());
+                            }
+                        }));
     }
 
+    public Observable<RestaurantDetail> getPlaceRestaurantDetail(RestaurantPOJO restaurantPOJO){
+        return Observable.create(emitter -> {
+            retrofitClient.googlePlaceService()
+                    .getRestaurantDetail(restaurantPOJO.getPlaceId())
+                    .enqueue(new Callback<RestaurantDetail>() {
+                        @Override
+                        public void onResponse(Call<RestaurantDetail> call, Response<RestaurantDetail> response) {
+                            Log.i("TAG", "onResponse: restaurant pojo" + response.raw());
+                            emitter.onNext(response.body());
+                        }
+
+                        @Override
+                        public void onFailure(Call<RestaurantDetail> call, Throwable t) {
+                            emitter.onError(t);
+                        }
+                    });
+        });
+
+    }
     public Completable updateFanListForRestaurant(String restaurantName, List<String> fanList) {
         return RxFirebaseDatabase.setValue(restaurantsDataBaseReference.child(restaurantName).child("fanList"), fanList);
     }

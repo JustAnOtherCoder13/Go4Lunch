@@ -19,9 +19,6 @@ public class RestaurantPOJO {
     @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("opening_hours")
-    @Expose
-    private OpeningHours openingHours;
     @SerializedName("photos")
     @Expose
     private List<Photo> photos = new ArrayList<>();
@@ -64,14 +61,6 @@ public class RestaurantPOJO {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public OpeningHours getOpeningHours() {
-        return openingHours;
-    }
-
-    public void setOpeningHours(OpeningHours openingHours) {
-        this.openingHours = openingHours;
     }
 
     public List<Photo> getPhotos() {
