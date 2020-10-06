@@ -72,62 +72,22 @@ public class RestaurantDaoImpl implements RestaurantDao {
         return RxFirebaseDatabase.observeValueEvent(restaurantsDataBaseReference, DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
     }
 
-    public Observable<NearBySearch> googlePlaceService(Location mCurrentLocation,String googleKey) {
+    public Observable<NearBySearch> googlePlaceService(Location mCurrentLocation, String googleKey) {
 
-        return Observable.create(emitter ->
-                retrofitClient.googlePlaceService()
-                        .getNearbySearch(mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude(),googleKey)
-                        .enqueue(new Callback<NearBySearch>() {
-                            @Override
-                            public void onResponse(Call<NearBySearch> call, Response<NearBySearch> response) {
-                                emitter.onNext(response.body());
-                            }
-
-                            @Override
-                            public void onFailure(Call<NearBySearch> call, Throwable t) {
-                                emitter.onError(t);
-                                Log.d("onFailure", t.toString());
-                            }
-                        }));
+        return retrofitClient.googlePlaceService()
+                .getNearbySearch(mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude(), googleKey);
     }
 
-    public Observable<RestaurantDetail> getPlaceRestaurantDetail(Restaurant restaurant,String googleKey){
-        return Observable.create(emitter -> {
-            retrofitClient.googlePlaceService()
-                    .getRestaurantDetail(restaurant.getPlaceId(),googleKey)
-                    .enqueue(new Callback<RestaurantDetail>() {
-                        @Override
-                        public void onResponse(Call<RestaurantDetail> call, Response<RestaurantDetail> response) {
-                            emitter.onNext(response.body());
-                        }
-
-                        @Override
-                        public void onFailure(Call<RestaurantDetail> call, Throwable t) {
-                            emitter.onError(t);
-                            Log.d("onFailure", t.toString());
-                        }
-                    });
-        });
-
+    public Observable<RestaurantDetail> getPlaceRestaurantDetail(Restaurant restaurant, String googleKey) {
+        return retrofitClient.googlePlaceService()
+                    .getRestaurantDetail(restaurant.getPlaceId(), googleKey);
     }
 
-    public Observable<RestaurantDistance> getRestaurantDistance(String currentLocation, String restaurantLocation,String googleKey){
-        return Observable.create(emitter -> {
-            retrofitClient.googlePlaceService().getRestaurantDistance(currentLocation,restaurantLocation,googleKey)
-                    .enqueue(new Callback<RestaurantDistance>() {
-                        @Override
-                        public void onResponse(Call<RestaurantDistance> call, Response<RestaurantDistance> response) {
-                            emitter.onNext(response.body());
-                        }
-
-                        @Override
-                        public void onFailure(Call<RestaurantDistance> call, Throwable t) {
-                            emitter.onError(t);
-                            Log.d("onFailure", t.toString());
-                        }
-                    });
-        });
+    public Observable<RestaurantDistance> getRestaurantDistance(String currentLocation, String restaurantLocation, String googleKey) {
+        return retrofitClient.googlePlaceService()
+                    .getRestaurantDistance(currentLocation, restaurantLocation, googleKey);
     }
+
     public Completable updateFanListForRestaurant(String restaurantName, List<String> fanList) {
         return RxFirebaseDatabase.setValue(restaurantsDataBaseReference.child(restaurantName).child("fanList"), fanList);
     }

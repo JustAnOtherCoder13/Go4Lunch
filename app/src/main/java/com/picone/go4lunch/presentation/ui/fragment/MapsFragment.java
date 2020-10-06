@@ -119,10 +119,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
                     if (mAuth.getCurrentUser() != null) {
                         mRestaurantViewModel.initData(mAuth.getCurrentUser().getEmail());
                     }
-                    mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(),restaurants -> {
-                        Log.i("restaurantDistance", "fetchLastLocation: ");
-                        mRestaurantViewModel.setRestaurantDistance(location);
-                    });
+
             }
         });
     }

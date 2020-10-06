@@ -24,24 +24,17 @@ public class FetchRestaurantDetailFromPlaceInteractor {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
-    public Observable<List<Restaurant>> getRestaurantDetail(List<Restaurant> allRestaurants, String googleKey) {
-        return
-                Observable.create(emitter -> {
-                    for (Restaurant rest : allRestaurants) {
-                        restaurantDataSource.getPlaceRestaurantDetail(rest, googleKey)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(restaurantDetail -> {
-                                    rest.setPhoneNumber(restaurantDetail.getResult().getFormattedPhoneNumber());
-                                    rest.setWebsite(restaurantDetail.getResult().getWebsite());
-                                    rest.setOpeningHours(restaurantDetail.getResult().getOpeningHours().getWeekdayText().get(getWeekDayTextValue()));
-                                });
-
-                    }
-                    emitter.onNext(allRestaurants);
+    public void getRestaurantDetail(Restaurant restaurant, String googleKey) {
+        restaurantDataSource.getPlaceRestaurantDetail(restaurant, googleKey)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(restaurantDetail -> {
+                    restaurant.setPhoneNumber(restaurantDetail.getResult().getFormattedPhoneNumber());
+                    restaurant.setWebsite(restaurantDetail.getResult().getWebsite());
+                    restaurant.setOpeningHours(restaurantDetail.getResult().getOpeningHours().getWeekdayText().get(getWeekDayTextValue()));
                 });
-
     }
+
 
     private int getWeekDayTextValue() {
         int weekDayTextValue = Calendar.DAY_OF_WEEK + 1;

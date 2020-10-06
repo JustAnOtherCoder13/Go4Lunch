@@ -106,22 +106,14 @@ public class RestaurantViewModel extends ViewModel {
         fetchRestaurantFromPlaceInteractor.fetchRestaurantFromPlace(mCurrentLocation, MAPS_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(restaurantPOJOS ->
-                        fetchRestaurantDetailFromPlaceInteractor.getRestaurantDetail(restaurantPOJOS,MAPS_KEY))
-                .subscribe(restaurants -> {
-                    if (allRestaurantsMutableLiveData.getValue() == null)
-                        allRestaurantsMutableLiveData.setValue(restaurants);
-                });
-    }
+                .subscribe(allRestaurants ->{
+                    for (Restaurant restaurant:allRestaurants){
+                        fetchRestaurantDetailFromPlaceInteractor.getRestaurantDetail(restaurant, MAPS_KEY);
+                        fetchRestaurantDistanceInteractor.getRestaurantDistance(restaurant, mCurrentLocation, MAPS_KEY);
+                    }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    @SuppressLint("CheckResult")
-    public void setRestaurantDistance(Location mCurrentLocation){
-        fetchRestaurantDistanceInteractor.getRestaurantDistance(allRestaurantsMutableLiveData.getValue(),mCurrentLocation,MAPS_KEY)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(restaurants -> {
-                    Log.i("restaurantDistance", "setRestaurantDistance: "+restaurants);
+                    if (allRestaurantsMutableLiveData.getValue() == null)
+                        allRestaurantsMutableLiveData.setValue(allRestaurants);
                 });
     }
 

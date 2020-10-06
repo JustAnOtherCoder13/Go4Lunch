@@ -12,6 +12,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -24,22 +26,15 @@ public class FetchRestaurantDistanceInteractor {
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    @SuppressLint("CheckResult")
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public Observable<List<Restaurant>> getRestaurantDistance(List<Restaurant> allRestaurants, Location currentLocation, String googleKey) {
+    @SuppressLint("CheckResult")
+    public void getRestaurantDistance(Restaurant restaurant, Location currentLocation, String googleKey) {
         String currentLocationStr = String.valueOf(currentLocation.getLatitude()).concat(",").concat(String.valueOf(currentLocation.getLongitude()));
-        return Observable.create(emitter -> {
-            for (Restaurant restaurant : allRestaurants) {
-                String restaurantLocation = String.valueOf(restaurant.getRestaurantPosition().getLatitude()).concat(",").concat(String.valueOf(restaurant.getRestaurantPosition().getLongitude()));
-                restaurantDataSource.getRestaurantDistance(currentLocationStr, restaurantLocation, googleKey)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(distance -> {
-                            restaurant.setDistance(distance.getRows().get(0).getElements().get(0).getDistance().getText());
-                            emitter.onNext(allRestaurants);
-                        });
-            }
-        });
-
+        String restaurantLocation = String.valueOf(restaurant.getRestaurantPosition().getLatitude()).concat(",").concat(String.valueOf(restaurant.getRestaurantPosition().getLongitude()));
+        restaurantDataSource.getRestaurantDistance(currentLocationStr, restaurantLocation, googleKey)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(distance ->
+                        restaurant.setDistance(distance.getRows().get(0).getElements().get(0).getDistance().getText()));
     }
 }
