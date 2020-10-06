@@ -9,6 +9,7 @@ import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.RestaurantPosition;
 import com.picone.core.domain.entity.retrofitRestaurant.Photo;
 import com.picone.core.domain.entity.retrofitRestaurant.RestaurantPOJO;
+import com.picone.core.domain.entity.retrofitRestaurantDistance.Row;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public class GooglePlaceInteractor {
                                     .concat("&key=AIzaSyBPfbZ_poV0QGgdifNxGzHHz2yS4L2evTI");
                             Restaurant restaurant = new Restaurant(null,
                                     restaurantPOJO.getName(),
-                                    0,
+                                    "0",
                                     photoUrl,
                                     "",
                                     restaurantPOJO.getVicinity(),
@@ -84,6 +85,26 @@ public class GooglePlaceInteractor {
 
             }
             emitter.onNext(allRestaurants);
+        });
+
+    }
+
+    @SuppressLint("CheckResult")
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public Observable<List<Restaurant>> getRestaurantDistance(List<Restaurant> allRestaurants, Location currentLocation){
+        String currentLocationStr = String.valueOf(currentLocation.getLatitude()).concat(",").concat(String.valueOf(currentLocation.getLongitude()));
+        return Observable.create(emitter -> {
+            for (Restaurant restaurant: allRestaurants){
+                String restaurantLocation = String.valueOf(restaurant.getRestaurantPosition().getLatitude()).concat(",").concat(String.valueOf(restaurant.getRestaurantPosition().getLongitude()));
+                Log.i("TAG", "getRestaurantDistance: enter observable"+currentLocationStr+" "+restaurantLocation);
+                restaurantDataSource.getRestaurantDistance(currentLocationStr,restaurantLocation)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(distance -> {
+                        restaurant.setDistance(distance.getRows().get(0).getElements().get(0).getDistance().getText());
+                        Log.i("restaurantDistance", "getRestaurantDistance: "+distance.getRows().get(0).getElements().get(0).getDistance().getText());
+                        emitter.onNext(allRestaurants);
+                    });}
         });
 
     }

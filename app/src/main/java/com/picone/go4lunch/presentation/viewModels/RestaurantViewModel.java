@@ -106,6 +106,17 @@ public class RestaurantViewModel extends ViewModel {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
+    public void setRestaurantDistance(Location mCurrentLocation){
+        googlePlaceInteractor.getRestaurantDistance(allRestaurantsMutableLiveData.getValue(),mCurrentLocation)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(restaurants -> {
+                    Log.i("restaurantDistance", "setRestaurantDistance: "+restaurants);
+                });
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
     public void updateRestaurantForKey(String restaurantKey) {
         getRestaurantForKeyInteractor.getRestaurantForKey(restaurantKey)
                 .subscribeOn(Schedulers.io())

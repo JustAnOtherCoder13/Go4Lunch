@@ -8,7 +8,7 @@ import java.util.List;
 public class Restaurant {
     private String key;
     private String name;
-    private int distance;
+    private String distance;
     private String restaurantPhoto;
     private String foodType;
     private String address;
@@ -24,8 +24,8 @@ public class Restaurant {
     public Restaurant() {
     }
 
-    public Restaurant(String key, String name, int distance, String restaurantPhoto, String foodType,
-                      String address, String openingHours,String placeId,String phoneNumber,String website,
+    public Restaurant(String key, String name, String distance, String restaurantPhoto, String foodType,
+                      String address, String openingHours, String placeId, String phoneNumber, String website,
                       double averageSatisfaction, RestaurantPosition restaurantPosition, int numberOfInterestedUsers, List<String> fanList) {
         this.key = key;
         this.name = name;
@@ -75,7 +75,7 @@ public class Restaurant {
         return name;
     }
 
-    public int getDistance() {
+    public String getDistance() {
         return distance;
     }
 
@@ -126,4 +126,9 @@ public class Restaurant {
     public void setFanList(List<String> fanList) {
         this.fanList = fanList;
     }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
 }
+

@@ -11,6 +11,7 @@ import com.picone.core.domain.entity.User;
 import com.picone.core.domain.entity.retrofitRestaurant.NearBySearch;
 import com.picone.core.domain.entity.RetrofitRestaurantDetail.RestaurantDetail;
 import com.picone.core.domain.entity.retrofitRestaurant.RestaurantPOJO;
+import com.picone.core.domain.entity.retrofitRestaurantDistance.Distance;
 
 import java.util.List;
 
@@ -111,6 +112,24 @@ public class RestaurantDaoImpl implements RestaurantDao {
                     });
         });
 
+    }
+
+    public Observable<Distance> getRestaurantDistance(String currentLocation, String restaurantLocation){
+        return Observable.create(emitter -> {
+            retrofitClient.googlePlaceService().getRestaurantDistance(currentLocation,restaurantLocation)
+                    .enqueue(new Callback<Distance>() {
+                        @Override
+                        public void onResponse(Call<Distance> call, Response<Distance> response) {
+                            emitter.onNext(response.body());
+                        }
+
+                        @Override
+                        public void onFailure(Call<Distance> call, Throwable t) {
+                            emitter.onError(t);
+                            Log.d("onFailure", t.toString());
+                        }
+                    });
+        });
     }
     public Completable updateFanListForRestaurant(String restaurantName, List<String> fanList) {
         return RxFirebaseDatabase.setValue(restaurantsDataBaseReference.child(restaurantName).child("fanList"), fanList);

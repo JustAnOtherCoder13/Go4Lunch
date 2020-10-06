@@ -43,7 +43,7 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
         holder.restaurantBinding.restaurantNameTextView.setText(restaurant.getName());
         holder.restaurantBinding.openingTimeTextView.setText(restaurant.getOpeningHours());
         holder.restaurantBinding.foodStyleAndAddressTextView.setText(restaurant.getAddress());
-        holder.restaurantBinding.distanceTextView.setText(String.valueOf(restaurant.getDistance()).concat(" m"));
+        holder.restaurantBinding.distanceTextView.setText(restaurant.getDistance());
         if (restaurant.getNumberOfInterestedUsers() > 0)
             holder.restaurantBinding.interestedColleagueNumber.setText(("(").concat(String.valueOf(restaurant.getNumberOfInterestedUsers())).concat(")"));
         else {
