@@ -39,8 +39,9 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Restaurant restaurant = mRestaurants.get(position);
+        Log.i("TAGM", "onBindViewHolder: "+restaurant.getName()+" "+restaurant.getWebsite()+" "+restaurant.getPhoneNumber());
         holder.restaurantBinding.restaurantNameTextView.setText(restaurant.getName());
-        holder.restaurantBinding.openingTimeTextView.setText(String.valueOf(restaurant.getOpeningHours()).concat(" h"));
+        holder.restaurantBinding.openingTimeTextView.setText(restaurant.getOpeningHours());
         holder.restaurantBinding.foodStyleAndAddressTextView.setText(restaurant.getAddress());
         holder.restaurantBinding.distanceTextView.setText(String.valueOf(restaurant.getDistance()).concat(" m"));
         if (restaurant.getNumberOfInterestedUsers() > 0)

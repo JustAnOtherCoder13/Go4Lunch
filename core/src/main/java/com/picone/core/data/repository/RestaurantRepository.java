@@ -56,8 +56,8 @@ public class RestaurantRepository {
         return restaurantDao.googlePlaceService(mCurrentLocation);
     }
 
-    public Observable<RestaurantDetail> getPlaceRestaurantDetail(RestaurantPOJO restaurantPOJO) {
-        return restaurantDao.getPlaceRestaurantDetail(restaurantPOJO);
+    public Observable<RestaurantDetail> getPlaceRestaurantDetail(Restaurant restaurant) {
+        return restaurantDao.getPlaceRestaurantDetail(restaurant);
     }
 
     public Completable updateFanListForRestaurant(String restaurantName, List<String> fanList) {

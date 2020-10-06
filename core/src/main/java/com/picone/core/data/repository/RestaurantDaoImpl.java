@@ -93,20 +93,20 @@ public class RestaurantDaoImpl implements RestaurantDao {
                         }));
     }
 
-    public Observable<RestaurantDetail> getPlaceRestaurantDetail(RestaurantPOJO restaurantPOJO){
+    public Observable<RestaurantDetail> getPlaceRestaurantDetail(Restaurant restaurant){
         return Observable.create(emitter -> {
             retrofitClient.googlePlaceService()
-                    .getRestaurantDetail(restaurantPOJO.getPlaceId())
+                    .getRestaurantDetail(restaurant.getPlaceId())
                     .enqueue(new Callback<RestaurantDetail>() {
                         @Override
                         public void onResponse(Call<RestaurantDetail> call, Response<RestaurantDetail> response) {
-                            Log.i("TAG", "onResponse: restaurant pojo" + response.raw());
                             emitter.onNext(response.body());
                         }
 
                         @Override
                         public void onFailure(Call<RestaurantDetail> call, Throwable t) {
                             emitter.onError(t);
+                            Log.d("onFailure", t.toString());
                         }
                     });
         });

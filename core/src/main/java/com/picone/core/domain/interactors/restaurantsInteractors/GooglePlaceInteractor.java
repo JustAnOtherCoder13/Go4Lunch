@@ -16,6 +16,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -28,40 +30,61 @@ public class GooglePlaceInteractor {
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public Observable<List<Restaurant>> googlePlaceService(Location mCurrentLocation) {
         List<Restaurant> restaurantsFromMap = new ArrayList<>();
         return restaurantDataSource.googlePlaceService(mCurrentLocation)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(nearBySearch -> {
+                    if (nearBySearch.getStatus().equals("OK")) {
+                        for (RestaurantPOJO restaurantPOJO : nearBySearch.getRestaurantPOJOS()) {
+                            Photo photo = restaurantPOJO.getPhotos().get(0);
+                            //TODO hide apiKey
+                            String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?"
+                                    .concat("maxwidth=" + photo.getWidth())
+                                    .concat("&photoreference=" + photo.getPhotoReference())
+                                    .concat("&key=AIzaSyBPfbZ_poV0QGgdifNxGzHHz2yS4L2evTI");
+                            Restaurant restaurant = new Restaurant(null,
+                                    restaurantPOJO.getName(),
+                                    0,
+                                    photoUrl,
+                                    "",
+                                    restaurantPOJO.getVicinity(),
+                                    "0",
+                                    restaurantPOJO.getPlaceId(),
+                                    "",
+                                    "",
+                                    0,
+                                    new RestaurantPosition(restaurantPOJO.getGeometry().getLocation().getLat(), restaurantPOJO.getGeometry().getLocation().getLng()),
+                                    0,
+                                    new ArrayList<>());
+
+                            if (!restaurantsFromMap.contains(restaurant))
+                                restaurantsFromMap.add(restaurant);
+                        }
+                    }
+                    return Observable.create(emitter -> emitter.onNext(restaurantsFromMap));
+                });
+    }
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    public Observable<List<Restaurant>> getRestaurantDetail(List<Restaurant> allRestaurants){
+        return
+        Observable.create(emitter -> {
+            for (Restaurant rest : allRestaurants) {
+                restaurantDataSource.getPlaceRestaurantDetail(rest)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .flatMap(nearBySearch -> {
-                            if (nearBySearch.getStatus().equals("OK")) {
-                                for (RestaurantPOJO restaurantPOJO : nearBySearch.getRestaurantPOJOS()) {
-                                    restaurantDataSource.getPlaceRestaurantDetail(restaurantPOJO)
-                                            .subscribeOn(Schedulers.io())
-                                            .observeOn(AndroidSchedulers.mainThread())
-                                            .subscribe(restaurantDetail -> {
-                                                Log.i("TAG", "googlePlaceService: "+restaurantDetail.getResult().getFormattedPhoneNumber());
-                                            });
-                                    String name = restaurantPOJO.getName();
-                                    int distance = 0;
-                                    Photo photo = restaurantPOJO.getPhotos().get(0);
-                                    //TODO hide apiKey
-                                    String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?"
-                                            .concat("maxwidth=" + photo.getWidth())
-                                            .concat("&photoreference=" + photo.getPhotoReference())
-                                            .concat("&key=AIzaSyBPfbZ_poV0QGgdifNxGzHHz2yS4L2evTI");
-
-                                    Double lat = restaurantPOJO.getGeometry().getLocation().getLat();
-                                    Double lng = restaurantPOJO.getGeometry().getLocation().getLng();
-                                    String address = restaurantPOJO.getVicinity();
-                                    Restaurant restaurant = new Restaurant(null, name, distance, photoUrl, "", address, 0, 0, new RestaurantPosition(lat, lng), 0, new ArrayList<>());
-                                    if (!restaurantsFromMap.contains(restaurant))
-                                        restaurantsFromMap.add(restaurant);
-                                }
-                            }
-                            return Observable.create(emitter -> emitter.onNext(restaurantsFromMap));
+                        .subscribe(restaurantDetail -> {
+                            rest.setPhoneNumber(restaurantDetail.getResult().getFormattedPhoneNumber());
+                            rest.setWebsite(restaurantDetail.getResult().getWebsite());
+                            rest.setOpeningHours(restaurantDetail.getResult().getOpeningHours().getWeekdayText().get(0));
                         });
+
+            }
+            emitter.onNext(allRestaurants);
+        });
+
     }
 }

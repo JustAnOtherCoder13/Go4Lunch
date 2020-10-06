@@ -60,7 +60,7 @@ public class RestaurantViewModel extends ViewModel {
     private GetFanListForRestaurantInteractor getFanListForRestaurantInteractor;
 
     @ViewModelInject
-    public RestaurantViewModel( GetRestaurantForNameInteractor getRestaurantForNameInteractor
+    public RestaurantViewModel(GetRestaurantForNameInteractor getRestaurantForNameInteractor
             , AddRestaurantInteractor addRestaurantInteractor, UpdateUserChosenRestaurantInteractor updateUserChosenRestaurantInteractor
             , GetCurrentUserForEmailInteractor getCurrentUserForEmailInteractor, GetRestaurantForKeyInteractor getRestaurantForKeyInteractor
             , GetInterestedUsersForRestaurantKeyInteractor getInterestedUsersForRestaurantKeyInteractor
@@ -92,14 +92,14 @@ public class RestaurantViewModel extends ViewModel {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
-    public void getRestaurantFromMaps(Location mCurrentLocation){
-        Log.i("TAG", "getRestaurantFromMaps: enter methode");
+    public void getRestaurantFromMaps(Location mCurrentLocation) {
         googlePlaceInteractor.googlePlaceService(mCurrentLocation)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(restaurantPOJOS ->
+                        googlePlaceInteractor.getRestaurantDetail(restaurantPOJOS))
                 .subscribe(restaurants -> {
-                    Log.i("TAG", "getRestaurantFromMaps: "+allRestaurantsMutableLiveData.getValue());
-                    if (allRestaurantsMutableLiveData.getValue()==null)
+                    if (allRestaurantsMutableLiveData.getValue() == null)
                         allRestaurantsMutableLiveData.setValue(restaurants);
                 });
     }
@@ -300,7 +300,7 @@ public class RestaurantViewModel extends ViewModel {
         }
     }
 
-    private <T> Restaurant getRestaurantOnUserClick(T param){
+    private <T> Restaurant getRestaurantOnUserClick(T param) {
         Restaurant selectedRestaurant = new Restaurant();
 
         if (param instanceof Integer) {
