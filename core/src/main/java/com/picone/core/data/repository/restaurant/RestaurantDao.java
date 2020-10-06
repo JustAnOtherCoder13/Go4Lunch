@@ -1,4 +1,4 @@
-package com.picone.core.data.repository;
+package com.picone.core.data.repository.restaurant;
 
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;

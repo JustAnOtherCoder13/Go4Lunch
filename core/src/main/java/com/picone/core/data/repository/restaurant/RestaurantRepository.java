@@ -1,13 +1,13 @@
-package com.picone.core.data.repository;
+package com.picone.core.data.repository.restaurant;
 
 import android.location.Location;
 
 import com.google.firebase.database.FirebaseDatabase;
 import com.picone.core.domain.entity.Restaurant;
-import com.picone.core.domain.entity.User;
-import com.picone.core.domain.entity.RestaurantPOJO.NearBySearch;
 import com.picone.core.domain.entity.RestaurantDetailPOJO.RestaurantDetail;
 import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
+import com.picone.core.domain.entity.RestaurantPOJO.NearBySearch;
+import com.picone.core.domain.entity.User;
 
 import java.util.List;
 

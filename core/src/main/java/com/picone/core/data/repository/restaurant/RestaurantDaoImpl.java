@@ -1,16 +1,16 @@
-package com.picone.core.data.repository;
+package com.picone.core.data.repository.restaurant;
 
 import android.location.Location;
-import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.picone.core.data.repository.place.RetrofitClient;
 import com.picone.core.domain.entity.Restaurant;
-import com.picone.core.domain.entity.User;
-import com.picone.core.domain.entity.RestaurantPOJO.NearBySearch;
 import com.picone.core.domain.entity.RestaurantDetailPOJO.RestaurantDetail;
 import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
+import com.picone.core.domain.entity.RestaurantPOJO.NearBySearch;
+import com.picone.core.domain.entity.User;
 
 import java.util.List;
 
@@ -20,9 +20,6 @@ import durdinapps.rxfirebase2.DataSnapshotMapper;
 import durdinapps.rxfirebase2.RxFirebaseDatabase;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class RestaurantDaoImpl implements RestaurantDao {
 

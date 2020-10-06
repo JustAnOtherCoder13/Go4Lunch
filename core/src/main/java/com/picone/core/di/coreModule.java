@@ -1,32 +1,26 @@
 package com.picone.core.di;
 
 import com.google.firebase.database.FirebaseDatabase;
-import com.picone.core.data.repository.RestaurantDaoImpl;
-import com.picone.core.data.repository.RestaurantRepository;
-import com.picone.core.data.repository.RetrofitClient;
-import com.picone.core.data.repository.UserDaoImpl;
-import com.picone.core.data.repository.UserRepository;
-import com.picone.core.domain.entity.Restaurant;
-import com.picone.core.domain.interactors.restaurantsInteractors.AddRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.placeInteractors.FetchRestaurantDetailFromPlaceInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.placeInteractors.FetchRestaurantDistanceInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.placeInteractors.FetchRestaurantFromPlaceInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.GetAllPersistedRestaurantsInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.GetAllRestaurantsInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.GetFanListForRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForKeyInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForNameInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.UpdateFanListForRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.UpdateNumberOfInterestedUsersForRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.UpdateUserChosenRestaurantInteractor;
+import com.picone.core.data.repository.place.RetrofitClient;
+import com.picone.core.data.repository.restaurant.RestaurantDaoImpl;
+import com.picone.core.data.repository.restaurant.RestaurantRepository;
+import com.picone.core.data.repository.user.UserDaoImpl;
+import com.picone.core.data.repository.user.UserRepository;
+import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantDetailFromPlaceInteractor;
+import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantDistanceInteractor;
+import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantFromPlaceInteractor;
+import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.GetFanListForRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.UpdateFanListForRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.UpdateNumberOfInterestedUsersForRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.UpdateUserChosenRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurant.restaurantInteractors.AddRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetAllPersistedRestaurantsInteractor;
+import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetRestaurantForKeyInteractor;
+import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetRestaurantForNameInteractor;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetInterestedUsersForRestaurantKeyInteractor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Singleton;
 
@@ -34,8 +28,6 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.components.ActivityComponent;
-
-import static com.picone.core.data.mocks.Generator.RESTAURANTS;
 
 @InstallIn(ActivityComponent.class)
 @Module
@@ -72,12 +64,6 @@ public final class coreModule {
         return new RestaurantDaoImpl(provideFireBaseDataBase(),provideRetrofitClient());
     }
 
-    //-----------------------------------GENERATOR--------------------------------------------------
-    @Provides
-    static List<Restaurant> provideGenerateRestaurant() {
-        return new ArrayList<>(RESTAURANTS);
-    }
-
     //--------------------------------USERS INTERACTORS---------------------------------------------
     @Provides
     static GetAllUsersInteractor provideGetAllUsers() {
@@ -100,15 +86,6 @@ public final class coreModule {
     }
 
     //-----------------------------RESTAURANTS INTERACTORS------------------------------------------
-    @Provides
-    static GetAllRestaurantsInteractor provideGetAllRestaurants() {
-        return new GetAllRestaurantsInteractor(provideRestaurantDataSource(),provideGenerateRestaurant());
-    }
-
-    @Provides
-    static GetRestaurantInteractor provideGetRestaurant() {
-        return new GetRestaurantInteractor(provideRestaurantDataSource(),provideGenerateRestaurant());
-    }
 
     @Provides
     static AddRestaurantInteractor provideAddRestaurant(){

@@ -1,6 +1,6 @@
-package com.picone.core.domain.interactors.restaurantsInteractors;
+package com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors;
 
-import com.picone.core.data.repository.RestaurantRepository;
+import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.domain.entity.User;
 
 import javax.inject.Inject;

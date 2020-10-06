@@ -1,16 +1,15 @@
-package com.picone.core.domain.interactors.restaurantsInteractors.placeInteractors;
+package com.picone.core.domain.interactors.restaurant.placeInteractors;
 
 import android.annotation.SuppressLint;
 
-import com.picone.core.data.repository.RestaurantRepository;
+import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.entity.RestaurantDetailPOJO.RestaurantDetail;
 
 import java.util.Calendar;
-import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -31,11 +30,21 @@ public class FetchRestaurantDetailFromPlaceInteractor {
                 .subscribe(restaurantDetail -> {
                     restaurant.setPhoneNumber(restaurantDetail.getResult().getFormattedPhoneNumber());
                     restaurant.setWebsite(restaurantDetail.getResult().getWebsite());
-                    restaurant.setOpeningHours(restaurantDetail.getResult().getOpeningHours().getWeekdayText().get(getWeekDayTextValue()));
+                    restaurant.setOpeningHours(formatOpeningHours(restaurantDetail));
                 });
     }
 
+    private String formatOpeningHours(RestaurantDetail restaurantDetail) {
+        String closingHour = restaurantDetail.getResult().getOpeningHours().getPeriods().get(getWeekDayTextValue()).getClose().getTime();
+        if (restaurantDetail.getResult().getOpeningHours().getOpenNow())
+            closingHour = "Open until : " + closingHour.substring(0, 2) + ":" + closingHour.substring(2, 4);
+        else
+            closingHour = "Closed";
 
+        return closingHour;
+    }
+
+    @SuppressWarnings("ConstantConditions")
     private int getWeekDayTextValue() {
         int weekDayTextValue = Calendar.DAY_OF_WEEK + 1;
         if (weekDayTextValue == 7)

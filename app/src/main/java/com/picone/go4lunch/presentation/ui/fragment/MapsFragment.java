@@ -47,6 +47,8 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     private FusedLocationProviderClient mFusedLocationProviderClient;
     public static String MAPS_KEY;
 
+    //TODO make status bar transparent
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,7 +121,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
                     if (mAuth.getCurrentUser() != null) {
                         mRestaurantViewModel.initData(mAuth.getCurrentUser().getEmail());
                     }
-
             }
         });
     }

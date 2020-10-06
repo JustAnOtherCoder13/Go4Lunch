@@ -1,4 +1,4 @@
-package com.picone.core.data.repository;
+package com.picone.core.data.repository.place;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 

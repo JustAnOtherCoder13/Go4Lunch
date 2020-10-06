@@ -1,4 +1,4 @@
-package com.picone.core.data.repository;
+package com.picone.core.data.repository.user;
 
 import com.picone.core.domain.entity.User;
 

@@ -1,17 +1,15 @@
-package com.picone.core.domain.interactors.restaurantsInteractors.placeInteractors;
+package com.picone.core.domain.interactors.restaurant.placeInteractors;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
-import android.util.Log;
 
-import com.picone.core.data.repository.RestaurantRepository;
+import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.domain.entity.Restaurant;
-import com.picone.core.domain.entity.RestaurantPosition;
 import com.picone.core.domain.entity.RestaurantPOJO.Photo;
 import com.picone.core.domain.entity.RestaurantPOJO.RestaurantPOJO;
+import com.picone.core.domain.entity.RestaurantPosition;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;

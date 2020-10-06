@@ -1,19 +1,13 @@
-package com.picone.core.domain.interactors.restaurantsInteractors.placeInteractors;
+package com.picone.core.domain.interactors.restaurant.placeInteractors;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
-import android.util.Log;
 
-import com.picone.core.data.repository.RestaurantRepository;
+import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.domain.entity.Restaurant;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 

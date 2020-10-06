@@ -29,6 +29,7 @@ public class RestaurantDetailFragment extends BaseFragment {
     private FragmentRestaurantDetailBinding mBinding;
     private ColleagueRecyclerViewAdapter mAdapter;
 
+    //TODO make status bar transparent
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +59,14 @@ public class RestaurantDetailFragment extends BaseFragment {
                     .create()
                     .show();
         });
+
+        mBinding.callNumberDetailImageButton.setOnClickListener(v -> {
+            //TODO call on click?
+        });
+
+        mBinding.webSiteDetailImageButton.setOnClickListener(v -> {
+            //TODO link to website
+        });
     }
 
     private void initView() {
@@ -78,7 +87,7 @@ public class RestaurantDetailFragment extends BaseFragment {
             manageStar(mBinding.opinionStarDetailImageView, numberOfLike);
             Glide.with(mBinding.restaurantPhotoDetailImageView.getContext())
                     .load(restaurant.getRestaurantPhoto())
-                    .circleCrop()
+                    .centerCrop()
                     .into(new CustomTarget<Drawable>() {
                         @Override
                         public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super

@@ -12,17 +12,17 @@ import androidx.lifecycle.ViewModel;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 import com.picone.core.domain.entity.UserDailySchedule;
-import com.picone.core.domain.interactors.restaurantsInteractors.AddRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.GetAllPersistedRestaurantsInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.GetFanListForRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForKeyInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForNameInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.placeInteractors.FetchRestaurantDetailFromPlaceInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.placeInteractors.FetchRestaurantDistanceInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.placeInteractors.FetchRestaurantFromPlaceInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.UpdateFanListForRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.UpdateNumberOfInterestedUsersForRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.UpdateUserChosenRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantDetailFromPlaceInteractor;
+import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantDistanceInteractor;
+import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantFromPlaceInteractor;
+import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.GetFanListForRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.UpdateFanListForRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.UpdateNumberOfInterestedUsersForRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.UpdateUserChosenRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurant.restaurantInteractors.AddRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetAllPersistedRestaurantsInteractor;
+import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetRestaurantForKeyInteractor;
+import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetRestaurantForNameInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetInterestedUsersForRestaurantKeyInteractor;
 
@@ -74,7 +74,7 @@ public class RestaurantViewModel extends ViewModel {
             , FetchRestaurantFromPlaceInteractor fetchRestaurantFromPlaceInteractor
             , GetAllPersistedRestaurantsInteractor getAllPersistedRestaurantsInteractor
             , UpdateFanListForRestaurantInteractor updateFanListForRestaurantInteractor, GetFanListForRestaurantInteractor getFanListForRestaurantInteractor
-    ,FetchRestaurantDistanceInteractor fetchRestaurantDistanceInteractor, FetchRestaurantDetailFromPlaceInteractor fetchRestaurantDetailFromPlaceInteractor) {
+            , FetchRestaurantDistanceInteractor fetchRestaurantDistanceInteractor, FetchRestaurantDetailFromPlaceInteractor fetchRestaurantDetailFromPlaceInteractor) {
         this.getRestaurantForNameInteractor = getRestaurantForNameInteractor;
         this.addRestaurantInteractor = addRestaurantInteractor;
         this.updateUserChosenRestaurantInteractor = updateUserChosenRestaurantInteractor;
@@ -86,7 +86,7 @@ public class RestaurantViewModel extends ViewModel {
         this.fetchRestaurantFromPlaceInteractor = fetchRestaurantFromPlaceInteractor;
         this.getFanListForRestaurantInteractor = getFanListForRestaurantInteractor;
         this.updateFanListForRestaurantInteractor = updateFanListForRestaurantInteractor;
-        this.fetchRestaurantDetailFromPlaceInteractor=fetchRestaurantDetailFromPlaceInteractor;
+        this.fetchRestaurantDetailFromPlaceInteractor = fetchRestaurantDetailFromPlaceInteractor;
         this.fetchRestaurantDistanceInteractor = fetchRestaurantDistanceInteractor;
         DATE = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(Calendar.getInstance().getTime());
     }
@@ -102,16 +102,15 @@ public class RestaurantViewModel extends ViewModel {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void getRestaurantFromMaps(Location mCurrentLocation) {
-        Log.i("TAG", "getRestaurantFromMaps: "+MAPS_KEY);
+        Log.i("TAG", "getRestaurantFromMaps: " + MAPS_KEY);
         fetchRestaurantFromPlaceInteractor.fetchRestaurantFromPlace(mCurrentLocation, MAPS_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(allRestaurants ->{
-                    for (Restaurant restaurant:allRestaurants){
+                .subscribe(allRestaurants -> {
+                    for (Restaurant restaurant : allRestaurants) {
                         fetchRestaurantDetailFromPlaceInteractor.getRestaurantDetail(restaurant, MAPS_KEY);
                         fetchRestaurantDistanceInteractor.getRestaurantDistance(restaurant, mCurrentLocation, MAPS_KEY);
                     }
-
                     if (allRestaurantsMutableLiveData.getValue() == null)
                         allRestaurantsMutableLiveData.setValue(allRestaurants);
                 });
@@ -237,6 +236,8 @@ public class RestaurantViewModel extends ViewModel {
                     .subscribe(this::updateUserDailySchedule);
     }
 
+
+    //TODO bug if no restaurant exist, don't update number of users
     //currentUserMutableLiveData.getValue().getEmail() can't be null cause already set in restaurant list fragment
     @SuppressLint("CheckResult")
     @SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
@@ -260,7 +261,7 @@ public class RestaurantViewModel extends ViewModel {
     }
 
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
     @SuppressLint("CheckResult")
     private void updateAllRestaurantsWithPersistedValues() {
         List<Restaurant> updatedRestaurants = new ArrayList<>();
@@ -313,6 +314,7 @@ public class RestaurantViewModel extends ViewModel {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     private <T> Restaurant getRestaurantOnUserClick(T param) {
         Restaurant selectedRestaurant = new Restaurant();
 
@@ -325,7 +327,6 @@ public class RestaurantViewModel extends ViewModel {
                 if (restaurant.getName().equals(param)) selectedRestaurant = restaurant;
             selectedRestaurantMutableLiveData.setValue(selectedRestaurant);
         }
-
         if (!(param instanceof String))
             if (!(param instanceof Integer))
                 Log.e("WRONG_PARAMETER", "initSelectedRestaurant: Must pass a string restaurantName or an int restaurantPosition ", new Throwable());
