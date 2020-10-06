@@ -5,10 +5,9 @@ import android.location.Location;
 import com.google.firebase.database.FirebaseDatabase;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
-import com.picone.core.domain.entity.retrofitRestaurant.NearBySearch;
-import com.picone.core.domain.entity.RetrofitRestaurantDetail.RestaurantDetail;
-import com.picone.core.domain.entity.retrofitRestaurant.RestaurantPOJO;
-import com.picone.core.domain.entity.retrofitRestaurantDistance.Distance;
+import com.picone.core.domain.entity.RestaurantPOJO.NearBySearch;
+import com.picone.core.domain.entity.RestaurantDetailPOJO.RestaurantDetail;
+import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
 
 import java.util.List;
 
@@ -53,16 +52,16 @@ public class RestaurantRepository {
         return restaurantDao.getAllPersistedRestaurants();
     }
 
-    public Observable<NearBySearch> googlePlaceService(Location mCurrentLocation) {
-        return restaurantDao.googlePlaceService(mCurrentLocation);
+    public Observable<NearBySearch> googlePlaceService(Location mCurrentLocation, String googleKey) {
+        return restaurantDao.googlePlaceService(mCurrentLocation, googleKey);
     }
 
-    public Observable<RestaurantDetail> getPlaceRestaurantDetail(Restaurant restaurant) {
-        return restaurantDao.getPlaceRestaurantDetail(restaurant);
+    public Observable<RestaurantDetail> getPlaceRestaurantDetail(Restaurant restaurant,String googleKey) {
+        return restaurantDao.getPlaceRestaurantDetail(restaurant,googleKey);
     }
 
-    public Observable<Distance> getRestaurantDistance(String currentLocation, String restaurantLocation){
-        return restaurantDao.getRestaurantDistance(currentLocation, restaurantLocation);
+    public Observable<RestaurantDistance> getRestaurantDistance(String currentLocation, String restaurantLocation,String googleKey){
+        return restaurantDao.getRestaurantDistance(currentLocation, restaurantLocation,googleKey);
     }
 
     public Completable updateFanListForRestaurant(String restaurantName, List<String> fanList) {

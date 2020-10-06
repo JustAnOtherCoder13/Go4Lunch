@@ -8,10 +8,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
-import com.picone.core.domain.entity.retrofitRestaurant.NearBySearch;
-import com.picone.core.domain.entity.RetrofitRestaurantDetail.RestaurantDetail;
-import com.picone.core.domain.entity.retrofitRestaurant.RestaurantPOJO;
-import com.picone.core.domain.entity.retrofitRestaurantDistance.Distance;
+import com.picone.core.domain.entity.RestaurantPOJO.NearBySearch;
+import com.picone.core.domain.entity.RestaurantDetailPOJO.RestaurantDetail;
+import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
 
 import java.util.List;
 
@@ -73,13 +72,11 @@ public class RestaurantDaoImpl implements RestaurantDao {
         return RxFirebaseDatabase.observeValueEvent(restaurantsDataBaseReference, DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
     }
 
-    public Observable<NearBySearch> googlePlaceService(Location mCurrentLocation) {
+    public Observable<NearBySearch> googlePlaceService(Location mCurrentLocation,String googleKey) {
 
         return Observable.create(emitter ->
                 retrofitClient.googlePlaceService()
-                        .getNearbySearch("restaurant"
-                                , mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude()
-                                , 400)
+                        .getNearbySearch(mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude(),googleKey)
                         .enqueue(new Callback<NearBySearch>() {
                             @Override
                             public void onResponse(Call<NearBySearch> call, Response<NearBySearch> response) {
@@ -94,10 +91,10 @@ public class RestaurantDaoImpl implements RestaurantDao {
                         }));
     }
 
-    public Observable<RestaurantDetail> getPlaceRestaurantDetail(Restaurant restaurant){
+    public Observable<RestaurantDetail> getPlaceRestaurantDetail(Restaurant restaurant,String googleKey){
         return Observable.create(emitter -> {
             retrofitClient.googlePlaceService()
-                    .getRestaurantDetail(restaurant.getPlaceId())
+                    .getRestaurantDetail(restaurant.getPlaceId(),googleKey)
                     .enqueue(new Callback<RestaurantDetail>() {
                         @Override
                         public void onResponse(Call<RestaurantDetail> call, Response<RestaurantDetail> response) {
@@ -114,17 +111,17 @@ public class RestaurantDaoImpl implements RestaurantDao {
 
     }
 
-    public Observable<Distance> getRestaurantDistance(String currentLocation, String restaurantLocation){
+    public Observable<RestaurantDistance> getRestaurantDistance(String currentLocation, String restaurantLocation,String googleKey){
         return Observable.create(emitter -> {
-            retrofitClient.googlePlaceService().getRestaurantDistance(currentLocation,restaurantLocation)
-                    .enqueue(new Callback<Distance>() {
+            retrofitClient.googlePlaceService().getRestaurantDistance(currentLocation,restaurantLocation,googleKey)
+                    .enqueue(new Callback<RestaurantDistance>() {
                         @Override
-                        public void onResponse(Call<Distance> call, Response<Distance> response) {
+                        public void onResponse(Call<RestaurantDistance> call, Response<RestaurantDistance> response) {
                             emitter.onNext(response.body());
                         }
 
                         @Override
-                        public void onFailure(Call<Distance> call, Throwable t) {
+                        public void onFailure(Call<RestaurantDistance> call, Throwable t) {
                             emitter.onError(t);
                             Log.d("onFailure", t.toString());
                         }

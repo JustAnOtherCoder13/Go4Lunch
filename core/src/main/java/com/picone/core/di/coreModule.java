@@ -8,13 +8,15 @@ import com.picone.core.data.repository.UserDaoImpl;
 import com.picone.core.data.repository.UserRepository;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.interactors.restaurantsInteractors.AddRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.placeInteractors.FetchRestaurantDetailFromPlaceInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.placeInteractors.FetchRestaurantDistanceInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.placeInteractors.FetchRestaurantFromPlaceInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetAllPersistedRestaurantsInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetAllRestaurantsInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetFanListForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForKeyInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForNameInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.GooglePlaceInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.UpdateFanListForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.UpdateNumberOfInterestedUsersForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.UpdateUserChosenRestaurantInteractor;
@@ -148,9 +150,21 @@ public final class coreModule {
         return new UpdateFanListForRestaurantInteractor(provideRestaurantDataSource());
     }
 
+    //-----------------------------PLACE INTERACTORS------------------------------------------
+
     @Provides
-    static GooglePlaceInteractor provideGetRetrofitClient(){
-        return new GooglePlaceInteractor(provideRestaurantDataSource());
+    static FetchRestaurantFromPlaceInteractor provideFetchRestaurantFromPlace(){
+        return new FetchRestaurantFromPlaceInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static FetchRestaurantDetailFromPlaceInteractor provideFetchRestaurantDetailFromPlace(){
+        return new FetchRestaurantDetailFromPlaceInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static FetchRestaurantDistanceInteractor provideFetchRestaurantDistance(){
+        return new FetchRestaurantDistanceInteractor(provideRestaurantDataSource());
     }
 
     @Provides

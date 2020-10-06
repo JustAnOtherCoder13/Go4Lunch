@@ -1,10 +1,10 @@
-package com.picone.core.domain.entity.retrofitRestaurantDistance;
+package com.picone.core.domain.entity.RestaurantDistancePOJO;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Distance {
+public class RestaurantDistance {
 
     @SerializedName("destination_addresses")
     @Expose

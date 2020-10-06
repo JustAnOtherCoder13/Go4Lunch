@@ -71,9 +71,7 @@ public class RestaurantDetailFragment extends BaseFragment {
             mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
             mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getAddress());
             manageStar(mBinding.opinionStarDetailImageView, (int) restaurant.getAverageSatisfaction());
-            mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getFoodType()
-                    .concat(" restaurant")
-                    .concat(" - ").concat(restaurant.getAddress()));
+            mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getAddress());
             int numberOfLike = 0;
             if (restaurant.getFanList() != null && !restaurant.getFanList().isEmpty())
                 numberOfLike = restaurant.getFanList().size();

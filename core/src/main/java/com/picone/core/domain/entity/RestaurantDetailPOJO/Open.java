@@ -1,4 +1,4 @@
-package com.picone.core.domain.entity.RetrofitRestaurantDetail;
+package com.picone.core.domain.entity.RestaurantDetailPOJO;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

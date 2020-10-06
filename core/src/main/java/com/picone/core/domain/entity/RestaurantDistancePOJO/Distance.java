@@ -1,9 +1,9 @@
-package com.picone.core.domain.entity.retrofitRestaurantDistance;
+package com.picone.core.domain.entity.RestaurantDistancePOJO;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Distance_ {
+public class Distance {
 
     @SerializedName("text")
     @Expose

@@ -6,32 +6,35 @@ import java.util.List;
 
 @IgnoreExtraProperties
 public class Restaurant {
-    private String key;
+
     private String name;
-    private String distance;
-    private String restaurantPhoto;
-    private String foodType;
     private String address;
-    private String openingHours;
-    private double averageSatisfaction;
     private RestaurantPosition restaurantPosition;
-    private int numberOfInterestedUsers;
-    private List<String> fanList;
     private String placeId;
+    private String restaurantPhoto;
+
     private String phoneNumber;
     private String website;
+    private String openingHours;
+
+    private String distance;
+
+    private String key;
+
+    private double averageSatisfaction;
+    private int numberOfInterestedUsers;
+    private List<String> fanList;
 
     public Restaurant() {
     }
 
-    public Restaurant(String key, String name, String distance, String restaurantPhoto, String foodType,
-                      String address, String openingHours, String placeId, String phoneNumber, String website,
-                      double averageSatisfaction, RestaurantPosition restaurantPosition, int numberOfInterestedUsers, List<String> fanList) {
+    public Restaurant(String key, String name, String distance, String restaurantPhoto, RestaurantPosition restaurantPosition,
+                      String address, String placeId, String openingHours,  String phoneNumber, String website,
+                      double averageSatisfaction,  int numberOfInterestedUsers, List<String> fanList) {
         this.key = key;
         this.name = name;
         this.distance = distance;
         this.restaurantPhoto = restaurantPhoto;
-        this.foodType = foodType;
         this.address = address;
         this.openingHours = openingHours;
         this.averageSatisfaction = averageSatisfaction;
@@ -49,10 +52,6 @@ public class Restaurant {
 
     public String getPlaceId() {
         return placeId;
-    }
-
-    public void setPlaceId(String placeId) {
-        this.placeId = placeId;
     }
 
     public String getPhoneNumber() {
@@ -83,10 +82,6 @@ public class Restaurant {
         return restaurantPhoto;
     }
 
-    public String getFoodType() {
-        return foodType;
-    }
-
     public String getAddress() { return address; }
 
     public String getOpeningHours() {
@@ -107,9 +102,6 @@ public class Restaurant {
         return restaurantPosition;
     }
 
-    public void setRestaurantPosition(RestaurantPosition restaurantPosition) {
-        this.restaurantPosition = restaurantPosition;
-    }
 
     public int getNumberOfInterestedUsers() {
         return numberOfInterestedUsers;

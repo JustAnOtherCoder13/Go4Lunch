@@ -1,5 +1,5 @@
 
-package com.picone.core.domain.entity.retrofitRestaurantDistance;
+package com.picone.core.domain.entity.RestaurantDistancePOJO;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -8,7 +8,7 @@ public class Element {
 
     @SerializedName("distance")
     @Expose
-    private Distance_ distance;
+    private Distance distance;
     @SerializedName("duration")
     @Expose
     private Duration duration;
@@ -16,11 +16,11 @@ public class Element {
     @Expose
     private String status;
 
-    public Distance_ getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void setDistance(Distance_ distance) {
+    public void setDistance(Distance distance) {
         this.distance = distance;
     }
 

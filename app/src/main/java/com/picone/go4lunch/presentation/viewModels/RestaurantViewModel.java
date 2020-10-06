@@ -17,7 +17,9 @@ import com.picone.core.domain.interactors.restaurantsInteractors.GetAllPersisted
 import com.picone.core.domain.interactors.restaurantsInteractors.GetFanListForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForKeyInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.GetRestaurantForNameInteractor;
-import com.picone.core.domain.interactors.restaurantsInteractors.GooglePlaceInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.placeInteractors.FetchRestaurantDetailFromPlaceInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.placeInteractors.FetchRestaurantDistanceInteractor;
+import com.picone.core.domain.interactors.restaurantsInteractors.placeInteractors.FetchRestaurantFromPlaceInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.UpdateFanListForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.UpdateNumberOfInterestedUsersForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurantsInteractors.UpdateUserChosenRestaurantInteractor;
@@ -35,6 +37,8 @@ import java.util.Objects;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+
+import static com.picone.go4lunch.presentation.ui.fragment.MapsFragment.MAPS_KEY;
 
 public class RestaurantViewModel extends ViewModel {
 
@@ -55,7 +59,9 @@ public class RestaurantViewModel extends ViewModel {
     private GetInterestedUsersForRestaurantKeyInteractor getInterestedUsersForRestaurantKeyInteractor;
     private UpdateNumberOfInterestedUsersForRestaurantInteractor updateNumberOfInterestedUsersForRestaurantInteractor;
     private GetAllPersistedRestaurantsInteractor getAllPersistedRestaurantsInteractor;
-    private GooglePlaceInteractor googlePlaceInteractor;
+    private FetchRestaurantFromPlaceInteractor fetchRestaurantFromPlaceInteractor;
+    private FetchRestaurantDistanceInteractor fetchRestaurantDistanceInteractor;
+    private FetchRestaurantDetailFromPlaceInteractor fetchRestaurantDetailFromPlaceInteractor;
     private UpdateFanListForRestaurantInteractor updateFanListForRestaurantInteractor;
     private GetFanListForRestaurantInteractor getFanListForRestaurantInteractor;
 
@@ -65,9 +71,10 @@ public class RestaurantViewModel extends ViewModel {
             , GetCurrentUserForEmailInteractor getCurrentUserForEmailInteractor, GetRestaurantForKeyInteractor getRestaurantForKeyInteractor
             , GetInterestedUsersForRestaurantKeyInteractor getInterestedUsersForRestaurantKeyInteractor
             , UpdateNumberOfInterestedUsersForRestaurantInteractor updateNumberOfInterestedUsersForRestaurantInteractor
-            , GooglePlaceInteractor googlePlaceInteractor
+            , FetchRestaurantFromPlaceInteractor fetchRestaurantFromPlaceInteractor
             , GetAllPersistedRestaurantsInteractor getAllPersistedRestaurantsInteractor
-            , UpdateFanListForRestaurantInteractor updateFanListForRestaurantInteractor, GetFanListForRestaurantInteractor getFanListForRestaurantInteractor) {
+            , UpdateFanListForRestaurantInteractor updateFanListForRestaurantInteractor, GetFanListForRestaurantInteractor getFanListForRestaurantInteractor
+    ,FetchRestaurantDistanceInteractor fetchRestaurantDistanceInteractor, FetchRestaurantDetailFromPlaceInteractor fetchRestaurantDetailFromPlaceInteractor) {
         this.getRestaurantForNameInteractor = getRestaurantForNameInteractor;
         this.addRestaurantInteractor = addRestaurantInteractor;
         this.updateUserChosenRestaurantInteractor = updateUserChosenRestaurantInteractor;
@@ -76,9 +83,11 @@ public class RestaurantViewModel extends ViewModel {
         this.getInterestedUsersForRestaurantKeyInteractor = getInterestedUsersForRestaurantKeyInteractor;
         this.updateNumberOfInterestedUsersForRestaurantInteractor = updateNumberOfInterestedUsersForRestaurantInteractor;
         this.getAllPersistedRestaurantsInteractor = getAllPersistedRestaurantsInteractor;
-        this.googlePlaceInteractor = googlePlaceInteractor;
+        this.fetchRestaurantFromPlaceInteractor = fetchRestaurantFromPlaceInteractor;
         this.getFanListForRestaurantInteractor = getFanListForRestaurantInteractor;
         this.updateFanListForRestaurantInteractor = updateFanListForRestaurantInteractor;
+        this.fetchRestaurantDetailFromPlaceInteractor=fetchRestaurantDetailFromPlaceInteractor;
+        this.fetchRestaurantDistanceInteractor = fetchRestaurantDistanceInteractor;
         DATE = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(Calendar.getInstance().getTime());
     }
 
@@ -93,11 +102,12 @@ public class RestaurantViewModel extends ViewModel {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void getRestaurantFromMaps(Location mCurrentLocation) {
-        googlePlaceInteractor.googlePlaceService(mCurrentLocation)
+        Log.i("TAG", "getRestaurantFromMaps: "+MAPS_KEY);
+        fetchRestaurantFromPlaceInteractor.fetchRestaurantFromPlace(mCurrentLocation, MAPS_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(restaurantPOJOS ->
-                        googlePlaceInteractor.getRestaurantDetail(restaurantPOJOS))
+                        fetchRestaurantDetailFromPlaceInteractor.getRestaurantDetail(restaurantPOJOS,MAPS_KEY))
                 .subscribe(restaurants -> {
                     if (allRestaurantsMutableLiveData.getValue() == null)
                         allRestaurantsMutableLiveData.setValue(restaurants);
@@ -107,7 +117,7 @@ public class RestaurantViewModel extends ViewModel {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void setRestaurantDistance(Location mCurrentLocation){
-        googlePlaceInteractor.getRestaurantDistance(allRestaurantsMutableLiveData.getValue(),mCurrentLocation)
+        fetchRestaurantDistanceInteractor.getRestaurantDistance(allRestaurantsMutableLiveData.getValue(),mCurrentLocation,MAPS_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(restaurants -> {
