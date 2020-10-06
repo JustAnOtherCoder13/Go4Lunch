@@ -45,11 +45,15 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     private final int REQUEST_CODE = 13700;
     private Location mCurrentLocation;
     private FusedLocationProviderClient mFusedLocationProviderClient;
+    public static String MAPS_KEY;
+
+    //TODO make status bar transparent
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+        MAPS_KEY= this.getResources().getString(R.string.google_maps_key);
     }
 
     @Nullable
@@ -113,6 +117,10 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
             if (location != null) {
                 mCurrentLocation = location;
                 mBinding.mapView.getMapAsync(this);
+                        mRestaurantViewModel.getRestaurantFromMaps(location);
+                    if (mAuth.getCurrentUser() != null) {
+                        mRestaurantViewModel.initData(mAuth.getCurrentUser().getEmail());
+                    }
             }
         });
     }

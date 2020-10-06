@@ -6,42 +6,75 @@ import java.util.List;
 
 @IgnoreExtraProperties
 public class Restaurant {
-    private String key;
+
     private String name;
-    private int distance;
-    private String restaurantPhoto;
-    private String foodType;
     private String address;
-    private int openingHours;
-    private double averageSatisfaction;
     private RestaurantPosition restaurantPosition;
+    private String placeId;
+    private String restaurantPhoto;
+
+    private String phoneNumber;
+    private String website;
+    private String openingHours;
+
+    private String distance;
+
+    private String key;
+
+    private double averageSatisfaction;
     private int numberOfInterestedUsers;
     private List<String> fanList;
 
     public Restaurant() {
     }
 
-    public Restaurant(String key, String name, int distance, String restaurantPhoto, String foodType,
-                      String address, int openingHours,
-                      double averageSatisfaction, RestaurantPosition restaurantPosition, int numberOfInterestedUsers,List<String> fanList) {
+    public Restaurant(String key, String name, String distance, String restaurantPhoto, RestaurantPosition restaurantPosition,
+                      String address, String placeId, String openingHours,  String phoneNumber, String website,
+                      double averageSatisfaction,  int numberOfInterestedUsers, List<String> fanList) {
         this.key = key;
         this.name = name;
         this.distance = distance;
         this.restaurantPhoto = restaurantPhoto;
-        this.foodType = foodType;
         this.address = address;
         this.openingHours = openingHours;
         this.averageSatisfaction = averageSatisfaction;
         this.restaurantPosition = restaurantPosition;
         this.numberOfInterestedUsers = numberOfInterestedUsers;
         this.fanList = fanList;
+        this.website = website;
+        this.phoneNumber = phoneNumber;
+        this.placeId = placeId;
+    }
+
+    public void setOpeningHours(String openingHours) {
+        this.openingHours = openingHours;
+    }
+
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
     }
 
     public String getName() {
         return name;
     }
 
-    public int getDistance() {
+    public String getDistance() {
         return distance;
     }
 
@@ -49,13 +82,9 @@ public class Restaurant {
         return restaurantPhoto;
     }
 
-    public String getFoodType() {
-        return foodType;
-    }
-
     public String getAddress() { return address; }
 
-    public int getOpeningHours() {
+    public String getOpeningHours() {
         return openingHours;
     }
 
@@ -73,9 +102,6 @@ public class Restaurant {
         return restaurantPosition;
     }
 
-    public void setRestaurantPosition(RestaurantPosition restaurantPosition) {
-        this.restaurantPosition = restaurantPosition;
-    }
 
     public int getNumberOfInterestedUsers() {
         return numberOfInterestedUsers;
@@ -92,4 +118,9 @@ public class Restaurant {
     public void setFanList(List<String> fanList) {
         this.fanList = fanList;
     }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
 }
+

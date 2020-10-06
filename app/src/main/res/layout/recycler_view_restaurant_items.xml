@@ -7,8 +7,11 @@
     <TextView
         android:id="@+id/restaurant_name_text_view"
         style="@style/restaurant_item_name_txt"
-        android:layout_width="wrap_content"
+        android:ellipsize="end"
+        android:layout_width="0dp"
+        android:maxLines="1"
         android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/distance_text_view"
         app:layout_constraintBottom_toTopOf="@id/food_style_and_address_text_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -51,7 +54,8 @@
         android:text="@string/_2"
         app:layout_constraintBottom_toTopOf="@id/star_constraint"
         app:layout_constraintEnd_toStartOf="@id/restaurant_photo_image_view"
-        app:layout_constraintTop_toBottomOf="@id/distance_text_view" />
+        app:layout_constraintTop_toBottomOf="@id/distance_text_view"
+        />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -86,7 +90,8 @@
         android:contentDescription="@string/restaurant_photo_content_description_restaurant_items"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <FrameLayout
         android:id="@+id/separator"

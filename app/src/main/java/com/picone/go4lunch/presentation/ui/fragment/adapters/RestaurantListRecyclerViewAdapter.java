@@ -1,12 +1,18 @@
 package com.picone.go4lunch.presentation.ui.fragment.adapters;
 
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.go4lunch.databinding.RecyclerViewRestaurantItemsBinding;
 
@@ -33,20 +39,36 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Restaurant restaurant = mRestaurants.get(position);
+        Log.i("TAGM", "onBindViewHolder: "+restaurant.getName()+" "+restaurant.getWebsite()+" "+restaurant.getPhoneNumber());
         holder.restaurantBinding.restaurantNameTextView.setText(restaurant.getName());
-        holder.restaurantBinding.openingTimeTextView.setText(String.valueOf(restaurant.getOpeningHours()).concat(" h"));
-        holder.restaurantBinding.foodStyleAndAddressTextView.setText(restaurant.getFoodType().concat(" - ")
-                .concat(restaurant.getAddress()));
-        holder.restaurantBinding.distanceTextView.setText(String.valueOf(restaurant.getDistance()).concat(" m"));
+        holder.restaurantBinding.openingTimeTextView.setText(restaurant.getOpeningHours());
+        holder.restaurantBinding.foodStyleAndAddressTextView.setText(restaurant.getAddress());
+        holder.restaurantBinding.distanceTextView.setText(restaurant.getDistance());
         if (restaurant.getNumberOfInterestedUsers() > 0)
-            holder.restaurantBinding.interestedColleagueNumber.setText("(".concat(String.valueOf(restaurant.getNumberOfInterestedUsers())).concat(")"));
+            holder.restaurantBinding.interestedColleagueNumber.setText(("(").concat(String.valueOf(restaurant.getNumberOfInterestedUsers())).concat(")"));
         else {
             holder.restaurantBinding.interestedColleague.setVisibility(View.GONE);
             holder.restaurantBinding.interestedColleagueNumber.setVisibility(View.GONE);
         }
         int numberOfLike = 0;
-        if (restaurant.getFanList()!=null) numberOfLike = restaurant.getFanList().size();
+        if (restaurant.getFanList() != null) numberOfLike = restaurant.getFanList().size();
         manageStar(holder.restaurantBinding.opinionStarDetailImageView, numberOfLike);
+
+        Glide.with(holder.restaurantBinding.restaurantPhotoImageView.getContext())
+                .load(restaurant.getRestaurantPhoto())
+                .circleCrop()
+                .into(new CustomTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super
+                            Drawable> transition) {
+                        holder.restaurantBinding.restaurantPhotoImageView.setImageDrawable(resource);
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
+
+                });
     }
 
     @Override
