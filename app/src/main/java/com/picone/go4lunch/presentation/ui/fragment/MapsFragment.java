@@ -50,6 +50,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
 
     //TODO make status bar transparent
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +58,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         MAPS_KEY = this.getResources().getString(R.string.google_maps_key);
     }
 
+    //TODO register savedState to avoid init maps every time we goes on mapsFragment don't update map when come from rest list
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -67,7 +69,10 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         if (mAuth.getCurrentUser() != null)
             mRestaurantViewModel.initData(mAuth.getCurrentUser().getEmail());
 
-        mBinding.locationFab.setOnClickListener(v -> setUpMapCurrentPosition());
+        mBinding.locationFab.setOnClickListener(v -> {
+            mRestaurantViewModel.getRestaurantFromMaps();
+            setUpMapCurrentPosition();
+        });
 
         return mBinding.getRoot();
     }
@@ -77,7 +82,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState);
         mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), restaurants -> {
             initCustomMarker(restaurants);
-            Log.i("TAG", "onViewCreated: " + restaurants);
         });
     }
 
@@ -121,7 +125,8 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
             if (location != null) {
                 mCurrentLocation = location;
                 mBinding.mapView.getMapAsync(this);
-                mRestaurantViewModel.getRestaurantFromMaps(location);
+                mRestaurantViewModel.setLocationMutableLiveData(location);
+                mRestaurantViewModel.getRestaurantFromMaps();
                 if (mAuth.getCurrentUser() != null) {
                     mRestaurantViewModel.initData(mAuth.getCurrentUser().getEmail());
                 }
