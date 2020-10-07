@@ -15,6 +15,7 @@ import com.picone.core.domain.entity.UserDailySchedule;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantDetailFromPlaceInteractor;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantDistanceInteractor;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantFromPlaceInteractor;
+import com.picone.core.domain.interactors.restaurant.placeInteractors.GetPredictionInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.GetFanListForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.UpdateFanListForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.UpdateNumberOfInterestedUsersForRestaurantInteractor;
@@ -64,6 +65,7 @@ public class RestaurantViewModel extends ViewModel {
     private FetchRestaurantDetailFromPlaceInteractor fetchRestaurantDetailFromPlaceInteractor;
     private UpdateFanListForRestaurantInteractor updateFanListForRestaurantInteractor;
     private GetFanListForRestaurantInteractor getFanListForRestaurantInteractor;
+    private GetPredictionInteractor getPredictionInteractor;
 
     @ViewModelInject
     public RestaurantViewModel(GetRestaurantForNameInteractor getRestaurantForNameInteractor
@@ -74,7 +76,8 @@ public class RestaurantViewModel extends ViewModel {
             , FetchRestaurantFromPlaceInteractor fetchRestaurantFromPlaceInteractor
             , GetAllPersistedRestaurantsInteractor getAllPersistedRestaurantsInteractor
             , UpdateFanListForRestaurantInteractor updateFanListForRestaurantInteractor, GetFanListForRestaurantInteractor getFanListForRestaurantInteractor
-            , FetchRestaurantDistanceInteractor fetchRestaurantDistanceInteractor, FetchRestaurantDetailFromPlaceInteractor fetchRestaurantDetailFromPlaceInteractor) {
+            , FetchRestaurantDistanceInteractor fetchRestaurantDistanceInteractor, FetchRestaurantDetailFromPlaceInteractor fetchRestaurantDetailFromPlaceInteractor
+            , GetPredictionInteractor getPredictionInteractor) {
         this.getRestaurantForNameInteractor = getRestaurantForNameInteractor;
         this.addRestaurantInteractor = addRestaurantInteractor;
         this.updateUserChosenRestaurantInteractor = updateUserChosenRestaurantInteractor;
@@ -88,6 +91,7 @@ public class RestaurantViewModel extends ViewModel {
         this.updateFanListForRestaurantInteractor = updateFanListForRestaurantInteractor;
         this.fetchRestaurantDetailFromPlaceInteractor = fetchRestaurantDetailFromPlaceInteractor;
         this.fetchRestaurantDistanceInteractor = fetchRestaurantDistanceInteractor;
+        this.getPredictionInteractor = getPredictionInteractor;
         DATE = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(Calendar.getInstance().getTime());
     }
 
@@ -115,6 +119,17 @@ public class RestaurantViewModel extends ViewModel {
                 });
     }
 
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    public void getPrediction(String query){
+        getPredictionInteractor.getPredictions(query,MAPS_KEY)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(predictionResponse -> {
+                    Log.i("TAG", "getPrediction: ");
+                });
+    }
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void updateRestaurantForKey(String restaurantKey) {

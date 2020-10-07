@@ -9,6 +9,7 @@ import com.picone.core.data.repository.user.UserRepository;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantDetailFromPlaceInteractor;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantDistanceInteractor;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantFromPlaceInteractor;
+import com.picone.core.domain.interactors.restaurant.placeInteractors.GetPredictionInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.GetFanListForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.UpdateFanListForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.UpdateNumberOfInterestedUsersForRestaurantInteractor;
@@ -49,7 +50,7 @@ public final class coreModule {
 
     @Singleton
     @Provides
-    static RestaurantRepository provideRestaurantDataSource(){
+    static RestaurantRepository provideRestaurantDataSource() {
         return new RestaurantRepository(provideFireBaseDataBase(), provideRestaurantDaoImpl());
     }
 
@@ -60,8 +61,8 @@ public final class coreModule {
     }
 
     @Provides
-    static RestaurantDaoImpl provideRestaurantDaoImpl(){
-        return new RestaurantDaoImpl(provideFireBaseDataBase(),provideRetrofitClient());
+    static RestaurantDaoImpl provideRestaurantDaoImpl() {
+        return new RestaurantDaoImpl(provideFireBaseDataBase(), provideRetrofitClient());
     }
 
     //--------------------------------USERS INTERACTORS---------------------------------------------
@@ -76,76 +77,81 @@ public final class coreModule {
     }
 
     @Provides
-    static GetCurrentUserForEmailInteractor provideGetUserForEmail(){
+    static GetCurrentUserForEmailInteractor provideGetUserForEmail() {
         return new GetCurrentUserForEmailInteractor(provideUserDataSource());
     }
 
     @Provides
-    static UpdateUserChosenRestaurantInteractor provideUpdateUserChosenRestaurant(){
+    static UpdateUserChosenRestaurantInteractor provideUpdateUserChosenRestaurant() {
         return new UpdateUserChosenRestaurantInteractor(provideRestaurantDataSource());
     }
 
     //-----------------------------RESTAURANTS INTERACTORS------------------------------------------
 
     @Provides
-    static AddRestaurantInteractor provideAddRestaurant(){
+    static AddRestaurantInteractor provideAddRestaurant() {
         return new AddRestaurantInteractor(provideRestaurantDataSource());
     }
 
     @Provides
-    static GetRestaurantForNameInteractor provideGetRestaurantForName(){
+    static GetRestaurantForNameInteractor provideGetRestaurantForName() {
         return new GetRestaurantForNameInteractor(provideRestaurantDataSource());
     }
 
     @Provides
-    static GetRestaurantForKeyInteractor provideGetRestaurantForKey(){
+    static GetRestaurantForKeyInteractor provideGetRestaurantForKey() {
         return new GetRestaurantForKeyInteractor(provideRestaurantDataSource());
     }
 
     @Provides
-    static GetInterestedUsersForRestaurantKeyInteractor provideGetInterestedUsersForRestaurantKey(){
-        return  new GetInterestedUsersForRestaurantKeyInteractor(provideUserDataSource());
+    static GetInterestedUsersForRestaurantKeyInteractor provideGetInterestedUsersForRestaurantKey() {
+        return new GetInterestedUsersForRestaurantKeyInteractor(provideUserDataSource());
     }
 
     @Provides
-    static UpdateNumberOfInterestedUsersForRestaurantInteractor provideUpdateNumberOfInterestedUsersForRestaurant(){
+    static UpdateNumberOfInterestedUsersForRestaurantInteractor provideUpdateNumberOfInterestedUsersForRestaurant() {
         return new UpdateNumberOfInterestedUsersForRestaurantInteractor(provideRestaurantDataSource());
     }
 
     @Provides
-    static GetAllPersistedRestaurantsInteractor provideGetAllPersistedRestaurant(){
+    static GetAllPersistedRestaurantsInteractor provideGetAllPersistedRestaurant() {
         return new GetAllPersistedRestaurantsInteractor(provideRestaurantDataSource());
     }
 
     @Provides
-    GetFanListForRestaurantInteractor provideGetFanListForRestaurant(){
+    GetFanListForRestaurantInteractor provideGetFanListForRestaurant() {
         return new GetFanListForRestaurantInteractor(provideRestaurantDataSource());
     }
 
     @Provides
-    UpdateFanListForRestaurantInteractor provideUpdateFanListForRestaurant(){
+    UpdateFanListForRestaurantInteractor provideUpdateFanListForRestaurant() {
         return new UpdateFanListForRestaurantInteractor(provideRestaurantDataSource());
     }
 
     //-----------------------------PLACE INTERACTORS------------------------------------------
 
     @Provides
-    static FetchRestaurantFromPlaceInteractor provideFetchRestaurantFromPlace(){
+    static FetchRestaurantFromPlaceInteractor provideFetchRestaurantFromPlace() {
         return new FetchRestaurantFromPlaceInteractor(provideRestaurantDataSource());
     }
 
     @Provides
-    static FetchRestaurantDetailFromPlaceInteractor provideFetchRestaurantDetailFromPlace(){
+    static FetchRestaurantDetailFromPlaceInteractor provideFetchRestaurantDetailFromPlace() {
         return new FetchRestaurantDetailFromPlaceInteractor(provideRestaurantDataSource());
     }
 
     @Provides
-    static FetchRestaurantDistanceInteractor provideFetchRestaurantDistance(){
+    static FetchRestaurantDistanceInteractor provideFetchRestaurantDistance() {
         return new FetchRestaurantDistanceInteractor(provideRestaurantDataSource());
     }
 
     @Provides
-    static RetrofitClient provideRetrofitClient(){
+    static RetrofitClient provideRetrofitClient() {
         return new RetrofitClient();
+    }
+
+    @Provides
+    static GetPredictionInteractor provideGetPredictions() {
+        return new GetPredictionInteractor(provideRestaurantDataSource());
     }
 }

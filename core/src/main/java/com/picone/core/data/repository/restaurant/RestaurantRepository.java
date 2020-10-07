@@ -8,6 +8,7 @@ import com.picone.core.domain.entity.RestaurantDetailPOJO.RestaurantDetail;
 import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
 import com.picone.core.domain.entity.RestaurantPOJO.NearBySearch;
 import com.picone.core.domain.entity.User;
+import com.picone.core.domain.entity.predictionPOJO.PredictionResponse;
 
 import java.util.List;
 
@@ -64,7 +65,11 @@ public class RestaurantRepository {
         return restaurantDao.getRestaurantDistance(currentLocation, restaurantLocation,googleKey);
     }
 
-    public Completable updateFanListForRestaurant(String restaurantName, List<String> fanList) {
+    public Observable<PredictionResponse> getPredictions(String restaurantName, String googleKey) {
+        return restaurantDao.getPredictions(restaurantName, googleKey);
+    }
+
+        public Completable updateFanListForRestaurant(String restaurantName, List<String> fanList) {
         return restaurantDao.updateFanListForRestaurant(restaurantName, fanList);
     }
 

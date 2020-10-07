@@ -35,6 +35,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
+import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
 import java.util.Objects;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
     private UserViewModel mUserViewModel;
     private LoginViewModel mLoginViewModel;
+    private RestaurantViewModel mRestaurantViewModel;
     private NavController mNavController;
 
     @Override
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mLoginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -137,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
         return new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                getPlacePredictions(query);
+                mRestaurantViewModel.getPrediction(query);
                 return false;
             }
 
@@ -146,42 +149,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         };
-    }
-
-    private void getPlacePredictions(String query) {
-        // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
-        // and once again when the user makes a selection (for example when calling fetchPlace()).
-        AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-
-        // Create a RectangularBounds object.
-        RectangularBounds bounds = RectangularBounds.newInstance(
-                new LatLng(-33.880490, 151.184363),
-                new LatLng(-33.858754, 151.229596));
-        // Use the builder to create a FindAutocompletePredictionsRequest.
-        FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-                // Call either setLocationBias() OR setLocationRestriction().
-                .setLocationBias(bounds)
-                //.setLocationRestriction(bounds)
-                .setOrigin(new LatLng(-33.8749937, 151.2041382))
-                .setCountries("AU", "NZ")
-                .setTypeFilter(TypeFilter.ADDRESS)
-                .setSessionToken(token)
-                .setQuery(query)
-                .build();
-
-        Places.initialize(getApplicationContext(), MAPS_KEY);
-        PlacesClient placesClient = Places.createClient(this);
-        placesClient.findAutocompletePredictions(request).addOnSuccessListener((response) -> {
-            for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
-                Log.i("TAG", prediction.getPlaceId());
-                Log.i("TAG", prediction.getPrimaryText(null).toString());
-            }
-        })/*.addOnFailureListener(exception -> {
-            if (exception instanceof ApiException) {
-                ApiException apiException = (ApiException) exception;
-                Log.e("TAG", "Place not found: " + apiException.getStatusCode());
-            }
-        })*/;
     }
 
     private void setUpNavigation() {

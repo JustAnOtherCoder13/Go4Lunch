@@ -3,8 +3,10 @@ package com.picone.core.data.repository.place;
 import com.picone.core.domain.entity.RestaurantDetailPOJO.RestaurantDetail;
 import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
 import com.picone.core.domain.entity.RestaurantPOJO.NearBySearch;
+import com.picone.core.domain.entity.predictionPOJO.PredictionResponse;
 
 import io.reactivex.Observable;
+import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
@@ -26,6 +28,12 @@ public interface GooglePlaceService {
     Observable<RestaurantDistance> getRestaurantDistance(
             @Query("origins")String currentLocation,
             @Query("destinations") String restaurantLocation,
+            @Query("key") String key
+    );
+
+    @GET("api/place/autocomplete/json?sensor=true&types=address")
+    Call<PredictionResponse> loadPredictions(
+            @Query("input") String restaurantName,
             @Query("key") String key
     );
 }
