@@ -102,7 +102,6 @@ public class RestaurantViewModel extends ViewModel {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void getRestaurantFromMaps(Location mCurrentLocation) {
-        Log.i("TAG", "getRestaurantFromMaps: " + MAPS_KEY);
         fetchRestaurantFromPlaceInteractor.fetchRestaurantFromPlace(mCurrentLocation, MAPS_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -283,6 +282,7 @@ public class RestaurantViewModel extends ViewModel {
                 });
     }
 
+    //TODO check all users dailySchedule
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     private void resetDbOnDailyScheduleDatePassed(User currentUser) {
