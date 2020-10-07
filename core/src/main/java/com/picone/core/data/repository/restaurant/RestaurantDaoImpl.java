@@ -34,6 +34,8 @@ public class RestaurantDaoImpl implements RestaurantDao {
     protected RetrofitClient retrofitClient;
     private DatabaseReference restaurantsDataBaseReference;
 
+    private final String RADIUS = "400";
+
 
     public RestaurantDaoImpl(FirebaseDatabase database, RetrofitClient retrofitClient) {
         this.database = database;
@@ -77,7 +79,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
     public Observable<NearBySearch> googlePlaceService(Location mCurrentLocation, String googleKey) {
 
         return retrofitClient.googlePlaceService()
-                .getNearbySearch(mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude(), googleKey);
+                .getNearbySearch(mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude(),RADIUS, googleKey);
     }
 
     public Observable<RestaurantDetail> getPlaceRestaurantDetail(Restaurant restaurant, String googleKey) {
@@ -90,20 +92,9 @@ public class RestaurantDaoImpl implements RestaurantDao {
                     .getRestaurantDistance(currentLocation, restaurantLocation, googleKey);
     }
 
-    public Observable<PredictionResponse> getPredictions(String restaurantName, String googleKey){
-        return Observable.create(emitter->retrofitClient.googlePlaceService()
-                .loadPredictions(restaurantName, googleKey)
-                .enqueue(new Callback<PredictionResponse>() {
-                    @Override
-                    public void onResponse(Call<PredictionResponse> call, Response<PredictionResponse> response) {
-                        Log.i("TAG", "onResponse: "+response.raw());
-                    }
-
-                    @Override
-                    public void onFailure(Call<PredictionResponse> call, Throwable t) {
-
-                    }
-                }));
+    public Observable<PredictionResponse> getPredictions(String restaurantName, String googleKey,String currentPosition){
+        return retrofitClient.googlePlaceService()
+                .loadPredictions(restaurantName, googleKey,currentPosition,RADIUS);
     }
 
     public Completable updateFanListForRestaurant(String restaurantName, List<String> fanList) {

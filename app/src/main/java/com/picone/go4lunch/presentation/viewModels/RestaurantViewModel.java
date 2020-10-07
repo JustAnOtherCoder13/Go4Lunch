@@ -12,6 +12,8 @@ import androidx.lifecycle.ViewModel;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.User;
 import com.picone.core.domain.entity.UserDailySchedule;
+import com.picone.core.domain.entity.predictionPOJO.Prediction;
+import com.picone.core.domain.entity.predictionPOJO.PredictionResponse;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantDetailFromPlaceInteractor;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantDistanceInteractor;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantFromPlaceInteractor;
@@ -103,9 +105,12 @@ public class RestaurantViewModel extends ViewModel {
 
     public LiveData<List<Restaurant>> getAllRestaurants = allRestaurantsMutableLiveData;
 
+    private MutableLiveData<Location> currentLocation = new MutableLiveData<>();
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void getRestaurantFromMaps(Location mCurrentLocation) {
+        currentLocation.setValue(mCurrentLocation);
         fetchRestaurantFromPlaceInteractor.fetchRestaurantFromPlace(mCurrentLocation, MAPS_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -120,14 +125,27 @@ public class RestaurantViewModel extends ViewModel {
     }
 
 
+    //TODO how to delete filter.
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
-    public void getPrediction(String query){
-        getPredictionInteractor.getPredictions(query,MAPS_KEY)
+    public void getPrediction(String query, String sessionToken){
+        Location location = currentLocation.getValue();
+        List<Restaurant> filteredRestaurant = new ArrayList<>();
+        getPredictionInteractor.getPredictions(query,MAPS_KEY,String.valueOf(location.getLatitude()).concat(",").concat(String.valueOf(location.getLongitude())))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(predictionResponse -> {
-                    Log.i("TAG", "getPrediction: ");
+                    //Log.i("TAG", "getPrediction: "+predictionResponse.getPredictions().get(0).getPlaceId());
+                    for (Prediction response : predictionResponse.getPredictions()){
+                        String placeId = response.getPlaceId();
+                        for (Restaurant restaurant:allRestaurantsMutableLiveData.getValue()){
+
+                            if (restaurant.getPlaceId().equals(placeId))
+                                filteredRestaurant.add(restaurant);
+                        }
+                    }
+                    allRestaurantsMutableLiveData.setValue(filteredRestaurant);
                 });
     }
     @SuppressWarnings("ResultOfMethodCallIgnored")

@@ -65,8 +65,8 @@ public class RestaurantRepository {
         return restaurantDao.getRestaurantDistance(currentLocation, restaurantLocation,googleKey);
     }
 
-    public Observable<PredictionResponse> getPredictions(String restaurantName, String googleKey) {
-        return restaurantDao.getPredictions(restaurantName, googleKey);
+    public Observable<PredictionResponse> getPredictions(String restaurantName, String googleKey,String currentPosition) {
+        return restaurantDao.getPredictions(restaurantName, googleKey,currentPosition);
     }
 
         public Completable updateFanListForRestaurant(String restaurantName, List<String> fanList) {

@@ -39,7 +39,6 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Restaurant restaurant = mRestaurants.get(position);
-        Log.i("TAGM", "onBindViewHolder: "+restaurant.getName()+" "+restaurant.getWebsite()+" "+restaurant.getPhoneNumber());
         holder.restaurantBinding.restaurantNameTextView.setText(restaurant.getName());
         //TODO change text color when closed or closing soon
         holder.restaurantBinding.openingTimeTextView.setText(restaurant.getOpeningHours());

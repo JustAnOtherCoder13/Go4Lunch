@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         initMenuButton();
         setUpNavigation();
         initLoginViewModel();
+
     }
 
     @Override
@@ -137,10 +138,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private SearchView.OnQueryTextListener getOnQueryTextListener() {
+        AutocompleteSessionToken autocompleteSessionToken = AutocompleteSessionToken.newInstance();
+        Log.i("TAG", "getOnQueryTextListener: "+ autocompleteSessionToken);
         return new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                mRestaurantViewModel.getPrediction(query);
+                mRestaurantViewModel.getPrediction(query,String.valueOf(autocompleteSessionToken));
+
                 return false;
             }
 

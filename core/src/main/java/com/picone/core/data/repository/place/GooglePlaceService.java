@@ -12,9 +12,12 @@ import retrofit2.http.Query;
 
 public interface GooglePlaceService {
 
-    @GET("api/place/nearbysearch/json?sensor=true&radius=400&type=restaurant&fields=photos,formatted_address,name,place_id,opening_hours,geometry")
+
+
+    @GET("api/place/nearbysearch/json?sensor=true&type=restaurant&fields=photos,formatted_address,name,place_id,opening_hours,geometry")
     Observable<NearBySearch> getNearbySearch(
             @Query("location") String location,
+            @Query("radius") String radius,
             @Query("key") String key
     );
 
@@ -31,10 +34,12 @@ public interface GooglePlaceService {
             @Query("key") String key
     );
 
-    @GET("api/place/autocomplete/json?sensor=true&types=address")
-    Call<PredictionResponse> loadPredictions(
+    @GET("api/place/autocomplete/json?sensor=true&restaurant=address&strictbounds")
+    Observable<PredictionResponse> loadPredictions(
             @Query("input") String restaurantName,
-            @Query("key") String key
+            @Query("key") String key,
+            @Query("location") String currentLocation,
+            @Query("radius") String radius
     );
 }
 
