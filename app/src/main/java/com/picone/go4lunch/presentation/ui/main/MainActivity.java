@@ -32,6 +32,11 @@ import dagger.hilt.android.scopes.ActivityScoped;
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
+    //TODO add google search view on restaurants only, update view automatically place autocomplete api
+    //TODO add push message on 12h with chosen restaurant name, address, and list of interested users
+    //TODO create a chat
+
+
     public ActivityMainBinding mBinding;
 
     @Inject
@@ -91,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.your_lunch_drawer_layout:
                     mNavController.navigate(R.id.restaurantDetailFragment);
+                    //TODO add setting view to change language, access notification, avoid reservation
                 case R.id.settings_drawer_layout:
                     break;
                 case R.id.logout_drawer_layout:

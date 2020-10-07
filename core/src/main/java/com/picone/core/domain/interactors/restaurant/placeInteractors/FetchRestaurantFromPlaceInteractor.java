@@ -20,6 +20,8 @@ import io.reactivex.schedulers.Schedulers;
 
 public class FetchRestaurantFromPlaceInteractor {
 
+    //TODO subscribe in ViewModel
+
     @Inject
     RestaurantRepository restaurantDataSource;
 
