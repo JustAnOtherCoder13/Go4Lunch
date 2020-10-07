@@ -4,8 +4,8 @@
 
 
 # local configuration (sdk path, etc)
-/local.properties
-/gradle.properties
+local.properties
+gradle.properties
 
 # generated files
 bin/
