@@ -6,7 +6,6 @@ import com.picone.core.domain.entity.RestaurantPOJO.NearBySearch;
 import com.picone.core.domain.entity.predictionPOJO.PredictionResponse;
 
 import io.reactivex.Observable;
-import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 

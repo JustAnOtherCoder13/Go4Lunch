@@ -22,7 +22,6 @@ import androidx.navigation.ui.NavigationUI;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.firebase.auth.FirebaseAuth;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
@@ -80,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
         if (mFirebaseAuth.getCurrentUser() != null || accessToken != null && !accessToken.isExpired()) {
             mLoginViewModel.authenticate(true);
             mRestaurantViewModel.setCurrentUser(mFirebaseAuth.getCurrentUser().getEmail());
-
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
     }

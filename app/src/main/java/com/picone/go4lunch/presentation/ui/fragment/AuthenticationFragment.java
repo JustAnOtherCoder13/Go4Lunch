@@ -59,6 +59,7 @@ public class AuthenticationFragment extends BaseFragment {
         initAuthenticationAborted();
         mUserViewModel.getCurrentUser.observe(getViewLifecycleOwner(), currentUser -> {
             if (isNewUser) mUserViewModel.addUser(currentUser);
+            mRestaurantViewModel.setCurrentUser(currentUser.getEmail());
         });
         mUserViewModel.getAddUserState.observe(getViewLifecycleOwner(), userCompletionState -> {
             if (userCompletionState == UserViewModel.UserCompletionState.ON_COMPLETE) mNavController.navigateUp();
