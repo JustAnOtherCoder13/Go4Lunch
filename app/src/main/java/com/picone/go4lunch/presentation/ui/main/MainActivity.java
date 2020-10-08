@@ -4,17 +4,14 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.view.MenuItemCompat;
-import androidx.cursoradapter.widget.CursorAdapter;
-import androidx.cursoradapter.widget.SimpleCursorAdapter;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -25,15 +22,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
-import com.google.android.libraries.places.api.model.RectangularBounds;
-import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
@@ -47,8 +36,6 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import dagger.hilt.android.scopes.ActivityScoped;
-
-import static com.picone.go4lunch.presentation.ui.fragment.MapsFragment.MAPS_KEY;
 
 @ActivityScoped
 @AndroidEntryPoint
@@ -92,9 +79,8 @@ public class MainActivity extends AppCompatActivity {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (mFirebaseAuth.getCurrentUser() != null || accessToken != null && !accessToken.isExpired()) {
             mLoginViewModel.authenticate(true);
-            mRestaurantViewModel.getAllRestaurants.observe(this,restaurants -> {
-                mRestaurantViewModel.initData(mFirebaseAuth.getCurrentUser().getEmail());
-            });
+            mRestaurantViewModel.setCurrentUser(mFirebaseAuth.getCurrentUser().getEmail());
+
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
     }
@@ -145,6 +131,14 @@ public class MainActivity extends AppCompatActivity {
         searchView.setBackgroundColor(Color.WHITE);
         searchView.setOnQueryTextListener(getOnQueryTextListener());
         item.setOnActionExpandListener(geOnActionExpandListener(searchView));
+        View deleteButton = searchView.findViewById(R.id.search_close_btn);
+        deleteButton.setOnClickListener(v -> {
+            EditText editText = findViewById(R.id.search_src_text);
+            editText.setText("");
+            searchView.setQuery("", false);
+            mRestaurantViewModel.resetFilteredRestaurant();
+            mRestaurantViewModel.getRestaurantFromMaps();
+        });
     }
 
     @NonNull
@@ -166,19 +160,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private SearchView.OnQueryTextListener getOnQueryTextListener() {
-        AutocompleteSessionToken autocompleteSessionToken = AutocompleteSessionToken.newInstance();
         return new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                mRestaurantViewModel.getPrediction(query, String.valueOf(autocompleteSessionToken));
+                mRestaurantViewModel.getPrediction(query);
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (newText.length() < 2) {
                     return false;
                 }
-                mRestaurantViewModel.getPrediction(newText,String.valueOf(autocompleteSessionToken));
+                mRestaurantViewModel.getPrediction(newText);
                 return true;
             }
         };

@@ -56,8 +56,7 @@ public class WorkmatesFragment extends BaseFragment {
                         mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(),
                         users -> {
                     if (!users.isEmpty() && users.get(position).getUserDailySchedule()!= null){
-                        mRestaurantViewModel.updateRestaurantForKey
-                                (users.get(position).getUserDailySchedule().getRestaurantKey());
+                        mRestaurantViewModel.initSelectedRestaurant(users.get(position).getUserDailySchedule().getRestaurantName());
                         Navigation.findNavController(v).navigate(R.id.restaurantDetailFragment);
                     }
                 }));
