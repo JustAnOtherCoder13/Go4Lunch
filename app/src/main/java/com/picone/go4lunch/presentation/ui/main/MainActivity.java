@@ -5,13 +5,16 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.view.MenuItemCompat;
 import androidx.cursoradapter.widget.CursorAdapter;
+import androidx.cursoradapter.widget.SimpleCursorAdapter;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -89,6 +92,9 @@ public class MainActivity extends AppCompatActivity {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (mFirebaseAuth.getCurrentUser() != null || accessToken != null && !accessToken.isExpired()) {
             mLoginViewModel.authenticate(true);
+            mRestaurantViewModel.getAllRestaurants.observe(this,restaurants -> {
+                mRestaurantViewModel.initData(mFirebaseAuth.getCurrentUser().getEmail());
+            });
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
     }
@@ -108,15 +114,7 @@ public class MainActivity extends AppCompatActivity {
                     mBinding.drawerLayout.open();
                     break;
                 case R.id.top_nav_search_button:
-                    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-                    SearchView searchView = item.getActionView().findViewById(R.id.top_nav_search_button);
-                    assert searchManager != null;
-                    searchView.setSearchableInfo(
-                            searchManager.getSearchableInfo(getComponentName()));
-                    searchView.setQueryHint("Search restaurants");
-                    searchView.setBackgroundColor(Color.WHITE);
-                    searchView.setOnQueryTextListener(getOnQueryTextListener());
-
+                    initSearchView(item);
                     break;
             }
             return false;
@@ -137,20 +135,51 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private SearchView.OnQueryTextListener getOnQueryTextListener() {
-        AutocompleteSessionToken autocompleteSessionToken = AutocompleteSessionToken.newInstance();
-        Log.i("TAG", "getOnQueryTextListener: "+ autocompleteSessionToken);
-        return new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                mRestaurantViewModel.getPrediction(query,String.valueOf(autocompleteSessionToken));
+    private void initSearchView(MenuItem item) {
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = item.getActionView().findViewById(R.id.top_nav_search_button);
+        assert searchManager != null;
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+        searchView.setQueryHint("Search restaurants");
+        searchView.setBackgroundColor(Color.WHITE);
+        searchView.setOnQueryTextListener(getOnQueryTextListener());
+        item.setOnActionExpandListener(geOnActionExpandListener(searchView));
+    }
 
-                return false;
+    @NonNull
+    private MenuItem.OnActionExpandListener geOnActionExpandListener(SearchView searchView) {
+        return new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                searchView.setOnQueryTextListener(getOnQueryTextListener());
+                return true;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                mRestaurantViewModel.resetFilteredRestaurant();
+                mRestaurantViewModel.getRestaurantFromMaps();
+                return true;
+            }
+        };
+    }
+
+    private SearchView.OnQueryTextListener getOnQueryTextListener() {
+        AutocompleteSessionToken autocompleteSessionToken = AutocompleteSessionToken.newInstance();
+        return new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mRestaurantViewModel.getPrediction(query, String.valueOf(autocompleteSessionToken));
                 return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.length() < 2) {
+                    return false;
+                }
+                mRestaurantViewModel.getPrediction(newText,String.valueOf(autocompleteSessionToken));
+                return true;
             }
         };
     }

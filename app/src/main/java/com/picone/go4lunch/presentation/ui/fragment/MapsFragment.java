@@ -66,11 +66,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         initMapView(savedInstanceState);
         showAppBars(true);
         fetchLastLocation();
-        if (mAuth.getCurrentUser() != null)
-            mRestaurantViewModel.initData(mAuth.getCurrentUser().getEmail());
-
         mBinding.locationFab.setOnClickListener(v -> {
-            mRestaurantViewModel.getRestaurantFromMaps();
             setUpMapCurrentPosition();
         });
 
@@ -80,15 +76,16 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), restaurants -> {
-            initCustomMarker(restaurants);
-        });
+
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         updateLocationUI();
+        mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), restaurants -> {
+            initCustomMarker(restaurants);
+        });
     }
 
     private void initMapView(@Nullable Bundle savedInstanceState) {
@@ -127,9 +124,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
                 mBinding.mapView.getMapAsync(this);
                 mRestaurantViewModel.setLocationMutableLiveData(location);
                 mRestaurantViewModel.getRestaurantFromMaps();
-                if (mAuth.getCurrentUser() != null) {
-                    mRestaurantViewModel.initData(mAuth.getCurrentUser().getEmail());
-                }
             }
         });
     }

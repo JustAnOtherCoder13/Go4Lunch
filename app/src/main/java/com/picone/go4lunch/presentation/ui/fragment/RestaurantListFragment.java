@@ -39,6 +39,7 @@ public class RestaurantListFragment extends BaseFragment {
         configureOnClickRecyclerView();
         }
 
+        //TODO don't show distance and opening hour when close search on thi frag
     private void initRecyclerView() {
         RestaurantListRecyclerViewAdapter adapter = new RestaurantListRecyclerViewAdapter(new ArrayList<>());
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());

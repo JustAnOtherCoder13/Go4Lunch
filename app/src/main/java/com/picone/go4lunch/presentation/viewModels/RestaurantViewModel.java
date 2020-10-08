@@ -106,8 +106,14 @@ public class RestaurantViewModel extends ViewModel {
 
     private MutableLiveData<Location> locationMutableLiveData = new MutableLiveData<>();
 
+    private MutableLiveData<List<Restaurant>> filteredRestaurantMutableLveData = new MutableLiveData<>();
+
     public void setLocationMutableLiveData(Location location){
         locationMutableLiveData.setValue(location);
+    }
+
+    public void resetFilteredRestaurant(){
+        filteredRestaurantMutableLveData.setValue(null);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -123,7 +129,7 @@ public class RestaurantViewModel extends ViewModel {
                         fetchRestaurantDetailFromPlaceInteractor.getRestaurantDetail(restaurant, MAPS_KEY);
                         fetchRestaurantDistanceInteractor.getRestaurantDistance(restaurant, mCurrentLocation, MAPS_KEY);
                     }
-                    if (allRestaurantsMutableLiveData.getValue() == null)
+                    if (filteredRestaurantMutableLveData.getValue()==null)
                         allRestaurantsMutableLiveData.setValue(allRestaurants);
                 });
     }
@@ -140,7 +146,6 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(predictionResponse -> {
-                    //Log.i("TAG", "getPrediction: "+predictionResponse.getPredictions().get(0).getPlaceId());
                     for (Prediction response : predictionResponse.getPredictions()){
                         String placeId = response.getPlaceId();
                         for (Restaurant restaurant:allRestaurantsMutableLiveData.getValue()){
@@ -149,6 +154,7 @@ public class RestaurantViewModel extends ViewModel {
                                 filteredRestaurant.add(restaurant);
                         }
                     }
+                    filteredRestaurantMutableLveData.setValue(filteredRestaurant);
                     allRestaurantsMutableLiveData.setValue(filteredRestaurant);
                 });
     }
@@ -305,6 +311,7 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(persistedRestaurants -> {
+                    Log.i("TAG", "updateAllRestaurantsWithPersistedValues: "+allRestaurantsMutableLiveData.getValue());
                     for (Restaurant persistedRestaurant : persistedRestaurants) {
                         for (Restaurant generatedRestaurant : allRestaurantsMutableLiveData.getValue()) {
                             if (persistedRestaurant.getName().equals(generatedRestaurant.getName())) {
