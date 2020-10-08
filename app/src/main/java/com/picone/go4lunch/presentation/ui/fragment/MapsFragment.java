@@ -163,6 +163,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
                     .position(restaurantLatLng)
                     .title(restaurant.getName());
 
+            Log.i("TAG", "initCustomMarker: "+restaurant.getName()+" "+restaurant.getNumberOfInterestedUsers());
             if (restaurant.getNumberOfInterestedUsers() > 0) {
                 mMap.addMarker(customMarkerOption
                         .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_user))));
