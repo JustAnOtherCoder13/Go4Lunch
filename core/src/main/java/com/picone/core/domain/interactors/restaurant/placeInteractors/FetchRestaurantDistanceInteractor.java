@@ -12,8 +12,6 @@ import io.reactivex.Observable;
 
 public class FetchRestaurantDistanceInteractor {
 
-    //TODO subscribe in ViewModel
-
     @Inject
     RestaurantRepository restaurantDataSource;
 

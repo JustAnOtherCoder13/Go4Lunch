@@ -49,8 +49,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     public static String MAPS_KEY;
 
     //TODO make status bar transparent
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +56,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         MAPS_KEY = this.getResources().getString(R.string.google_maps_key);
     }
 
-    //TODO register savedState to avoid init maps every time we goes on mapsFragment don't update map when come from rest list
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -66,26 +63,15 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         initMapView(savedInstanceState);
         showAppBars(true);
         fetchLastLocation();
-        mBinding.locationFab.setOnClickListener(v -> {
-            setUpMapCurrentPosition();
-        });
-
+        mBinding.locationFab.setOnClickListener(v -> setUpMapCurrentPosition());
         return mBinding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         updateLocationUI();
-        mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), restaurants -> {
-            initCustomMarker(restaurants);
-        });
+        mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), this::initCustomMarker);
     }
 
     private void initMapView(@Nullable Bundle savedInstanceState) {
@@ -122,8 +108,8 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
             if (location != null) {
                 mCurrentLocation = location;
                 mBinding.mapView.getMapAsync(this);
-                mRestaurantViewModel.setLocationMutableLiveData(location);
-                mRestaurantViewModel.getRestaurantFromMaps_();
+                mRestaurantViewModel.setCurrentLocation(location);
+                mRestaurantViewModel.getRestaurantFromMaps();
             }
         });
     }
@@ -163,7 +149,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
                     .position(restaurantLatLng)
                     .title(restaurant.getName());
 
-            Log.i("TAG", "initCustomMarker: "+restaurant.getName()+" "+restaurant.getNumberOfInterestedUsers());
             if (restaurant.getNumberOfInterestedUsers() > 0) {
                 mMap.addMarker(customMarkerOption
                         .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_user))));

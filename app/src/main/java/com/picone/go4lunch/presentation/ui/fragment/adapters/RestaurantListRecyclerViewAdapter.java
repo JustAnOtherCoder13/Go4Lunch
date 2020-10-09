@@ -1,5 +1,6 @@
 package com.picone.go4lunch.presentation.ui.fragment.adapters;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +40,8 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Restaurant restaurant = mRestaurants.get(position);
         holder.restaurantBinding.restaurantNameTextView.setText(restaurant.getName());
-        //TODO change text color when closed or closing soon
+        if (restaurant.getOpeningHours().equals("Closed"))
+            holder.restaurantBinding.openingTimeTextView.setTextColor(Color.RED);
         holder.restaurantBinding.openingTimeTextView.setText(restaurant.getOpeningHours());
         holder.restaurantBinding.foodStyleAndAddressTextView.setText(restaurant.getAddress());
         holder.restaurantBinding.distanceTextView.setText(restaurant.getDistance());

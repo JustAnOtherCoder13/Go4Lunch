@@ -40,7 +40,6 @@ import dagger.hilt.android.scopes.ActivityScoped;
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
-    //TODO add google search view on restaurants only, update view automatically place autocomplete api
     //TODO add push message on 12h with chosen restaurant name, address, and list of interested users
     //TODO create a chat
 
@@ -107,7 +106,13 @@ public class MainActivity extends AppCompatActivity {
             mBinding.drawerLayout.close();
             switch (item.getItemId()) {
                 case R.id.your_lunch_drawer_layout:
-                    mNavController.navigate(R.id.restaurantDetailFragment);
+                    mRestaurantViewModel.getCurrentUser.observe(this,user -> {
+                        if (user.getUserDailySchedule()!=null){
+                            mRestaurantViewModel.initSelectedRestaurant(user.getUserDailySchedule().getRestaurantName());
+                            mNavController.navigate(R.id.restaurantDetailFragment);
+                        }
+                        else Toast.makeText(this,"You haven't choose a restaurant yet",Toast.LENGTH_SHORT).show();
+                    });
                     //TODO add setting view to change language, access notification, avoid reservation
                 case R.id.settings_drawer_layout:
                     break;
@@ -130,13 +135,18 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(getOnQueryTextListener());
         item.setOnActionExpandListener(geOnActionExpandListener(searchView));
         View deleteButton = searchView.findViewById(R.id.search_close_btn);
-        deleteButton.setOnClickListener(v -> {
+        deleteButton.setOnClickListener(getOnClickListener(searchView));
+    }
+
+    @NonNull
+    private View.OnClickListener getOnClickListener(SearchView searchView) {
+        return v -> {
             EditText editText = findViewById(R.id.search_src_text);
             editText.setText("");
             searchView.setQuery("", false);
             mRestaurantViewModel.resetFilteredRestaurant();
-            mRestaurantViewModel.getRestaurantFromMaps_();
-        });
+            mRestaurantViewModel.getRestaurantFromMaps();
+        };
     }
 
     @NonNull
@@ -151,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 mRestaurantViewModel.resetFilteredRestaurant();
-                mRestaurantViewModel.getRestaurantFromMaps_();
+                mRestaurantViewModel.getRestaurantFromMaps();
                 return true;
             }
         };
