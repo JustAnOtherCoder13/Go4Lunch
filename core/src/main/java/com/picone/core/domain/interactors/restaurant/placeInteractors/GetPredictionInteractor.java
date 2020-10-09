@@ -17,6 +17,6 @@ public class GetPredictionInteractor {
     }
 
     public Observable<PredictionResponse> getPredictions(String restaurantName, String googleKey, String currentPosition) {
-    return restaurantDataSource.getPredictions(restaurantName, googleKey,currentPosition);
+        return restaurantDataSource.getPredictions(restaurantName, googleKey, currentPosition);
     }
-    }
+}

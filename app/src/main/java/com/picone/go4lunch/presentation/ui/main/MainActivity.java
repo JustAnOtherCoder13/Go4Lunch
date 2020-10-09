@@ -182,6 +182,12 @@ public class MainActivity extends AppCompatActivity {
                     return false;
                 }
                 mRestaurantViewModel.getPrediction(newText);
+
+                //newText.length() == 0
+                // loader --> getRetosFromMaps
+                //   mRestaurantViewModel.getRestaurantFromMaps();
+
+
                 return true;
             }
         };

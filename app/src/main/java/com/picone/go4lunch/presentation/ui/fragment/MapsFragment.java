@@ -114,6 +114,12 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
             if (location != null) {
                 mCurrentLocation = location;
                 mBinding.mapView.getMapAsync(this);
+
+                //TODO
+                //mRestaurantViewModel.location.observe(view, obsever {
+                    //mRestaurantViewModel.getRestaurantFromMaps();
+                // })
+
                 mRestaurantViewModel.setCurrentLocation(location);
                 mRestaurantViewModel.getRestaurantFromMaps();
             }

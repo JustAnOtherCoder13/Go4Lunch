@@ -142,7 +142,7 @@ public class RestaurantViewModel extends ViewModel {
         fetchRestaurantFromPlaceInteractor.fetchRestaurantFromPlace_(mCurrentLocation, MAPS_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(nearBySearch -> Observable.create((ObservableOnSubscribe<List<Restaurant>>)
+                /*.flatMap(nearBySearch -> Observable.create((ObservableOnSubscribe<List<Restaurant>>)
                         emitter -> {
                             if (nearBySearch.getStatus().equals("OK")) {
                                 for (RestaurantPOJO restaurantPOJO : nearBySearch.getRestaurantPOJOS()) {
@@ -152,7 +152,7 @@ public class RestaurantViewModel extends ViewModel {
                                 }
                             }
                             emitter.onNext(restaurantsFromMap);
-                        }))
+                        })) */
                 .flatMap(this::fetchPlaceDetail)
                 .flatMap(restaurants -> fetchPlaceDistance(mCurrentLocation,restaurants))
                 .flatMap(this::updateAllRestaurantsWithPersistedValues)
