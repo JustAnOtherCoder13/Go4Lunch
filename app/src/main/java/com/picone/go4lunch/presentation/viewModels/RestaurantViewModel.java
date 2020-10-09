@@ -10,7 +10,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.picone.core.domain.entity.Restaurant;
-import com.picone.core.domain.entity.RestaurantPOJO.RestaurantPOJO;
 import com.picone.core.domain.entity.User;
 import com.picone.core.domain.entity.UserDailySchedule;
 import com.picone.core.domain.entity.predictionPOJO.Prediction;
@@ -38,15 +37,10 @@ import java.util.List;
 import java.util.Locale;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.picone.go4lunch.presentation.ui.fragment.MapsFragment.MAPS_KEY;
-import static com.picone.go4lunch.presentation.utils.CreateRestaurantFromMapsUtil.createRestaurant;
-import static com.picone.go4lunch.presentation.utils.CreateRestaurantFromMapsUtil.formatOpeningHours;
 
 public class RestaurantViewModel extends ViewModel {
 
@@ -138,24 +132,11 @@ public class RestaurantViewModel extends ViewModel {
     @SuppressLint("CheckResult")
     public void getRestaurantFromMaps() {
         Location mCurrentLocation = locationMutableLiveData.getValue();
-        List<Restaurant> restaurantsFromMap = new ArrayList<>();
         fetchRestaurantFromPlaceInteractor.fetchRestaurantFromPlace_(mCurrentLocation, MAPS_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                /*.flatMap(nearBySearch -> Observable.create((ObservableOnSubscribe<List<Restaurant>>)
-                        emitter -> {
-                            if (nearBySearch.getStatus().equals("OK")) {
-                                for (RestaurantPOJO restaurantPOJO : nearBySearch.getRestaurantPOJOS()) {
-                                    Restaurant restaurant = createRestaurant(restaurantPOJO, MAPS_KEY);
-                                    if (!restaurantsFromMap.contains(restaurant))
-                                        restaurantsFromMap.add(restaurant);
-                                }
-                            }
-                            emitter.onNext(restaurantsFromMap);
-                        })) */
-                .flatMap(this::fetchPlaceDetail)
-                .flatMap(restaurants -> fetchPlaceDistance(mCurrentLocation,restaurants))
-                .flatMap(this::updateAllRestaurantsWithPersistedValues)
+                .flatMap(restaurants -> fetchPlaceDetail(restaurants)
+                        .flatMap(this::updateAllRestaurantsWithPersistedValues))
                 .subscribe(restaurants -> {
                     Log.i("TAG", "updateAllRestaurantsWithPersistedValues: " + restaurants.get(0).getOpeningHours());
                     if (filteredRestaurantMutableLiveData.getValue() == null || allRestaurantsMutableLiveData.getValue() == null)
@@ -163,38 +144,23 @@ public class RestaurantViewModel extends ViewModel {
                 });
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private Observable<List<Restaurant>> fetchPlaceDistance(Location mCurrentLocation, List<Restaurant> restaurants) {
-        return Observable.create(emitter -> {
-            for (Restaurant restaurant : restaurants)
-                fetchRestaurantDistanceInteractor.getRestaurantDistance_(restaurant, mCurrentLocation, MAPS_KEY)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(restaurantDistance -> {
-                            Log.i("TAG", "fetchPlaceDistance: " + restaurantDistance.getRows().get(0).getElements().get(0).getDistance().getText());
-                            if (restaurantDistance.getStatus().equals("OK"))
-                                restaurant.setDistance(restaurantDistance.getRows().get(0).getElements().get(0).getDistance().getText());
-                        });
-            emitter.onNext(restaurants);
-        });
+    @SuppressLint("CheckResult")
+    private Observable<Restaurant> fetchPlaceDistance(Location mCurrentLocation, Restaurant restaurant) {
+        return fetchRestaurantDistanceInteractor.getRestaurantDistance_(restaurant, mCurrentLocation, MAPS_KEY)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(restaurant1 -> Observable.create(emitter -> emitter.onNext(restaurant1)));
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private Observable<List<Restaurant>> fetchPlaceDetail(List<Restaurant> restaurants) {
+    private Observable<List<Restaurant>> fetchPlaceDetail(List<Restaurant> restaurantsFromMap) {
         return Observable.create(emitter -> {
-            for (Restaurant restaurant : restaurants)
-                fetchRestaurantDetailFromPlaceInteractor.getRestaurantDetail_(restaurant, MAPS_KEY)
+            for (Restaurant restaurantFromMap : restaurantsFromMap)
+                fetchRestaurantDetailFromPlaceInteractor.getRestaurantDetail(restaurantFromMap, MAPS_KEY)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(restaurantDetail -> {
-                            Log.i("TAG", "fetchPlaceDetail: " + restaurantDetail.getResult().getFormattedPhoneNumber());
-                            if (restaurantDetail.getStatus().equals("OK")) {
-                                restaurant.setPhoneNumber(restaurantDetail.getResult().getFormattedPhoneNumber());
-                                restaurant.setWebsite(restaurantDetail.getResult().getWebsite());
-                                restaurant.setOpeningHours(formatOpeningHours(restaurantDetail));
-                            }
-                        });
-            emitter.onNext(restaurants);
+                        .flatMap(restaurant1 -> fetchPlaceDistance(locationMutableLiveData.getValue(), restaurantFromMap))
+                        .subscribe();
+            emitter.onNext(restaurantsFromMap);
         });
     }
 

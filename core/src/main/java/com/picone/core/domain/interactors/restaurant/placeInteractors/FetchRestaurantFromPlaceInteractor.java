@@ -5,7 +5,9 @@ import android.location.Location;
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.RestaurantPOJO.NearBySearch;
+import com.picone.core.domain.entity.RestaurantPOJO.Photo;
 import com.picone.core.domain.entity.RestaurantPOJO.RestaurantPOJO;
+import com.picone.core.domain.entity.RestaurantPosition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +30,43 @@ public class FetchRestaurantFromPlaceInteractor {
         return restaurantDataSource
                 .googlePlaceService(mCurrentLocation, googleKey)
                 .map(NearBySearch::getRestaurantPOJOS)
-                .map(this::restaurantsToRestaurantModel);
+                .map(restaurantPOJOS -> restaurantsToRestaurantModel(restaurantPOJOS, googleKey));
 
     }
 
-    private List<Restaurant> restaurantsToRestaurantModel(List<RestaurantPOJO> restaurantsPojos) {
+    private List<Restaurant> restaurantsToRestaurantModel(List<RestaurantPOJO> restaurantsPojos, String googleKey) {
+        List<Restaurant> restaurantsFromMap = new ArrayList<>();
+        for (RestaurantPOJO restaurantPOJO : restaurantsPojos) {
+            Restaurant restaurant = createRestaurant(restaurantPOJO, googleKey);
+            if (!restaurantsFromMap.contains(restaurant))
+                restaurantsFromMap.add(restaurant);
+        }
+        return restaurantsFromMap;
+    }
 
-        return new ArrayList<Restaurant>();
+    private String createPhotoUrl(String googleKey, RestaurantPOJO restaurantPOJO) {
+        Photo photo = restaurantPOJO.getPhotos().get(0);
+        return "https://maps.googleapis.com/maps/api/place/photo?"
+                .concat("maxwidth=" + photo.getWidth())
+                .concat("&photoreference=" + photo.getPhotoReference())
+                .concat("&key=")
+                .concat(googleKey);
+    }
+
+    private Restaurant createRestaurant(RestaurantPOJO restaurantPOJO, String googleKey) {
+        return new Restaurant(
+                null,
+                restaurantPOJO.getName(),
+                "0",
+                createPhotoUrl(googleKey, restaurantPOJO),
+                new RestaurantPosition(restaurantPOJO.getGeometry().getLocation().getLat(), restaurantPOJO.getGeometry().getLocation().getLng()),
+                restaurantPOJO.getVicinity(),
+                restaurantPOJO.getPlaceId(),
+                "0",
+                "",
+                "",
+                0,
+                0,
+                new ArrayList<>());
     }
 }

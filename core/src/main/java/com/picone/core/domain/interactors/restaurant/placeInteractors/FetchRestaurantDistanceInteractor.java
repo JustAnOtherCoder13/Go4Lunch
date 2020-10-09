@@ -19,9 +19,16 @@ public class FetchRestaurantDistanceInteractor {
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    public Observable<RestaurantDistance> getRestaurantDistance_(Restaurant restaurant, Location currentLocation, String googleKey) {
+    public Observable<Restaurant> getRestaurantDistance_(Restaurant restaurant, Location currentLocation, String googleKey) {
         String currentLocationStr = String.valueOf(currentLocation.getLatitude()).concat(",").concat(String.valueOf(currentLocation.getLongitude()));
         String restaurantLocation = String.valueOf(restaurant.getRestaurantPosition().getLatitude()).concat(",").concat(String.valueOf(restaurant.getRestaurantPosition().getLongitude()));
-        return restaurantDataSource.getRestaurantDistance(currentLocationStr, restaurantLocation, googleKey);
+        return restaurantDataSource.getRestaurantDistance(currentLocationStr, restaurantLocation, googleKey)
+                .map(restaurantDistance -> restaurantDistance.getRows().get(0).getElements().get(0).getDistance().getText())
+                .map(distance -> restaurantDistanceToRestaurantModel(restaurant, distance));
+    }
+
+    private Restaurant restaurantDistanceToRestaurantModel(Restaurant restaurant, String distance) {
+        restaurant.setDistance(distance);
+        return restaurant;
     }
 }
