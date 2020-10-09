@@ -56,7 +56,7 @@ public class RestaurantViewModel extends ViewModel {
     private MutableLiveData<Boolean> isDataLoadingMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<List<Restaurant>> allRestaurantsMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Location> locationMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<Restaurant>> filteredRestaurantMutableLveData = new MutableLiveData<>();
+    private MutableLiveData<List<Restaurant>> filteredRestaurantMutableLiveData = new MutableLiveData<>();
 
 
     private GetRestaurantForNameInteractor getRestaurantForNameInteractor;
@@ -116,7 +116,7 @@ public class RestaurantViewModel extends ViewModel {
     }
 
     public void resetFilteredRestaurant() {
-        filteredRestaurantMutableLveData.setValue(null);
+        filteredRestaurantMutableLiveData.setValue(null);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -149,14 +149,13 @@ public class RestaurantViewModel extends ViewModel {
                                         restaurantsFromMap.add(restaurant);
                                 }
                             }
-                            Log.i("TAG", "getRestaurantFromMaps_: nearBySearch" + restaurantsFromMap.get(0).getName());
                             emitter.onNext(restaurantsFromMap);
                         }))
                 .flatMap(this::fetchPlaceDetail)
                 .flatMap(restaurants -> fetchPlaceDistance(mCurrentLocation, restaurants))
+                .flatMap(this::updateAllRestaurantsWithPersistedValues)
                 .subscribe(restaurants -> {
-                    Log.i("TAG", "getRestaurantFromMaps_: subscribe" + restaurants.get(0).getDistance());
-                    if (filteredRestaurantMutableLveData.getValue() == null || allRestaurantsMutableLiveData.getValue() == null)
+                    if (filteredRestaurantMutableLiveData.getValue() == null || allRestaurantsMutableLiveData.getValue() == null)
                         allRestaurantsMutableLiveData.setValue(restaurants);
                 });
     }
@@ -170,7 +169,6 @@ public class RestaurantViewModel extends ViewModel {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(restaurantDistance -> {
                             restaurant.setDistance(restaurantDistance.getRows().get(0).getElements().get(0).getDistance().getText());
-                            Log.i("TAG", "getRestaurantFromMaps_: restaurant distance" + restaurant.getDistance());
                         });
             emitter.onNext(restaurants);
         });
@@ -187,7 +185,6 @@ public class RestaurantViewModel extends ViewModel {
                             restaurant.setPhoneNumber(restaurantDetail.getResult().getFormattedPhoneNumber());
                             restaurant.setWebsite(restaurantDetail.getResult().getWebsite());
                             restaurant.setOpeningHours(formatOpeningHours(restaurantDetail));
-                            Log.i("TAG", "getRestaurantFromMaps_: restaurant detail" + restaurant.getPhoneNumber());
                         });
             emitter.onNext(restaurants);
         });
@@ -211,12 +208,10 @@ public class RestaurantViewModel extends ViewModel {
 
     @SuppressLint("CheckResult")
     private Observable<List<Restaurant>> updateAllRestaurantsWithPersistedValues(List<Restaurant> allRestaurants) {
-
         return getAllPersistedRestaurantsInteractor.getAllPersistedRestaurants()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(persistedRestaurants -> {
-                    Log.i("TAG", "updateAllRestaurantsWithPersistedValues: " + allRestaurants);
                     for (Restaurant persistedRestaurant : persistedRestaurants) {
                         for (Restaurant restaurantFromMap : allRestaurants) {
                             if (persistedRestaurant.getPlaceId().equals(restaurantFromMap.getPlaceId())) {
@@ -246,12 +241,11 @@ public class RestaurantViewModel extends ViewModel {
                                 filteredRestaurant.add(restaurant);
                         }
                     }
-                    filteredRestaurantMutableLveData.setValue(filteredRestaurant);
+                    filteredRestaurantMutableLiveData.setValue(filteredRestaurant);
                     allRestaurantsMutableLiveData.setValue(filteredRestaurant);
                 });
     }
 
-    //TODO fan list don't update on like.
     @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
     @SuppressLint("CheckResult")
     public void updateFanList() {
@@ -264,10 +258,14 @@ public class RestaurantViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .switchIfEmpty(updateFanListForRestaurantInteractor.updateFanListForRestaurant(restaurant.getName(), fanList)
                         .andThen(getFanListForRestaurantInteractor.getFanListForRestaurant(restaurant.getName())))
-                .subscribe(persistedFanList -> {
+                .flatMapCompletable(persistedFanList -> {
                     if (!persistedFanList.contains(currentUser.getUid()))
-                        persistedFanList.add(currentUser.getUid());
-                });
+                    persistedFanList.add(currentUser.getUid());
+                    restaurant.setFanList(persistedFanList);
+                    selectedRestaurantMutableLiveData.setValue(restaurant);
+                    return updateFanListForRestaurantInteractor.updateFanListForRestaurant(restaurant.getName(), persistedFanList);
+                })
+                .subscribe(()->{},throwable -> {});
     }
 
     @SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
