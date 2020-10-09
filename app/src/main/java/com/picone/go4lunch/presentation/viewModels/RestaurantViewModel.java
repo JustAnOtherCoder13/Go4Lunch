@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Locale;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -127,7 +129,6 @@ public class RestaurantViewModel extends ViewModel {
                         currentUserMutableLiveData.setValue(currentUsers.get(0)));
     }
 
-    //TODO when close searchView don't update detail and distance due to emit subscribe before doing flatMap
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void getRestaurantFromMaps() {
@@ -135,11 +136,10 @@ public class RestaurantViewModel extends ViewModel {
         fetchRestaurantFromPlaceInteractor.fetchRestaurantFromPlace_(mCurrentLocation, MAPS_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(restaurants -> fetchPlaceDetail(restaurants)
-                        .flatMap(this::updateAllRestaurantsWithPersistedValues))
+                .flatMap(this::fetchPlaceDetail)
+                .flatMap(this::updateAllRestaurantsWithPersistedValues)
                 .subscribe(restaurants -> {
                     Log.i("TAG", "updateAllRestaurantsWithPersistedValues: " + restaurants.get(0).getOpeningHours());
-                    if (filteredRestaurantMutableLiveData.getValue() == null || allRestaurantsMutableLiveData.getValue() == null)
                         allRestaurantsMutableLiveData.setValue(restaurants);
                 });
     }
@@ -152,6 +152,7 @@ public class RestaurantViewModel extends ViewModel {
                 .flatMap(restaurant1 -> Observable.create(emitter -> emitter.onNext(restaurant1)));
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private Observable<List<Restaurant>> fetchPlaceDetail(List<Restaurant> restaurantsFromMap) {
         return Observable.create(emitter -> {
             for (Restaurant restaurantFromMap : restaurantsFromMap)
@@ -159,8 +160,9 @@ public class RestaurantViewModel extends ViewModel {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .flatMap(restaurant1 -> fetchPlaceDistance(locationMutableLiveData.getValue(), restaurantFromMap))
-                        .subscribe();
-            emitter.onNext(restaurantsFromMap);
+                        .flatMap(restaurant ->Observable.create((ObservableOnSubscribe<List<Restaurant>>)
+                                emitter1 -> emitter1.onNext(restaurantsFromMap)))
+                        .subscribe(emitter::onNext);
         });
     }
 
@@ -213,7 +215,6 @@ public class RestaurantViewModel extends ViewModel {
                                 filteredRestaurant.add(restaurant);
                         }
                     }
-                    filteredRestaurantMutableLiveData.setValue(filteredRestaurant);
                     allRestaurantsMutableLiveData.setValue(filteredRestaurant);
                 });
     }

@@ -107,12 +107,12 @@ public class MainActivity extends AppCompatActivity {
             mBinding.drawerLayout.close();
             switch (item.getItemId()) {
                 case R.id.your_lunch_drawer_layout:
-                    mRestaurantViewModel.getCurrentUser.observe(this,user -> {
-                        if (user.getUserDailySchedule()!=null){
+                    mRestaurantViewModel.getCurrentUser.observe(this, user -> {
+                        if (user.getUserDailySchedule() != null) {
                             mRestaurantViewModel.initSelectedRestaurant(user.getUserDailySchedule().getRestaurantName());
                             mNavController.navigate(R.id.restaurantDetailFragment);
-                        }
-                        else Toast.makeText(this,"You haven't choose a restaurant yet",Toast.LENGTH_SHORT).show();
+                        } else
+                            Toast.makeText(this, "You haven't choose a restaurant yet", Toast.LENGTH_SHORT).show();
                     });
                     //TODO add setting view to change language, access notification, avoid reservation
                 case R.id.settings_drawer_layout:
@@ -182,12 +182,6 @@ public class MainActivity extends AppCompatActivity {
                     return false;
                 }
                 mRestaurantViewModel.getPrediction(newText);
-
-                //newText.length() == 0
-                // loader --> getRetosFromMaps
-                //   mRestaurantViewModel.getRestaurantFromMaps();
-
-
                 return true;
             }
         };
