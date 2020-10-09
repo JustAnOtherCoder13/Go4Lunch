@@ -21,7 +21,7 @@ import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 import java.util.ArrayList;
 
-import static com.picone.go4lunch.presentation.ui.utils.ManageStarUtil.manageStar;
+import static com.picone.go4lunch.presentation.utils.ManageStarUtil.manageStar;
 
 public class RestaurantDetailFragment extends BaseFragment {
 

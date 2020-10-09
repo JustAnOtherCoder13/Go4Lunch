@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
             editText.setText("");
             searchView.setQuery("", false);
             mRestaurantViewModel.resetFilteredRestaurant();
-            mRestaurantViewModel.getRestaurantFromMaps();
+            mRestaurantViewModel.getRestaurantFromMaps_();
         });
     }
 
@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 mRestaurantViewModel.resetFilteredRestaurant();
-                mRestaurantViewModel.getRestaurantFromMaps();
+                mRestaurantViewModel.getRestaurantFromMaps_();
                 return true;
             }
         };

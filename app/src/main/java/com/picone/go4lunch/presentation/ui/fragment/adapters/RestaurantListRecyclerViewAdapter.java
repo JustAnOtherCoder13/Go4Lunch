@@ -17,7 +17,7 @@ import com.picone.go4lunch.databinding.RecyclerViewRestaurantItemsBinding;
 
 import java.util.List;
 
-import static com.picone.go4lunch.presentation.ui.utils.ManageStarUtil.manageStar;
+import static com.picone.go4lunch.presentation.utils.ManageStarUtil.manageStar;
 
 public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantListRecyclerViewAdapter.ViewHolder> {
 

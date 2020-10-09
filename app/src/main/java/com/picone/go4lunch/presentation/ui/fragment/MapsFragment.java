@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static com.picone.go4lunch.presentation.ui.utils.GetBitmapFromVectorUtil.getBitmapFromVectorDrawable;
+import static com.picone.go4lunch.presentation.utils.GetBitmapFromVectorUtil.getBitmapFromVectorDrawable;
 
 
 public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
@@ -123,7 +123,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
                 mCurrentLocation = location;
                 mBinding.mapView.getMapAsync(this);
                 mRestaurantViewModel.setLocationMutableLiveData(location);
-                mRestaurantViewModel.getRestaurantFromMaps();
+                mRestaurantViewModel.getRestaurantFromMaps_();
             }
         });
     }

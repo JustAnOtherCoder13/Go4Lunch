@@ -15,7 +15,7 @@ import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentRestaurantListBinding;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.RestaurantListRecyclerViewAdapter;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
-import com.picone.go4lunch.presentation.ui.utils.RecyclerViewItemClickUtil;
+import com.picone.go4lunch.presentation.utils.RecyclerViewItemClickUtil;
 
 import java.util.ArrayList;
 
