@@ -42,6 +42,9 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
         holder.restaurantBinding.restaurantNameTextView.setText(restaurant.getName());
         if (restaurant.getOpeningHours().equals("Closed"))
             holder.restaurantBinding.openingTimeTextView.setTextColor(Color.RED);
+        else
+            holder.restaurantBinding.openingTimeTextView.setTextColor(Color.GRAY);
+
         holder.restaurantBinding.openingTimeTextView.setText(restaurant.getOpeningHours());
         holder.restaurantBinding.foodStyleAndAddressTextView.setText(restaurant.getAddress());
         holder.restaurantBinding.distanceTextView.setText(restaurant.getDistance());

@@ -39,7 +39,9 @@ import java.util.Locale;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.picone.go4lunch.presentation.ui.fragment.MapsFragment.MAPS_KEY;
@@ -113,7 +115,9 @@ public class RestaurantViewModel extends ViewModel {
     public LiveData<User> getCurrentUser = currentUserMutableLiveData;
 
 
-    public void setCurrentLocation(Location location) { locationMutableLiveData.setValue(location); }
+    public void setCurrentLocation(Location location) {
+        locationMutableLiveData.setValue(location);
+    }
 
     public void resetFilteredRestaurant() {
         filteredRestaurantMutableLiveData.setValue(null);
@@ -125,13 +129,11 @@ public class RestaurantViewModel extends ViewModel {
         getCurrentUserForEmailInteractor.getCurrentUserForEmail(authUserEmail)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(currentUsers -> {
-                    currentUserMutableLiveData.setValue(currentUsers.get(0));
-                    resetDbOnDailyScheduleDatePassed(currentUsers.get(0));
-                });
+                .subscribe(currentUsers ->
+                        currentUserMutableLiveData.setValue(currentUsers.get(0)));
     }
 
-    //TODO when close searchView don't update detail and distance
+    //TODO when close searchView don't update detail and distance due to emit subscribe before doing flatMap
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void getRestaurantFromMaps() {
@@ -152,9 +154,10 @@ public class RestaurantViewModel extends ViewModel {
                             emitter.onNext(restaurantsFromMap);
                         }))
                 .flatMap(this::fetchPlaceDetail)
-                .flatMap(restaurants -> fetchPlaceDistance(mCurrentLocation, restaurants))
+                .flatMap(restaurants -> fetchPlaceDistance(mCurrentLocation,restaurants))
                 .flatMap(this::updateAllRestaurantsWithPersistedValues)
                 .subscribe(restaurants -> {
+                    Log.i("TAG", "updateAllRestaurantsWithPersistedValues: " + restaurants.get(0).getOpeningHours());
                     if (filteredRestaurantMutableLiveData.getValue() == null || allRestaurantsMutableLiveData.getValue() == null)
                         allRestaurantsMutableLiveData.setValue(restaurants);
                 });
@@ -168,8 +171,9 @@ public class RestaurantViewModel extends ViewModel {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(restaurantDistance -> {
+                            Log.i("TAG", "fetchPlaceDistance: " + restaurantDistance.getRows().get(0).getElements().get(0).getDistance().getText());
                             if (restaurantDistance.getStatus().equals("OK"))
-                            restaurant.setDistance(restaurantDistance.getRows().get(0).getElements().get(0).getDistance().getText());
+                                restaurant.setDistance(restaurantDistance.getRows().get(0).getElements().get(0).getDistance().getText());
                         });
             emitter.onNext(restaurants);
         });
@@ -183,11 +187,13 @@ public class RestaurantViewModel extends ViewModel {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(restaurantDetail -> {
-                            if (restaurantDetail.getStatus().equals("OK")){
-                            restaurant.setPhoneNumber(restaurantDetail.getResult().getFormattedPhoneNumber());
-                            restaurant.setWebsite(restaurantDetail.getResult().getWebsite());
-                            restaurant.setOpeningHours(formatOpeningHours(restaurantDetail));
-                        }});
+                            Log.i("TAG", "fetchPlaceDetail: " + restaurantDetail.getResult().getFormattedPhoneNumber());
+                            if (restaurantDetail.getStatus().equals("OK")) {
+                                restaurant.setPhoneNumber(restaurantDetail.getResult().getFormattedPhoneNumber());
+                                restaurant.setWebsite(restaurantDetail.getResult().getWebsite());
+                                restaurant.setOpeningHours(formatOpeningHours(restaurantDetail));
+                            }
+                        });
             emitter.onNext(restaurants);
         });
     }
@@ -209,20 +215,20 @@ public class RestaurantViewModel extends ViewModel {
     }
 
     @SuppressLint("CheckResult")
-    private Observable<List<Restaurant>> updateAllRestaurantsWithPersistedValues(List<Restaurant> allRestaurants) {
+    private Observable<List<Restaurant>> updateAllRestaurantsWithPersistedValues(List<Restaurant> allRestaurantsFromMap) {
         return getAllPersistedRestaurantsInteractor.getAllPersistedRestaurants()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(persistedRestaurants -> {
                     for (Restaurant persistedRestaurant : persistedRestaurants) {
-                        for (Restaurant restaurantFromMap : allRestaurants) {
+                        for (Restaurant restaurantFromMap : allRestaurantsFromMap) {
                             if (persistedRestaurant.getPlaceId().equals(restaurantFromMap.getPlaceId())) {
                                 restaurantFromMap.setNumberOfInterestedUsers(persistedRestaurant.getNumberOfInterestedUsers());
                                 restaurantFromMap.setFanList(persistedRestaurant.getFanList());
                             }
                         }
                     }
-                    return Observable.create(emitter -> emitter.onNext(allRestaurants));
+                    return Observable.create(emitter -> emitter.onNext(allRestaurantsFromMap));
                 });
     }
 
@@ -259,12 +265,15 @@ public class RestaurantViewModel extends ViewModel {
                 .switchIfEmpty(updateFanListForRestaurantInteractor.updateFanListForRestaurant(restaurant.getName(), fanList)
                         .andThen(getFanListForRestaurantInteractor.getFanListForRestaurant(restaurant.getName())))
                 .flatMapCompletable(persistedFanList -> {
-                    if (!persistedFanList.contains(currentUser.getUid())) persistedFanList.add(currentUser.getUid());
+                    if (!persistedFanList.contains(currentUser.getUid()))
+                        persistedFanList.add(currentUser.getUid());
                     restaurant.setFanList(persistedFanList);
                     selectedRestaurantMutableLiveData.setValue(restaurant);
                     return updateFanListForRestaurantInteractor.updateFanListForRestaurant(restaurant.getName(), persistedFanList);
                 })
-                .subscribe(()->{},throwable -> {});
+                .subscribe(() -> {
+                }, throwable -> {
+                });
     }
 
     @SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
@@ -312,31 +321,34 @@ public class RestaurantViewModel extends ViewModel {
     //TODO check all users dailySchedule
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
-    private void resetDbOnDailyScheduleDatePassed(User currentUser) {
-        Date dailyScheduleDate = new Date();
-        Date today = new Date();
-        if (currentUser.getUserDailySchedule() != null) {
-            try {
-                dailyScheduleDate = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(currentUser.getUserDailySchedule().getDate());
-                today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(DATE);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            assert dailyScheduleDate != null;
-            if (dailyScheduleDate.compareTo(today) < 0) {
-                getRestaurantForKeyInteractor.getRestaurantForKey(currentUser.getUserDailySchedule().getRestaurantKey())
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .flatMapCompletable(restaurantsForKey -> {
-                            int interestedUsers = restaurantsForKey.get(0).getNumberOfInterestedUsers() - 1;
-                            currentUser.setUserDailySchedule(new UserDailySchedule());
-                            return updateNumberOfInterestedUsersForRestaurantInteractor
-                                    .updateNumberOfInterestedUsersForRestaurant(restaurantsForKey.get(0).getName(), interestedUsers);
-                        })
-                        .andThen(updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(currentUser))
-                        .subscribe(() -> {
-                        }, throwable -> {
-                        });
+    public void resetDbOnDailyScheduleDatePassed(List<User> allUsers) {
+        Log.i("TAG", "resetDbOnDailyScheduleDatePassed: ");
+        for (User currentUser : allUsers) {
+            Date dailyScheduleDate = new Date();
+            Date today = new Date();
+            if (currentUser.getUserDailySchedule() != null) {
+                try {
+                    dailyScheduleDate = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(currentUser.getUserDailySchedule().getDate());
+                    today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(DATE);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                assert dailyScheduleDate != null;
+                if (dailyScheduleDate.compareTo(today) < 0) {
+                    getRestaurantForKeyInteractor.getRestaurantForKey(currentUser.getUserDailySchedule().getRestaurantKey())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .flatMapCompletable(restaurantsForKey -> {
+                                int interestedUsers = restaurantsForKey.get(0).getNumberOfInterestedUsers() - 1;
+                                currentUser.setUserDailySchedule(new UserDailySchedule());
+                                return updateNumberOfInterestedUsersForRestaurantInteractor
+                                        .updateNumberOfInterestedUsersForRestaurant(restaurantsForKey.get(0).getName(), interestedUsers);
+                            })
+                            .andThen(updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(currentUser))
+                            .subscribe(() -> {
+                            }, throwable -> {
+                            });
+                }
             }
         }
     }

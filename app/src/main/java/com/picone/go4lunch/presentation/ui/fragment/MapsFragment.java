@@ -68,6 +68,12 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(),users -> mRestaurantViewModel.resetDbOnDailyScheduleDatePassed(users));
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         updateLocationUI();
