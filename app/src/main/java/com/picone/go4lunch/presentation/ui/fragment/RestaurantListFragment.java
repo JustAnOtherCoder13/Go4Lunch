@@ -38,11 +38,11 @@ public class RestaurantListFragment extends BaseFragment {
         initRecyclerView();
         configureOnClickRecyclerView();
         mRestaurantViewModel.resetSelectedRestaurant();
-        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(),restaurant -> {
-            if (restaurant!=null)
+        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant -> {
+            if (restaurant != null)
                 Navigation.findNavController(view).navigate(R.id.restaurantDetailFragment);
         });
-        }
+    }
 
     private void initRecyclerView() {
         RestaurantListRecyclerViewAdapter adapter = new RestaurantListRecyclerViewAdapter(new ArrayList<>());
@@ -54,8 +54,7 @@ public class RestaurantListFragment extends BaseFragment {
 
     public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewListFragment, R.layout.fragment_restaurant_list)
-                .setOnItemClickListener((recyclerView, position, v) -> {
-                    mRestaurantViewModel.initSelectedRestaurant(position);
-                });
+                .setOnItemClickListener((recyclerView, position, v) ->
+                        mRestaurantViewModel.initSelectedRestaurant(position));
     }
 }

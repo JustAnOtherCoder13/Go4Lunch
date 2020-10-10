@@ -109,7 +109,7 @@ public class RestaurantViewModel extends ViewModel {
         locationMutableLiveData.setValue(location);
     }
 
-    public void resetSelectedRestaurant(){
+    public void resetSelectedRestaurant() {
         selectedRestaurantMutableLiveData.setValue(null);
     }
 
@@ -131,10 +131,8 @@ public class RestaurantViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(this::fetchPlaceDetail)
                 .flatMap(this::updateAllRestaurantsWithPersistedValues)
-                .subscribe(restaurants -> {
-                    Log.i("TAG", "updateAllRestaurantsWithPersistedValues: " + restaurants.get(0).getOpeningHours());
-                        allRestaurantsMutableLiveData.setValue(restaurants);
-                });
+                .subscribe(restaurants ->
+                        allRestaurantsMutableLiveData.setValue(restaurants));
     }
 
     @SuppressLint("CheckResult")
@@ -153,7 +151,7 @@ public class RestaurantViewModel extends ViewModel {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .flatMap(restaurant1 -> fetchPlaceDistance(locationMutableLiveData.getValue(), restaurantFromMap))
-                        .flatMap(restaurant ->Observable.create((ObservableOnSubscribe<List<Restaurant>>)
+                        .flatMap(restaurant -> Observable.create((ObservableOnSubscribe<List<Restaurant>>)
                                 emitter1 -> emitter1.onNext(restaurantsFromMap)))
                         .subscribe(emitter::onNext);
         });
@@ -180,7 +178,7 @@ public class RestaurantViewModel extends ViewModel {
         return getAllPersistedRestaurantsInteractor.getAllPersistedRestaurants()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(persistedRestaurants -> Observable.create(emitter ->{
+                .flatMap(persistedRestaurants -> Observable.create(emitter -> {
                     for (Restaurant persistedRestaurant : persistedRestaurants) {
                         for (Restaurant restaurantFromMap : allRestaurantsFromMap) {
                             if (persistedRestaurant.getPlaceId().equals(restaurantFromMap.getPlaceId())) {
@@ -189,7 +187,8 @@ public class RestaurantViewModel extends ViewModel {
                             }
                         }
                     }
-                    emitter.onNext(allRestaurantsFromMap);}));
+                    emitter.onNext(allRestaurantsFromMap);
+                }));
     }
 
     @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
@@ -323,9 +322,8 @@ public class RestaurantViewModel extends ViewModel {
             for (Restaurant restaurant : allRestaurantsMutableLiveData.getValue())
                 if (restaurant.getName().equals(param)) selectedRestaurant = restaurant;
         }
-        if (!(param instanceof String))
-            if (!(param instanceof Integer))
-                Log.e("WRONG_PARAMETER", "initSelectedRestaurant: Must pass a string restaurantName or an int restaurantPosition ", new Throwable());
+        if (!(param instanceof String) || !(param instanceof Integer))
+            Log.e("WRONG_PARAMETER", "initSelectedRestaurant: Must pass a string restaurantName or an int restaurantPosition ", new Throwable());
 
         return selectedRestaurant;
     }

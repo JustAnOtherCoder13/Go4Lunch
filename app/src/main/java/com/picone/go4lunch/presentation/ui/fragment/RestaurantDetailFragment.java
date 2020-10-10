@@ -54,7 +54,7 @@ public class RestaurantDetailFragment extends BaseFragment {
         mBinding.likeDetailImageButton.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
             builder.setTitle("Like this restaurant ?")
-                    .setNegativeButton("No",null)
+                    .setNegativeButton("No", null)
                     .setPositiveButton("Yes", (dialog, which) -> mRestaurantViewModel.updateFanList())
                     .create()
                     .show();
@@ -77,7 +77,7 @@ public class RestaurantDetailFragment extends BaseFragment {
                 mAdapter.updateUsers(users));
 
         mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant -> {
-            if (restaurant!=null){
+            if (restaurant != null) {
                 mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
                 mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getAddress());
                 manageStar(mBinding.opinionStarDetailImageView, (int) restaurant.getAverageSatisfaction());
@@ -91,17 +91,14 @@ public class RestaurantDetailFragment extends BaseFragment {
                         .centerCrop()
                         .into(new CustomTarget<Drawable>() {
                             @Override
-                            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super
-                                    Drawable> transition) {
+                            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                                 mBinding.restaurantPhotoDetailImageView.setImageDrawable(resource);
                             }
 
                             @Override
                             public void onLoadCleared(@Nullable Drawable placeholder) {
                             }
-
                         });
-
             }
         });
     }

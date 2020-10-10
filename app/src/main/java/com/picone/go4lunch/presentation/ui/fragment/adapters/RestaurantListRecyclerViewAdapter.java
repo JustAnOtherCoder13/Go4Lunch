@@ -40,39 +40,13 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Restaurant restaurant = mRestaurants.get(position);
         holder.restaurantBinding.restaurantNameTextView.setText(restaurant.getName());
-        if (restaurant.getOpeningHours().equals("Closed"))
-            holder.restaurantBinding.openingTimeTextView.setTextColor(Color.RED);
-        else
-            holder.restaurantBinding.openingTimeTextView.setTextColor(Color.GRAY);
-
+        setOpeningHour(holder, restaurant);
         holder.restaurantBinding.openingTimeTextView.setText(restaurant.getOpeningHours());
         holder.restaurantBinding.foodStyleAndAddressTextView.setText(restaurant.getAddress());
         holder.restaurantBinding.distanceTextView.setText(restaurant.getDistance());
-        if (restaurant.getNumberOfInterestedUsers() > 0)
-            holder.restaurantBinding.interestedColleagueNumber.setText(("(").concat(String.valueOf(restaurant.getNumberOfInterestedUsers())).concat(")"));
-        else {
-            holder.restaurantBinding.interestedColleague.setVisibility(View.GONE);
-            holder.restaurantBinding.interestedColleagueNumber.setVisibility(View.GONE);
-        }
-        int numberOfLike = 0;
-        if (restaurant.getFanList() != null) numberOfLike = restaurant.getFanList().size();
-        manageStar(holder.restaurantBinding.opinionStarDetailImageView, numberOfLike);
-
-        Glide.with(holder.restaurantBinding.restaurantPhotoImageView.getContext())
-                .load(restaurant.getRestaurantPhoto())
-                .circleCrop()
-                .into(new CustomTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super
-                            Drawable> transition) {
-                        holder.restaurantBinding.restaurantPhotoImageView.setImageDrawable(resource);
-                    }
-
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                    }
-
-                });
+        setInterestedUsers(holder, restaurant);
+        setNumberOfStars(holder, restaurant);
+        setRestaurantPhoto(holder, restaurant);
     }
 
     @Override
@@ -93,5 +67,41 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
     public void updateRestaurants(List<Restaurant> restaurants) {
         this.mRestaurants = restaurants;
         notifyDataSetChanged();
+    }
+
+    private void setRestaurantPhoto(@NonNull ViewHolder holder, Restaurant restaurant) {
+        Glide.with(holder.restaurantBinding.restaurantPhotoImageView.getContext())
+                .load(restaurant.getRestaurantPhoto())
+                .centerCrop()
+                .into(new CustomTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        holder.restaurantBinding.restaurantPhotoImageView.setImageDrawable(resource);
+                    }
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) { }
+                });
+    }
+
+    private void setNumberOfStars(@NonNull ViewHolder holder, Restaurant restaurant) {
+        int numberOfLike = 0;
+        if (restaurant.getFanList() != null) numberOfLike = restaurant.getFanList().size();
+        manageStar(holder.restaurantBinding.opinionStarDetailImageView, numberOfLike);
+    }
+
+    private void setInterestedUsers(@NonNull ViewHolder holder, Restaurant restaurant) {
+        if (restaurant.getNumberOfInterestedUsers() > 0)
+            holder.restaurantBinding.interestedColleagueNumber.setText(("(").concat(String.valueOf(restaurant.getNumberOfInterestedUsers())).concat(")"));
+        else {
+            holder.restaurantBinding.interestedColleague.setVisibility(View.GONE);
+            holder.restaurantBinding.interestedColleagueNumber.setVisibility(View.GONE);
+        }
+    }
+
+    private void setOpeningHour(@NonNull ViewHolder holder, Restaurant restaurant) {
+        if (restaurant.getOpeningHours().equals("Closed"))
+            holder.restaurantBinding.openingTimeTextView.setTextColor(Color.RED);
+        else
+            holder.restaurantBinding.openingTimeTextView.setTextColor(Color.GRAY);
     }
 }
