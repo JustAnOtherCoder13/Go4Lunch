@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Locale;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -54,7 +53,6 @@ public class RestaurantViewModel extends ViewModel {
     private MutableLiveData<Boolean> isDataLoadingMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<List<Restaurant>> allRestaurantsMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Location> locationMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<Restaurant>> filteredRestaurantMutableLiveData = new MutableLiveData<>();
 
 
     private GetRestaurantForNameInteractor getRestaurantForNameInteractor;
@@ -101,22 +99,18 @@ public class RestaurantViewModel extends ViewModel {
     }
 
     public LiveData<Boolean> isDataLoading = isDataLoadingMutableLiveData;
-
     public LiveData<List<User>> getInterestedUsersForRestaurant = interestedUsersMutableLiveData;
-
     public LiveData<Restaurant> getSelectedRestaurant = selectedRestaurantMutableLiveData;
-
     public LiveData<List<Restaurant>> getAllRestaurants = allRestaurantsMutableLiveData;
-
     public LiveData<User> getCurrentUser = currentUserMutableLiveData;
-
+    public LiveData<Location> getCurrentLocation = locationMutableLiveData;
 
     public void setCurrentLocation(Location location) {
         locationMutableLiveData.setValue(location);
     }
 
-    public void resetFilteredRestaurant() {
-        filteredRestaurantMutableLiveData.setValue(null);
+    public void resetSelectedRestaurant(){
+        selectedRestaurantMutableLiveData.setValue(null);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -132,8 +126,7 @@ public class RestaurantViewModel extends ViewModel {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void getRestaurantFromMaps() {
-        Location mCurrentLocation = locationMutableLiveData.getValue();
-        fetchRestaurantFromPlaceInteractor.fetchRestaurantFromPlace_(mCurrentLocation, MAPS_KEY)
+        fetchRestaurantFromPlaceInteractor.fetchRestaurantFromPlace_(locationMutableLiveData.getValue(), MAPS_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(this::fetchPlaceDetail)
@@ -187,7 +180,7 @@ public class RestaurantViewModel extends ViewModel {
         return getAllPersistedRestaurantsInteractor.getAllPersistedRestaurants()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(persistedRestaurants -> {
+                .flatMap(persistedRestaurants -> Observable.create(emitter ->{
                     for (Restaurant persistedRestaurant : persistedRestaurants) {
                         for (Restaurant restaurantFromMap : allRestaurantsFromMap) {
                             if (persistedRestaurant.getPlaceId().equals(restaurantFromMap.getPlaceId())) {
@@ -196,8 +189,7 @@ public class RestaurantViewModel extends ViewModel {
                             }
                         }
                     }
-                    return Observable.create(emitter -> emitter.onNext(allRestaurantsFromMap));
-                });
+                    emitter.onNext(allRestaurantsFromMap);}));
     }
 
     @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})

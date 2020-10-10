@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -79,6 +78,11 @@ public class MainActivity extends AppCompatActivity {
         if (mFirebaseAuth.getCurrentUser() != null || accessToken != null && !accessToken.isExpired()) {
             mLoginViewModel.authenticate(true);
             mRestaurantViewModel.setCurrentUser(mFirebaseAuth.getCurrentUser().getEmail());
+            mRestaurantViewModel.resetSelectedRestaurant();
+            mRestaurantViewModel.getSelectedRestaurant.observe(this,restaurant -> {
+                if (restaurant!=null)
+                    mNavController.navigate(R.id.restaurantDetailFragment);
+            });
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
     }
@@ -89,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         if (Objects.requireNonNull(mNavController.getCurrentDestination()).getId() == R.id.authenticationFragment) {
             this.finish();
         }
+        else mNavController.navigateUp();
     }
 
     private void initMenuButton() {
@@ -110,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
                     mRestaurantViewModel.getCurrentUser.observe(this, user -> {
                         if (user.getUserDailySchedule() != null) {
                             mRestaurantViewModel.initSelectedRestaurant(user.getUserDailySchedule().getRestaurantName());
-                            mNavController.navigate(R.id.restaurantDetailFragment);
                         } else
                             Toast.makeText(this, "You haven't choose a restaurant yet", Toast.LENGTH_SHORT).show();
                     });
@@ -145,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
             EditText editText = findViewById(R.id.search_src_text);
             editText.setText("");
             searchView.setQuery("", false);
-            mRestaurantViewModel.resetFilteredRestaurant();
             mRestaurantViewModel.getRestaurantFromMaps();
         };
     }
@@ -161,7 +164,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                mRestaurantViewModel.resetFilteredRestaurant();
                 mRestaurantViewModel.getRestaurantFromMaps();
                 return true;
             }

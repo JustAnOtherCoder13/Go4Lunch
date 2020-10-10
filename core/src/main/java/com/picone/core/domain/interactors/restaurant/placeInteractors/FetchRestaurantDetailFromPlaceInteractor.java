@@ -5,7 +5,6 @@ import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.RestaurantDetailPOJO.RestaurantDetail;
 
 import java.util.Calendar;
-import java.util.List;
 
 import javax.inject.Inject;
 

@@ -60,9 +60,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentMapsBinding.inflate(inflater, container, false);
-        initMapView(savedInstanceState);
-        showAppBars(true);
-        fetchLastLocation();
         mBinding.locationFab.setOnClickListener(v -> setUpMapCurrentPosition());
         return mBinding.getRoot();
     }
@@ -70,6 +67,14 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initMapView(savedInstanceState);
+        showAppBars(true);
+        fetchLastLocation();
+        mRestaurantViewModel.resetSelectedRestaurant();
+        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(),restaurant -> {
+            if (restaurant!=null)
+                Navigation.findNavController(requireView()).navigate(R.id.restaurantDetailFragment);
+        });
         mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(),users -> mRestaurantViewModel.resetDbOnDailyScheduleDatePassed(users));
     }
 
@@ -111,17 +116,13 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         }
         Task<Location> task = mFusedLocationProviderClient.getLastLocation();
         task.addOnSuccessListener(location -> {
-            if (location != null) {
+            if (location != null && this.getView()!=null) {
                 mCurrentLocation = location;
                 mBinding.mapView.getMapAsync(this);
-
-                //TODO
-                //mRestaurantViewModel.location.observe(view, obsever {
-                    //mRestaurantViewModel.getRestaurantFromMaps();
-                // })
-
                 mRestaurantViewModel.setCurrentLocation(location);
-                mRestaurantViewModel.getRestaurantFromMaps();
+                mRestaurantViewModel.getCurrentLocation.observe(getViewLifecycleOwner(),location1 -> {
+                    mRestaurantViewModel.getRestaurantFromMaps();
+                });
             }
         });
     }
@@ -171,7 +172,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         }
         mMap.setOnMarkerClickListener(marker -> {
             mRestaurantViewModel.initSelectedRestaurant(marker.getTitle());
-            Navigation.findNavController(requireView()).navigate(R.id.restaurantDetailFragment);
             return false;
         });
     }}

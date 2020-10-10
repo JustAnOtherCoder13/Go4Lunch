@@ -4,7 +4,6 @@ import android.location.Location;
 
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.domain.entity.Restaurant;
-import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
 
 import javax.inject.Inject;
 

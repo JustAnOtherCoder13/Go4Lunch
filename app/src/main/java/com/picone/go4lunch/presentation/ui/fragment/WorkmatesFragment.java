@@ -41,6 +41,11 @@ public class WorkmatesFragment extends BaseFragment {
         mUserViewModel.updateUsersList();
         initRecyclerView();
         configureOnClickRecyclerView();
+        mRestaurantViewModel.resetSelectedRestaurant();
+        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(),restaurant -> {
+            if (restaurant!=null)
+                Navigation.findNavController(view).navigate(R.id.restaurantDetailFragment);
+        });
     }
 
     private void initRecyclerView() {
@@ -57,7 +62,6 @@ public class WorkmatesFragment extends BaseFragment {
                         users -> {
                     if (!users.isEmpty() && users.get(position).getUserDailySchedule()!= null){
                         mRestaurantViewModel.initSelectedRestaurant(users.get(position).getUserDailySchedule().getRestaurantName());
-                        Navigation.findNavController(v).navigate(R.id.restaurantDetailFragment);
                     }
                 }));
     }

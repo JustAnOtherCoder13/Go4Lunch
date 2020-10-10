@@ -77,29 +77,32 @@ public class RestaurantDetailFragment extends BaseFragment {
                 mAdapter.updateUsers(users));
 
         mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant -> {
-            mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
-            mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getAddress());
-            manageStar(mBinding.opinionStarDetailImageView, (int) restaurant.getAverageSatisfaction());
-            mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getAddress());
-            int numberOfLike = 0;
-            if (restaurant.getFanList() != null && !restaurant.getFanList().isEmpty())
-                numberOfLike = restaurant.getFanList().size();
-            manageStar(mBinding.opinionStarDetailImageView, numberOfLike);
-            Glide.with(mBinding.restaurantPhotoDetailImageView.getContext())
-                    .load(restaurant.getRestaurantPhoto())
-                    .centerCrop()
-                    .into(new CustomTarget<Drawable>() {
-                        @Override
-                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super
-                                Drawable> transition) {
-                            mBinding.restaurantPhotoDetailImageView.setImageDrawable(resource);
-                        }
+            if (restaurant!=null){
+                mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
+                mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getAddress());
+                manageStar(mBinding.opinionStarDetailImageView, (int) restaurant.getAverageSatisfaction());
+                mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getAddress());
+                int numberOfLike = 0;
+                if (restaurant.getFanList() != null && !restaurant.getFanList().isEmpty())
+                    numberOfLike = restaurant.getFanList().size();
+                manageStar(mBinding.opinionStarDetailImageView, numberOfLike);
+                Glide.with(mBinding.restaurantPhotoDetailImageView.getContext())
+                        .load(restaurant.getRestaurantPhoto())
+                        .centerCrop()
+                        .into(new CustomTarget<Drawable>() {
+                            @Override
+                            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super
+                                    Drawable> transition) {
+                                mBinding.restaurantPhotoDetailImageView.setImageDrawable(resource);
+                            }
 
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                        }
+                            @Override
+                            public void onLoadCleared(@Nullable Drawable placeholder) {
+                            }
 
-                    });
+                        });
+
+            }
         });
     }
 

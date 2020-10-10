@@ -37,9 +37,13 @@ public class RestaurantListFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         initRecyclerView();
         configureOnClickRecyclerView();
+        mRestaurantViewModel.resetSelectedRestaurant();
+        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(),restaurant -> {
+            if (restaurant!=null)
+                Navigation.findNavController(view).navigate(R.id.restaurantDetailFragment);
+        });
         }
 
-        //TODO don't show distance and opening hour when close search on thi frag
     private void initRecyclerView() {
         RestaurantListRecyclerViewAdapter adapter = new RestaurantListRecyclerViewAdapter(new ArrayList<>());
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -52,7 +56,6 @@ public class RestaurantListFragment extends BaseFragment {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewListFragment, R.layout.fragment_restaurant_list)
                 .setOnItemClickListener((recyclerView, position, v) -> {
                     mRestaurantViewModel.initSelectedRestaurant(position);
-                    Navigation.findNavController(v).navigate(R.id.restaurantDetailFragment);
                 });
     }
 }
