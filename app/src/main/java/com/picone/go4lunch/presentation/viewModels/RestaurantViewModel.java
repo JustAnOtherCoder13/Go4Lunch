@@ -276,37 +276,50 @@ public class RestaurantViewModel extends ViewModel {
                 });
     }
 
-    //TODO check all users dailySchedule
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    @SuppressLint("CheckResult")
-    public void resetDbOnDailyScheduleDatePassed(List<User> allUsers) {
-        Log.i("TAG", "resetDbOnDailyScheduleDatePassed: ");
-        for (User currentUser : allUsers) {
+    private List<User> usersWithDailySchedulePassed(List<User> allUsers) {
+        List<User> users = new ArrayList<>();
+        Calendar CALENDAR = Calendar.getInstance();
+        int MY_DAY_OF_MONTH = CALENDAR.get(Calendar.DAY_OF_MONTH+1);
+        int MY_MONTH = CALENDAR.get(Calendar.MONTH);
+        int MY_YEAR = CALENDAR.get(Calendar.YEAR);
+        for (User user : allUsers) {
             Date dailyScheduleDate = new Date();
             Date today = new Date();
-            if (currentUser.getUserDailySchedule() != null) {
+            if (user.getUserDailySchedule() != null) {
                 try {
-                    dailyScheduleDate = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(currentUser.getUserDailySchedule().getDate());
-                    today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(DATE);
+                    dailyScheduleDate = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(user.getUserDailySchedule().getDate());
+                    today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(MY_DAY_OF_MONTH + "/" + MY_MONTH + "/" + MY_YEAR);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 assert dailyScheduleDate != null;
-                if (dailyScheduleDate.compareTo(today) < 0) {
-                    getRestaurantForKeyInteractor.getRestaurantForKey(currentUser.getUserDailySchedule().getRestaurantKey())
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .flatMapCompletable(restaurantsForKey -> {
-                                int interestedUsers = restaurantsForKey.get(0).getNumberOfInterestedUsers() - 1;
-                                currentUser.setUserDailySchedule(new UserDailySchedule());
-                                return updateNumberOfInterestedUsersForRestaurantInteractor
-                                        .updateNumberOfInterestedUsersForRestaurant(restaurantsForKey.get(0).getName(), interestedUsers);
-                            })
-                            .andThen(updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(currentUser))
-                            .subscribe(() -> {
-                            }, throwable -> {
-                            });
-                }
+                if (dailyScheduleDate.compareTo(today) < 0) users = allUsers;
+            }
+
+        }
+        return users;
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    public void resetDbOnDailyScheduleDatePassed(List<User> allUsers) {
+        if (!usersWithDailySchedulePassed(allUsers).isEmpty()) {
+            for (User user : usersWithDailySchedulePassed(allUsers)) {
+                getRestaurantForKeyInteractor.getRestaurantForKey(user.getUserDailySchedule().getRestaurantKey())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .flatMapCompletable(restaurantsForKey -> {
+                            Log.i("TAG", "resetDbOnDailyScheduleDatePassed: flat");
+                            int interestedUsers = restaurantsForKey.get(0).getNumberOfInterestedUsers() - 1;
+                            user.setUserDailySchedule(new UserDailySchedule());
+                            return updateNumberOfInterestedUsersForRestaurantInteractor
+                                    .updateNumberOfInterestedUsersForRestaurant(restaurantsForKey.get(0).getName(), interestedUsers);
+                        })
+                        .andThen(updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(user))
+                        .subscribe(() -> {
+                            Log.i("TAG", "resetDbOnDailyScheduleDatePassed: subscribe");
+                        }, throwable -> {
+                        });
             }
         }
     }

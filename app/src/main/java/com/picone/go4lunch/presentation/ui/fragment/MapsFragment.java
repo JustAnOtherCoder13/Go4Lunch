@@ -75,7 +75,9 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
             if (restaurant!=null)
                 Navigation.findNavController(requireView()).navigate(R.id.restaurantDetailFragment);
         });
-        mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(),users -> mRestaurantViewModel.resetDbOnDailyScheduleDatePassed(users));
+        mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(),users -> {
+            Log.i("TAG", "onViewCreated: "+users);
+            mRestaurantViewModel.resetDbOnDailyScheduleDatePassed(users);});
     }
 
     @Override
