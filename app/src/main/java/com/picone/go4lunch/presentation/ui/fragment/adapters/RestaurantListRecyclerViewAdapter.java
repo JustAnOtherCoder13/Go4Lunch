@@ -1,7 +1,7 @@
 package com.picone.go4lunch.presentation.ui.fragment.adapters;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +18,7 @@ import com.picone.go4lunch.databinding.RecyclerViewRestaurantItemsBinding;
 
 import java.util.List;
 
-import static com.picone.go4lunch.presentation.ui.utils.ManageStarUtil.manageStar;
+import static com.picone.go4lunch.presentation.utils.ManageStarUtil.manageStar;
 
 public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantListRecyclerViewAdapter.ViewHolder> {
 
@@ -39,36 +39,14 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Restaurant restaurant = mRestaurants.get(position);
-        Log.i("TAGM", "onBindViewHolder: "+restaurant.getName()+" "+restaurant.getWebsite()+" "+restaurant.getPhoneNumber());
         holder.restaurantBinding.restaurantNameTextView.setText(restaurant.getName());
+        setOpeningHour(holder, restaurant);
         holder.restaurantBinding.openingTimeTextView.setText(restaurant.getOpeningHours());
         holder.restaurantBinding.foodStyleAndAddressTextView.setText(restaurant.getAddress());
         holder.restaurantBinding.distanceTextView.setText(restaurant.getDistance());
-        if (restaurant.getNumberOfInterestedUsers() > 0)
-            holder.restaurantBinding.interestedColleagueNumber.setText(("(").concat(String.valueOf(restaurant.getNumberOfInterestedUsers())).concat(")"));
-        else {
-            holder.restaurantBinding.interestedColleague.setVisibility(View.GONE);
-            holder.restaurantBinding.interestedColleagueNumber.setVisibility(View.GONE);
-        }
-        int numberOfLike = 0;
-        if (restaurant.getFanList() != null) numberOfLike = restaurant.getFanList().size();
-        manageStar(holder.restaurantBinding.opinionStarDetailImageView, numberOfLike);
-
-        Glide.with(holder.restaurantBinding.restaurantPhotoImageView.getContext())
-                .load(restaurant.getRestaurantPhoto())
-                .circleCrop()
-                .into(new CustomTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super
-                            Drawable> transition) {
-                        holder.restaurantBinding.restaurantPhotoImageView.setImageDrawable(resource);
-                    }
-
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                    }
-
-                });
+        setInterestedUsers(holder, restaurant);
+        setNumberOfStars(holder, restaurant);
+        setRestaurantPhoto(holder, restaurant);
     }
 
     @Override
@@ -89,5 +67,41 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
     public void updateRestaurants(List<Restaurant> restaurants) {
         this.mRestaurants = restaurants;
         notifyDataSetChanged();
+    }
+
+    private void setRestaurantPhoto(@NonNull ViewHolder holder, Restaurant restaurant) {
+        Glide.with(holder.restaurantBinding.restaurantPhotoImageView.getContext())
+                .load(restaurant.getRestaurantPhoto())
+                .centerCrop()
+                .into(new CustomTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        holder.restaurantBinding.restaurantPhotoImageView.setImageDrawable(resource);
+                    }
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) { }
+                });
+    }
+
+    private void setNumberOfStars(@NonNull ViewHolder holder, Restaurant restaurant) {
+        int numberOfLike = 0;
+        if (restaurant.getFanList() != null) numberOfLike = restaurant.getFanList().size();
+        manageStar(holder.restaurantBinding.opinionStarDetailImageView, numberOfLike);
+    }
+
+    private void setInterestedUsers(@NonNull ViewHolder holder, Restaurant restaurant) {
+        if (restaurant.getNumberOfInterestedUsers() > 0)
+            holder.restaurantBinding.interestedColleagueNumber.setText(("(").concat(String.valueOf(restaurant.getNumberOfInterestedUsers())).concat(")"));
+        else {
+            holder.restaurantBinding.interestedColleague.setVisibility(View.GONE);
+            holder.restaurantBinding.interestedColleagueNumber.setVisibility(View.GONE);
+        }
+    }
+
+    private void setOpeningHour(@NonNull ViewHolder holder, Restaurant restaurant) {
+        if (restaurant.getOpeningHours().equals("Closed"))
+            holder.restaurantBinding.openingTimeTextView.setTextColor(Color.RED);
+        else
+            holder.restaurantBinding.openingTimeTextView.setTextColor(Color.GRAY);
     }
 }

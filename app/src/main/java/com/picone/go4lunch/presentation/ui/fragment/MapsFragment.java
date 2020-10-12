@@ -31,10 +31,11 @@ import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentMapsBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
+import java.util.List;
 import java.util.Objects;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static com.picone.go4lunch.presentation.ui.utils.GetBitmapFromVectorUtil.getBitmapFromVectorDrawable;
+import static com.picone.go4lunch.presentation.utils.GetBitmapFromVectorUtil.getBitmapFromVectorDrawable;
 
 
 public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
@@ -47,40 +48,44 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     private FusedLocationProviderClient mFusedLocationProviderClient;
     public static String MAPS_KEY;
 
-    //TODO make status bar transparent
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
-        MAPS_KEY= this.getResources().getString(R.string.google_maps_key);
+        MAPS_KEY = this.getResources().getString(R.string.google_maps_key);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentMapsBinding.inflate(inflater, container, false);
-        initMapView(savedInstanceState);
-        showAppBars(true);
-        fetchLastLocation();
-        if (mAuth.getCurrentUser() != null) mRestaurantViewModel.initData(mAuth.getCurrentUser().getEmail());
-
         mBinding.locationFab.setOnClickListener(v -> setUpMapCurrentPosition());
-
         return mBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initMapView(savedInstanceState);
+        showAppBars(true);
+        setStatusBarTransparent(false);
+        fetchLastLocation();
+        mRestaurantViewModel.resetSelectedRestaurant();
+        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(),restaurant -> {
+            if (restaurant!=null)
+                Navigation.findNavController(requireView()).navigate(R.id.restaurantDetailFragment);
+        });
+        mRestaurantViewModel.getCurrentLocation.observe(getViewLifecycleOwner(),currentLocation ->
+                mRestaurantViewModel.getRestaurantFromMaps());
+        mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(),users -> {
+            mRestaurantViewModel.resetDbOnDailyScheduleDatePassed(users);});
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         updateLocationUI();
-        if (this.getView() != null)
-            initCustomMarker();
+        mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), this::initCustomMarker);
     }
 
     private void initMapView(@Nullable Bundle savedInstanceState) {
@@ -114,13 +119,10 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         }
         Task<Location> task = mFusedLocationProviderClient.getLastLocation();
         task.addOnSuccessListener(location -> {
-            if (location != null) {
+            if (location != null && this.getView()!=null) {
                 mCurrentLocation = location;
                 mBinding.mapView.getMapAsync(this);
-                        mRestaurantViewModel.getRestaurantFromMaps(location);
-                    if (mAuth.getCurrentUser() != null) {
-                        mRestaurantViewModel.initData(mAuth.getCurrentUser().getEmail());
-                    }
+                mRestaurantViewModel.setCurrentLocation(location);
             }
         });
     }
@@ -148,30 +150,29 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         }
     }
 
-    private void initCustomMarker() {
-        mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), restaurants -> {
-            for (Restaurant restaurant : restaurants) {
-                LatLng restaurantLatLng = new LatLng
-                        (restaurant.getRestaurantPosition().getLatitude()
-                                , restaurant.getRestaurantPosition().getLongitude());
+    private void initCustomMarker(List<Restaurant> restaurants) {
+        if (mMap!=null){
+        mMap.clear();
+        for (Restaurant restaurant : restaurants) {
+            LatLng restaurantLatLng = new LatLng
+                    (restaurant.getRestaurantPosition().getLatitude()
+                            , restaurant.getRestaurantPosition().getLongitude());
 
-                MarkerOptions customMarkerOption = new MarkerOptions()
-                        .position(restaurantLatLng)
-                        .title(restaurant.getName());
+            MarkerOptions customMarkerOption = new MarkerOptions()
+                    .position(restaurantLatLng)
+                    .title(restaurant.getName());
 
-                if (restaurant.getNumberOfInterestedUsers() > 0) {
-                    mMap.addMarker(customMarkerOption
-                            .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_user))));
-                } else {
-                    mMap.addMarker(customMarkerOption
-                            .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_no_user))));
-                }
+            if (restaurant.getNumberOfInterestedUsers() > 0) {
+                mMap.addMarker(customMarkerOption
+                        .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_user))));
+            } else {
+                mMap.addMarker(customMarkerOption
+                        .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_no_user))));
             }
-            mMap.setOnMarkerClickListener(marker -> {
-                mRestaurantViewModel.initSelectedRestaurant(marker.getTitle());
-                Navigation.findNavController(requireView()).navigate(R.id.restaurantDetailFragment);
-                return false;
-            });
+        }
+        mMap.setOnMarkerClickListener(marker -> {
+            mRestaurantViewModel.initSelectedRestaurant(marker.getTitle());
+            return false;
         });
-    }
+    }}
 }

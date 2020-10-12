@@ -1,7 +1,5 @@
 package com.picone.core.domain.interactors.restaurant.placeInteractors;
 
-import android.annotation.SuppressLint;
-
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.domain.entity.Restaurant;
 import com.picone.core.domain.entity.RestaurantDetailPOJO.RestaurantDetail;
@@ -10,10 +8,10 @@ import java.util.Calendar;
 
 import javax.inject.Inject;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.Observable;
 
 public class FetchRestaurantDetailFromPlaceInteractor {
+
     @Inject
     RestaurantRepository restaurantDataSource;
 
@@ -21,17 +19,16 @@ public class FetchRestaurantDetailFromPlaceInteractor {
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    @SuppressLint("CheckResult")
-    public void getRestaurantDetail(Restaurant restaurant, String googleKey) {
-        restaurantDataSource.getPlaceRestaurantDetail(restaurant, googleKey)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(restaurantDetail -> {
-                    restaurant.setPhoneNumber(restaurantDetail.getResult().getFormattedPhoneNumber());
-                    restaurant.setWebsite(restaurantDetail.getResult().getWebsite());
-                    restaurant.setOpeningHours(formatOpeningHours(restaurantDetail));
-                });
+    public Observable<Restaurant> getRestaurantDetail(Restaurant restaurant, String googleKey) {
+        return restaurantDataSource.getPlaceRestaurantDetail(restaurant, googleKey)
+                .map(restaurantDetail -> restaurantDetailToRestaurantModel(restaurant, restaurantDetail));
+    }
+
+    private Restaurant restaurantDetailToRestaurantModel(Restaurant restaurant, RestaurantDetail restaurantDetail) {
+        restaurant.setPhoneNumber(restaurantDetail.getResult().getFormattedPhoneNumber());
+        restaurant.setWebsite(restaurantDetail.getResult().getWebsite());
+        restaurant.setOpeningHours(formatOpeningHours(restaurantDetail));
+        return restaurant;
     }
 
     private String formatOpeningHours(RestaurantDetail restaurantDetail) {
@@ -45,7 +42,7 @@ public class FetchRestaurantDetailFromPlaceInteractor {
     }
 
     @SuppressWarnings("ConstantConditions")
-    private int getWeekDayTextValue() {
+    private static int getWeekDayTextValue() {
         int weekDayTextValue = Calendar.DAY_OF_WEEK + 1;
         if (weekDayTextValue == 7)
             weekDayTextValue = 0;
@@ -53,4 +50,6 @@ public class FetchRestaurantDetailFromPlaceInteractor {
             weekDayTextValue = 1;
         return weekDayTextValue;
     }
+
+
 }

@@ -11,6 +11,7 @@ import com.picone.core.domain.entity.RestaurantDetailPOJO.RestaurantDetail;
 import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
 import com.picone.core.domain.entity.RestaurantPOJO.NearBySearch;
 import com.picone.core.domain.entity.User;
+import com.picone.core.domain.entity.predictionPOJO.PredictionResponse;
 
 import java.util.List;
 
@@ -29,6 +30,8 @@ public class RestaurantDaoImpl implements RestaurantDao {
     protected RetrofitClient retrofitClient;
     private DatabaseReference restaurantsDataBaseReference;
 
+    private final String RADIUS = "400";
+
 
     public RestaurantDaoImpl(FirebaseDatabase database, RetrofitClient retrofitClient) {
         this.database = database;
@@ -36,6 +39,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
         this.restaurantsDataBaseReference = database.getReference().child("restaurants");
     }
 
+    //----------------------------------------FIREBASE---------------------------------------------------------------
     @Override
     public Observable<Restaurant> getRestaurantForName(String restaurantName) {
         return RxFirebaseDatabase.observeSingleValueEvent(restaurantsDataBaseReference.child(restaurantName), Restaurant.class).toObservable();
@@ -47,6 +51,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
         return RxFirebaseDatabase.observeSingleValueEvent(query, DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
     }
 
+    //TODO change key and name to placeId
     @Override
     public Completable addRestaurant(Restaurant restaurant) {
         restaurant.setKey(restaurantsDataBaseReference.child(restaurant.getName()).push().getKey());
@@ -69,27 +74,38 @@ public class RestaurantDaoImpl implements RestaurantDao {
         return RxFirebaseDatabase.observeValueEvent(restaurantsDataBaseReference, DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
     }
 
-    public Observable<NearBySearch> googlePlaceService(Location mCurrentLocation, String googleKey) {
-
-        return retrofitClient.googlePlaceService()
-                .getNearbySearch(mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude(), googleKey);
-    }
-
-    public Observable<RestaurantDetail> getPlaceRestaurantDetail(Restaurant restaurant, String googleKey) {
-        return retrofitClient.googlePlaceService()
-                    .getRestaurantDetail(restaurant.getPlaceId(), googleKey);
-    }
-
-    public Observable<RestaurantDistance> getRestaurantDistance(String currentLocation, String restaurantLocation, String googleKey) {
-        return retrofitClient.googlePlaceService()
-                    .getRestaurantDistance(currentLocation, restaurantLocation, googleKey);
-    }
-
+    @Override
     public Completable updateFanListForRestaurant(String restaurantName, List<String> fanList) {
         return RxFirebaseDatabase.setValue(restaurantsDataBaseReference.child(restaurantName).child("fanList"), fanList);
     }
 
+    @Override
     public Observable<List<String>> getFanListForRestaurant(String restaurantName) {
         return RxFirebaseDatabase.observeSingleValueEvent(restaurantsDataBaseReference.child(restaurantName).child("fanList"), DataSnapshotMapper.listOf(String.class)).toObservable();
+    }
+
+//-----------------------------------------------GOOGLE PLACE-------------------------------------------------------
+    @Override
+    public Observable<NearBySearch> getNearBySearch(Location mCurrentLocation, String googleKey) {
+        return retrofitClient.googlePlaceService()
+                .getNearbySearch(mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude(), RADIUS, googleKey);
+    }
+
+    @Override
+    public Observable<RestaurantDetail> getPlaceRestaurantDetail(Restaurant restaurant, String googleKey) {
+        return retrofitClient.googlePlaceService()
+                .getRestaurantDetail(restaurant.getPlaceId(), googleKey);
+    }
+
+    @Override
+    public Observable<RestaurantDistance> getRestaurantDistance(String currentLocation, String restaurantLocation, String googleKey) {
+        return retrofitClient.googlePlaceService()
+                .getRestaurantDistance(currentLocation, restaurantLocation, googleKey);
+    }
+
+    @Override
+    public Observable<PredictionResponse> getPredictions(String restaurantName, String googleKey, String currentPosition) {
+        return retrofitClient.googlePlaceService()
+                .loadPredictions(restaurantName, googleKey, currentPosition, RADIUS);
     }
 }

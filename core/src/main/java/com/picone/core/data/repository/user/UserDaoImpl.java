@@ -27,7 +27,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Observable<List<User>> getAllUsers() {
-        return RxFirebaseDatabase.observeSingleValueEvent(usersDatabaseReference
+        return RxFirebaseDatabase.observeValueEvent(usersDatabaseReference
                 , DataSnapshotMapper.listOf(User.class)).toObservable();
     }
 

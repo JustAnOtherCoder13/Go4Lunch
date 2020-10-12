@@ -49,6 +49,7 @@ public class AuthenticationFragment extends BaseFragment {
         mBinding = FragmentAuthenticationBinding.inflate(inflater, container, false);
         initView();
         showAppBars(false);
+        setStatusBarTransparent(true);
         mNavController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
         return mBinding.getRoot();
     }
@@ -59,6 +60,7 @@ public class AuthenticationFragment extends BaseFragment {
         initAuthenticationAborted();
         mUserViewModel.getCurrentUser.observe(getViewLifecycleOwner(), currentUser -> {
             if (isNewUser) mUserViewModel.addUser(currentUser);
+            mRestaurantViewModel.setCurrentUser(currentUser.getEmail());
         });
         mUserViewModel.getAddUserState.observe(getViewLifecycleOwner(), userCompletionState -> {
             if (userCompletionState == UserViewModel.UserCompletionState.ON_COMPLETE) mNavController.navigateUp();

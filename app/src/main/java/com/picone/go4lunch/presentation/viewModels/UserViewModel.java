@@ -29,11 +29,10 @@ public class UserViewModel extends ViewModel {
     private MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
 
     private AddUserInteractor addUserInteractor;
-    GetAllUsersInteractor getAllUsersInteractor;
+    private GetAllUsersInteractor getAllUsersInteractor;
 
 
     //suppress warning is safe cause subscribe is used to set allUsersMutableLiveData
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     @ViewModelInject
     public UserViewModel(GetAllUsersInteractor getAllUsersInteractor, AddUserInteractor addUserInteractor) {

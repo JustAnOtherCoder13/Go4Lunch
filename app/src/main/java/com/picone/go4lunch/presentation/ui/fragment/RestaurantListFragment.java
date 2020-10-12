@@ -15,7 +15,7 @@ import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentRestaurantListBinding;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.RestaurantListRecyclerViewAdapter;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
-import com.picone.go4lunch.presentation.ui.utils.RecyclerViewItemClickUtil;
+import com.picone.go4lunch.presentation.utils.RecyclerViewItemClickUtil;
 
 import java.util.ArrayList;
 
@@ -29,6 +29,7 @@ public class RestaurantListFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentRestaurantListBinding.inflate(inflater, container, false);
         showAppBars(true);
+        setStatusBarTransparent(false);
         return mBinding.getRoot();
     }
 
@@ -37,7 +38,12 @@ public class RestaurantListFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         initRecyclerView();
         configureOnClickRecyclerView();
-        }
+        mRestaurantViewModel.resetSelectedRestaurant();
+        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant -> {
+            if (restaurant != null)
+                Navigation.findNavController(view).navigate(R.id.restaurantDetailFragment);
+        });
+    }
 
     private void initRecyclerView() {
         RestaurantListRecyclerViewAdapter adapter = new RestaurantListRecyclerViewAdapter(new ArrayList<>());
@@ -49,9 +55,7 @@ public class RestaurantListFragment extends BaseFragment {
 
     public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewListFragment, R.layout.fragment_restaurant_list)
-                .setOnItemClickListener((recyclerView, position, v) -> {
-                    mRestaurantViewModel.initSelectedRestaurant(position);
-                    Navigation.findNavController(v).navigate(R.id.restaurantDetailFragment);
-                });
+                .setOnItemClickListener((recyclerView, position, v) ->
+                        mRestaurantViewModel.initSelectedRestaurant(position));
     }
 }

@@ -1,6 +1,5 @@
 package com.picone.core.domain.interactors.restaurant.placeInteractors;
 
-import android.annotation.SuppressLint;
 import android.location.Location;
 
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
@@ -8,8 +7,7 @@ import com.picone.core.domain.entity.Restaurant;
 
 import javax.inject.Inject;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.Observable;
 
 public class FetchRestaurantDistanceInteractor {
 
@@ -20,15 +18,16 @@ public class FetchRestaurantDistanceInteractor {
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    @SuppressLint("CheckResult")
-    public void getRestaurantDistance(Restaurant restaurant, Location currentLocation, String googleKey) {
+    public Observable<Restaurant> getRestaurantDistance_(Restaurant restaurant, Location currentLocation, String googleKey) {
         String currentLocationStr = String.valueOf(currentLocation.getLatitude()).concat(",").concat(String.valueOf(currentLocation.getLongitude()));
         String restaurantLocation = String.valueOf(restaurant.getRestaurantPosition().getLatitude()).concat(",").concat(String.valueOf(restaurant.getRestaurantPosition().getLongitude()));
-        restaurantDataSource.getRestaurantDistance(currentLocationStr, restaurantLocation, googleKey)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(distance ->
-                        restaurant.setDistance(distance.getRows().get(0).getElements().get(0).getDistance().getText()));
+        return restaurantDataSource.getRestaurantDistance(currentLocationStr, restaurantLocation, googleKey)
+                .map(restaurantDistance -> restaurantDistance.getRows().get(0).getElements().get(0).getDistance().getText())
+                .map(distance -> restaurantDistanceToRestaurantModel(restaurant, distance));
+    }
+
+    private Restaurant restaurantDistanceToRestaurantModel(Restaurant restaurant, String distance) {
+        restaurant.setDistance(distance);
+        return restaurant;
     }
 }

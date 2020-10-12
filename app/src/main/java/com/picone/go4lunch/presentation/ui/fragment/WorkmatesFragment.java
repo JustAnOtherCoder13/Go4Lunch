@@ -15,7 +15,7 @@ import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentWorkmatesBinding;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.ColleagueRecyclerViewAdapter;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
-import com.picone.go4lunch.presentation.ui.utils.RecyclerViewItemClickUtil;
+import com.picone.go4lunch.presentation.utils.RecyclerViewItemClickUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,6 @@ public class WorkmatesFragment extends BaseFragment {
 
     public static final String TAG = WorkmatesFragment.class.getName();
     private FragmentWorkmatesBinding mBinding;
-    private ColleagueRecyclerViewAdapter mAdapter;
     private List<User> mUsers = new ArrayList<>();
 
     @Nullable
@@ -32,22 +31,27 @@ public class WorkmatesFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentWorkmatesBinding.inflate(getLayoutInflater());
         showAppBars(true);
+        setStatusBarTransparent(false);
         return mBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mUserViewModel.updateUsersList();
         initRecyclerView();
         configureOnClickRecyclerView();
+        mRestaurantViewModel.resetSelectedRestaurant();
+        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(),restaurant -> {
+            if (restaurant!=null)
+                Navigation.findNavController(view).navigate(R.id.restaurantDetailFragment);
+        });
     }
 
     private void initRecyclerView() {
-        mAdapter = new ColleagueRecyclerViewAdapter(mUsers, TAG);
+        ColleagueRecyclerViewAdapter adapter = new ColleagueRecyclerViewAdapter(mUsers, TAG);
         mBinding.recyclerViewWorkmatesFragment.setLayoutManager(new LinearLayoutManager(getContext()));
-        mBinding.recyclerViewWorkmatesFragment.setAdapter(mAdapter);
-        mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(), users -> mAdapter.updateUsers(users));
+        mBinding.recyclerViewWorkmatesFragment.setAdapter(adapter);
+        mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(), adapter::updateUsers);
     }
 
     public void configureOnClickRecyclerView() {
@@ -56,9 +60,7 @@ public class WorkmatesFragment extends BaseFragment {
                         mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(),
                         users -> {
                     if (!users.isEmpty() && users.get(position).getUserDailySchedule()!= null){
-                        mRestaurantViewModel.updateRestaurantForKey
-                                (users.get(position).getUserDailySchedule().getRestaurantKey());
-                        Navigation.findNavController(v).navigate(R.id.restaurantDetailFragment);
+                        mRestaurantViewModel.initSelectedRestaurant(users.get(position).getUserDailySchedule().getRestaurantName());
                     }
                 }));
     }

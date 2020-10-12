@@ -1,10 +1,10 @@
 package com.picone.core.domain.interactors.restaurant.placeInteractors;
 
-import android.annotation.SuppressLint;
 import android.location.Location;
 
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.entity.RestaurantPOJO.NearBySearch;
 import com.picone.core.domain.entity.RestaurantPOJO.Photo;
 import com.picone.core.domain.entity.RestaurantPOJO.RestaurantPOJO;
 import com.picone.core.domain.entity.RestaurantPosition;
@@ -15,8 +15,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class FetchRestaurantFromPlaceInteractor {
 
@@ -27,22 +25,23 @@ public class FetchRestaurantFromPlaceInteractor {
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    @SuppressLint("CheckResult")
-    public Observable<List<Restaurant>> fetchRestaurantFromPlace(Location mCurrentLocation, String googleKey) {
+    public Observable<List<Restaurant>> fetchRestaurantFromPlace_(Location mCurrentLocation, String googleKey) {
+
+        return restaurantDataSource
+                .googlePlaceService(mCurrentLocation, googleKey)
+                .map(NearBySearch::getRestaurantPOJOS)
+                .map(restaurantPOJOS -> restaurantsToRestaurantModel(restaurantPOJOS, googleKey));
+
+    }
+
+    private List<Restaurant> restaurantsToRestaurantModel(List<RestaurantPOJO> restaurantsPojos, String googleKey) {
         List<Restaurant> restaurantsFromMap = new ArrayList<>();
-        return restaurantDataSource.googlePlaceService(mCurrentLocation, googleKey)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(nearBySearch -> {
-                    if (nearBySearch.getStatus().equals("OK")) {
-                        for (RestaurantPOJO restaurantPOJO : nearBySearch.getRestaurantPOJOS()) {
-                            Restaurant restaurant = createRestaurant(restaurantPOJO, googleKey);
-                            if (!restaurantsFromMap.contains(restaurant))
-                                restaurantsFromMap.add(restaurant);
-                        }
-                    }
-                    return Observable.create(emitter -> emitter.onNext(restaurantsFromMap));
-                });
+        for (RestaurantPOJO restaurantPOJO : restaurantsPojos) {
+            Restaurant restaurant = createRestaurant(restaurantPOJO, googleKey);
+            if (!restaurantsFromMap.contains(restaurant))
+                restaurantsFromMap.add(restaurant);
+        }
+        return restaurantsFromMap;
     }
 
     private String createPhotoUrl(String googleKey, RestaurantPOJO restaurantPOJO) {
