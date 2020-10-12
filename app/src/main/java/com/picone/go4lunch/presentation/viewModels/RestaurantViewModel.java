@@ -223,10 +223,11 @@ public class RestaurantViewModel extends ViewModel {
                 .switchIfEmpty(updateFanListForRestaurantInteractor.updateFanListForRestaurant(restaurant.getName(), fanList)
                         .andThen(getFanListForRestaurantInteractor.getFanListForRestaurant(restaurant.getName())))
                 .flatMapCompletable(persistedFanList -> {
-                    if (!persistedFanList.contains(currentUser.getUid()))
+                    if (!persistedFanList.contains(currentUser.getUid())){
                         persistedFanList.add(currentUser.getUid());
-                    restaurant.setFanList(persistedFanList);
-                    selectedRestaurantMutableLiveData.setValue(restaurant);
+                        selectedRestaurantMutableLiveData.getValue().setFanList(persistedFanList);}
+                    //TODO if restaurantMutable not set, fanList don't update if set create a loop cause restaurant detail get restaurantMutable values
+                    //selectedRestaurantMutableLiveData.setValue(restaurant);
                     return updateFanListForRestaurantInteractor.updateFanListForRestaurant(restaurant.getName(), persistedFanList);
                 })
                 .subscribe(() -> {
@@ -245,7 +246,6 @@ public class RestaurantViewModel extends ViewModel {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .flatMapCompletable(restaurantsForKey -> {
-                        Log.i("TAG", "addUserToRestaurant: " + restaurantsForKey.get(0).getName());
                         int interestedUsers = restaurantsForKey.get(0).getNumberOfInterestedUsers() - 1;
                         return updateNumberOfInterestedUsersForRestaurantInteractor
                                 .updateNumberOfInterestedUsersForRestaurant(restaurantsForKey.get(0).getName(), interestedUsers);
@@ -277,27 +277,23 @@ public class RestaurantViewModel extends ViewModel {
     }
 
     private List<User> usersWithDailySchedulePassed(List<User> allUsers) {
-        List<User> users = new ArrayList<>();
-        Calendar CALENDAR = Calendar.getInstance();
-        int MY_DAY_OF_MONTH = CALENDAR.get(Calendar.DAY_OF_MONTH+1);
-        int MY_MONTH = CALENDAR.get(Calendar.MONTH);
-        int MY_YEAR = CALENDAR.get(Calendar.YEAR);
+        List<User> usersWithDailySchedulePassed = new ArrayList<>();
         for (User user : allUsers) {
             Date dailyScheduleDate = new Date();
             Date today = new Date();
             if (user.getUserDailySchedule() != null) {
                 try {
                     dailyScheduleDate = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(user.getUserDailySchedule().getDate());
-                    today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(MY_DAY_OF_MONTH + "/" + MY_MONTH + "/" + MY_YEAR);
+                    today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(DATE);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 assert dailyScheduleDate != null;
-                if (dailyScheduleDate.compareTo(today) < 0) users = allUsers;
+                if (dailyScheduleDate.compareTo(today) < 0) usersWithDailySchedulePassed.add(user);
             }
 
         }
-        return users;
+        return usersWithDailySchedulePassed;
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -309,7 +305,6 @@ public class RestaurantViewModel extends ViewModel {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .flatMapCompletable(restaurantsForKey -> {
-                            Log.i("TAG", "resetDbOnDailyScheduleDatePassed: flat");
                             int interestedUsers = restaurantsForKey.get(0).getNumberOfInterestedUsers() - 1;
                             user.setUserDailySchedule(new UserDailySchedule());
                             return updateNumberOfInterestedUsersForRestaurantInteractor
@@ -317,7 +312,6 @@ public class RestaurantViewModel extends ViewModel {
                         })
                         .andThen(updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(user))
                         .subscribe(() -> {
-                            Log.i("TAG", "resetDbOnDailyScheduleDatePassed: subscribe");
                         }, throwable -> {
                         });
             }
@@ -331,11 +325,11 @@ public class RestaurantViewModel extends ViewModel {
         if (param instanceof Integer) {
             selectedRestaurant = allRestaurantsMutableLiveData.getValue().get((Integer) param);
         }
-        if (param instanceof String) {
+        else if (param instanceof String) {
             for (Restaurant restaurant : allRestaurantsMutableLiveData.getValue())
                 if (restaurant.getName().equals(param)) selectedRestaurant = restaurant;
         }
-        if (!(param instanceof String) || !(param instanceof Integer))
+        else
             Log.e("WRONG_PARAMETER", "initSelectedRestaurant: Must pass a string restaurantName or an int restaurantPosition ", new Throwable());
 
         return selectedRestaurant;

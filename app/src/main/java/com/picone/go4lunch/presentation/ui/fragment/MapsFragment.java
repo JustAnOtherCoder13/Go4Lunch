@@ -48,7 +48,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     private FusedLocationProviderClient mFusedLocationProviderClient;
     public static String MAPS_KEY;
 
-    //TODO make status bar transparent
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,14 +68,16 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState);
         initMapView(savedInstanceState);
         showAppBars(true);
+        setStatusBarTransparent(false);
         fetchLastLocation();
         mRestaurantViewModel.resetSelectedRestaurant();
         mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(),restaurant -> {
             if (restaurant!=null)
                 Navigation.findNavController(requireView()).navigate(R.id.restaurantDetailFragment);
         });
+        mRestaurantViewModel.getCurrentLocation.observe(getViewLifecycleOwner(),currentLocation ->
+                mRestaurantViewModel.getRestaurantFromMaps());
         mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(),users -> {
-            Log.i("TAG", "onViewCreated: "+users);
             mRestaurantViewModel.resetDbOnDailyScheduleDatePassed(users);});
     }
 
@@ -122,8 +123,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
                 mCurrentLocation = location;
                 mBinding.mapView.getMapAsync(this);
                 mRestaurantViewModel.setCurrentLocation(location);
-                mRestaurantViewModel.getCurrentLocation.observe(getViewLifecycleOwner(),currentLocation ->
-                        mRestaurantViewModel.getRestaurantFromMaps());
             }
         });
     }

@@ -49,6 +49,7 @@ public class AuthenticationFragment extends BaseFragment {
         mBinding = FragmentAuthenticationBinding.inflate(inflater, container, false);
         initView();
         showAppBars(false);
+        setStatusBarTransparent(true);
         mNavController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
         return mBinding.getRoot();
     }

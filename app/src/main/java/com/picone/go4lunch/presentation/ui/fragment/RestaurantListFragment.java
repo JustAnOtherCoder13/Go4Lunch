@@ -29,6 +29,7 @@ public class RestaurantListFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentRestaurantListBinding.inflate(inflater, container, false);
         showAppBars(true);
+        setStatusBarTransparent(false);
         return mBinding.getRoot();
     }
 

@@ -24,7 +24,6 @@ public class WorkmatesFragment extends BaseFragment {
 
     public static final String TAG = WorkmatesFragment.class.getName();
     private FragmentWorkmatesBinding mBinding;
-    private ColleagueRecyclerViewAdapter mAdapter;
     private List<User> mUsers = new ArrayList<>();
 
     @Nullable
@@ -32,6 +31,7 @@ public class WorkmatesFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentWorkmatesBinding.inflate(getLayoutInflater());
         showAppBars(true);
+        setStatusBarTransparent(false);
         return mBinding.getRoot();
     }
 
@@ -48,10 +48,10 @@ public class WorkmatesFragment extends BaseFragment {
     }
 
     private void initRecyclerView() {
-        mAdapter = new ColleagueRecyclerViewAdapter(mUsers, TAG);
+        ColleagueRecyclerViewAdapter adapter = new ColleagueRecyclerViewAdapter(mUsers, TAG);
         mBinding.recyclerViewWorkmatesFragment.setLayoutManager(new LinearLayoutManager(getContext()));
-        mBinding.recyclerViewWorkmatesFragment.setAdapter(mAdapter);
-        mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(), users -> mAdapter.updateUsers(users));
+        mBinding.recyclerViewWorkmatesFragment.setAdapter(adapter);
+        mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(), adapter::updateUsers);
     }
 
     public void configureOnClickRecyclerView() {
