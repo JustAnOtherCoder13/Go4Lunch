@@ -2,14 +2,13 @@ package com.picone.go4lunch.presentation.viewModels;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
-import android.util.Log;
 
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.core.domain.entity.User;
 import com.picone.core.domain.entity.UserDailySchedule;
 import com.picone.core.domain.entity.predictionPOJO.Prediction;
@@ -216,18 +215,18 @@ public class RestaurantViewModel extends ViewModel {
         User currentUser = currentUserMutableLiveData.getValue();
         List<String> fanList = new ArrayList<>();
         fanList.add(currentUser.getUid());
-        getFanListForRestaurantInteractor.getFanListForRestaurant(restaurant.getName())
+        getFanListForRestaurantInteractor.getFanListForRestaurant(restaurant.getPlaceId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .switchIfEmpty(updateFanListForRestaurantInteractor.updateFanListForRestaurant(restaurant.getName(), fanList)
-                        .andThen(getFanListForRestaurantInteractor.getFanListForRestaurant(restaurant.getName())))
+                .switchIfEmpty(updateFanListForRestaurantInteractor.updateFanListForRestaurant(restaurant.getPlaceId(), fanList)
+                        .andThen(getFanListForRestaurantInteractor.getFanListForRestaurant(restaurant.getPlaceId())))
                 .flatMapCompletable(persistedFanList -> {
                     if (!persistedFanList.contains(currentUser.getUid())){
                         persistedFanList.add(currentUser.getUid());
                         selectedRestaurantMutableLiveData.getValue().setFanList(persistedFanList);}
                     //TODO if restaurantMutable not set, fanList don't update if set create a loop cause restaurant detail get restaurantMutable values
                     //selectedRestaurantMutableLiveData.setValue(restaurant);
-                    return updateFanListForRestaurantInteractor.updateFanListForRestaurant(restaurant.getName(), persistedFanList);
+                    return updateFanListForRestaurantInteractor.updateFanListForRestaurant(restaurant.getPlaceId(), persistedFanList);
                 })
                 .subscribe(() -> {
                 }, throwable -> {
@@ -264,7 +263,7 @@ public class RestaurantViewModel extends ViewModel {
         updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(user)
                 .doFinally(() -> isDataLoadingMutableLiveData.setValue(false))
                 .andThen(getInterestedUsersForRestaurantKeyInteractor
-                        .getInterestedUsersForRestaurantKey(selectedRestaurantMutableLiveData.getValue().getKey()))
+                        .getInterestedUsersForRestaurantKey(selectedRestaurantMutableLiveData.getValue().getPlaceId()))
                 .flatMapCompletable(usersForRestaurant -> {
                     interestedUsersMutableLiveData.setValue(usersForRestaurant);
                     return updateNumberOfInterestedUsersForRestaurantInteractor

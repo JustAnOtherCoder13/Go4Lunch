@@ -1,4 +1,4 @@
-package com.picone.core.domain.entity;
+package com.picone.core.domain.entity.restaurant;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -19,19 +19,17 @@ public class Restaurant {
 
     private String distance;
 
-    private String key;
-
     private double averageSatisfaction;
+    private List<RestaurantDailySchedule> restaurantDailySchedules;
     private int numberOfInterestedUsers;
     private List<String> fanList;
 
     public Restaurant() {
     }
 
-    public Restaurant(String key, String name, String distance, String restaurantPhoto, RestaurantPosition restaurantPosition,
+    public Restaurant(String name, String distance, String restaurantPhoto, RestaurantPosition restaurantPosition,
                       String address, String placeId, String openingHours,  String phoneNumber, String website,
-                      double averageSatisfaction,  int numberOfInterestedUsers, List<String> fanList) {
-        this.key = key;
+                      double averageSatisfaction,  int numberOfInterestedUsers, List<String> fanList,List<RestaurantDailySchedule> restaurantDailySchedules) {
         this.name = name;
         this.distance = distance;
         this.restaurantPhoto = restaurantPhoto;
@@ -44,6 +42,7 @@ public class Restaurant {
         this.website = website;
         this.phoneNumber = phoneNumber;
         this.placeId = placeId;
+        this.restaurantDailySchedules = restaurantDailySchedules;
     }
 
     public void setOpeningHours(String openingHours) {
@@ -92,16 +91,9 @@ public class Restaurant {
         return averageSatisfaction;
     }
 
-    public String getKey() { return key; }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
     public RestaurantPosition getRestaurantPosition() {
         return restaurantPosition;
     }
-
 
     public int getNumberOfInterestedUsers() {
         return numberOfInterestedUsers;
@@ -121,6 +113,14 @@ public class Restaurant {
 
     public void setDistance(String distance) {
         this.distance = distance;
+    }
+
+    public List<RestaurantDailySchedule> getRestaurantDailySchedules() {
+        return restaurantDailySchedules;
+    }
+
+    public void setRestaurantDailySchedules(List<RestaurantDailySchedule> restaurantDailySchedules) {
+        this.restaurantDailySchedules = restaurantDailySchedules;
     }
 }
 

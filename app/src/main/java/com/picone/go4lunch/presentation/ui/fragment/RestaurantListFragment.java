@@ -11,7 +11,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentRestaurantListBinding;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.RestaurantListRecyclerViewAdapter;

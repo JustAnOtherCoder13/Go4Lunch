@@ -26,7 +26,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
-import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentMapsBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;

@@ -1,4 +1,4 @@
-package com.picone.core.domain.entity;
+package com.picone.core.domain.entity.restaurant;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 

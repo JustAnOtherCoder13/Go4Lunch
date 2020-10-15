@@ -4,9 +4,8 @@ import android.location.Location;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.picone.core.data.repository.place.RetrofitClient;
-import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.core.domain.entity.RestaurantDetailPOJO.RestaurantDetail;
 import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
 import com.picone.core.domain.entity.RestaurantPOJO.NearBySearch;
@@ -69,13 +68,13 @@ public class RestaurantDaoImpl implements RestaurantDao {
     }
 
     @Override
-    public Completable updateFanListForRestaurant(String restaurantName, List<String> fanList) {
-        return RxFirebaseDatabase.setValue(restaurantsDataBaseReference.child(restaurantName).child("fanList"), fanList);
+    public Completable updateFanListForRestaurant(String restaurantPlaceId, List<String> fanList) {
+        return RxFirebaseDatabase.setValue(restaurantsDataBaseReference.child(restaurantPlaceId).child("fanList"), fanList);
     }
 
     @Override
-    public Observable<List<String>> getFanListForRestaurant(String restaurantName) {
-        return RxFirebaseDatabase.observeSingleValueEvent(restaurantsDataBaseReference.child(restaurantName).child("fanList"), DataSnapshotMapper.listOf(String.class)).toObservable();
+    public Observable<List<String>> getFanListForRestaurant(String restaurantPlaceId) {
+        return RxFirebaseDatabase.observeSingleValueEvent(restaurantsDataBaseReference.child(restaurantPlaceId).child("fanList"), DataSnapshotMapper.listOf(String.class)).toObservable();
     }
 
 //-----------------------------------------------GOOGLE PLACE-------------------------------------------------------
