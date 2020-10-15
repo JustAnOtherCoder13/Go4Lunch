@@ -158,7 +158,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
 
             MarkerOptions customMarkerOption = new MarkerOptions()
                     .position(restaurantLatLng)
-                    .title(restaurant.getName());
+                    .title(restaurant.getPlaceId());
 
             if (restaurant.getNumberOfInterestedUsers() > 0) {
                 mMap.addMarker(customMarkerOption

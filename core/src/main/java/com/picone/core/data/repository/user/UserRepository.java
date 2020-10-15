@@ -35,7 +35,7 @@ public class UserRepository {
     }
 
     public Observable<List<User>> getInterestedUsersForRestaurantKey(String restaurantKey) {
-        return userDao.getInterestedUsersForRestaurantKey(restaurantKey);
+        return userDao.getInterestedUsersForRestaurantPlaceId(restaurantKey);
     }
 
 

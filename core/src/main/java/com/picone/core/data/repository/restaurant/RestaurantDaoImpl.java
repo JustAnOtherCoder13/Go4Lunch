@@ -59,8 +59,8 @@ public class RestaurantDaoImpl implements RestaurantDao {
     }
 
     @Override
-    public Completable updateNumberOfInterestedUsersForRestaurant(String restaurantName, int numberOfInterestedUsers) {
-        return RxFirebaseDatabase.setValue(restaurantsDataBaseReference.child(restaurantName).child("numberOfInterestedUsers"), numberOfInterestedUsers);
+    public Completable updateNumberOfInterestedUsersForRestaurant(String restaurantPlaceId, int numberOfInterestedUsers) {
+        return RxFirebaseDatabase.setValue(restaurantsDataBaseReference.child(restaurantPlaceId).child("numberOfInterestedUsers"), numberOfInterestedUsers);
     }
 
     @Override

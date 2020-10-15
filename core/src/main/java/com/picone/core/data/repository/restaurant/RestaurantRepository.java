@@ -29,10 +29,6 @@ public class RestaurantRepository {
         this.restaurantDao = dao;
     }
 
-    public Observable<Restaurant> getRestaurantForName(String restaurantName) {
-        return restaurantDao.getRestaurantForName(restaurantName);
-    }
-
     public Observable<Restaurant> getRestaurantFromFirebase(String restaurantPlaceId) {
         return restaurantDao.getRestaurantFromFirebase(restaurantPlaceId);
     }
@@ -43,10 +39,6 @@ public class RestaurantRepository {
 
     public Completable updateUserChosenRestaurant(User currentUser) {
         return restaurantDao.updateUserChosenRestaurant(currentUser);
-    }
-
-    public Observable<List<Restaurant>> getRestaurantForKey(String restaurantKey) {
-        return restaurantDao.getRestaurantForKey(restaurantKey);
     }
 
     public Completable updateNumberOfInterestedUsersForRestaurant(String restaurantName, int numberOfInterestedUsers) {

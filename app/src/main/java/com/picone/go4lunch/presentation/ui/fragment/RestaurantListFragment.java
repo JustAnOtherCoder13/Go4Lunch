@@ -11,6 +11,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.picone.core.domain.entity.Restaurant;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentRestaurantListBinding;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.RestaurantListRecyclerViewAdapter;
@@ -18,6 +19,7 @@ import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import com.picone.go4lunch.presentation.utils.RecyclerViewItemClickUtil;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class RestaurantListFragment extends BaseFragment {
@@ -55,7 +57,9 @@ public class RestaurantListFragment extends BaseFragment {
 
     public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewListFragment, R.layout.fragment_restaurant_list)
-                .setOnItemClickListener((recyclerView, position, v) ->
-                        mRestaurantViewModel.initSelectedRestaurant(position));
+                .setOnItemClickListener((recyclerView, position, v) ->{
+                        Restaurant restaurant = Objects.requireNonNull(mRestaurantViewModel.getAllRestaurants.getValue()).get(position);
+                        mRestaurantViewModel.initSelectedRestaurant(restaurant.getPlaceId());
+                });
     }
 }

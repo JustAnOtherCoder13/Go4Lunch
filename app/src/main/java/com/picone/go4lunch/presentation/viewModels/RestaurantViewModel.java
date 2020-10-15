@@ -23,8 +23,6 @@ import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors
 import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.UpdateUserChosenRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantInteractors.AddRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetAllPersistedRestaurantsInteractor;
-import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetRestaurantForKeyInteractor;
-import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetRestaurantForNameInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetRestaurantFromFirebaseInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetInterestedUsersForRestaurantKeyInteractor;
@@ -34,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
@@ -155,17 +154,21 @@ public class RestaurantViewModel extends ViewModel {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
-    public <T> void initSelectedRestaurant(T param) {
-        Restaurant selectedRestaurant = getRestaurantOnUserClick(param);
-        getRestaurantFromFirebaseInteractor.getRestaurantFromFirebase(selectedRestaurant.getPlaceId())
+    public void initSelectedRestaurant(String placeId) {
+        Restaurant selectedRestaurant = new Restaurant();
+        for (Restaurant restaurant : Objects.requireNonNull(allRestaurantsMutableLiveData.getValue()))
+            if (restaurant.getPlaceId().equals(placeId)){
+                selectedRestaurantMutableLiveData.setValue(restaurant);
+                selectedRestaurant = restaurant;
+            }
+
+        getRestaurantFromFirebaseInteractor.getRestaurantFromFirebase(placeId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .switchIfEmpty(addRestaurantInteractor.addRestaurant(selectedRestaurant)
-                        .andThen(getRestaurantFromFirebaseInteractor.getRestaurantFromFirebase(selectedRestaurant.getPlaceId())))
-                .flatMap(restaurantForName -> {
-                    selectedRestaurantMutableLiveData.setValue(restaurantForName);
-                    return getInterestedUsersForRestaurantKeyInteractor.getInterestedUsersForRestaurantKey(restaurantForName.getPlaceId());
-                })
+                        .toObservable())
+                .flatMap(restaurantFromFirebase ->
+                        getInterestedUsersForRestaurantKeyInteractor.getInterestedUsersForRestaurantKey(placeId))
                 .subscribe(usersForRestaurant -> interestedUsersMutableLiveData.setValue(usersForRestaurant));
     }
 
@@ -255,7 +258,7 @@ public class RestaurantViewModel extends ViewModel {
     private void updateUserDailySchedule() {
         User user = currentUserMutableLiveData.getValue();
         user.setUserDailySchedule(new UserDailySchedule(DATE
-                , selectedRestaurantMutableLiveData.getValue().getKey()
+                , selectedRestaurantMutableLiveData.getValue().getPlaceId()
                 , selectedRestaurantMutableLiveData.getValue().getName()));
 
         updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(user)
@@ -265,27 +268,10 @@ public class RestaurantViewModel extends ViewModel {
                 .flatMapCompletable(usersForRestaurant -> {
                     interestedUsersMutableLiveData.setValue(usersForRestaurant);
                     return updateNumberOfInterestedUsersForRestaurantInteractor
-                            .updateNumberOfInterestedUsersForRestaurant(selectedRestaurantMutableLiveData.getValue().getName(), usersForRestaurant.size());
+                            .updateNumberOfInterestedUsersForRestaurant(selectedRestaurantMutableLiveData.getValue().getPlaceId(), usersForRestaurant.size());
                 })
                 .subscribe(() -> {
                 }, throwable -> {
                 });
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    private <T> Restaurant getRestaurantOnUserClick(T param) {
-        Restaurant selectedRestaurant = new Restaurant();
-
-        if (param instanceof Integer) {
-            selectedRestaurant = allRestaurantsMutableLiveData.getValue().get((Integer) param);
-        }
-        else if (param instanceof String) {
-            for (Restaurant restaurant : allRestaurantsMutableLiveData.getValue())
-                if (restaurant.getName().equals(param)) selectedRestaurant = restaurant;
-        }
-        else
-            Log.e("WRONG_PARAMETER", "initSelectedRestaurant: Must pass a string restaurantName or an int restaurantPosition ", new Throwable());
-
-        return selectedRestaurant;
     }
 }

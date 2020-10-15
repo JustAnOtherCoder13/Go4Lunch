@@ -131,7 +131,7 @@ public class RestaurantDetailFragment extends BaseFragment {
         if (restaurant.getWebsite() == null)
             mBinding.webSiteDetailImageButton.setBackgroundColor(Color.LTGRAY);
         mRestaurantViewModel.getCurrentUser.observe(getViewLifecycleOwner(), user -> {
-            if (restaurant.getFanList().contains(user.getUid())) {
+            if (restaurant.getFanList()!=null&&restaurant.getFanList().contains(user.getUid())) {
                 mBinding.likeDetailImageButton.setBackgroundColor(Color.LTGRAY);
                 mBinding.likeDetailImageButton.setOnClickListener(null);
             }
