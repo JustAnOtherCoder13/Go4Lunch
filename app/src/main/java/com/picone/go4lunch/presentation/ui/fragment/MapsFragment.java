@@ -26,7 +26,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
-import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentMapsBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
@@ -36,6 +36,7 @@ import java.util.Objects;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.picone.go4lunch.presentation.utils.GetBitmapFromVectorUtil.getBitmapFromVectorDrawable;
+import static com.picone.go4lunch.presentation.viewModels.RestaurantViewModel.getRestaurantDailyScheduleOnToday;
 
 
 public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
@@ -77,8 +78,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         });
         mRestaurantViewModel.getCurrentLocation.observe(getViewLifecycleOwner(),currentLocation ->
                 mRestaurantViewModel.getRestaurantFromMaps());
-        mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(),users -> {
-            mRestaurantViewModel.resetDbOnDailyScheduleDatePassed(users);});
     }
 
     @Override
@@ -160,9 +159,10 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
 
             MarkerOptions customMarkerOption = new MarkerOptions()
                     .position(restaurantLatLng)
-                    .title(restaurant.getName());
+                    .title(restaurant.getPlaceId());
 
-            if (restaurant.getNumberOfInterestedUsers() > 0) {
+            if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules())!=null&&
+                    getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().size() > 0){
                 mMap.addMarker(customMarkerOption
                         .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_user))));
             } else {

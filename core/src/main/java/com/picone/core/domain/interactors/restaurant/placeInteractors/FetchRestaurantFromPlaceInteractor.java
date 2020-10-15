@@ -3,11 +3,11 @@ package com.picone.core.domain.interactors.restaurant.placeInteractors;
 import android.location.Location;
 
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
-import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.core.domain.entity.RestaurantPOJO.NearBySearch;
 import com.picone.core.domain.entity.RestaurantPOJO.Photo;
 import com.picone.core.domain.entity.RestaurantPOJO.RestaurantPOJO;
-import com.picone.core.domain.entity.RestaurantPosition;
+import com.picone.core.domain.entity.restaurant.RestaurantPosition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +55,6 @@ public class FetchRestaurantFromPlaceInteractor {
 
     private Restaurant createRestaurant(RestaurantPOJO restaurantPOJO, String googleKey) {
         return new Restaurant(
-                null,
                 restaurantPOJO.getName(),
                 "0",
                 createPhotoUrl(googleKey, restaurantPOJO),
@@ -67,6 +66,8 @@ public class FetchRestaurantFromPlaceInteractor {
                 "",
                 0,
                 0,
+                new ArrayList<>(),
                 new ArrayList<>());
+
     }
 }

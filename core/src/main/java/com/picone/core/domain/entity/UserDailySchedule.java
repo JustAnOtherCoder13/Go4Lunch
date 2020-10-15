@@ -26,7 +26,7 @@ public class UserDailySchedule {
         this.date = date;
     }
 
-    public String getRestaurantKey() {
+    public String getRestaurantPlaceId() {
         return restaurantKey;
     }
 

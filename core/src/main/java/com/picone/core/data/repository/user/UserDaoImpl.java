@@ -44,8 +44,8 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Observable<List<User>> getInterestedUsersForRestaurantKey(String restaurantKey){
-        Query query = usersDatabaseReference.orderByChild("userDailySchedule/restaurantKey").equalTo(restaurantKey);
+    public Observable<List<User>> getInterestedUsersForRestaurantPlaceId(String restaurantPlaceId){
+        Query query = usersDatabaseReference.orderByChild("userDailySchedule/restaurantKey").equalTo(restaurantPlaceId);
         return RxFirebaseDatabase.observeValueEvent(query,DataSnapshotMapper.listOf(User.class)).toObservable();
     }
 }

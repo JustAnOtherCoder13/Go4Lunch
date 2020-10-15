@@ -13,12 +13,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.picone.core.domain.entity.Restaurant;
+import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.go4lunch.databinding.RecyclerViewRestaurantItemsBinding;
 
 import java.util.List;
 
 import static com.picone.go4lunch.presentation.utils.ManageStarUtil.manageStar;
+import static com.picone.go4lunch.presentation.viewModels.RestaurantViewModel.getRestaurantDailyScheduleOnToday;
 
 public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantListRecyclerViewAdapter.ViewHolder> {
 
@@ -90,8 +91,9 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
     }
 
     private void setInterestedUsers(@NonNull ViewHolder holder, Restaurant restaurant) {
-        if (restaurant.getNumberOfInterestedUsers() > 0)
-            holder.restaurantBinding.interestedColleagueNumber.setText(("(").concat(String.valueOf(restaurant.getNumberOfInterestedUsers())).concat(")"));
+        if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules())!=null&&
+                getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().size() > 0)
+            holder.restaurantBinding.interestedColleagueNumber.setText(("(").concat(String.valueOf(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().size())).concat(")"));
         else {
             holder.restaurantBinding.interestedColleague.setVisibility(View.GONE);
             holder.restaurantBinding.interestedColleagueNumber.setVisibility(View.GONE);

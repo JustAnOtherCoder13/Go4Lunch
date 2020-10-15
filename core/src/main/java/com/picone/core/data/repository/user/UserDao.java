@@ -15,5 +15,5 @@ public interface UserDao {
 
     Observable<List<User>> getCurrentUserForEmail (String authUserEmail);
 
-    Observable<List<User>> getInterestedUsersForRestaurantKey(String restaurantKey);
+    Observable<List<User>> getInterestedUsersForRestaurantPlaceId(String restaurantKey);
 }
