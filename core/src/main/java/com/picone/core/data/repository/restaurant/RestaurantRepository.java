@@ -33,6 +33,10 @@ public class RestaurantRepository {
         return restaurantDao.getRestaurantForName(restaurantName);
     }
 
+    public Observable<Restaurant> getRestaurantFromFirebase(String restaurantPlaceId) {
+        return restaurantDao.getRestaurantFromFirebase(restaurantPlaceId);
+    }
+
     public Completable addRestaurant(Restaurant restaurant) {
         return restaurantDao.addRestaurant(restaurant);
     }

@@ -25,14 +25,13 @@ import com.picone.core.domain.interactors.restaurant.restaurantInteractors.AddRe
 import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetAllPersistedRestaurantsInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetRestaurantForKeyInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetRestaurantForNameInteractor;
+import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetRestaurantFromFirebaseInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetInterestedUsersForRestaurantKeyInteractor;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -55,11 +54,9 @@ public class RestaurantViewModel extends ViewModel {
     private MutableLiveData<Location> locationMutableLiveData = new MutableLiveData<>();
 
 
-    private GetRestaurantForNameInteractor getRestaurantForNameInteractor;
     private AddRestaurantInteractor addRestaurantInteractor;
     private UpdateUserChosenRestaurantInteractor updateUserChosenRestaurantInteractor;
     private GetCurrentUserForEmailInteractor getCurrentUserForEmailInteractor;
-    private GetRestaurantForKeyInteractor getRestaurantForKeyInteractor;
     private GetInterestedUsersForRestaurantKeyInteractor getInterestedUsersForRestaurantKeyInteractor;
     private UpdateNumberOfInterestedUsersForRestaurantInteractor updateNumberOfInterestedUsersForRestaurantInteractor;
     private GetAllPersistedRestaurantsInteractor getAllPersistedRestaurantsInteractor;
@@ -69,23 +66,21 @@ public class RestaurantViewModel extends ViewModel {
     private UpdateFanListForRestaurantInteractor updateFanListForRestaurantInteractor;
     private GetFanListForRestaurantInteractor getFanListForRestaurantInteractor;
     private GetPredictionInteractor getPredictionInteractor;
+    private GetRestaurantFromFirebaseInteractor getRestaurantFromFirebaseInteractor;
 
     @ViewModelInject
-    public RestaurantViewModel(GetRestaurantForNameInteractor getRestaurantForNameInteractor
-            , AddRestaurantInteractor addRestaurantInteractor, UpdateUserChosenRestaurantInteractor updateUserChosenRestaurantInteractor
-            , GetCurrentUserForEmailInteractor getCurrentUserForEmailInteractor, GetRestaurantForKeyInteractor getRestaurantForKeyInteractor
+    public RestaurantViewModel(AddRestaurantInteractor addRestaurantInteractor, UpdateUserChosenRestaurantInteractor updateUserChosenRestaurantInteractor
+            , GetCurrentUserForEmailInteractor getCurrentUserForEmailInteractor
             , GetInterestedUsersForRestaurantKeyInteractor getInterestedUsersForRestaurantKeyInteractor
             , UpdateNumberOfInterestedUsersForRestaurantInteractor updateNumberOfInterestedUsersForRestaurantInteractor
-            , FetchRestaurantFromPlaceInteractor fetchRestaurantFromPlaceInteractor
+            , FetchRestaurantFromPlaceInteractor fetchRestaurantFromPlaceInteractor, GetRestaurantFromFirebaseInteractor getRestaurantFromFirebaseInteractor
             , GetAllPersistedRestaurantsInteractor getAllPersistedRestaurantsInteractor
             , UpdateFanListForRestaurantInteractor updateFanListForRestaurantInteractor, GetFanListForRestaurantInteractor getFanListForRestaurantInteractor
             , FetchRestaurantDistanceInteractor fetchRestaurantDistanceInteractor, FetchRestaurantDetailFromPlaceInteractor fetchRestaurantDetailFromPlaceInteractor
             , GetPredictionInteractor getPredictionInteractor) {
-        this.getRestaurantForNameInteractor = getRestaurantForNameInteractor;
         this.addRestaurantInteractor = addRestaurantInteractor;
         this.updateUserChosenRestaurantInteractor = updateUserChosenRestaurantInteractor;
         this.getCurrentUserForEmailInteractor = getCurrentUserForEmailInteractor;
-        this.getRestaurantForKeyInteractor = getRestaurantForKeyInteractor;
         this.getInterestedUsersForRestaurantKeyInteractor = getInterestedUsersForRestaurantKeyInteractor;
         this.updateNumberOfInterestedUsersForRestaurantInteractor = updateNumberOfInterestedUsersForRestaurantInteractor;
         this.getAllPersistedRestaurantsInteractor = getAllPersistedRestaurantsInteractor;
@@ -95,6 +90,7 @@ public class RestaurantViewModel extends ViewModel {
         this.fetchRestaurantDetailFromPlaceInteractor = fetchRestaurantDetailFromPlaceInteractor;
         this.fetchRestaurantDistanceInteractor = fetchRestaurantDistanceInteractor;
         this.getPredictionInteractor = getPredictionInteractor;
+        this.getRestaurantFromFirebaseInteractor= getRestaurantFromFirebaseInteractor;
         DATE = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(Calendar.getInstance().getTime());
     }
 
@@ -161,14 +157,14 @@ public class RestaurantViewModel extends ViewModel {
     @SuppressLint("CheckResult")
     public <T> void initSelectedRestaurant(T param) {
         Restaurant selectedRestaurant = getRestaurantOnUserClick(param);
-        getRestaurantForNameInteractor.getRestaurantForName(selectedRestaurant.getName())
+        getRestaurantFromFirebaseInteractor.getRestaurantFromFirebase(selectedRestaurant.getPlaceId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .switchIfEmpty(addRestaurantInteractor.addRestaurant(selectedRestaurant)
-                        .andThen(getRestaurantForNameInteractor.getRestaurantForName(selectedRestaurant.getName())))
+                        .andThen(getRestaurantFromFirebaseInteractor.getRestaurantFromFirebase(selectedRestaurant.getPlaceId())))
                 .flatMap(restaurantForName -> {
                     selectedRestaurantMutableLiveData.setValue(restaurantForName);
-                    return getInterestedUsersForRestaurantKeyInteractor.getInterestedUsersForRestaurantKey(restaurantForName.getKey());
+                    return getInterestedUsersForRestaurantKeyInteractor.getInterestedUsersForRestaurantKey(restaurantForName.getPlaceId());
                 })
                 .subscribe(usersForRestaurant -> interestedUsersMutableLiveData.setValue(usersForRestaurant));
     }
@@ -242,13 +238,13 @@ public class RestaurantViewModel extends ViewModel {
         if (currentUserMutableLiveData.getValue().getUserDailySchedule() == null)
             updateUserDailySchedule();
         else
-            getRestaurantForKeyInteractor.getRestaurantForKey(currentUserMutableLiveData.getValue().getUserDailySchedule().getRestaurantKey())
+            getRestaurantFromFirebaseInteractor.getRestaurantFromFirebase(currentUserMutableLiveData.getValue().getUserDailySchedule().getRestaurantKey())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .flatMapCompletable(restaurantsForKey -> {
-                        int interestedUsers = restaurantsForKey.get(0).getNumberOfInterestedUsers() - 1;
+                    .flatMapCompletable(restaurant -> {
+                        int interestedUsers = restaurant.getNumberOfInterestedUsers() - 1;
                         return updateNumberOfInterestedUsersForRestaurantInteractor
-                                .updateNumberOfInterestedUsersForRestaurant(restaurantsForKey.get(0).getName(), interestedUsers);
+                                .updateNumberOfInterestedUsersForRestaurant(restaurant.getPlaceId(), interestedUsers);
                     })
                     .subscribe(this::updateUserDailySchedule);
     }
@@ -274,48 +270,6 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribe(() -> {
                 }, throwable -> {
                 });
-    }
-
-    private List<User> usersWithDailySchedulePassed(List<User> allUsers) {
-        List<User> usersWithDailySchedulePassed = new ArrayList<>();
-        for (User user : allUsers) {
-            Date dailyScheduleDate = new Date();
-            Date today = new Date();
-            if (user.getUserDailySchedule() != null) {
-                try {
-                    dailyScheduleDate = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(user.getUserDailySchedule().getDate());
-                    today = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(DATE);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                assert dailyScheduleDate != null;
-                if (dailyScheduleDate.compareTo(today) < 0) usersWithDailySchedulePassed.add(user);
-            }
-
-        }
-        return usersWithDailySchedulePassed;
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    @SuppressLint("CheckResult")
-    public void resetDbOnDailyScheduleDatePassed(List<User> allUsers) {
-        if (!usersWithDailySchedulePassed(allUsers).isEmpty()) {
-            for (User user : usersWithDailySchedulePassed(allUsers)) {
-                getRestaurantForKeyInteractor.getRestaurantForKey(user.getUserDailySchedule().getRestaurantKey())
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .flatMapCompletable(restaurantsForKey -> {
-                            int interestedUsers = restaurantsForKey.get(0).getNumberOfInterestedUsers() - 1;
-                            user.setUserDailySchedule(new UserDailySchedule());
-                            return updateNumberOfInterestedUsersForRestaurantInteractor
-                                    .updateNumberOfInterestedUsersForRestaurant(restaurantsForKey.get(0).getName(), interestedUsers);
-                        })
-                        .andThen(updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(user))
-                        .subscribe(() -> {
-                        }, throwable -> {
-                        });
-            }
-        }
     }
 
     @SuppressWarnings("ConstantConditions")

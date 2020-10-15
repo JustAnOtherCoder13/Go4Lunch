@@ -77,8 +77,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         });
         mRestaurantViewModel.getCurrentLocation.observe(getViewLifecycleOwner(),currentLocation ->
                 mRestaurantViewModel.getRestaurantFromMaps());
-        mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(),users -> {
-            mRestaurantViewModel.resetDbOnDailyScheduleDatePassed(users);});
     }
 
     @Override

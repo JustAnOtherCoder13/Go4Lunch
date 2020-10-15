@@ -18,6 +18,7 @@ import com.picone.core.domain.interactors.restaurant.restaurantInteractors.AddRe
 import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetAllPersistedRestaurantsInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetRestaurantForKeyInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetRestaurantForNameInteractor;
+import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetRestaurantFromFirebaseInteractor;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
@@ -126,6 +127,11 @@ public final class coreModule {
     @Provides
     UpdateFanListForRestaurantInteractor provideUpdateFanListForRestaurant() {
         return new UpdateFanListForRestaurantInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static GetRestaurantFromFirebaseInteractor provideGetRestaurantFromFirebase() {
+        return new GetRestaurantFromFirebaseInteractor(provideRestaurantDataSource());
     }
 
     //-----------------------------PLACE INTERACTORS------------------------------------------

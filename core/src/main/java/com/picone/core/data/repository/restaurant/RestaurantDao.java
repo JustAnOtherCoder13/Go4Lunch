@@ -16,9 +16,7 @@ import io.reactivex.Observable;
 
 public interface RestaurantDao {
 
-    Observable<Restaurant> getRestaurantForName(String restaurantName);
-
-    Observable<List<Restaurant>> getRestaurantForKey(String restaurantKey);
+    Observable<Restaurant> getRestaurantFromFirebase(String restaurantPlaceId);
 
     Completable addRestaurant(Restaurant restaurant);
 
