@@ -1,20 +1,23 @@
 package com.picone.core.domain.entity.restaurant;
 
 import com.google.firebase.database.IgnoreExtraProperties;
+import com.picone.core.domain.entity.User;
+
+import java.util.List;
 
 @IgnoreExtraProperties
 
 public class RestaurantDailySchedule {
 
     private String date;
-    private int numberOfInterestedUsers;
+    private List<User> interestedUsers;
 
     public RestaurantDailySchedule() {
     }
 
-    public RestaurantDailySchedule(String date, int numberOfInterestedUsers) {
+    public RestaurantDailySchedule(String date, List<User> interestedUsers) {
         this.date = date;
-        this.numberOfInterestedUsers = numberOfInterestedUsers;
+        this.interestedUsers = interestedUsers;
     }
 
     public String getDate() {
@@ -25,11 +28,11 @@ public class RestaurantDailySchedule {
         this.date = date;
     }
 
-    public int getNumberOfInterestedUsers() {
-        return numberOfInterestedUsers;
+    public List<User> getInterestedUsers() {
+        return interestedUsers;
     }
 
-    public void setNumberOfInterestedUsers(int numberOfInterestedUsers) {
-        this.numberOfInterestedUsers = numberOfInterestedUsers;
+    public void setInterestedUsers(List<User> interestedUsers) {
+        this.interestedUsers = interestedUsers;
     }
 }
