@@ -29,20 +29,12 @@ public class RestaurantRepository {
         this.restaurantDao = dao;
     }
 
-    public Observable<Restaurant> getRestaurantFromFirebase(String restaurantPlaceId) {
-        return restaurantDao.getRestaurantFromFirebase(restaurantPlaceId);
-    }
-
     public Completable addRestaurant(Restaurant restaurant) {
         return restaurantDao.addRestaurant(restaurant);
     }
 
     public Completable updateUserChosenRestaurant(User currentUser) {
         return restaurantDao.updateUserChosenRestaurant(currentUser);
-    }
-
-    public Completable updateNumberOfInterestedUsersForRestaurant(String restaurantName, int numberOfInterestedUsers) {
-        return restaurantDao.updateNumberOfInterestedUsersForRestaurant(restaurantName, numberOfInterestedUsers);
     }
 
     public Observable<List<Restaurant>> getAllPersistedRestaurants() {
@@ -63,13 +55,5 @@ public class RestaurantRepository {
 
     public Observable<PredictionResponse> getPredictions(String restaurantName, String googleKey,String currentPosition) {
         return restaurantDao.getPredictions(restaurantName, googleKey,currentPosition);
-    }
-
-        public Completable updateFanListForRestaurant(String restaurantName, List<String> fanList) {
-        return restaurantDao.updateFanListForRestaurant(restaurantName, fanList);
-    }
-
-    public Observable<List<String>> getFanListForRestaurant(String restaurantName) {
-        return restaurantDao.getFanListForRestaurant(restaurantName);
     }
 }

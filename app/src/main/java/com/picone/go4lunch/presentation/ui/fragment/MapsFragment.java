@@ -36,6 +36,7 @@ import java.util.Objects;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.picone.go4lunch.presentation.utils.GetBitmapFromVectorUtil.getBitmapFromVectorDrawable;
+import static com.picone.go4lunch.presentation.viewModels.RestaurantViewModel.getRestaurantDailyScheduleOnToday;
 
 
 public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
@@ -160,7 +161,8 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
                     .position(restaurantLatLng)
                     .title(restaurant.getPlaceId());
 
-            if (restaurant.getNumberOfInterestedUsers() > 0) {
+            if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules())!=null&&
+                    getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().size() > 0){
                 mMap.addMarker(customMarkerOption
                         .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_user))));
             } else {

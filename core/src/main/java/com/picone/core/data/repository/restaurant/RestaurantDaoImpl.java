@@ -40,11 +40,6 @@ public class RestaurantDaoImpl implements RestaurantDao {
 
     //----------------------------------------FIREBASE---------------------------------------------------------------
 
-    @Override
-    public Observable<Restaurant> getRestaurantFromFirebase(String restaurantPlaceId) {
-        return RxFirebaseDatabase.observeSingleValueEvent(restaurantsDataBaseReference.child(restaurantPlaceId),Restaurant.class).toObservable();
-    }
-
 
     @Override
     public Completable addRestaurant(Restaurant restaurant) {
@@ -58,23 +53,8 @@ public class RestaurantDaoImpl implements RestaurantDao {
     }
 
     @Override
-    public Completable updateNumberOfInterestedUsersForRestaurant(String restaurantPlaceId, int numberOfInterestedUsers) {
-        return RxFirebaseDatabase.setValue(restaurantsDataBaseReference.child(restaurantPlaceId).child("numberOfInterestedUsers"), numberOfInterestedUsers);
-    }
-
-    @Override
     public Observable<List<Restaurant>> getAllPersistedRestaurants() {
         return RxFirebaseDatabase.observeValueEvent(restaurantsDataBaseReference, DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
-    }
-
-    @Override
-    public Completable updateFanListForRestaurant(String restaurantPlaceId, List<String> fanList) {
-        return RxFirebaseDatabase.setValue(restaurantsDataBaseReference.child(restaurantPlaceId).child("fanList"), fanList);
-    }
-
-    @Override
-    public Observable<List<String>> getFanListForRestaurant(String restaurantPlaceId) {
-        return RxFirebaseDatabase.observeSingleValueEvent(restaurantsDataBaseReference.child(restaurantPlaceId).child("fanList"), DataSnapshotMapper.listOf(String.class)).toObservable();
     }
 
 //-----------------------------------------------GOOGLE PLACE-------------------------------------------------------

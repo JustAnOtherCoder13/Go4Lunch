@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.your_lunch_drawer_layout:
                     mRestaurantViewModel.getCurrentUser.observe(this, user -> {
                         if (user.getUserDailySchedule() != null) {
-                            mRestaurantViewModel.initSelectedRestaurant(user.getUserDailySchedule().getRestaurantKey());
+                            mRestaurantViewModel.initSelectedRestaurant(user.getUserDailySchedule().getRestaurantPlaceId());
                         } else
                             Toast.makeText(this, "You haven't choose a restaurant yet", Toast.LENGTH_SHORT).show();
                     });

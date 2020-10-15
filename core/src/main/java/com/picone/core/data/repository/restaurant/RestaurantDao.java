@@ -16,20 +16,12 @@ import io.reactivex.Observable;
 
 public interface RestaurantDao {
 
-    Observable<Restaurant> getRestaurantFromFirebase(String restaurantPlaceId);
 
     Completable addRestaurant(Restaurant restaurant);
 
     Completable updateUserChosenRestaurant(User currentUser);
 
-    Completable updateNumberOfInterestedUsersForRestaurant(String restaurantName, int numberOfInterestedUsers);
-
     Observable<List<Restaurant>> getAllPersistedRestaurants();
-
-    Completable updateFanListForRestaurant(String restaurantName, List<String> fanList);
-
-    Observable<List<String>> getFanListForRestaurant(String restaurantName);
-
 
     Observable<NearBySearch> getNearBySearch(Location mCurrentLocation, String googleKey);
 

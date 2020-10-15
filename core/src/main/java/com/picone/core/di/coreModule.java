@@ -10,13 +10,9 @@ import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchResta
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantDistanceInteractor;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantFromPlaceInteractor;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.GetPredictionInteractor;
-import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.GetFanListForRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.UpdateFanListForRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.UpdateNumberOfInterestedUsersForRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.UpdateUserChosenRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantInteractors.AddRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetAllPersistedRestaurantsInteractor;
-import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetRestaurantFromFirebaseInteractor;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
@@ -98,28 +94,8 @@ public final class coreModule {
     }
 
     @Provides
-    static UpdateNumberOfInterestedUsersForRestaurantInteractor provideUpdateNumberOfInterestedUsersForRestaurant() {
-        return new UpdateNumberOfInterestedUsersForRestaurantInteractor(provideRestaurantDataSource());
-    }
-
-    @Provides
     static GetAllPersistedRestaurantsInteractor provideGetAllPersistedRestaurant() {
         return new GetAllPersistedRestaurantsInteractor(provideRestaurantDataSource());
-    }
-
-    @Provides
-    GetFanListForRestaurantInteractor provideGetFanListForRestaurant() {
-        return new GetFanListForRestaurantInteractor(provideRestaurantDataSource());
-    }
-
-    @Provides
-    UpdateFanListForRestaurantInteractor provideUpdateFanListForRestaurant() {
-        return new UpdateFanListForRestaurantInteractor(provideRestaurantDataSource());
-    }
-
-    @Provides
-    static GetRestaurantFromFirebaseInteractor provideGetRestaurantFromFirebase() {
-        return new GetRestaurantFromFirebaseInteractor(provideRestaurantDataSource());
     }
 
     //-----------------------------PLACE INTERACTORS------------------------------------------
