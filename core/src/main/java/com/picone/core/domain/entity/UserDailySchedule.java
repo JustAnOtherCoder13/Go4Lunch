@@ -6,15 +6,15 @@ import com.google.firebase.database.IgnoreExtraProperties;
 public class UserDailySchedule {
 
     private String date;
-    private String restaurantKey;
+    private String restaurantPlaceId;
     private String restaurantName;
 
     public UserDailySchedule() {
     }
 
-    public UserDailySchedule(String date, String restaurantKey,String restaurantName) {
+    public UserDailySchedule(String date, String restaurantPlaceId, String restaurantName) {
         this.date = date;
-        this.restaurantKey = restaurantKey;
+        this.restaurantPlaceId = restaurantPlaceId;
         this.restaurantName = restaurantName;
     }
 
@@ -27,11 +27,11 @@ public class UserDailySchedule {
     }
 
     public String getRestaurantPlaceId() {
-        return restaurantKey;
+        return restaurantPlaceId;
     }
 
-    public void setRestaurantKey(String restaurantKey) {
-        this.restaurantKey = restaurantKey;
+    public void setRestaurantPlaceId(String restaurantPlaceId) {
+        this.restaurantPlaceId = restaurantPlaceId;
     }
 
     public String getRestaurantName() { return restaurantName; }

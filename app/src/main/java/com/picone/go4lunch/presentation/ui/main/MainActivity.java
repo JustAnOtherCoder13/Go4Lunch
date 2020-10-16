@@ -86,7 +86,10 @@ public class MainActivity extends AppCompatActivity {
                 if (restaurant!=null)
                     mNavController.navigate(R.id.restaurantDetailFragment);
             });
-            mUserViewModel.updateUsersList();
+            mUserViewModel.setAllDbUsers();
+            mRestaurantViewModel.setAllDbRestaurants();
+            mRestaurantViewModel.getAllDbRestaurants.observe(this,restaurants ->
+                    mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(restaurants));
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
     }

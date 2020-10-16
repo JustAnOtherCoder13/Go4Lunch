@@ -1,6 +1,7 @@
 package com.picone.go4lunch.presentation.ui.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,8 +42,8 @@ public class WorkmatesFragment extends BaseFragment {
         initRecyclerView();
         configureOnClickRecyclerView();
         mRestaurantViewModel.resetSelectedRestaurant();
-        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(),restaurant -> {
-            if (restaurant!=null)
+        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant -> {
+            if (restaurant != null)
                 Navigation.findNavController(view).navigate(R.id.restaurantDetailFragment);
         });
     }
@@ -54,14 +55,14 @@ public class WorkmatesFragment extends BaseFragment {
         mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(), adapter::updateUsers);
     }
 
+    //getAllUsers can't be null cause set in main
+    @SuppressWarnings("ConstantConditions")
     public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewWorkmatesFragment, R.layout.fragment_restaurant_list)
-                .setOnItemClickListener((recyclerView, position, v) ->
-                        mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(),
-                        users -> {
-                    if (!users.isEmpty() && users.get(position).getUserDailySchedule()!= null){
-                        mRestaurantViewModel.initSelectedRestaurant(users.get(position).getUserDailySchedule().getRestaurantPlaceId());
+                .setOnItemClickListener((recyclerView, position, v) -> {
+                    if (!mUserViewModel.getAllUsers.getValue().isEmpty() && mUserViewModel.getAllUsers.getValue().get(position).getUserDailySchedule() != null) {
+                        mRestaurantViewModel.initSelectedRestaurant(mUserViewModel.getAllUsers.getValue().get(position).getUserDailySchedule().getRestaurantPlaceId());
                     }
-                }));
+                });
     }
 }

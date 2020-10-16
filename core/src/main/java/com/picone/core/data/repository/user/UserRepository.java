@@ -34,9 +34,5 @@ public class UserRepository {
         return userDao.getCurrentUserForEmail(authUserEmail);
     }
 
-    public Observable<List<User>> getInterestedUsersForRestaurantKey(String restaurantKey) {
-        return userDao.getInterestedUsersForRestaurantPlaceId(restaurantKey);
-    }
-
 
 }
