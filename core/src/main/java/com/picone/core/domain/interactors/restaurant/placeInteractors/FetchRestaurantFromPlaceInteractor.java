@@ -25,7 +25,7 @@ public class FetchRestaurantFromPlaceInteractor {
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    public Observable<List<Restaurant>> fetchRestaurantFromPlace_(Location mCurrentLocation, String googleKey) {
+    public Observable<List<Restaurant>> fetchRestaurantFromPlace(Location mCurrentLocation, String googleKey) {
 
         return restaurantDataSource
                 .googlePlaceService(mCurrentLocation, googleKey)
@@ -56,15 +56,14 @@ public class FetchRestaurantFromPlaceInteractor {
     private Restaurant createRestaurant(RestaurantPOJO restaurantPOJO, String googleKey) {
         return new Restaurant(
                 restaurantPOJO.getName(),
-                "0",
+                "",
                 createPhotoUrl(googleKey, restaurantPOJO),
                 new RestaurantPosition(restaurantPOJO.getGeometry().getLocation().getLat(), restaurantPOJO.getGeometry().getLocation().getLng()),
                 restaurantPOJO.getVicinity(),
                 restaurantPOJO.getPlaceId(),
-                "0",
                 "",
                 "",
-                0,
+                "",
                 0,
                 new ArrayList<>(),
                 new ArrayList<>());

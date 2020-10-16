@@ -1,7 +1,6 @@
 package com.picone.go4lunch.presentation.ui.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,8 @@ import com.picone.go4lunch.presentation.utils.RecyclerViewItemClickUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.picone.go4lunch.presentation.viewModels.RestaurantViewModel.getUserDailyScheduleOnToday;
 
 public class WorkmatesFragment extends BaseFragment {
 
@@ -60,8 +61,8 @@ public class WorkmatesFragment extends BaseFragment {
     public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewWorkmatesFragment, R.layout.fragment_restaurant_list)
                 .setOnItemClickListener((recyclerView, position, v) -> {
-                    if (!mUserViewModel.getAllUsers.getValue().isEmpty() && mUserViewModel.getAllUsers.getValue().get(position).getUserDailySchedule() != null) {
-                        mRestaurantViewModel.initSelectedRestaurant(mUserViewModel.getAllUsers.getValue().get(position).getUserDailySchedule().getRestaurantPlaceId());
+                    if (!mUserViewModel.getAllUsers.getValue().isEmpty() && mUserViewModel.getAllUsers.getValue().get(position).getUserDailySchedules() != null) {
+                        mRestaurantViewModel.initSelectedRestaurant(getUserDailyScheduleOnToday(mUserViewModel.getAllUsers.getValue().get(position).getUserDailySchedules()).getRestaurantPlaceId());
                     }
                 });
     }

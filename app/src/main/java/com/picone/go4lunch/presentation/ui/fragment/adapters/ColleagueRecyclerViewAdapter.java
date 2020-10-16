@@ -20,6 +20,8 @@ import com.picone.go4lunch.presentation.ui.fragment.WorkmatesFragment;
 
 import java.util.List;
 
+import static com.picone.go4lunch.presentation.viewModels.RestaurantViewModel.getUserDailyScheduleOnToday;
+
 public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<ColleagueRecyclerViewAdapter.ViewHolder> {
 
     private List<User> mUsers;
@@ -42,8 +44,8 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
     public void onBindViewHolder(@NonNull ColleagueRecyclerViewAdapter.ViewHolder holder, int position) {
         final User user = mUsers.get(position);
         if (tag.equals(WorkmatesFragment.TAG)) {
-            if (user.getUserDailySchedule() != null) {
-                holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(" is eating ").concat(user.getUserDailySchedule().getRestaurantName()));
+            if (user.getUserDailySchedules() != null) {
+                holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(" is eating ").concat(getUserDailyScheduleOnToday(user.getUserDailySchedules()).getRestaurantName()));
                 holder.colleagueBinding.userSelectedRestaurant.setTextColor(Color.BLACK);
             } else {
                 holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(" hasn't decided yet"));

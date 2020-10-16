@@ -39,6 +39,8 @@ import javax.inject.Inject;
 import dagger.hilt.android.AndroidEntryPoint;
 import dagger.hilt.android.scopes.ActivityScoped;
 
+import static com.picone.go4lunch.presentation.viewModels.RestaurantViewModel.getUserDailyScheduleOnToday;
+
 @ActivityScoped
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
@@ -82,13 +84,13 @@ public class MainActivity extends AppCompatActivity {
             mLoginViewModel.authenticate(true);
             mRestaurantViewModel.setCurrentUser(mFirebaseAuth.getCurrentUser().getEmail());
             mRestaurantViewModel.resetSelectedRestaurant();
-            mRestaurantViewModel.getSelectedRestaurant.observe(this,restaurant -> {
-                if (restaurant!=null)
+            mRestaurantViewModel.getSelectedRestaurant.observe(this, restaurant -> {
+                if (restaurant != null)
                     mNavController.navigate(R.id.restaurantDetailFragment);
             });
             mUserViewModel.setAllDbUsers();
             mRestaurantViewModel.setAllDbRestaurants();
-            mRestaurantViewModel.getAllDbRestaurants.observe(this,restaurants ->
+            mRestaurantViewModel.getAllDbRestaurants.observe(this, restaurants ->
                     mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(restaurants));
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
@@ -99,8 +101,7 @@ public class MainActivity extends AppCompatActivity {
         super.onBackPressed();
         if (Objects.requireNonNull(mNavController.getCurrentDestination()).getId() == R.id.authenticationFragment) {
             this.finish();
-        }
-        else mNavController.navigateUp();
+        } else mNavController.navigateUp();
     }
 
     private void initMenuButton() {
@@ -120,8 +121,8 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.your_lunch_drawer_layout:
                     mRestaurantViewModel.getCurrentUser.observe(this, user -> {
-                        if (user.getUserDailySchedule() != null) {
-                            mRestaurantViewModel.initSelectedRestaurant(user.getUserDailySchedule().getRestaurantPlaceId());
+                        if (user.getUserDailySchedules() != null) {
+                            mRestaurantViewModel.initSelectedRestaurant(getUserDailyScheduleOnToday(user.getUserDailySchedules()).getRestaurantPlaceId());
                         } else
                             Toast.makeText(this, "You haven't choose a restaurant yet", Toast.LENGTH_SHORT).show();
                     });
@@ -136,22 +137,27 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void setStatusBarTransparency(boolean isTransparent){
+    public void setStatusBarTransparency(boolean isTransparent) {
 
-        if (isTransparent){
-        if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
-            setWindowFlag( WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true);
-        }
-        if (Build.VERSION.SDK_INT >= 19) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        }
+        if (isTransparent) {
+            if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
+                setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true);
+            }
 
-        if (Build.VERSION.SDK_INT >= 21) {
-            setWindowFlag( WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }}
-        else{
-            //TODO set color
+            if (Build.VERSION.SDK_INT >= 21) {
+                setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
+                getWindow().setStatusBarColor(Color.TRANSPARENT);
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            }
+
+            if (Build.VERSION.SDK_INT >= 21) {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+            }
+
         }
     }
 

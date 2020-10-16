@@ -40,7 +40,6 @@ public class RestaurantDaoImpl implements RestaurantDao {
 
     //----------------------------------------FIREBASE---------------------------------------------------------------
 
-
     @Override
     public Completable addRestaurant(Restaurant restaurant) {
         return RxFirebaseDatabase.setValue(restaurantsDataBaseReference

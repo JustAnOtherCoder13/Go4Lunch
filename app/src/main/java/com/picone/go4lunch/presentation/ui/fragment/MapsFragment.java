@@ -72,11 +72,11 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         setStatusBarTransparent(false);
         fetchLastLocation();
         mRestaurantViewModel.resetSelectedRestaurant();
-        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(),restaurant -> {
-            if (restaurant!=null)
+        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant -> {
+            if (restaurant != null)
                 Navigation.findNavController(requireView()).navigate(R.id.restaurantDetailFragment);
         });
-        mRestaurantViewModel.getCurrentLocation.observe(getViewLifecycleOwner(),currentLocation ->
+        mRestaurantViewModel.getCurrentLocation.observe(getViewLifecycleOwner(), currentLocation ->
                 mRestaurantViewModel.getRestaurantFromMaps());
     }
 
@@ -118,7 +118,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         }
         Task<Location> task = mFusedLocationProviderClient.getLastLocation();
         task.addOnSuccessListener(location -> {
-            if (location != null && this.getView()!=null) {
+            if (location != null && this.getView() != null) {
                 mCurrentLocation = location;
                 mBinding.mapView.getMapAsync(this);
                 mRestaurantViewModel.setCurrentLocation(location);
@@ -150,29 +150,30 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     }
 
     private void initCustomMarker(List<Restaurant> restaurants) {
-        if (mMap!=null){
-        mMap.clear();
-        for (Restaurant restaurant : restaurants) {
-            LatLng restaurantLatLng = new LatLng
-                    (restaurant.getRestaurantPosition().getLatitude()
-                            , restaurant.getRestaurantPosition().getLongitude());
+        if (mMap != null) {
+            mMap.clear();
+            for (Restaurant restaurant : restaurants) {
+                LatLng restaurantLatLng = new LatLng
+                        (restaurant.getRestaurantPosition().getLatitude()
+                                , restaurant.getRestaurantPosition().getLongitude());
 
-            MarkerOptions customMarkerOption = new MarkerOptions()
-                    .position(restaurantLatLng)
-                    .title(restaurant.getPlaceId());
+                MarkerOptions customMarkerOption = new MarkerOptions()
+                        .position(restaurantLatLng)
+                        .title(restaurant.getPlaceId());
 
-            if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules())!=null&&
-                    getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().size() > 0){
-                mMap.addMarker(customMarkerOption
-                        .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_user))));
-            } else {
-                mMap.addMarker(customMarkerOption
-                        .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_no_user))));
+                if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null &&
+                        getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().size() > 0) {
+                    mMap.addMarker(customMarkerOption
+                            .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_user))));
+                } else {
+                    mMap.addMarker(customMarkerOption
+                            .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_restaurant_with_no_user))));
+                }
             }
+            mMap.setOnMarkerClickListener(marker -> {
+                mRestaurantViewModel.initSelectedRestaurant(marker.getTitle());
+                return false;
+            });
         }
-        mMap.setOnMarkerClickListener(marker -> {
-            mRestaurantViewModel.initSelectedRestaurant(marker.getTitle());
-            return false;
-        });
-    }}
+    }
 }

@@ -2,6 +2,8 @@ package com.picone.core.domain.entity;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.util.List;
+
 @IgnoreExtraProperties
 public class User {
 
@@ -9,18 +11,18 @@ public class User {
     private String name;
     private String email;
     private String avatar;
-    private UserDailySchedule userDailySchedule;
+    private List<UserDailySchedule> userDailySchedules;
 
 
     public User() {
     }
 
-    public User(String uid, String name, String email, String avatar, UserDailySchedule userDailySchedule) {
+    public User(String uid, String name, String email, String avatar, List<UserDailySchedule> userDailySchedules) {
         this.uid = uid;
         this.name = name;
         this.email = email;
         this.avatar = avatar;
-        this.userDailySchedule = userDailySchedule;
+        this.userDailySchedules = userDailySchedules;
     }
 
     public String getUid() {
@@ -40,12 +42,12 @@ public class User {
         return avatar;
     }
 
-    public UserDailySchedule getUserDailySchedule() {
-        return userDailySchedule;
+    public List<UserDailySchedule> getUserDailySchedules() {
+        return userDailySchedules;
     }
 
-    public void setUserDailySchedule(UserDailySchedule userDailySchedule) {
-        this.userDailySchedule = userDailySchedule;
+    public void setUserDailySchedules(List<UserDailySchedule> userDailySchedules) {
+        this.userDailySchedules = userDailySchedules;
     }
 
     public void setUid(String uid) { this.uid = uid;}

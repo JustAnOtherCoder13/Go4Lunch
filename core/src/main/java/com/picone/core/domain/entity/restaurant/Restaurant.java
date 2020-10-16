@@ -1,11 +1,13 @@
 package com.picone.core.domain.entity.restaurant;
 
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.List;
 
-@IgnoreExtraProperties
+
 public class Restaurant {
+
 
     private String name;
     private String address;
@@ -21,7 +23,6 @@ public class Restaurant {
 
     private double averageSatisfaction;
     private List<RestaurantDailySchedule> restaurantDailySchedules;
-    private int numberOfInterestedUsers;
     private List<String> fanList;
 
     public Restaurant() {
@@ -29,7 +30,7 @@ public class Restaurant {
 
     public Restaurant(String name, String distance, String restaurantPhoto, RestaurantPosition restaurantPosition,
                       String address, String placeId, String openingHours,  String phoneNumber, String website,
-                      double averageSatisfaction,  int numberOfInterestedUsers, List<String> fanList,List<RestaurantDailySchedule> restaurantDailySchedules) {
+                      double averageSatisfaction, List<String> fanList,List<RestaurantDailySchedule> restaurantDailySchedules) {
         this.name = name;
         this.distance = distance;
         this.restaurantPhoto = restaurantPhoto;
@@ -37,7 +38,6 @@ public class Restaurant {
         this.openingHours = openingHours;
         this.averageSatisfaction = averageSatisfaction;
         this.restaurantPosition = restaurantPosition;
-        this.numberOfInterestedUsers = numberOfInterestedUsers;
         this.fanList = fanList;
         this.website = website;
         this.phoneNumber = phoneNumber;
@@ -45,14 +45,9 @@ public class Restaurant {
         this.restaurantDailySchedules = restaurantDailySchedules;
     }
 
-    public void setOpeningHours(String openingHours) {
-        this.openingHours = openingHours;
-    }
 
-    public String getPlaceId() {
-        return placeId;
-    }
 
+    @Exclude
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -61,6 +56,7 @@ public class Restaurant {
         this.phoneNumber = phoneNumber;
     }
 
+    @Exclude
     public String getWebsite() {
         return website;
     }
@@ -69,38 +65,44 @@ public class Restaurant {
         this.website = website;
     }
 
+    @Exclude
     public String getName() {
         return name;
     }
 
+    @Exclude
     public String getDistance() {
         return distance;
     }
 
+    @Exclude
     public String getRestaurantPhoto() {
         return restaurantPhoto;
     }
 
+    @Exclude
     public String getAddress() { return address; }
 
+    @Exclude
     public String getOpeningHours() {
         return openingHours;
+    }
+
+    public void setOpeningHours(String openingHours) {
+        this.openingHours = openingHours;
     }
 
     public double getAverageSatisfaction() {
         return averageSatisfaction;
     }
 
+    @Exclude
     public RestaurantPosition getRestaurantPosition() {
         return restaurantPosition;
     }
 
-    public int getNumberOfInterestedUsers() {
-        return numberOfInterestedUsers;
-    }
-
-    public void setNumberOfInterestedUsers(int numberOfInterestedUsers) {
-        this.numberOfInterestedUsers = numberOfInterestedUsers;
+    public String getPlaceId() {
+        return placeId;
     }
 
     public List<String> getFanList() {
