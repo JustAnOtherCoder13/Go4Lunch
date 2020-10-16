@@ -20,6 +20,8 @@ import com.picone.go4lunch.presentation.utils.RecyclerViewItemClickUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.picone.go4lunch.presentation.viewModels.RestaurantViewModel.getUserDailyScheduleOnToday;
+
 public class WorkmatesFragment extends BaseFragment {
 
     public static final String TAG = WorkmatesFragment.class.getName();
@@ -41,8 +43,8 @@ public class WorkmatesFragment extends BaseFragment {
         initRecyclerView();
         configureOnClickRecyclerView();
         mRestaurantViewModel.resetSelectedRestaurant();
-        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(),restaurant -> {
-            if (restaurant!=null)
+        mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant -> {
+            if (restaurant != null)
                 Navigation.findNavController(view).navigate(R.id.restaurantDetailFragment);
         });
     }
@@ -54,14 +56,14 @@ public class WorkmatesFragment extends BaseFragment {
         mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(), adapter::updateUsers);
     }
 
+    //getAllUsers can't be null cause set in main
+    @SuppressWarnings("ConstantConditions")
     public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewWorkmatesFragment, R.layout.fragment_restaurant_list)
-                .setOnItemClickListener((recyclerView, position, v) ->
-                        mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(),
-                        users -> {
-                    if (!users.isEmpty() && users.get(position).getUserDailySchedule()!= null){
-                        mRestaurantViewModel.initSelectedRestaurant(users.get(position).getUserDailySchedule().getRestaurantPlaceId());
+                .setOnItemClickListener((recyclerView, position, v) -> {
+                    if (!mUserViewModel.getAllUsers.getValue().isEmpty() && mUserViewModel.getAllUsers.getValue().get(position).getUserDailySchedules() != null) {
+                        mRestaurantViewModel.initSelectedRestaurant(getUserDailyScheduleOnToday(mUserViewModel.getAllUsers.getValue().get(position).getUserDailySchedules()).getRestaurantPlaceId());
                     }
-                }));
+                });
     }
 }

@@ -16,7 +16,6 @@ import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetAl
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
-import com.picone.core.domain.interactors.usersInteractors.GetInterestedUsersForRestaurantKeyInteractor;
 
 import javax.inject.Singleton;
 
@@ -86,11 +85,6 @@ public final class coreModule {
     @Provides
     static AddRestaurantInteractor provideAddRestaurant() {
         return new AddRestaurantInteractor(provideRestaurantDataSource());
-    }
-
-    @Provides
-    static GetInterestedUsersForRestaurantKeyInteractor provideGetInterestedUsersForRestaurantKey() {
-        return new GetInterestedUsersForRestaurantKeyInteractor(provideUserDataSource());
     }
 
     @Provides

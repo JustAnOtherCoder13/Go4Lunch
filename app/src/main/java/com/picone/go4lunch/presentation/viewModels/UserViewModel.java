@@ -46,7 +46,7 @@ public class UserViewModel extends ViewModel {
 
     public LiveData<UserCompletionState> getAddUserState = UserCompletionStateMutableLiveData;
 
-    public void resetUserCompletionState (){
+    public void resetUserCompletionState() {
         UserCompletionStateMutableLiveData.setValue(UserCompletionState.START_STATE);
     }
 
@@ -56,12 +56,13 @@ public class UserViewModel extends ViewModel {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
-    public void updateUsersList(){
+    public void setAllDbUsers() {
         getAllUsersInteractor.getAllUsers()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(users -> allUsersMutableLiveData.setValue(users));
     }
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void addUser(User user) {

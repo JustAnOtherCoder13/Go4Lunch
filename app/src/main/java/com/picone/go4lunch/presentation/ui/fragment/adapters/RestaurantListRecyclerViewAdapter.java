@@ -79,8 +79,10 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
                     public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                         holder.restaurantBinding.restaurantPhotoImageView.setImageDrawable(resource);
                     }
+
                     @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) { }
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
                 });
     }
 
@@ -91,7 +93,7 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
     }
 
     private void setInterestedUsers(@NonNull ViewHolder holder, Restaurant restaurant) {
-        if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules())!=null&&
+        if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null &&
                 getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().size() > 0)
             holder.restaurantBinding.interestedColleagueNumber.setText(("(").concat(String.valueOf(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().size())).concat(")"));
         else {

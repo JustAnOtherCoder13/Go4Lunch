@@ -111,13 +111,19 @@ public class RestaurantDetailFragment extends BaseFragment {
         mRestaurantViewModel.getInterestedUsersForRestaurant.observe(getViewLifecycleOwner(), users ->
                 mAdapter.updateUsers(users));
 
+        mRestaurantViewModel.getLikeCounter.observe(getViewLifecycleOwner(), fanListSize ->
+                manageStar(mBinding.opinionStarDetailImageView, fanListSize));
+
+
         mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant -> {
             if (restaurant != null) {
                 setButtonColor(restaurant);
                 initButtons(restaurant);
+                if (restaurant.getFanList() != null)
+                    mRestaurantViewModel.setLikeCounter(restaurant.getFanList().size());
+                else mRestaurantViewModel.setLikeCounter(0);
                 mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
                 mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getAddress());
-                manageStar(mBinding.opinionStarDetailImageView, (int) restaurant.getAverageSatisfaction());
                 mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getAddress());
                 setLikeView(restaurant);
                 setPhoto(restaurant);
