@@ -2,6 +2,7 @@ package com.picone.core.data.repository.user;
 
 import com.google.firebase.database.FirebaseDatabase;
 import com.picone.core.domain.entity.User;
+import com.picone.core.domain.entity.UserDailySchedule;
 
 import java.util.List;
 
@@ -34,5 +35,7 @@ public class UserRepository {
         return userDao.getCurrentUserForEmail(authUserEmail);
     }
 
-
-}
+    public Observable<List<UserDailySchedule>> getCurrentUserDailyScheduleOnToday (String uId) {
+        return userDao.getCurrentUserDailyScheduleOnToday(uId);
+    }
+    }

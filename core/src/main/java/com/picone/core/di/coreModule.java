@@ -16,6 +16,7 @@ import com.picone.core.domain.interactors.restaurant.restaurantInteractors.AddRe
 import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetAllPersistedRestaurantsInteractor;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
+import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserDailyScheduleOnTodayInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
 
 import javax.inject.Singleton;
@@ -124,5 +125,10 @@ public final class coreModule {
     @Provides
     static SendNotificationInteractor provideSendNotification(){
         return new SendNotificationInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static GetCurrentUserDailyScheduleOnTodayInteractor provideGetCurrentUserDailyScheduleOnToday(){
+        return new GetCurrentUserDailyScheduleOnTodayInteractor(provideUserDataSource());
     }
 }

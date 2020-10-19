@@ -2,6 +2,7 @@ package com.picone.go4lunch.presentation.viewModels;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
+import android.util.Log;
 
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
@@ -21,6 +22,7 @@ import com.picone.core.domain.interactors.restaurant.placeInteractors.GetPredict
 import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.UpdateUserChosenRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantInteractors.AddRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetAllPersistedRestaurantsInteractor;
+import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserDailyScheduleOnTodayInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
 
 import java.text.SimpleDateFormat;
@@ -50,6 +52,7 @@ public class RestaurantViewModel extends ViewModel {
     private MutableLiveData<Location> locationMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Integer> likeCounter = new MutableLiveData<>();
     private MutableLiveData<List<Restaurant>> allDbRestaurantsMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<Restaurant> userChosenRestaurantMutableLiveData = new MutableLiveData<>();
 
 
     private AddRestaurantInteractor addRestaurantInteractor;
@@ -61,6 +64,7 @@ public class RestaurantViewModel extends ViewModel {
     private FetchRestaurantDetailFromPlaceInteractor fetchRestaurantDetailFromPlaceInteractor;
     private GetPredictionInteractor getPredictionInteractor;
     private SendNotificationInteractor sendNotificationInteractor;
+    private GetCurrentUserDailyScheduleOnTodayInteractor getCurrentUserDailyScheduleOnTodayInteractor;
 
 
     @ViewModelInject
@@ -68,7 +72,8 @@ public class RestaurantViewModel extends ViewModel {
             , GetCurrentUserForEmailInteractor getCurrentUserForEmailInteractor
             , FetchRestaurantFromPlaceInteractor fetchRestaurantFromPlaceInteractor, GetAllPersistedRestaurantsInteractor getAllPersistedRestaurantsInteractor
             , FetchRestaurantDistanceInteractor fetchRestaurantDistanceInteractor, FetchRestaurantDetailFromPlaceInteractor fetchRestaurantDetailFromPlaceInteractor
-            , GetPredictionInteractor getPredictionInteractor, SendNotificationInteractor sendNotificationInteractor) {
+            , GetPredictionInteractor getPredictionInteractor, SendNotificationInteractor sendNotificationInteractor
+            , GetCurrentUserDailyScheduleOnTodayInteractor getCurrentUserDailyScheduleOnTodayInteractor) {
         this.addRestaurantInteractor = addRestaurantInteractor;
         this.updateUserChosenRestaurantInteractor = updateUserChosenRestaurantInteractor;
         this.getCurrentUserForEmailInteractor = getCurrentUserForEmailInteractor;
@@ -78,6 +83,7 @@ public class RestaurantViewModel extends ViewModel {
         this.fetchRestaurantDistanceInteractor = fetchRestaurantDistanceInteractor;
         this.getPredictionInteractor = getPredictionInteractor;
         this.sendNotificationInteractor = sendNotificationInteractor;
+        this.getCurrentUserDailyScheduleOnTodayInteractor = getCurrentUserDailyScheduleOnTodayInteractor;
         DATE = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(Calendar.getInstance().getTime());
     }
 
@@ -89,6 +95,7 @@ public class RestaurantViewModel extends ViewModel {
     public LiveData<Location> getCurrentLocation = locationMutableLiveData;
     public LiveData<Integer> getLikeCounter = likeCounter;
     public LiveData<List<Restaurant>> getAllDbRestaurants = allDbRestaurantsMutableLiveData;
+    public LiveData<Restaurant> getUserChosenRestaurant = userChosenRestaurantMutableLiveData;
 
     public void setLikeCounter(int fanListSize) {
         likeCounter.setValue(fanListSize);
@@ -103,6 +110,19 @@ public class RestaurantViewModel extends ViewModel {
     }
 
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    public void setUserChosenRestaurant(){
+        if (currentUserMutableLiveData.getValue()!=null)
+        getCurrentUserDailyScheduleOnTodayInteractor.getCurrentUserDailyScheduleOnToday(currentUserMutableLiveData.getValue().getUid())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(userDailySchedules -> {
+                    if (!userDailySchedules.isEmpty()&& getUserDailyScheduleOnToday(userDailySchedules)!=null){
+                        userChosenRestaurantMutableLiveData.setValue(getRestaurantForPlaceId(getUserDailyScheduleOnToday(userDailySchedules).getRestaurantPlaceId()));
+                    }
+                });
+    }
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void setAllDbRestaurants() {
@@ -231,7 +251,8 @@ public class RestaurantViewModel extends ViewModel {
     public void addUserToRestaurant() {
         isDataLoadingMutableLiveData.setValue(true);
         Restaurant selectedRestaurant = getRestaurantForPlaceId(selectedRestaurantMutableLiveData.getValue().getPlaceId());
-        if (currentUserMutableLiveData.getValue().getUserDailySchedules() == null) {
+        if (currentUserMutableLiveData.getValue().getUserDailySchedules() == null ||
+        getUserDailyScheduleOnToday(currentUserMutableLiveData.getValue().getUserDailySchedules())==null) {
             updateRestaurantDailySchedule(selectedRestaurant);
             addRestaurantInteractor.addRestaurant(selectedRestaurant)
                     .subscribeOn(Schedulers.io())
@@ -283,9 +304,10 @@ public class RestaurantViewModel extends ViewModel {
     private void updateUserDailySchedule() {
         User user = currentUserMutableLiveData.getValue();
 
-        if (user.getUserDailySchedules()==null) user.setUserDailySchedules(new ArrayList<>());
-        if (getUserDailyScheduleOnToday(user.getUserDailySchedules())==null)user.getUserDailySchedules().add(new UserDailySchedule(DATE,selectedRestaurantMutableLiveData.getValue().getPlaceId(),selectedRestaurantMutableLiveData.getValue().getName()));
-        if (getUserDailyScheduleOnToday(user.getUserDailySchedules())!=null){
+        if (user.getUserDailySchedules() == null) user.setUserDailySchedules(new ArrayList<>());
+        if (getUserDailyScheduleOnToday(user.getUserDailySchedules()) == null)
+            user.getUserDailySchedules().add(new UserDailySchedule(DATE, selectedRestaurantMutableLiveData.getValue().getPlaceId(), selectedRestaurantMutableLiveData.getValue().getName()));
+        if (getUserDailyScheduleOnToday(user.getUserDailySchedules()) != null) {
             getUserDailyScheduleOnToday(user.getUserDailySchedules()).setRestaurantName(selectedRestaurantMutableLiveData.getValue().getName());
             getUserDailyScheduleOnToday(user.getUserDailySchedules()).setRestaurantPlaceId(selectedRestaurantMutableLiveData.getValue().getPlaceId());
         }
@@ -336,7 +358,7 @@ public class RestaurantViewModel extends ViewModel {
         return restaurantToReturn;
     }
 
-    public void sendNotification(String token){
+    public void sendNotification(String token) {
         sendNotificationInteractor.sendNotification(token)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

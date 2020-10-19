@@ -11,6 +11,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -129,14 +130,20 @@ public class MainActivity extends AppCompatActivity {
             mLoginViewModel.authenticate(true);
             mRestaurantViewModel.setCurrentUser(mFirebaseAuth.getCurrentUser().getEmail());
             mRestaurantViewModel.resetSelectedRestaurant();
+            mUserViewModel.setAllDbUsers();
+            mRestaurantViewModel.setAllDbRestaurants();
+
+
             mRestaurantViewModel.getSelectedRestaurant.observe(this, restaurant -> {
                 if (restaurant != null)
                     mNavController.navigate(R.id.restaurantDetailFragment);
             });
-            mUserViewModel.setAllDbUsers();
-            mRestaurantViewModel.setAllDbRestaurants();
+
             mRestaurantViewModel.getAllDbRestaurants.observe(this, restaurants ->
                     mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(restaurants));
+
+            mRestaurantViewModel.getUserChosenRestaurant.observe(this,restaurant ->
+                    Log.i("TAG", "onStart: user chosen restaurant on today "+restaurant.getName()));
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
     }
@@ -166,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.your_lunch_drawer_layout:
                     mRestaurantViewModel.getCurrentUser.observe(this, user -> {
-                        if (user.getUserDailySchedules() != null) {
+                        if (user.getUserDailySchedules() != null && getUserDailyScheduleOnToday(user.getUserDailySchedules())!=null) {
                             mRestaurantViewModel.initSelectedRestaurant(getUserDailyScheduleOnToday(user.getUserDailySchedules()).getRestaurantPlaceId());
                         } else
                             Toast.makeText(this, "You haven't choose a restaurant yet", Toast.LENGTH_SHORT).show();
