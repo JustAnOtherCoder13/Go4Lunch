@@ -87,21 +87,13 @@ public class MainActivity extends AppCompatActivity {
         initMenuButton();
         setUpNavigation();
         initLoginViewModel();
-        NotificationService notificationService = new NotificationService();
         mRestaurantViewModel.getUserChosenRestaurant.observe(this,restaurant ->{
             Log.i("TAG", "onStart: user chosen restaurant on today "+restaurant.getName());
             FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task ->{
                 if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules())!=null)
                     mRestaurantViewModel.sendNotification(task.getResult(),createMessage(restaurant.getName(),restaurant.getAddress(),UserListToString(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers())));});
-
-
-
         });
 
-        mRestaurantViewModel.getNotification.observe(this,o ->{
-            Log.i("TAG", "onCreate: "+notificationService.getMessage());
-            sendNotification(notificationService.getMessage());
-        } );
         }
 
 
