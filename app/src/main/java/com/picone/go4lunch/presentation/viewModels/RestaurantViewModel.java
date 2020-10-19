@@ -358,8 +358,8 @@ public class RestaurantViewModel extends ViewModel {
         return restaurantToReturn;
     }
 
-    public void sendNotification(String token) {
-        sendNotificationInteractor.sendNotification(token)
+    public void sendNotification(String token,Restaurant restaurant) {
+        sendNotificationInteractor.sendNotification(token,restaurant.getName(),restaurant.getAddress(),getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();

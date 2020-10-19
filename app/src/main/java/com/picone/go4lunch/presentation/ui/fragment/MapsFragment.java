@@ -63,10 +63,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentMapsBinding.inflate(inflater, container, false);
         mBinding.locationFab.setOnClickListener(v -> {
-            FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-                Log.i("TAG", "onCreateView: " + task.getResult());
-                mRestaurantViewModel.sendNotification(task.getResult());
-            });
             setUpMapCurrentPosition();
         });
         return mBinding.getRoot();
@@ -96,6 +92,13 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(),restaurants -> {
             initCustomMarker(restaurants);
             mRestaurantViewModel.setUserChosenRestaurant();
+            mRestaurantViewModel.getUserChosenRestaurant.observe(this,restaurant ->{
+                Log.i("TAG", "onStart: user chosen restaurant on today "+restaurant.getName());
+                FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+                    mRestaurantViewModel.sendNotification(task.getResult(),restaurant);
+                });
+            });
+
         });
     }
 

@@ -142,8 +142,7 @@ public class MainActivity extends AppCompatActivity {
             mRestaurantViewModel.getAllDbRestaurants.observe(this, restaurants ->
                     mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(restaurants));
 
-            mRestaurantViewModel.getUserChosenRestaurant.observe(this,restaurant ->
-                    Log.i("TAG", "onStart: user chosen restaurant on today "+restaurant.getName()));
+
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
     }
