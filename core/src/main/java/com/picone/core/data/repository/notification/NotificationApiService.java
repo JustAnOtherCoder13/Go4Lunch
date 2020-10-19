@@ -2,8 +2,7 @@ package com.picone.core.data.repository.notification;
 
 import com.google.gson.JsonObject;
 
-import org.json.JSONObject;
-
+import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
@@ -16,5 +15,5 @@ public interface NotificationApiService {
             "Content-Type: application/json"
     })
     @POST("fcm/send")
-    Call<JSONObject> sendNotification(@Body JSONObject payload);
+    Observable<JsonObject> sendNotification(@Body JsonObject payload);
 }

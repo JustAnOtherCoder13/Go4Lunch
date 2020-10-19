@@ -95,34 +95,8 @@ public class RestaurantDaoImpl implements RestaurantDao {
                 .loadPredictions(restaurantName, googleKey, currentPosition, RADIUS);
     }
 
-    public Observable<NotificationToSend> sendNotification(String token){
-        return Observable.create(emitter -> {
-            ApiClient apiClient = new ApiClient();
-            NotificationToSend notificationToSend = new NotificationToSend();
-            notificationToSend.setMessage(new Message());
-            notificationToSend.getMessage().setNotification(new Notification());
-            notificationToSend.getMessage().getNotification().setTitle("Today's lunch");
-            notificationToSend.getMessage().setToken(token);
-            JSONObject jsonObject = null;
-            try {
-                jsonObject = new JSONObject(new Gson().toJson(notificationToSend));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            apiClient.getApiService().sendNotification(jsonObject).enqueue(new Callback<JSONObject>() {
-                @Override
-                public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
-                    Log.i("TAG", "onResponse: "+response.raw());
-                   //emitter.onNext(response.body());
-                }
-
-                @Override
-                public void onFailure(Call<JSONObject> call, Throwable t) {
-
-                }
-            });
-        });
+    public Observable<JsonObject> sendNotification(JsonObject payload){
+        return ApiClient.getApiService().sendNotification(payload);
 
 
     }

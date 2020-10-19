@@ -9,13 +9,22 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-    public NotificationApiService getApiService() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://maps.googleapis.com/")
-                .client(new OkHttpClient().newBuilder().build())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+    public static NotificationApiService getApiService() {
+        return new Retrofit.Builder()
+                .baseUrl("https://fcm.googleapis.com/")
+                .client(provideClient())
                 .addConverterFactory(GsonConverterFactory.create())
-                .build();
-              return  retrofit.create(NotificationApiService.class);
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build()
+                .create(NotificationApiService.class);
+    }
+
+    private static OkHttpClient provideClient() {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        return new OkHttpClient.Builder().addInterceptor(interceptor).addInterceptor(chain -> {
+            Request request = chain.request();
+            return chain.proceed(request);
+        }).build();
     }
 }

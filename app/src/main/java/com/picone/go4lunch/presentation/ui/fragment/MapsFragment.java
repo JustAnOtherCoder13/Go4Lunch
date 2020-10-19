@@ -63,12 +63,15 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentMapsBinding.inflate(inflater, container, false);
         mBinding.locationFab.setOnClickListener(v -> {
-            FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task ->
-                    mRestaurantViewModel.sendNotification(task.getResult()));
+            FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+                Log.i("TAG", "onCreateView: " + task.getResult());
+                mRestaurantViewModel.sendNotification(task.getResult());
+            });
             setUpMapCurrentPosition();
         });
         return mBinding.getRoot();
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

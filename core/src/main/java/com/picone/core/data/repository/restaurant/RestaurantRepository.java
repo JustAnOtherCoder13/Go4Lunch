@@ -3,6 +3,7 @@ package com.picone.core.data.repository.restaurant;
 import android.location.Location;
 
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.JsonObject;
 import com.picone.core.domain.entity.notificationPOJO.NotificationToSend;
 import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.core.domain.entity.RestaurantDetailPOJO.RestaurantDetail;
@@ -58,7 +59,7 @@ public class RestaurantRepository {
         return restaurantDao.getPredictions(restaurantName, googleKey, currentPosition);
     }
 
-    public Observable<NotificationToSend> sendNotification(String token) {
-        return restaurantDao.sendNotification(token);
+    public Observable<JsonObject> sendNotification(JsonObject payload) {
+        return restaurantDao.sendNotification(payload);
     }
 }
