@@ -3,6 +3,7 @@ package com.picone.core.data.repository.restaurant;
 import android.location.Location;
 
 import com.google.firebase.database.FirebaseDatabase;
+import com.picone.core.domain.entity.notificationPOJO.NotificationToSend;
 import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.core.domain.entity.RestaurantDetailPOJO.RestaurantDetail;
 import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
@@ -45,15 +46,19 @@ public class RestaurantRepository {
         return restaurantDao.getNearBySearch(mCurrentLocation, googleKey);
     }
 
-    public Observable<RestaurantDetail> getPlaceRestaurantDetail(Restaurant restaurant,String googleKey) {
-        return restaurantDao.getPlaceRestaurantDetail(restaurant,googleKey);
+    public Observable<RestaurantDetail> getPlaceRestaurantDetail(Restaurant restaurant, String googleKey) {
+        return restaurantDao.getPlaceRestaurantDetail(restaurant, googleKey);
     }
 
-    public Observable<RestaurantDistance> getRestaurantDistance(String currentLocation, String restaurantLocation,String googleKey){
-        return restaurantDao.getRestaurantDistance(currentLocation, restaurantLocation,googleKey);
+    public Observable<RestaurantDistance> getRestaurantDistance(String currentLocation, String restaurantLocation, String googleKey) {
+        return restaurantDao.getRestaurantDistance(currentLocation, restaurantLocation, googleKey);
     }
 
-    public Observable<PredictionResponse> getPredictions(String restaurantName, String googleKey,String currentPosition) {
-        return restaurantDao.getPredictions(restaurantName, googleKey,currentPosition);
+    public Observable<PredictionResponse> getPredictions(String restaurantName, String googleKey, String currentPosition) {
+        return restaurantDao.getPredictions(restaurantName, googleKey, currentPosition);
+    }
+
+    public Observable<NotificationToSend> sendNotification(String token) {
+        return restaurantDao.sendNotification(token);
     }
 }

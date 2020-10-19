@@ -25,7 +25,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentMapsBinding;
@@ -60,7 +62,11 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentMapsBinding.inflate(inflater, container, false);
-        mBinding.locationFab.setOnClickListener(v -> setUpMapCurrentPosition());
+        mBinding.locationFab.setOnClickListener(v -> {
+            FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task ->
+                    mRestaurantViewModel.sendNotification(task.getResult()));
+            setUpMapCurrentPosition();
+        });
         return mBinding.getRoot();
     }
 

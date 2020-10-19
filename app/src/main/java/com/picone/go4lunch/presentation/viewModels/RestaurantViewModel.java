@@ -13,6 +13,7 @@ import com.picone.core.domain.entity.UserDailySchedule;
 import com.picone.core.domain.entity.predictionPOJO.Prediction;
 import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.core.domain.entity.restaurant.RestaurantDailySchedule;
+import com.picone.core.domain.interactors.SendNotificationInteractor;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantDetailFromPlaceInteractor;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantDistanceInteractor;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantFromPlaceInteractor;
@@ -31,6 +32,7 @@ import java.util.Objects;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -58,6 +60,7 @@ public class RestaurantViewModel extends ViewModel {
     private FetchRestaurantDistanceInteractor fetchRestaurantDistanceInteractor;
     private FetchRestaurantDetailFromPlaceInteractor fetchRestaurantDetailFromPlaceInteractor;
     private GetPredictionInteractor getPredictionInteractor;
+    private SendNotificationInteractor sendNotificationInteractor;
 
 
     @ViewModelInject
@@ -65,7 +68,7 @@ public class RestaurantViewModel extends ViewModel {
             , GetCurrentUserForEmailInteractor getCurrentUserForEmailInteractor
             , FetchRestaurantFromPlaceInteractor fetchRestaurantFromPlaceInteractor, GetAllPersistedRestaurantsInteractor getAllPersistedRestaurantsInteractor
             , FetchRestaurantDistanceInteractor fetchRestaurantDistanceInteractor, FetchRestaurantDetailFromPlaceInteractor fetchRestaurantDetailFromPlaceInteractor
-            , GetPredictionInteractor getPredictionInteractor) {
+            , GetPredictionInteractor getPredictionInteractor, SendNotificationInteractor sendNotificationInteractor) {
         this.addRestaurantInteractor = addRestaurantInteractor;
         this.updateUserChosenRestaurantInteractor = updateUserChosenRestaurantInteractor;
         this.getCurrentUserForEmailInteractor = getCurrentUserForEmailInteractor;
@@ -74,6 +77,7 @@ public class RestaurantViewModel extends ViewModel {
         this.fetchRestaurantDetailFromPlaceInteractor = fetchRestaurantDetailFromPlaceInteractor;
         this.fetchRestaurantDistanceInteractor = fetchRestaurantDistanceInteractor;
         this.getPredictionInteractor = getPredictionInteractor;
+        this.sendNotificationInteractor = sendNotificationInteractor;
         DATE = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(Calendar.getInstance().getTime());
     }
 
@@ -287,7 +291,7 @@ public class RestaurantViewModel extends ViewModel {
         }
         updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(user)
                 .doFinally(() -> isDataLoadingMutableLiveData.setValue(false))
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> {
                 }, throwable -> {
@@ -330,5 +334,12 @@ public class RestaurantViewModel extends ViewModel {
                 restaurantToReturn = restaurant;
         }
         return restaurantToReturn;
+    }
+
+    public void sendNotification(String token){
+        sendNotificationInteractor.sendNotification(token)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
     }
 }

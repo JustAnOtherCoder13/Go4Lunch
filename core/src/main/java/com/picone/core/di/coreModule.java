@@ -6,6 +6,7 @@ import com.picone.core.data.repository.restaurant.RestaurantDaoImpl;
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.data.repository.user.UserDaoImpl;
 import com.picone.core.data.repository.user.UserRepository;
+import com.picone.core.domain.interactors.SendNotificationInteractor;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantDetailFromPlaceInteractor;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantDistanceInteractor;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantFromPlaceInteractor;
@@ -23,6 +24,7 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.components.ActivityComponent;
+import retrofit2.http.POST;
 
 @InstallIn(ActivityComponent.class)
 @Module
@@ -117,5 +119,10 @@ public final class coreModule {
     @Provides
     static GetPredictionInteractor provideGetPredictions() {
         return new GetPredictionInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static SendNotificationInteractor provideSendNotification(){
+        return new SendNotificationInteractor(provideRestaurantDataSource());
     }
 }
