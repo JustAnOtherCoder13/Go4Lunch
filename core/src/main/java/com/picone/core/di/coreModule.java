@@ -16,7 +16,7 @@ import com.picone.core.domain.interactors.restaurant.restaurantInteractors.AddRe
 import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetAllPersistedRestaurantsInteractor;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
-import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserDailyScheduleOnTodayInteractor;
+import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserDailySchedulesInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
 
 import javax.inject.Singleton;
@@ -25,7 +25,6 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.components.ActivityComponent;
-import retrofit2.http.POST;
 
 @InstallIn(ActivityComponent.class)
 @Module
@@ -128,7 +127,7 @@ public final class coreModule {
     }
 
     @Provides
-    static GetCurrentUserDailyScheduleOnTodayInteractor provideGetCurrentUserDailyScheduleOnToday(){
-        return new GetCurrentUserDailyScheduleOnTodayInteractor(provideUserDataSource());
+    static GetCurrentUserDailySchedulesInteractor provideGetCurrentUserDailyScheduleOnToday(){
+        return new GetCurrentUserDailySchedulesInteractor(provideUserDataSource());
     }
 }

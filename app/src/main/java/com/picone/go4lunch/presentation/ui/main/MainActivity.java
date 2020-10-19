@@ -34,12 +34,16 @@ import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
+import com.picone.go4lunch.presentation.utils.NotificationService;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -47,6 +51,8 @@ import javax.inject.Inject;
 import dagger.hilt.android.AndroidEntryPoint;
 import dagger.hilt.android.scopes.ActivityScoped;
 
+import static com.picone.go4lunch.presentation.utils.SendNotificationUtil.sendVisualNotification;
+import static com.picone.go4lunch.presentation.viewModels.RestaurantViewModel.getRestaurantDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.viewModels.RestaurantViewModel.getUserDailyScheduleOnToday;
 
 @ActivityScoped
@@ -81,7 +87,36 @@ public class MainActivity extends AppCompatActivity {
         initMenuButton();
         setUpNavigation();
         initLoginViewModel();
+        NotificationService notificationService = new NotificationService();
+        mRestaurantViewModel.getUserChosenRestaurant.observe(this,restaurant ->{
+            Log.i("TAG", "onStart: user chosen restaurant on today "+restaurant.getName());
+            FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task ->{
+                if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules())!=null)
+                    mRestaurantViewModel.sendNotification(task.getResult(),createMessage(restaurant.getName(),restaurant.getAddress(),UserListToString(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers())));});
 
+
+
+        });
+
+        mRestaurantViewModel.getNotification.observe(this,o ->{
+            Log.i("TAG", "onCreate: "+notificationService.getMessage());
+            sendNotification(notificationService.getMessage());
+        } );
+        }
+
+
+    private String createMessage(String restaurantName, String restaurantAddress, String interestedUsers) {
+        return ("You are eating in : " + restaurantName + " at : " + restaurantAddress + " with : " + interestedUsers);
+    }
+
+    private String UserListToString(List<User> interestedUsers) {
+        String interestedUsersStr = null;
+        for (User interestedUser : interestedUsers)
+            if (interestedUsersStr == null)
+                interestedUsersStr = interestedUser.getName();
+            else
+                interestedUsersStr = interestedUsersStr.concat(", ").concat(interestedUser.getName());
+        return interestedUsersStr;
     }
 
     /**
@@ -139,8 +174,9 @@ public class MainActivity extends AppCompatActivity {
                     mNavController.navigate(R.id.restaurantDetailFragment);
             });
 
-            mRestaurantViewModel.getAllDbRestaurants.observe(this, restaurants ->
-                    mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(restaurants));
+            mRestaurantViewModel.getAllDbRestaurants.observe(this, restaurants ->{
+                mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(restaurants);
+            });
 
 
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();

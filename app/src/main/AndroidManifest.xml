@@ -59,7 +59,7 @@
 
         <!-- [START firebase_service] -->
         <service
-            android:name="com.picone.core.data.repository.notification.NotificationService"
+            android:name=".presentation.utils.NotificationService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

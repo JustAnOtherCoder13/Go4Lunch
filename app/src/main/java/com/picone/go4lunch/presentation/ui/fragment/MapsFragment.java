@@ -83,6 +83,8 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         });
         mRestaurantViewModel.getCurrentLocation.observe(getViewLifecycleOwner(), currentLocation ->
                 mRestaurantViewModel.getRestaurantFromMaps());
+
+
     }
 
     @Override
@@ -92,14 +94,8 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(),restaurants -> {
             initCustomMarker(restaurants);
             mRestaurantViewModel.setUserChosenRestaurant();
-            mRestaurantViewModel.getUserChosenRestaurant.observe(this,restaurant ->{
-                Log.i("TAG", "onStart: user chosen restaurant on today "+restaurant.getName());
-                FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-                    mRestaurantViewModel.sendNotification(task.getResult(),restaurant);
-                });
             });
 
-        });
     }
 
     private void initMapView(@Nullable Bundle savedInstanceState) {

@@ -35,7 +35,7 @@ public class UserRepository {
         return userDao.getCurrentUserForEmail(authUserEmail);
     }
 
-    public Observable<List<UserDailySchedule>> getCurrentUserDailyScheduleOnToday (String uId) {
+    public Observable<List<UserDailySchedule>> getCurrentUserDailySchedules(String uId) {
         return userDao.getCurrentUserDailyScheduleOnToday(uId);
     }
     }

@@ -9,16 +9,16 @@ import javax.inject.Inject;
 
 import io.reactivex.Observable;
 
-public class GetCurrentUserDailyScheduleOnTodayInteractor {
+public class GetCurrentUserDailySchedulesInteractor {
 
     @Inject
     UserRepository userDataSource;
 
-    public GetCurrentUserDailyScheduleOnTodayInteractor(UserRepository userDataSource) {
+    public GetCurrentUserDailySchedulesInteractor(UserRepository userDataSource) {
         this.userDataSource = userDataSource;
     }
 
-    public Observable<List<UserDailySchedule>> getCurrentUserDailyScheduleOnToday(String uId) {
-        return userDataSource.getCurrentUserDailyScheduleOnToday(uId);
+    public Observable<List<UserDailySchedule>> getCurrentUserDailySchedules(String uId) {
+        return userDataSource.getCurrentUserDailySchedules(uId);
     }
 }

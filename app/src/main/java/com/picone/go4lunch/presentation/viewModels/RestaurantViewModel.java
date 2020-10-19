@@ -2,7 +2,6 @@ package com.picone.go4lunch.presentation.viewModels;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
-import android.util.Log;
 
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
@@ -22,7 +21,7 @@ import com.picone.core.domain.interactors.restaurant.placeInteractors.GetPredict
 import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.UpdateUserChosenRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantInteractors.AddRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetAllPersistedRestaurantsInteractor;
-import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserDailyScheduleOnTodayInteractor;
+import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserDailySchedulesInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
 
 import java.text.SimpleDateFormat;
@@ -34,7 +33,6 @@ import java.util.Objects;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -64,7 +62,7 @@ public class RestaurantViewModel extends ViewModel {
     private FetchRestaurantDetailFromPlaceInteractor fetchRestaurantDetailFromPlaceInteractor;
     private GetPredictionInteractor getPredictionInteractor;
     private SendNotificationInteractor sendNotificationInteractor;
-    private GetCurrentUserDailyScheduleOnTodayInteractor getCurrentUserDailyScheduleOnTodayInteractor;
+    private GetCurrentUserDailySchedulesInteractor getCurrentUserDailySchedulesInteractor;
 
 
     @ViewModelInject
@@ -73,7 +71,7 @@ public class RestaurantViewModel extends ViewModel {
             , FetchRestaurantFromPlaceInteractor fetchRestaurantFromPlaceInteractor, GetAllPersistedRestaurantsInteractor getAllPersistedRestaurantsInteractor
             , FetchRestaurantDistanceInteractor fetchRestaurantDistanceInteractor, FetchRestaurantDetailFromPlaceInteractor fetchRestaurantDetailFromPlaceInteractor
             , GetPredictionInteractor getPredictionInteractor, SendNotificationInteractor sendNotificationInteractor
-            , GetCurrentUserDailyScheduleOnTodayInteractor getCurrentUserDailyScheduleOnTodayInteractor) {
+            , GetCurrentUserDailySchedulesInteractor getCurrentUserDailySchedulesInteractor) {
         this.addRestaurantInteractor = addRestaurantInteractor;
         this.updateUserChosenRestaurantInteractor = updateUserChosenRestaurantInteractor;
         this.getCurrentUserForEmailInteractor = getCurrentUserForEmailInteractor;
@@ -83,7 +81,7 @@ public class RestaurantViewModel extends ViewModel {
         this.fetchRestaurantDistanceInteractor = fetchRestaurantDistanceInteractor;
         this.getPredictionInteractor = getPredictionInteractor;
         this.sendNotificationInteractor = sendNotificationInteractor;
-        this.getCurrentUserDailyScheduleOnTodayInteractor = getCurrentUserDailyScheduleOnTodayInteractor;
+        this.getCurrentUserDailySchedulesInteractor = getCurrentUserDailySchedulesInteractor;
         DATE = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(Calendar.getInstance().getTime());
     }
 
@@ -114,7 +112,7 @@ public class RestaurantViewModel extends ViewModel {
     @SuppressLint("CheckResult")
     public void setUserChosenRestaurant(){
         if (currentUserMutableLiveData.getValue()!=null)
-        getCurrentUserDailyScheduleOnTodayInteractor.getCurrentUserDailyScheduleOnToday(currentUserMutableLiveData.getValue().getUid())
+        getCurrentUserDailySchedulesInteractor.getCurrentUserDailySchedules(currentUserMutableLiveData.getValue().getUid())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(userDailySchedules -> {
@@ -358,10 +356,17 @@ public class RestaurantViewModel extends ViewModel {
         return restaurantToReturn;
     }
 
-    public void sendNotification(String token,Restaurant restaurant) {
-        sendNotificationInteractor.sendNotification(token,restaurant.getName(),restaurant.getAddress(),getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers())
+    private MutableLiveData<Object> notification = new MutableLiveData<>();
+    public LiveData<Object> getNotification = notification;
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    public void sendNotification(String token, String message) {
+        sendNotificationInteractor.sendNotification(token,message)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .subscribe(object -> {notification.setValue(object);});
     }
+
+
 }
