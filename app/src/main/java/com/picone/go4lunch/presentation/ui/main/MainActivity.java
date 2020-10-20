@@ -38,7 +38,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.picone.core.domain.entity.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
-import com.picone.go4lunch.presentation.utils.NotificationService;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
@@ -51,7 +50,6 @@ import javax.inject.Inject;
 import dagger.hilt.android.AndroidEntryPoint;
 import dagger.hilt.android.scopes.ActivityScoped;
 
-import static com.picone.go4lunch.presentation.utils.SendNotificationUtil.sendVisualNotification;
 import static com.picone.go4lunch.presentation.viewModels.RestaurantViewModel.getRestaurantDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.viewModels.RestaurantViewModel.getUserDailyScheduleOnToday;
 

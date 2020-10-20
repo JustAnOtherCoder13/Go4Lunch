@@ -62,9 +62,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentMapsBinding.inflate(inflater, container, false);
-        mBinding.locationFab.setOnClickListener(v -> {
-            setUpMapCurrentPosition();
-        });
+        mBinding.locationFab.setOnClickListener(v -> setUpMapCurrentPosition());
         return mBinding.getRoot();
     }
 
@@ -83,8 +81,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         });
         mRestaurantViewModel.getCurrentLocation.observe(getViewLifecycleOwner(), currentLocation ->
                 mRestaurantViewModel.getRestaurantFromMaps());
-
-
     }
 
     @Override
@@ -122,6 +118,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     }
 
     private void fetchLastLocation() {
+        Log.i("TAG", "fetchLastLocation: ");
         if (ActivityCompat.checkSelfPermission(this.requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(requireActivity(), new String[]
                     {ACCESS_FINE_LOCATION}, REQUEST_CODE);
@@ -130,6 +127,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         Task<Location> task = mFusedLocationProviderClient.getLastLocation();
         task.addOnSuccessListener(location -> {
             if (location != null && this.getView() != null) {
+                Log.i("TAG", "fetchLastLocation: "+location);
                 mCurrentLocation = location;
                 mBinding.mapView.getMapAsync(this);
                 mRestaurantViewModel.setCurrentLocation(location);
