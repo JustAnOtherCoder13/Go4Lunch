@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.picone.core.domain.entity.User;
+import com.picone.core.domain.entity.user.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.RecyclerViewColleagueItemsBinding;
 import com.picone.go4lunch.presentation.ui.fragment.WorkmatesFragment;

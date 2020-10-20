@@ -1,4 +1,4 @@
-package com.picone.core.domain.entity.RestaurantPOJO;
+package com.picone.core.domain.entity.restaurantPOJO;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -12,7 +12,7 @@ public class OpeningHours_ {
     private Boolean openNow;
     @SerializedName("weekday_text")
     @Expose
-    private List<Object> weekdayText = new ArrayList<Object>();
+    private List<Object> weekdayText = new ArrayList<>();
 
     public Boolean getOpenNow() {
         return openNow;

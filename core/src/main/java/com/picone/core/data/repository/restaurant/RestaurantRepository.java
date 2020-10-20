@@ -5,11 +5,11 @@ import android.location.Location;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.JsonObject;
 import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
-import com.picone.core.domain.entity.User;
 import com.picone.core.domain.entity.predictionPOJO.PredictionResponse;
 import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.core.domain.entity.restaurantDetailPOJO.RestaurantDetail;
 import com.picone.core.domain.entity.restaurantPOJO.NearBySearch;
+import com.picone.core.domain.entity.user.User;
 
 import java.util.List;
 

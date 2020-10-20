@@ -1,7 +1,7 @@
 package com.picone.core.domain.interactors.usersInteractors;
 
 import com.picone.core.data.repository.user.UserRepository;
-import com.picone.core.domain.entity.User;
+import com.picone.core.domain.entity.user.User;
 
 import javax.inject.Inject;
 

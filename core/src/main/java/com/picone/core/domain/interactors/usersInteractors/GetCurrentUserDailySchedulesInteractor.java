@@ -1,7 +1,7 @@
 package com.picone.core.domain.interactors.usersInteractors;
 
 import com.picone.core.data.repository.user.UserRepository;
-import com.picone.core.domain.entity.UserDailySchedule;
+import com.picone.core.domain.entity.user.UserDailySchedule;
 
 import java.util.List;
 

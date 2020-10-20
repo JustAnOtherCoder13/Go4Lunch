@@ -1,9 +1,9 @@
 package com.picone.core.di;
 
 import com.google.firebase.database.FirebaseDatabase;
-import com.picone.core.data.repository.place.RetrofitClient;
 import com.picone.core.data.repository.restaurant.RestaurantDaoImpl;
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
+import com.picone.core.data.repository.services.RetrofitClient;
 import com.picone.core.data.repository.user.UserDaoImpl;
 import com.picone.core.data.repository.user.UserRepository;
 import com.picone.core.domain.interactors.SendNotificationInteractor;
@@ -122,12 +122,12 @@ public final class coreModule {
     }
 
     @Provides
-    static SendNotificationInteractor provideSendNotification(){
+    static SendNotificationInteractor provideSendNotification() {
         return new SendNotificationInteractor(provideRestaurantDataSource());
     }
 
     @Provides
-    static GetCurrentUserDailySchedulesInteractor provideGetCurrentUserDailyScheduleOnToday(){
+    static GetCurrentUserDailySchedulesInteractor provideGetCurrentUserDailyScheduleOnToday() {
         return new GetCurrentUserDailySchedulesInteractor(provideUserDataSource());
     }
 }

@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.picone.core.domain.entity.User;
+import com.picone.core.domain.entity.user.User;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
 

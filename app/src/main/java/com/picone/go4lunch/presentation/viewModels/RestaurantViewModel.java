@@ -8,8 +8,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.picone.core.domain.entity.User;
-import com.picone.core.domain.entity.UserDailySchedule;
+import com.picone.core.domain.entity.user.User;
+import com.picone.core.domain.entity.user.UserDailySchedule;
 import com.picone.core.domain.entity.predictionPOJO.Prediction;
 import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.core.domain.entity.restaurant.RestaurantDailySchedule;

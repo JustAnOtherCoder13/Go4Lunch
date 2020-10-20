@@ -1,4 +1,4 @@
-package com.picone.core.data.repository.place;
+package com.picone.core.data.repository.services;
 
 import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
 import com.picone.core.domain.entity.predictionPOJO.PredictionResponse;

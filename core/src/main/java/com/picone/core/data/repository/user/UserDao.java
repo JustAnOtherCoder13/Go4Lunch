@@ -1,7 +1,7 @@
 package com.picone.core.data.repository.user;
 
-import com.picone.core.domain.entity.User;
-import com.picone.core.domain.entity.UserDailySchedule;
+import com.picone.core.domain.entity.user.User;
+import com.picone.core.domain.entity.user.UserDailySchedule;
 
 import java.util.List;
 
@@ -16,5 +16,5 @@ public interface UserDao {
 
     Observable<List<User>> getCurrentUserForEmail (String authUserEmail);
 
-    Observable<List<UserDailySchedule>> getCurrentUserDailyScheduleOnToday (String uId);
+    Observable<List<UserDailySchedule>> getCurrentUserDailySchedules(String uId);
 }
