@@ -36,9 +36,10 @@ import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 import java.util.Arrays;
 import java.util.Objects;
 
+import static com.picone.go4lunch.presentation.utils.ConstantParameter.RC_SIGN_IN;
+
 public class AuthenticationFragment extends BaseFragment {
 
-    private static final int RC_SIGN_IN = 13250;
     private FragmentAuthenticationBinding mBinding;
     private NavController mNavController;
     private boolean isNewUser;
@@ -144,7 +145,7 @@ public class AuthenticationFragment extends BaseFragment {
 
     private void signInWithFacebook() {
         playLoadingAnimation(true, mAnimationView);
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "public_profile"));
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList(getString(R.string.email), getString(R.string.public_profile)));
         LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {

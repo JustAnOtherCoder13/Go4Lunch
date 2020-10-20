@@ -7,12 +7,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.JsonObject;
 import com.picone.core.data.repository.notification.ApiClient;
 import com.picone.core.data.repository.place.RetrofitClient;
-import com.picone.core.domain.entity.RestaurantDetailPOJO.RestaurantDetail;
 import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
-import com.picone.core.domain.entity.RestaurantPOJO.NearBySearch;
 import com.picone.core.domain.entity.User;
 import com.picone.core.domain.entity.predictionPOJO.PredictionResponse;
 import com.picone.core.domain.entity.restaurant.Restaurant;
+import com.picone.core.domain.entity.restaurantDetailPOJO.RestaurantDetail;
+import com.picone.core.domain.entity.restaurantPOJO.NearBySearch;
 
 import java.util.List;
 
@@ -83,9 +83,9 @@ public class RestaurantDaoImpl implements RestaurantDao {
                 .loadPredictions(restaurantName, googleKey, currentPosition, RADIUS);
     }
 
+    @Override
     public Observable<JsonObject> sendNotification(JsonObject payload){
         return ApiClient.getApiService().sendNotification(payload);
-
 
     }
 }

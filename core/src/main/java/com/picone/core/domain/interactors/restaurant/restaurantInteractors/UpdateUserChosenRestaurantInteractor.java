@@ -1,4 +1,4 @@
-package com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors;
+package com.picone.core.domain.interactors.restaurant.restaurantInteractors;
 
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.domain.entity.User;

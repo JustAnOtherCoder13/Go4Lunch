@@ -1,17 +1,10 @@
 package com.picone.go4lunch.presentation.ui.main;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -22,7 +15,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.app.NotificationCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -50,16 +42,14 @@ import javax.inject.Inject;
 import dagger.hilt.android.AndroidEntryPoint;
 import dagger.hilt.android.scopes.ActivityScoped;
 
-import static com.picone.go4lunch.presentation.viewModels.RestaurantViewModel.getRestaurantDailyScheduleOnToday;
-import static com.picone.go4lunch.presentation.viewModels.RestaurantViewModel.getUserDailyScheduleOnToday;
+import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
+import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getUserDailyScheduleOnToday;
+
 
 @ActivityScoped
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
-
-    //TODO add push message on 12h with chosen restaurant name, address, and list of interested users
     //TODO create a chat
-
 
     public ActivityMainBinding mBinding;
 
@@ -85,16 +75,15 @@ public class MainActivity extends AppCompatActivity {
         initMenuButton();
         setUpNavigation();
         initLoginViewModel();
-        mRestaurantViewModel.getUserChosenRestaurant.observe(this,restaurant ->{
-            FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task ->{
-                if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules())!=null)
-                    mRestaurantViewModel.sendNotification(task.getResult(),createMessage(restaurant.getName(),restaurant.getAddress(),UserListToString(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers())));});
-        });
+        mRestaurantViewModel.getUserChosenRestaurant.observe(this,restaurant ->
+                FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task ->{
+            if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules())!=null)
+                mRestaurantViewModel.sendNotification(task.getResult(),createMessage(restaurant.getName(),restaurant.getAddress(),UserListToString(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers())));}));
         }
 
 
     private String createMessage(String restaurantName, String restaurantAddress, String interestedUsers) {
-        return ("You are eating in : " + restaurantName + " at : " + restaurantAddress + " with : " + interestedUsers);
+        return (getString(R.string.notification_you_are_eating) + restaurantName + getString(R.string.notification_at) + restaurantAddress + getString(R.string.notification_with) + interestedUsers);
     }
 
     private String UserListToString(List<User> interestedUsers) {
@@ -105,44 +94,6 @@ public class MainActivity extends AppCompatActivity {
             else
                 interestedUsersStr = interestedUsersStr.concat(", ").concat(interestedUser.getName());
         return interestedUsersStr;
-    }
-
-    /**
-     * Create and show a simple notification containing the received FCM message.
-     *
-     * @param messageBody FCM message body received.
-     */
-    private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
-
-        String channelId = "notification_channel";
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this, channelId)
-                        .setSmallIcon(R.drawable.ic_logo_go4lunch)
-                        .setContentTitle("Today's lunch")
-                        .setContentText(messageBody)
-                        .setAutoCancel(true)
-                        .setSound(defaultSoundUri)
-                        .setContentIntent(pendingIntent);
-
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        // Since android Oreo notification channel is needed.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId,
-                    "Channel human readable title",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            assert notificationManager != null;
-            notificationManager.createNotificationChannel(channel);
-        }
-
-        assert notificationManager != null;
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
 
     @Override
@@ -156,17 +107,10 @@ public class MainActivity extends AppCompatActivity {
             mUserViewModel.setAllDbUsers();
             mRestaurantViewModel.setAllDbRestaurants();
 
-
             mRestaurantViewModel.getSelectedRestaurant.observe(this, restaurant -> {
                 if (restaurant != null)
                     mNavController.navigate(R.id.restaurantDetailFragment);
             });
-
-            mRestaurantViewModel.getAllDbRestaurants.observe(this, restaurants ->{
-                mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(restaurants);
-            });
-
-
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
     }

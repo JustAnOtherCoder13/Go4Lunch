@@ -44,7 +44,7 @@ public class UserDaoImpl implements UserDao {
         return RxFirebaseDatabase.observeSingleValueEvent(query,DataSnapshotMapper.listOf(User.class)).toObservable();
     }
 
-
+    @Override
     public Observable<List<UserDailySchedule>> getCurrentUserDailyScheduleOnToday (String uId){
         return RxFirebaseDatabase.observeValueEvent(usersDatabaseReference.child(uId).child("userDailySchedules"),DataSnapshotMapper.listOf(UserDailySchedule.class)).toObservable();
     }

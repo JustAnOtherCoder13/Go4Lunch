@@ -2,7 +2,7 @@ package com.picone.core.domain.interactors.restaurant.placeInteractors;
 
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.domain.entity.restaurant.Restaurant;
-import com.picone.core.domain.entity.RestaurantDetailPOJO.RestaurantDetail;
+import com.picone.core.domain.entity.restaurantDetailPOJO.RestaurantDetail;
 
 import java.util.Calendar;
 

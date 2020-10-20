@@ -1,9 +1,9 @@
 package com.picone.core.data.repository.place;
 
-import com.picone.core.domain.entity.RestaurantDetailPOJO.RestaurantDetail;
 import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
-import com.picone.core.domain.entity.RestaurantPOJO.NearBySearch;
 import com.picone.core.domain.entity.predictionPOJO.PredictionResponse;
+import com.picone.core.domain.entity.restaurantDetailPOJO.RestaurantDetail;
+import com.picone.core.domain.entity.restaurantPOJO.NearBySearch;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;

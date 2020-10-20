@@ -3,7 +3,6 @@ package com.picone.core.data.repository.notification;
 import com.google.gson.JsonObject;
 
 import io.reactivex.Observable;
-import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
