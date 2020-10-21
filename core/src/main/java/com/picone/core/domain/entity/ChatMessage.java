@@ -4,15 +4,17 @@ public class ChatMessage {
 
     private String time;
     private String userAvatar;
+    private String name;
     private String userText;
 
     public ChatMessage() {
     }
 
-    public ChatMessage(String time, String userAvatar, String userText) {
+    public ChatMessage(String time, String userAvatar,String name, String userText) {
         this.time = time;
         this.userAvatar = userAvatar;
         this.userText = userText;
+        this.name = name;
     }
 
     public String getTime() {
@@ -37,5 +39,13 @@ public class ChatMessage {
 
     public void setUserText(String userText) {
         this.userText = userText;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

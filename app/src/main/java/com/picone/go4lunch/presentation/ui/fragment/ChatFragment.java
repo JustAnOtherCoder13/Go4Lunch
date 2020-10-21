@@ -11,12 +11,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.picone.core.domain.entity.ChatMessage;
+import com.picone.core.domain.entity.user.User;
 import com.picone.go4lunch.databinding.FragmentChatBinding;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.ChatRecyclerViewAdapter;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.picone.go4lunch.presentation.utils.ConstantParameter.TODAY;
 
 
 public class ChatFragment extends BaseFragment {
@@ -41,6 +44,11 @@ public class ChatFragment extends BaseFragment {
             if (chatMessages!=null)
             mAdapter.updateMessages(chatMessages);
         });
+        mBinding.postMessageFab.setOnClickListener(v -> {
+            User user = mRestaurantViewModel.getCurrentUser.getValue();
+            if (!mBinding.chatEditText.getText().toString().trim().isEmpty())
+                mChatViewModel.postMessage(new ChatMessage(TODAY,user.getAvatar(),user.getName(),mBinding.chatEditText.getText().toString()));
+        });
         initRecyclerView();
     }
 
@@ -48,9 +56,5 @@ public class ChatFragment extends BaseFragment {
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mBinding.recyclerViewChatFragment.setLayoutManager(linearLayoutManager);
         mBinding.recyclerViewChatFragment.setAdapter(mAdapter);
-        ChatMessage chatMessage = new ChatMessage("yo","what's","up hjyt hjfhjg jh lhjh lkjg gfy i oi");
-        List<ChatMessage> chatMessages = new ArrayList<>();
-        chatMessages.add(chatMessage);
-        mAdapter.updateMessages(chatMessages);
     }
 }

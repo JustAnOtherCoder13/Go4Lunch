@@ -251,4 +251,16 @@
         <item name="srcCompat">@drawable/ic_baseline_my_location_24</item>
     </style>
 
+    <!-- *************************MAPS********************************* -->
+
+    <style name="post_fab_style">
+        <item name="android:layout_marginEnd">@dimen/basic_marge</item>
+        <item name="android:layout_marginBottom">@dimen/fab_marge</item>
+        <item name="android:scaleType">center</item>
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="maxImageSize">28dp</item>
+        <item name="srcCompat">@drawable/ic_send_24</item>
+        <item name="tint">@null</item>
+    </style>
+
 </resources>
