@@ -1,4 +1,4 @@
-package com.picone.core.domain.interactors.restaurant.placeInteractors;
+package com.picone.core.domain.interactors.restaurantInteractors.placeInteractors;
 
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.domain.entity.predictionPOJO.PredictionResponse;

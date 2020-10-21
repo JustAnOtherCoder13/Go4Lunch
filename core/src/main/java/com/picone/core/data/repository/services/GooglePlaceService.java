@@ -1,8 +1,8 @@
 package com.picone.core.data.repository.services;
 
-import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
 import com.picone.core.domain.entity.predictionPOJO.PredictionResponse;
 import com.picone.core.domain.entity.restaurantDetailPOJO.RestaurantDetail;
+import com.picone.core.domain.entity.restaurantDistancePOJO.RestaurantDistance;
 import com.picone.core.domain.entity.restaurantPOJO.NearBySearch;
 
 import io.reactivex.Observable;

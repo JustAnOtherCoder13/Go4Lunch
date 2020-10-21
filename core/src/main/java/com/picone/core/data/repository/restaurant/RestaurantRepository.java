@@ -2,12 +2,11 @@ package com.picone.core.data.repository.restaurant;
 
 import android.location.Location;
 
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.JsonObject;
-import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
 import com.picone.core.domain.entity.predictionPOJO.PredictionResponse;
 import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.core.domain.entity.restaurantDetailPOJO.RestaurantDetail;
+import com.picone.core.domain.entity.restaurantDistancePOJO.RestaurantDistance;
 import com.picone.core.domain.entity.restaurantPOJO.NearBySearch;
 import com.picone.core.domain.entity.user.User;
 
@@ -22,11 +21,8 @@ public class RestaurantRepository {
 
     @Inject
     protected RestaurantDaoImpl restaurantDao;
-    @Inject
-    protected FirebaseDatabase dataBase;
 
-    public RestaurantRepository(FirebaseDatabase dataBase, RestaurantDaoImpl dao) {
-        this.dataBase = dataBase;
+    public RestaurantRepository(RestaurantDaoImpl dao) {
         this.restaurantDao = dao;
     }
 

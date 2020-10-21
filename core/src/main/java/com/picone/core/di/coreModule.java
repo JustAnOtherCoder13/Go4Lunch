@@ -1,19 +1,23 @@
 package com.picone.core.di;
 
 import com.google.firebase.database.FirebaseDatabase;
+import com.picone.core.data.repository.chat.ChatMessageDaoImpl;
+import com.picone.core.data.repository.chat.ChatMessageRepository;
 import com.picone.core.data.repository.restaurant.RestaurantDaoImpl;
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.data.repository.services.RetrofitClient;
 import com.picone.core.data.repository.user.UserDaoImpl;
 import com.picone.core.data.repository.user.UserRepository;
 import com.picone.core.domain.interactors.SendNotificationInteractor;
-import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantDetailFromPlaceInteractor;
-import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantDistanceInteractor;
-import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantFromPlaceInteractor;
-import com.picone.core.domain.interactors.restaurant.placeInteractors.GetPredictionInteractor;
-import com.picone.core.domain.interactors.restaurant.restaurantInteractors.AddRestaurantInteractor;
-import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetAllPersistedRestaurantsInteractor;
-import com.picone.core.domain.interactors.restaurant.restaurantInteractors.UpdateUserChosenRestaurantInteractor;
+import com.picone.core.domain.interactors.chatInteractors.GetAllMessagesInteractor;
+import com.picone.core.domain.interactors.chatInteractors.PostMessageInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.placeInteractors.FetchRestaurantDetailFromPlaceInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.placeInteractors.FetchRestaurantDistanceInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.placeInteractors.FetchRestaurantFromPlaceInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.placeInteractors.GetPredictionInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.restaurantInteractors.AddRestaurantInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.restaurantInteractors.GetAllPersistedRestaurantsInteractor;
+import com.picone.core.domain.interactors.restaurantInteractors.restaurantInteractors.UpdateUserChosenRestaurantInteractor;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserDailySchedulesInteractor;
@@ -41,13 +45,19 @@ public final class coreModule {
     @Singleton
     @Provides
     static UserRepository provideUserDataSource() {
-        return new UserRepository(provideFireBaseDataBase(), provideUserDaoImpl());
+        return new UserRepository(provideUserDaoImpl());
     }
 
     @Singleton
     @Provides
     static RestaurantRepository provideRestaurantDataSource() {
-        return new RestaurantRepository(provideFireBaseDataBase(), provideRestaurantDaoImpl());
+        return new RestaurantRepository(provideRestaurantDaoImpl());
+    }
+
+    @Singleton
+    @Provides
+    static ChatMessageRepository provideChatMessageDataSource() {
+        return new ChatMessageRepository(provideChatMessageDaoImpl());
     }
 
     //--------------------------------------DAO-----------------------------------------------------
@@ -59,6 +69,11 @@ public final class coreModule {
     @Provides
     static RestaurantDaoImpl provideRestaurantDaoImpl() {
         return new RestaurantDaoImpl(provideFireBaseDataBase(), provideRetrofitClient());
+    }
+
+    @Provides
+    static ChatMessageDaoImpl provideChatMessageDaoImpl() {
+        return new ChatMessageDaoImpl(provideFireBaseDataBase());
     }
 
     //--------------------------------USERS INTERACTORS---------------------------------------------
@@ -130,4 +145,17 @@ public final class coreModule {
     static GetCurrentUserDailySchedulesInteractor provideGetCurrentUserDailyScheduleOnToday() {
         return new GetCurrentUserDailySchedulesInteractor(provideUserDataSource());
     }
+
+    //-----------------------------CHAT INTERACTORS------------------------------------------
+
+    @Provides
+    static GetAllMessagesInteractor provideGetAllMessages() {
+        return new GetAllMessagesInteractor(provideChatMessageDataSource());
+    }
+
+    @Provides
+    static PostMessageInteractor postMessageInteractor() {
+        return new PostMessageInteractor(provideChatMessageDataSource());
+    }
+
 }

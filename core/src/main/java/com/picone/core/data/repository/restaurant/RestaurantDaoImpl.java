@@ -6,10 +6,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.JsonObject;
 import com.picone.core.data.repository.services.RetrofitClient;
-import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
 import com.picone.core.domain.entity.predictionPOJO.PredictionResponse;
 import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.core.domain.entity.restaurantDetailPOJO.RestaurantDetail;
+import com.picone.core.domain.entity.restaurantDistancePOJO.RestaurantDistance;
 import com.picone.core.domain.entity.restaurantPOJO.NearBySearch;
 import com.picone.core.domain.entity.user.User;
 
