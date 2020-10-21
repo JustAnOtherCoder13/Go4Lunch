@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,12 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.picone.core.domain.entity.ChatMessage;
 import com.picone.core.domain.entity.user.User;
+import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentChatBinding;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.ChatRecyclerViewAdapter;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.picone.go4lunch.presentation.utils.ConstantParameter.TODAY;
 
@@ -30,31 +31,36 @@ public class ChatFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mBinding = FragmentChatBinding.inflate(inflater,container,false);
+        mBinding = FragmentChatBinding.inflate(inflater, container, false);
         showAppBars(false);
         setStatusBarTransparent(false);
-        mAdapter = new ChatRecyclerViewAdapter(new ArrayList<>());
         return mBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mChatViewModel.getAllMessages.observe(requireActivity(),chatMessages -> {
-            if (chatMessages!=null)
-            mAdapter.updateMessages(chatMessages);
-        });
+        initRecyclerView();
         mBinding.postMessageFab.setOnClickListener(v -> {
             User user = mRestaurantViewModel.getCurrentUser.getValue();
             if (!mBinding.chatEditText.getText().toString().trim().isEmpty())
-                mChatViewModel.postMessage(new ChatMessage(TODAY,user.getAvatar(),user.getName(),mBinding.chatEditText.getText().toString()));
+                mChatViewModel.postMessage(new ChatMessage(TODAY, user.getAvatar(), user.getName(), mBinding.chatEditText.getText().toString()));
+            mBinding.chatEditText.getText().clear();
         });
-        initRecyclerView();
+
     }
 
     private void initRecyclerView() {
+        mAdapter = new ChatRecyclerViewAdapter(new ArrayList<>());
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mBinding.recyclerViewChatFragment.setLayoutManager(linearLayoutManager);
         mBinding.recyclerViewChatFragment.setAdapter(mAdapter);
+        mChatViewModel.getAllMessages.observe(requireActivity(), chatMessages -> {
+            if (chatMessages != null) {
+                mAdapter.updateMessages(chatMessages);
+            }
+        });
     }
+
+
 }

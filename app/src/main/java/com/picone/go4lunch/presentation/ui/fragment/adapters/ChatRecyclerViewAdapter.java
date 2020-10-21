@@ -3,10 +3,13 @@ package com.picone.go4lunch.presentation.ui.fragment.adapters;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -36,18 +39,38 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
     @Override
     public void onBindViewHolder(@NonNull ChatRecyclerViewAdapter.ViewHolder holder, int position) {
-        Log.i("TAG", "onBindViewHolder: "+mMessages.get(position).getUserName());
         final ChatMessage chatMessage = mMessages.get(position);
-        holder.recyclerViewChatItemBinding.chatMessageTxt.setText(chatMessage.getUserText());
-        holder.recyclerViewChatItemBinding.chatUserName.setText(chatMessage.getUserName());
-        holder.recyclerViewChatItemBinding.chatMessageDate.setText(chatMessage.getTime());
-        Glide.with(holder.recyclerViewChatItemBinding.chatAvatarImageView.getContext())
+
+        boolean isSender = false;
+        if (isSender){
+            holder.recyclerViewChatItemBinding.txtCardViewReceiver.setVisibility(View.GONE);
+            holder.recyclerViewChatItemBinding.txtCardViewSender.setVisibility(View.VISIBLE);
+            setAvatar(holder.recyclerViewChatItemBinding.chatAvatarImageView, chatMessage);
+            holder.recyclerViewChatItemBinding.chatMessageTxt.setText(chatMessage.getUserText());
+            holder.recyclerViewChatItemBinding.chatUserName.setText(chatMessage.getUserName());
+            holder.recyclerViewChatItemBinding.chatMessageDate.setText(chatMessage.getTime());
+
+        }
+        else{
+            holder.recyclerViewChatItemBinding.txtCardViewReceiver.setVisibility(View.VISIBLE);
+            holder.recyclerViewChatItemBinding.txtCardViewSender.setVisibility(View.GONE);
+            setAvatar(holder.recyclerViewChatItemBinding.chatAvatarImageViewReceiver, chatMessage);
+            holder.recyclerViewChatItemBinding.chatMessageTxtReceiver.setText(chatMessage.getUserText());
+            holder.recyclerViewChatItemBinding.chatUserNameReceiver.setText(chatMessage.getUserName());
+            holder.recyclerViewChatItemBinding.chatMessageDateReceiver.setText(chatMessage.getTime());
+
+        }
+
+    }
+
+    private void setAvatar(@NonNull ImageView chatAvatarImageView, ChatMessage chatMessage) {
+        Glide.with(chatAvatarImageView.getContext())
                 .load(chatMessage.getUserAvatar())
                 .circleCrop()
                 .into(new CustomTarget<Drawable>() {
                     @Override
                     public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                        holder.recyclerViewChatItemBinding.chatAvatarImageView.setImageDrawable(resource);
+                        chatAvatarImageView.setImageDrawable(resource);
                     }
 
                     @Override
@@ -73,6 +96,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
     public void updateMessages(List<ChatMessage> chatMessages){
         this.mMessages=chatMessages;
+        notifyDataSetChanged();
     }
 
 }

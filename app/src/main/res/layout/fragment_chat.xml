@@ -36,7 +36,7 @@
             android:autofillHints=""
             android:background="@color/colorPrimary"
             android:textColor="@color/onPrimaryColor"
-            android:textColorHint="@color/onPrimaryColor"
+            android:textColorHint="@color/colorPrimaryLight"
             android:hint="Enter your message here"
             android:inputType="textMultiLine"
             app:layout_constraintBottom_toBottomOf="parent"
