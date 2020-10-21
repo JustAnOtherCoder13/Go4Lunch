@@ -30,6 +30,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.picone.core.domain.entity.user.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
+import com.picone.go4lunch.presentation.viewModels.ChatViewModel;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private UserViewModel mUserViewModel;
     private LoginViewModel mLoginViewModel;
     private RestaurantViewModel mRestaurantViewModel;
+    private ChatViewModel mChatViewModel;
     private NavController mNavController;
 
     @Override
@@ -69,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         mLoginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
+        mChatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -151,6 +154,9 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.logout_drawer_layout:
                     signOut();
                     break;
+                case R.id.chat_drawer_layout:
+                    mChatViewModel.setAllMessages();
+                    mNavController.navigate(R.id.chatFragment);
             }
             return false;
         });
