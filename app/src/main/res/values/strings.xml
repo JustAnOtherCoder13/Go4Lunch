@@ -64,4 +64,23 @@
     <string name="i_am_hungry_title">I\'m Hungry!</string>
     <string name="available_workmates">Available workmates</string>
 
+    <!-- CONSTANT -->
+    <string name="chanel_id">fcm_default_channel</string>
+    <string name="chanel_name">Message from Firebase</string>
+    <string name="intent_extra_name">message</string>
+    <string name="is_eating"> is eating </string>
+    <string name="has_not_decide"> hasn\'t decided yet</string>
+    <string name="is_joining"> is joining!</string>
+    <string name="closed">Closed</string>
+    <string name="email">email</string>
+    <string name="public_profile">public_profile</string>
+    <string name="exception">Exception: %s</string>
+    <string name="like_restaurant_question">Like this restaurant ?</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="tel">\"tel: \"</string>
+    <string name="notification_you_are_eating">\"You are eating in : \"</string>
+    <string name="notification_at">\" at : \"</string>
+    <string name="notification_with">\" with : \"</string>
+
 </resources>

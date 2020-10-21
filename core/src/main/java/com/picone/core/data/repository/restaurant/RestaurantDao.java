@@ -2,12 +2,13 @@ package com.picone.core.data.repository.restaurant;
 
 import android.location.Location;
 
-import com.picone.core.domain.entity.restaurant.Restaurant;
-import com.picone.core.domain.entity.RestaurantDetailPOJO.RestaurantDetail;
+import com.google.gson.JsonObject;
 import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
-import com.picone.core.domain.entity.RestaurantPOJO.NearBySearch;
-import com.picone.core.domain.entity.User;
 import com.picone.core.domain.entity.predictionPOJO.PredictionResponse;
+import com.picone.core.domain.entity.restaurant.Restaurant;
+import com.picone.core.domain.entity.restaurantDetailPOJO.RestaurantDetail;
+import com.picone.core.domain.entity.restaurantPOJO.NearBySearch;
+import com.picone.core.domain.entity.user.User;
 
 import java.util.List;
 
@@ -30,4 +31,6 @@ public interface RestaurantDao {
     Observable<RestaurantDistance> getRestaurantDistance(String currentLocation, String restaurantLocation, String googleKey);
 
     Observable<PredictionResponse> getPredictions(String restaurantName, String googleKey, String currentPosition);
+
+    Observable<JsonObject> sendNotification(JsonObject payload);
 }

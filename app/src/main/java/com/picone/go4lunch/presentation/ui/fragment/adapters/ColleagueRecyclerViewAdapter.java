@@ -14,13 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.picone.core.domain.entity.User;
+import com.picone.core.domain.entity.user.User;
+import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.RecyclerViewColleagueItemsBinding;
 import com.picone.go4lunch.presentation.ui.fragment.WorkmatesFragment;
 
 import java.util.List;
 
-import static com.picone.go4lunch.presentation.viewModels.RestaurantViewModel.getUserDailyScheduleOnToday;
+import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getUserDailyScheduleOnToday;
 
 public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<ColleagueRecyclerViewAdapter.ViewHolder> {
 
@@ -45,15 +46,15 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
         final User user = mUsers.get(position);
         if (tag.equals(WorkmatesFragment.TAG)) {
             if (user.getUserDailySchedules() != null) {
-                holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(" is eating ").concat(getUserDailyScheduleOnToday(user.getUserDailySchedules()).getRestaurantName()));
+                holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(holder.itemView.getContext().getString(R.string.is_eating)).concat(getUserDailyScheduleOnToday(user.getUserDailySchedules()).getRestaurantName()));
                 holder.colleagueBinding.userSelectedRestaurant.setTextColor(Color.BLACK);
             } else {
-                holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(" hasn't decided yet"));
+                holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(holder.itemView.getContext().getString(R.string.has_not_decide)));
                 holder.colleagueBinding.userSelectedRestaurant.setTextColor(Color.LTGRAY);
                 holder.colleagueBinding.userSelectedRestaurant.setTypeface(holder.colleagueBinding.userSelectedRestaurant.getTypeface(), Typeface.ITALIC);
             }
         } else {
-            holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(" is joining!"));
+            holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(holder.itemView.getContext().getString(R.string.is_joining)));
             holder.colleagueBinding.separator.setVisibility(View.GONE);
         }
         Glide.with(holder.colleagueBinding.avatarImageView.getContext())

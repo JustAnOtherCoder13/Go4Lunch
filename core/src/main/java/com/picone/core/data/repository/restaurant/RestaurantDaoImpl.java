@@ -4,13 +4,14 @@ import android.location.Location;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.picone.core.data.repository.place.RetrofitClient;
-import com.picone.core.domain.entity.restaurant.Restaurant;
-import com.picone.core.domain.entity.RestaurantDetailPOJO.RestaurantDetail;
+import com.google.gson.JsonObject;
+import com.picone.core.data.repository.services.RetrofitClient;
 import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
-import com.picone.core.domain.entity.RestaurantPOJO.NearBySearch;
-import com.picone.core.domain.entity.User;
 import com.picone.core.domain.entity.predictionPOJO.PredictionResponse;
+import com.picone.core.domain.entity.restaurant.Restaurant;
+import com.picone.core.domain.entity.restaurantDetailPOJO.RestaurantDetail;
+import com.picone.core.domain.entity.restaurantPOJO.NearBySearch;
+import com.picone.core.domain.entity.user.User;
 
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
         return RxFirebaseDatabase.observeValueEvent(restaurantsDataBaseReference, DataSnapshotMapper.listOf(Restaurant.class)).toObservable();
     }
 
-//-----------------------------------------------GOOGLE PLACE-------------------------------------------------------
+    //-----------------------------------------------GOOGLE PLACE-------------------------------------------------------
     @Override
     public Observable<NearBySearch> getNearBySearch(Location mCurrentLocation, String googleKey) {
         return retrofitClient.googlePlaceService()
@@ -79,5 +80,11 @@ public class RestaurantDaoImpl implements RestaurantDao {
     public Observable<PredictionResponse> getPredictions(String restaurantName, String googleKey, String currentPosition) {
         return retrofitClient.googlePlaceService()
                 .loadPredictions(restaurantName, googleKey, currentPosition, RADIUS);
+    }
+
+    @Override
+    public Observable<JsonObject> sendNotification(JsonObject payload) {
+        return retrofitClient.getNotificationService().sendNotification(payload);
+
     }
 }

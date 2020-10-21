@@ -1,7 +1,7 @@
 package com.picone.core.domain.entity.restaurant;
 
 import com.google.firebase.database.IgnoreExtraProperties;
-import com.picone.core.domain.entity.User;
+import com.picone.core.domain.entity.user.User;
 
 import java.util.List;
 

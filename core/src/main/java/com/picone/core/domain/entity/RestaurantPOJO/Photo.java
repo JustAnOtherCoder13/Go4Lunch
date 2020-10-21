@@ -1,4 +1,4 @@
-package com.picone.core.domain.entity.RestaurantPOJO;
+package com.picone.core.domain.entity.restaurantPOJO;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -12,7 +12,7 @@ public class Photo {
     private Integer height;
     @SerializedName("html_attributions")
     @Expose
-    private List<String> htmlAttributions = new ArrayList<String>();
+    private List<String> htmlAttributions = new ArrayList<>();
     @SerializedName("photo_reference")
     @Expose
     private String photoReference;

@@ -14,12 +14,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.picone.core.domain.entity.restaurant.Restaurant;
+import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.RecyclerViewRestaurantItemsBinding;
 
 import java.util.List;
 
+import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.utils.ManageStarUtil.manageStar;
-import static com.picone.go4lunch.presentation.viewModels.RestaurantViewModel.getRestaurantDailyScheduleOnToday;
 
 public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantListRecyclerViewAdapter.ViewHolder> {
 
@@ -103,7 +104,7 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
     }
 
     private void setOpeningHour(@NonNull ViewHolder holder, Restaurant restaurant) {
-        if (restaurant.getOpeningHours().equals("Closed"))
+        if (restaurant.getOpeningHours().equals(holder.itemView.getContext().getString(R.string.closed)))
             holder.restaurantBinding.openingTimeTextView.setTextColor(Color.RED);
         else
             holder.restaurantBinding.openingTimeTextView.setTextColor(Color.GRAY);

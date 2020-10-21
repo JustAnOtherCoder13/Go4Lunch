@@ -57,6 +57,18 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <!-- [START firebase_service] -->
+        <service
+            android:name=".presentation.utils.notification.NotificationService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <!-- [END firebase_service] -->
+        <receiver android:name="com.picone.go4lunch.presentation.utils.notification.NotificationReceiver" />
+
+
     </application>
 
 </manifest>

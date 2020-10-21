@@ -1,20 +1,22 @@
 package com.picone.core.di;
 
 import com.google.firebase.database.FirebaseDatabase;
-import com.picone.core.data.repository.place.RetrofitClient;
 import com.picone.core.data.repository.restaurant.RestaurantDaoImpl;
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
+import com.picone.core.data.repository.services.RetrofitClient;
 import com.picone.core.data.repository.user.UserDaoImpl;
 import com.picone.core.data.repository.user.UserRepository;
+import com.picone.core.domain.interactors.SendNotificationInteractor;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantDetailFromPlaceInteractor;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantDistanceInteractor;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.FetchRestaurantFromPlaceInteractor;
 import com.picone.core.domain.interactors.restaurant.placeInteractors.GetPredictionInteractor;
-import com.picone.core.domain.interactors.restaurant.restaurantDetailInteractors.UpdateUserChosenRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantInteractors.AddRestaurantInteractor;
 import com.picone.core.domain.interactors.restaurant.restaurantInteractors.GetAllPersistedRestaurantsInteractor;
+import com.picone.core.domain.interactors.restaurant.restaurantInteractors.UpdateUserChosenRestaurantInteractor;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
+import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserDailySchedulesInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
 
 import javax.inject.Singleton;
@@ -117,5 +119,15 @@ public final class coreModule {
     @Provides
     static GetPredictionInteractor provideGetPredictions() {
         return new GetPredictionInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static SendNotificationInteractor provideSendNotification() {
+        return new SendNotificationInteractor(provideRestaurantDataSource());
+    }
+
+    @Provides
+    static GetCurrentUserDailySchedulesInteractor provideGetCurrentUserDailyScheduleOnToday() {
+        return new GetCurrentUserDailySchedulesInteractor(provideUserDataSource());
     }
 }

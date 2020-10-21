@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.picone.core.domain.entity.User;
+import com.picone.core.domain.entity.user.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentWorkmatesBinding;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.ColleagueRecyclerViewAdapter;
@@ -20,7 +20,7 @@ import com.picone.go4lunch.presentation.utils.RecyclerViewItemClickUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.picone.go4lunch.presentation.viewModels.RestaurantViewModel.getUserDailyScheduleOnToday;
+import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getUserDailyScheduleOnToday;
 
 public class WorkmatesFragment extends BaseFragment {
 

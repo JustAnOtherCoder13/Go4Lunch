@@ -4,10 +4,10 @@ import android.location.Location;
 
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.domain.entity.restaurant.Restaurant;
-import com.picone.core.domain.entity.RestaurantPOJO.NearBySearch;
-import com.picone.core.domain.entity.RestaurantPOJO.Photo;
-import com.picone.core.domain.entity.RestaurantPOJO.RestaurantPOJO;
 import com.picone.core.domain.entity.restaurant.RestaurantPosition;
+import com.picone.core.domain.entity.restaurantPOJO.NearBySearch;
+import com.picone.core.domain.entity.restaurantPOJO.Photo;
+import com.picone.core.domain.entity.restaurantPOJO.RestaurantPOJO;
 
 import java.util.ArrayList;
 import java.util.List;

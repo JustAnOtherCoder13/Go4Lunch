@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.picone.core.domain.entity.restaurant.Restaurant;
+import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentRestaurantDetailBinding;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.ColleagueRecyclerViewAdapter;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
@@ -29,6 +30,7 @@ import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import java.util.ArrayList;
 
 import static android.Manifest.permission.CALL_PHONE;
+import static com.picone.go4lunch.presentation.utils.ConstantParameter.REQUEST_CODE;
 import static com.picone.go4lunch.presentation.utils.ManageStarUtil.manageStar;
 
 public class RestaurantDetailFragment extends BaseFragment {
@@ -65,9 +67,9 @@ public class RestaurantDetailFragment extends BaseFragment {
 
         mBinding.likeDetailImageButton.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-            builder.setTitle("Like this restaurant ?")
-                    .setNegativeButton("No", null)
-                    .setPositiveButton("Yes", (dialog, which) -> mRestaurantViewModel.updateFanList())
+            builder.setTitle(R.string.like_restaurant_question)
+                    .setNegativeButton(R.string.no, null)
+                    .setPositiveButton(R.string.yes, (dialog, which) -> mRestaurantViewModel.updateFanList())
                     .create()
                     .show();
         });
@@ -75,7 +77,7 @@ public class RestaurantDetailFragment extends BaseFragment {
         mBinding.callNumberDetailImageButton.setOnClickListener(v -> {
             if (selectedRestaurant.getPhoneNumber() != null) {
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:".concat(selectedRestaurant.getPhoneNumber().trim())));
+                callIntent.setData(Uri.parse(getString(R.string.tel).concat(selectedRestaurant.getPhoneNumber().trim())));
                 if (mCallPermission) {
                     startActivity(callIntent);
                 } else getCallPermission();
@@ -99,7 +101,7 @@ public class RestaurantDetailFragment extends BaseFragment {
         } else {
             ActivityCompat.requestPermissions(this.requireActivity(),
                     new String[]{CALL_PHONE},
-                    13700);
+                    REQUEST_CODE);
         }
     }
 
@@ -113,7 +115,6 @@ public class RestaurantDetailFragment extends BaseFragment {
 
         mRestaurantViewModel.getLikeCounter.observe(getViewLifecycleOwner(), fanListSize ->
                 manageStar(mBinding.opinionStarDetailImageView, fanListSize));
-
 
         mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant -> {
             if (restaurant != null) {
