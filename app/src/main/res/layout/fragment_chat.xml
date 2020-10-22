@@ -11,37 +11,27 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="@dimen/basic_marge"
+        app:layout_constraintBottom_toTopOf="@id/chat_card_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/chat_card_view"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/chat_card_view"
+        style="@style/chat_card_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/big_marge"
-        android:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/post_message_fab"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="@dimen/basic_marge"
-        android:layout_marginStart="@dimen/basic_marge"
-        android:layout_marginEnd="@dimen/basic_marge"
-        >
+        app:layout_constraintStart_toStartOf="parent">
 
         <EditText
             android:id="@+id/chat_edit_text"
+            style="@style/chat_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/basic_marge"
             android:autofillHints=""
-            android:background="@color/colorPrimary"
-            android:textColor="@color/onPrimaryColor"
-            android:textColorHint="@color/colorPrimaryLight"
-            android:hint="Enter your message here"
-            android:inputType="textMultiLine"
+            android:hint="@string/enter_your_message_here"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,11 +39,10 @@
     </androidx.cardview.widget.CardView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/post_message_fab"
+        style="@style/post_fab_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/post_message_fab"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/chat_card_view"
-        style="@style/post_fab_style"
-        />
+        app:layout_constraintTop_toTopOf="@id/chat_card_view" />
 </androidx.constraintlayout.widget.ConstraintLayout>
