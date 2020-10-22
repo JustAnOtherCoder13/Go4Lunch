@@ -10,7 +10,7 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/txt_card_view_sender"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/basic_marge"
         android:layout_marginEnd="@dimen/xxl_marge"
@@ -30,7 +30,6 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_margin="@dimen/basic_marge"
-                android:layout_marginTop="@dimen/basic_marge"
                 android:contentDescription="@string/colleague_avatar_content_description_colleague_items"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/chat_message_txt"
@@ -40,13 +39,15 @@
 
             <TextView
                 android:id="@+id/chat_message_txt"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/big_marge"
+                android:textAlignment="textStart"
                 android:background="@color/colorPrimary"
                 android:text="ytrejrhbsbjhfsh. uhrqhhufqljhlfds dfhqkjh"
                 android:textColor="@color/onPrimaryColor"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/chat_avatar_image_view"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -86,12 +87,13 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/txt_card_view_receiver"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/basic_marge"
+        android:layout_marginStart="@dimen/xxl_marge"
         android:backgroundTint="@color/colorPrimaryLight"
         app:cardCornerRadius="@dimen/big_marge"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginStart="@dimen/xxl_marge"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -109,39 +111,37 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@tools:sample/avatars"
-                />
+                tools:src="@tools:sample/avatars" />
 
             <TextView
                 android:id="@+id/chat_message_txt_receiver"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/basic_marge"
-                android:layout_marginBottom="@dimen/basic_marge"
-                android:layout_marginEnd="@dimen/basic_marge"
+                android:layout_margin="@dimen/big_marge"
+                android:textAlignment="textEnd"
                 android:background="@color/colorPrimaryLight"
                 android:text="ytrejrhbsbjhfsh. uhrqhhufqljhlfds dfhqkjh"
                 android:textColor="@color/onPrimaryColor"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/chat_avatar_image_view_receiver"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <FrameLayout
                 android:layout_width="0dp"
                 android:layout_height="1dp"
+                android:layout_marginEnd="@dimen/basic_marge"
                 android:background="@color/onPrimaryColor"
                 app:layout_constraintBottom_toTopOf="@id/chat_message_date_receiver"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/chat_avatar_image_view_receiver"
-                android:layout_marginEnd="@dimen/basic_marge"/>
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/chat_message_date_receiver"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/xxl_marge"
-                android:layout_marginEnd="@dimen/basic_marge"
+                android:layout_marginStart="@dimen/big_marge"
                 android:text="date"
                 android:textColor="@color/onPrimaryColor"
                 android:textSize="@dimen/small_txt"
@@ -152,7 +152,7 @@
                 android:id="@+id/chat_user_name_receiver"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/basic_marge"
+                android:layout_marginStart="@dimen/big_marge"
                 android:text="name"
                 android:textColor="@color/onPrimaryColor"
                 android:textSize="@dimen/small_txt"

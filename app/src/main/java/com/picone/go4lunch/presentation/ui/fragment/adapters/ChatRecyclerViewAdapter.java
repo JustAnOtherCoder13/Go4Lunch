@@ -1,7 +1,6 @@
 package com.picone.go4lunch.presentation.ui.fragment.adapters;
 
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +8,6 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -23,6 +21,7 @@ import java.util.List;
 public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerViewAdapter.ViewHolder> {
 
     private List<ChatMessage> mMessages;
+    private String mCurrentUserUid;
 
     public ChatRecyclerViewAdapter(List<ChatMessage> mMessages) {
         this.mMessages = mMessages;
@@ -41,8 +40,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
     public void onBindViewHolder(@NonNull ChatRecyclerViewAdapter.ViewHolder holder, int position) {
         final ChatMessage chatMessage = mMessages.get(position);
 
-        boolean isSender = false;
-        if (isSender){
+        if (mCurrentUserUid.equals(chatMessage.getUid())) {
             holder.recyclerViewChatItemBinding.txtCardViewReceiver.setVisibility(View.GONE);
             holder.recyclerViewChatItemBinding.txtCardViewSender.setVisibility(View.VISIBLE);
             setAvatar(holder.recyclerViewChatItemBinding.chatAvatarImageView, chatMessage);
@@ -50,8 +48,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
             holder.recyclerViewChatItemBinding.chatUserName.setText(chatMessage.getUserName());
             holder.recyclerViewChatItemBinding.chatMessageDate.setText(chatMessage.getTime());
 
-        }
-        else{
+        } else {
             holder.recyclerViewChatItemBinding.txtCardViewReceiver.setVisibility(View.VISIBLE);
             holder.recyclerViewChatItemBinding.txtCardViewSender.setVisibility(View.GONE);
             setAvatar(holder.recyclerViewChatItemBinding.chatAvatarImageViewReceiver, chatMessage);
@@ -94,8 +91,9 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         }
     }
 
-    public void updateMessages(List<ChatMessage> chatMessages){
-        this.mMessages=chatMessages;
+    public void updateMessages(List<ChatMessage> chatMessages, String currentUserUid) {
+        this.mMessages = chatMessages;
+        this.mCurrentUserUid = currentUserUid;
         notifyDataSetChanged();
     }
 

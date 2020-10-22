@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         initLoginViewModel();
         mRestaurantViewModel.getUserChosenRestaurant.observe(this,restaurant ->
                 FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task ->{
+                    //TODO remove current user from interested users list
             if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules())!=null)
                 mRestaurantViewModel.sendNotification(task.getResult(),createMessage(restaurant.getName(),restaurant.getAddress(),UserListToString(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers())));}));
         }

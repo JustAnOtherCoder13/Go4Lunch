@@ -163,7 +163,7 @@ public class RestaurantViewModel extends ViewModel {
 
     @SuppressLint("CheckResult")
     private Observable<Restaurant> fetchPlaceDistance(Location mCurrentLocation, Restaurant restaurantWithDetailAdded) {
-        return fetchRestaurantDistanceInteractor.getRestaurantDistance_(restaurantWithDetailAdded, mCurrentLocation, MAPS_KEY)
+        return fetchRestaurantDistanceInteractor.getRestaurantDistance(restaurantWithDetailAdded, mCurrentLocation, MAPS_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(restaurantWithDistanceAdded ->

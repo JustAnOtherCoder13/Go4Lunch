@@ -9,10 +9,13 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_chat_fragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/basic_marge"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/chat_card_view"
+        />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/chat_card_view"
