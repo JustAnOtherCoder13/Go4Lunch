@@ -30,6 +30,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.picone.core.domain.entity.user.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
+import com.picone.go4lunch.presentation.utils.CustomAdapter;
 import com.picone.go4lunch.presentation.viewModels.ChatViewModel;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
@@ -105,6 +106,12 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (mFirebaseAuth.getCurrentUser() != null || accessToken != null && !accessToken.isExpired()) {
+            mBinding.settingsViewInclude.settings.setVisibility(View.GONE);
+            mBinding.settingsViewInclude.settingsFrame.setVisibility(View.GONE);
+            mBinding.settingsViewInclude.saveChangesNoButtonSettings.setOnClickListener(v -> {
+                mBinding.settingsViewInclude.settings.setVisibility(View.GONE);
+                mBinding.settingsViewInclude.settingsFrame.setVisibility(View.GONE);
+            });
             mLoginViewModel.authenticate(true);
             mRestaurantViewModel.setCurrentUser(mFirebaseAuth.getCurrentUser().getEmail());
             mRestaurantViewModel.resetSelectedRestaurant();
@@ -149,8 +156,19 @@ public class MainActivity extends AppCompatActivity {
                         } else
                             Toast.makeText(this, "You haven't choose a restaurant yet", Toast.LENGTH_SHORT).show();
                     });
+                    break;
                     //TODO add setting view to change language, access notification, avoid reservation
                 case R.id.settings_drawer_layout:
+                    if (mBinding.settingsViewInclude.settings.getVisibility()==View.GONE){
+                        mBinding.settingsViewInclude.settings.setVisibility(View.VISIBLE);
+                        mBinding.settingsViewInclude.settingsFrame.setVisibility(View.VISIBLE);
+                        initSpinner();
+                    }
+                    mBinding.settingsViewInclude.saveChangesNoButtonSettings.setOnClickListener(v -> {
+                        mBinding.settingsViewInclude.settings.setVisibility(View.GONE);
+                        mBinding.settingsViewInclude.settingsFrame.setVisibility(View.GONE);
+
+                    });
                     break;
                 case R.id.logout_drawer_layout:
                     signOut();
@@ -161,6 +179,14 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
+    }
+    private void initSpinner(){
+        String[] languages = {"En","Fr"};
+        int[] flags = {R.drawable.ic_united_kingdom_flag_30,R.drawable.ic_french_flag_30};
+
+        CustomAdapter adapter = new CustomAdapter(this,languages,flags );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mBinding.settingsViewInclude.languageSpinnerSettings.setAdapter(adapter);
     }
 
     public void setStatusBarTransparency(boolean isTransparent) {
