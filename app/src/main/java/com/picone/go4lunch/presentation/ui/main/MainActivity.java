@@ -5,11 +5,14 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,9 +30,11 @@ import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.picone.core.domain.entity.user.SettingValues;
 import com.picone.core.domain.entity.user.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
+import com.picone.go4lunch.databinding.SpinnerItemBinding;
 import com.picone.go4lunch.presentation.utils.CustomAdapter;
 import com.picone.go4lunch.presentation.viewModels.ChatViewModel;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
@@ -54,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     //TODO create a chat
 
     public ActivityMainBinding mBinding;
+    private SpinnerItemBinding spinnerItemBinding;
 
     @Inject
     protected GoogleSignInClient mGoogleSignInClient;
@@ -65,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
     private RestaurantViewModel mRestaurantViewModel;
     private ChatViewModel mChatViewModel;
     private NavController mNavController;
+    private SettingValues settingValues;
+    private boolean isReservationIsCancelled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,17 +82,19 @@ public class MainActivity extends AppCompatActivity {
         mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
         mChatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
+        spinnerItemBinding = SpinnerItemBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
         initMenuButton();
         setUpNavigation();
         initLoginViewModel();
-        mRestaurantViewModel.getUserChosenRestaurant.observe(this,restaurant ->
-                FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task ->{
+        mRestaurantViewModel.getUserChosenRestaurant.observe(this, restaurant ->
+                FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
                     //TODO remove current user from interested users list
-            if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules())!=null)
-                mRestaurantViewModel.sendNotification(task.getResult(),createMessage(restaurant.getName(),restaurant.getAddress(),UserListToString(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers())));}));
-        }
+                    if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null)
+                        mRestaurantViewModel.sendNotification(task.getResult(), createMessage(restaurant.getName(), restaurant.getAddress(), UserListToString(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers())));
+                }));
+    }
 
 
     private String createMessage(String restaurantName, String restaurantAddress, String interestedUsers) {
@@ -111,6 +121,12 @@ public class MainActivity extends AppCompatActivity {
             mBinding.settingsViewInclude.saveChangesNoButtonSettings.setOnClickListener(v -> {
                 mBinding.settingsViewInclude.settings.setVisibility(View.GONE);
                 mBinding.settingsViewInclude.settingsFrame.setVisibility(View.GONE);
+            });
+            mBinding.settingsViewInclude.saveChangesYesButtonSettings.setOnClickListener(v -> {
+                Log.i("TAG", "onStart: "+settingValues.getChosenLanguage()+" notif "+mBinding.settingsViewInclude.notificationSwitchButton.isChecked()+" "+isReservationIsCancelled);
+            });
+            mBinding.settingsViewInclude.cancelReservationBtn.setOnClickListener(v -> {
+                isReservationIsCancelled = true;
             });
             mLoginViewModel.authenticate(true);
             mRestaurantViewModel.setCurrentUser(mFirebaseAuth.getCurrentUser().getEmail());
@@ -151,15 +167,18 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.your_lunch_drawer_layout:
                     mRestaurantViewModel.getCurrentUser.observe(this, user -> {
-                        if (user.getUserDailySchedules() != null && getUserDailyScheduleOnToday(user.getUserDailySchedules())!=null) {
+                        if (user.getUserDailySchedules() != null && getUserDailyScheduleOnToday(user.getUserDailySchedules()) != null) {
                             mRestaurantViewModel.initSelectedRestaurant(getUserDailyScheduleOnToday(user.getUserDailySchedules()).getRestaurantPlaceId());
                         } else
                             Toast.makeText(this, "You haven't choose a restaurant yet", Toast.LENGTH_SHORT).show();
                     });
                     break;
-                    //TODO add setting view to change language, access notification, avoid reservation
+
                 case R.id.settings_drawer_layout:
-                    if (mBinding.settingsViewInclude.settings.getVisibility()==View.GONE){
+                    settingValues = new SettingValues(mRestaurantViewModel.getCurrentUser.getValue().getSettingValues().getChosenLanguage(),mRestaurantViewModel.getCurrentUser.getValue().getSettingValues().isNotificationSet());
+                    isReservationIsCancelled = false;
+
+                    if (mBinding.settingsViewInclude.settings.getVisibility() == View.GONE) {
                         mBinding.settingsViewInclude.settings.setVisibility(View.VISIBLE);
                         mBinding.settingsViewInclude.settingsFrame.setVisibility(View.VISIBLE);
                         initSpinner();
@@ -167,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
                     mBinding.settingsViewInclude.saveChangesNoButtonSettings.setOnClickListener(v -> {
                         mBinding.settingsViewInclude.settings.setVisibility(View.GONE);
                         mBinding.settingsViewInclude.settingsFrame.setVisibility(View.GONE);
-
                     });
                     break;
                 case R.id.logout_drawer_layout:
@@ -180,14 +198,38 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
     }
-    private void initSpinner(){
-        String[] languages = {"En","Fr"};
-        int[] flags = {R.drawable.ic_united_kingdom_flag_30,R.drawable.ic_french_flag_30};
 
-        CustomAdapter adapter = new CustomAdapter(this,languages,flags );
+    private void initSpinner() {
+        String[] languages;
+        int[] flags;
+
+        if (settingValues.getChosenLanguage().equalsIgnoreCase(getString(R.string.French))) {
+            languages = new String[]{(getString(R.string.French)), (getString(R.string.English))};
+            flags = new int[]{(R.drawable.ic_french_flag_30), (R.drawable.ic_united_kingdom_flag_30)};
+        } else {
+            spinnerItemBinding.spinnerTextView.setText(getString(R.string.English));
+            languages = new String[]{(getString(R.string.English)), (getString(R.string.French))};
+            flags = new int[]{(R.drawable.ic_united_kingdom_flag_30), (R.drawable.ic_french_flag_30)};
+        }
+
+        CustomAdapter adapter = new CustomAdapter(this, languages, flags);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mBinding.settingsViewInclude.languageSpinnerSettings.setAdapter(adapter);
+
+        mBinding.settingsViewInclude.languageSpinnerSettings.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TextView textView = view.findViewById(R.id.spinnerTextView);
+                   settingValues.setChosenLanguage((String) textView.getText());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
+
 
     public void setStatusBarTransparency(boolean isTransparent) {
 

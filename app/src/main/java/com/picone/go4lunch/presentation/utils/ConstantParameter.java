@@ -1,5 +1,7 @@
 package com.picone.go4lunch.presentation.utils;
 
+import com.picone.core.domain.entity.user.SettingValues;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -19,4 +21,6 @@ public class ConstantParameter {
     public static final int ALARM_MINUTE= 0;
 
     public static final int MAPS_CAMERA_ZOOM = 16;
+
+    public static final SettingValues SETTING_START_VALUE = new SettingValues("En",true);
 }

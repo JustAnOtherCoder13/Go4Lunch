@@ -16,6 +16,8 @@ import java.util.List;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.picone.go4lunch.presentation.utils.ConstantParameter.SETTING_START_VALUE;
+
 public class UserViewModel extends ViewModel {
 
     public enum UserCompletionState {
@@ -51,7 +53,7 @@ public class UserViewModel extends ViewModel {
     }
 
     public void setCurrentUser(String uid, String name, String email, String avatar) {
-        userMutableLiveData.setValue(new User(uid, name, email, avatar, null));
+        userMutableLiveData.setValue(new User(uid, name, email, avatar, null, SETTING_START_VALUE));
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")

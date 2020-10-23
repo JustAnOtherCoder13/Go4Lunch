@@ -96,5 +96,7 @@
 
     <!-- CHAT -->
     <string name="enter_your_message_here">Enter your message here</string>
+    <string name="English">En</string>
+    <string name="French">Fr</string>
 
 </resources>
