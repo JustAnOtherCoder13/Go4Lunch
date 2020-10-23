@@ -1,4 +1,4 @@
-package com.picone.core.domain.interactors.restaurant.placeInteractors;
+package com.picone.core.domain.interactors.restaurantInteractors.placeInteractors;
 
 import android.location.Location;
 
@@ -18,7 +18,7 @@ public class FetchRestaurantDistanceInteractor {
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    public Observable<Restaurant> getRestaurantDistance_(Restaurant restaurant, Location currentLocation, String googleKey) {
+    public Observable<Restaurant> getRestaurantDistance(Restaurant restaurant, Location currentLocation, String googleKey) {
         String currentLocationStr = String.valueOf(currentLocation.getLatitude()).concat(",").concat(String.valueOf(currentLocation.getLongitude()));
         String restaurantLocation = String.valueOf(restaurant.getRestaurantPosition().getLatitude()).concat(",").concat(String.valueOf(restaurant.getRestaurantPosition().getLongitude()));
         return restaurantDataSource.getRestaurantDistance(currentLocationStr, restaurantLocation, googleKey)

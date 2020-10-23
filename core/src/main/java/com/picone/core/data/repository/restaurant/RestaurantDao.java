@@ -3,10 +3,10 @@ package com.picone.core.data.repository.restaurant;
 import android.location.Location;
 
 import com.google.gson.JsonObject;
-import com.picone.core.domain.entity.RestaurantDistancePOJO.RestaurantDistance;
 import com.picone.core.domain.entity.predictionPOJO.PredictionResponse;
 import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.core.domain.entity.restaurantDetailPOJO.RestaurantDetail;
+import com.picone.core.domain.entity.restaurantDistancePOJO.RestaurantDistance;
 import com.picone.core.domain.entity.restaurantPOJO.NearBySearch;
 import com.picone.core.domain.entity.user.User;
 

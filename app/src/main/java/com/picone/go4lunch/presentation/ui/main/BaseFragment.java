@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
 import com.picone.go4lunch.databinding.DrawerMenuHeaderLayoutBinding;
+import com.picone.go4lunch.presentation.viewModels.ChatViewModel;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
@@ -41,6 +42,7 @@ public abstract class BaseFragment extends Fragment {
     protected LoginViewModel mLoginViewModel;
     protected UserViewModel mUserViewModel;
     protected RestaurantViewModel mRestaurantViewModel;
+    protected ChatViewModel mChatViewModel;
 
     protected LottieAnimationView mAnimationView;
 
@@ -49,7 +51,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initVariables();
+        initViewModels();
     }
 
     //Current user can't be null cause set when enter app
@@ -90,10 +92,11 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
-    private void initVariables() {
+    private void initViewModels() {
         mLoginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
         mUserViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         mRestaurantViewModel = new ViewModelProvider(requireActivity()).get(RestaurantViewModel.class);
+        mChatViewModel = new ViewModelProvider(requireActivity()).get(ChatViewModel.class);
     }
 
     private void populateDrawerMenu(FirebaseUser currentUser) {

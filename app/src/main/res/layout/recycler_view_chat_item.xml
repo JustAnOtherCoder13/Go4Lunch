@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chat_main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/basic_marge">
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/txt_card_view_sender"
+        style="@style/txt_card_view_sender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/chat_avatar_image_view"
+                android:layout_width="@dimen/chat_avatar_size"
+                android:layout_height="@dimen/chat_avatar_size"
+                android:layout_margin="@dimen/basic_marge"
+                android:contentDescription="@string/colleague_avatar_content_description_colleague_items"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/chat_message_txt"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/chat_message_txt"
+                style="@style/chat_message_txt_sender"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/separator_sender"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/chat_avatar_image_view"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <FrameLayout
+                android:id="@+id/separator_sender"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/separator"
+                android:layout_marginStart="@dimen/basic_marge"
+                android:background="@color/onPrimaryColor"
+                app:layout_constraintBottom_toTopOf="@id/chat_message_date"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/chat_avatar_image_view" />
+
+            <TextView
+                android:id="@+id/chat_message_date"
+                style="@style/chat_message_date_txt_sender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/chat_user_name"
+                style="@style/chat_user_name_txt_sender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/chat_message_date" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/txt_card_view_receiver"
+        style="@style/txt_card_view_receiver"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/chat_avatar_image_view_receiver"
+                android:layout_width="@dimen/chat_avatar_size"
+                android:layout_height="@dimen/chat_avatar_size"
+                android:layout_margin="@dimen/basic_marge"
+                android:contentDescription="@string/colleague_avatar_content_description_colleague_items"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/chat_message_txt_receiver"
+                style="@style/chat_message_txt_receiver"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/separator_receiver"
+                app:layout_constraintEnd_toStartOf="@id/chat_avatar_image_view_receiver"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <FrameLayout
+                android:id="@+id/separator_receiver"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/separator"
+                android:layout_marginEnd="@dimen/basic_marge"
+                android:background="@color/onPrimaryColor"
+                app:layout_constraintBottom_toTopOf="@id/chat_message_date_receiver"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/chat_avatar_image_view_receiver"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/chat_message_date_receiver"
+                style="@style/chat_message_date_txt_receiver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/chat_user_name_receiver" />
+
+            <TextView
+                android:id="@+id/chat_user_name_receiver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/chat_user_name_txt_receiver"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,5 @@
 package com.picone.core.data.repository.user;
 
-import com.google.firebase.database.FirebaseDatabase;
 import com.picone.core.domain.entity.user.User;
 import com.picone.core.domain.entity.user.UserDailySchedule;
 
@@ -15,11 +14,8 @@ public class UserRepository {
 
     @Inject
     protected UserDaoImpl userDao;
-    @Inject
-    protected FirebaseDatabase dataBase;
 
-    public UserRepository(FirebaseDatabase dataBase, UserDaoImpl dao) {
-        this.dataBase = dataBase;
+    public UserRepository(UserDaoImpl dao) {
         userDao = dao;
     }
 

@@ -17,5 +17,11 @@
         android:icon="@drawable/ic_logout_icon"
         android:title="@string/logout_drawer_menu_title"
         />
+    <item
+        android:id="@+id/chat_drawer_layout"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_chat_24"
+        android:title="@string/chat_drawer_menu_title"
+        />
 
 </menu>

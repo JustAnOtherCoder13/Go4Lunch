@@ -46,7 +46,7 @@
 
     <style name="drawer_user_name">
         <item name="android:layout_marginStart">@dimen/basic_marge</item>
-        <item name="android:text">@string/user_name_drawer_menu</item>
+        <item name="android:text">@string/user_name</item>
         <item name="android:textColor">@color/onPrimaryColor</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -249,6 +249,93 @@
         <item name="backgroundTint">@color/onPrimaryColor</item>
         <item name="borderWidth">0dp</item>
         <item name="srcCompat">@drawable/ic_baseline_my_location_24</item>
+    </style>
+
+    <!-- *************************MAPS********************************* -->
+
+    <style name="post_fab_style">
+        <item name="android:layout_marginEnd">@dimen/basic_marge</item>
+        <item name="android:layout_marginBottom">@dimen/fab_marge</item>
+        <item name="android:scaleType">center</item>
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="maxImageSize">28dp</item>
+        <item name="srcCompat">@drawable/ic_send_24</item>
+        <item name="tint">@null</item>
+    </style>
+
+
+    <!-- *************************CHAT********************************* -->
+    <style name="chat_edit_text">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:inputType">textMultiLine</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+        <item name="android:textColorHint">@color/colorPrimaryLight</item>
+        <item name="android:layout_margin">@dimen/basic_marge</item>
+    </style>
+
+    <style name="chat_card_view">
+        <item name="cardBackgroundColor">@color/colorPrimary</item>
+        <item name="android:layout_margin">@dimen/basic_marge</item>
+        <item name="android:layout_marginStart">0dp</item>
+        <item name="cardCornerRadius">@dimen/big_marge</item>
+    </style>
+
+    <style name="txt_card_view_sender">
+        <item name="android:layout_marginStart">@dimen/basic_marge</item>
+        <item name="android:layout_marginEnd">@dimen/xxl_marge</item>
+        <item name="cardBackgroundColor">@color/colorPrimary</item>
+        <item name="cardCornerRadius">@dimen/big_marge</item>
+    </style>
+
+    <style name="chat_message_txt_sender">
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:text">@string/enter_your_message_here</item>
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:layout_margin">@dimen/big_marge</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+    </style>
+
+    <style name="chat_message_date_txt_sender">
+        <item name="android:layout_marginEnd">@dimen/big_marge</item>
+        <item name="android:text">@string/date</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+        <item name="android:textSize">@dimen/small_txt</item>
+    </style>
+
+    <style name="chat_user_name_txt_sender">
+        <item name="android:layout_marginEnd">@dimen/big_marge</item>
+        <item name="android:text">@string/user_name</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+        <item name="android:textSize">@dimen/small_txt</item>
+    </style>
+
+    <style name="txt_card_view_receiver">
+        <item name="android:layout_marginStart">@dimen/xxl_marge</item>
+        <item name="android:layout_marginEnd">@dimen/basic_marge</item>
+        <item name="cardBackgroundColor">@color/colorPrimaryLight</item>
+        <item name="cardCornerRadius">@dimen/big_marge</item>
+    </style>
+
+    <style name="chat_message_txt_receiver">
+        <item name="android:layout_margin">@dimen/big_marge</item>
+        <item name="android:background">@color/colorPrimaryLight</item>
+        <item name="android:textAlignment">textEnd</item>
+        <item name="android:text">@string/enter_your_message_here</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+    </style>
+
+    <style name="chat_message_date_txt_receiver">
+        <item name="android:layout_marginStart">@dimen/big_marge</item>
+        <item name="android:text">@string/date</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+        <item name="android:textSize">@dimen/small_txt</item>
+    </style>
+
+    <style name="chat_user_name_txt_receiver">
+        <item name="android:layout_marginStart">@dimen/big_marge</item>
+        <item name="android:text">@string/user_name</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+        <item name="android:textSize">@dimen/small_txt</item>
     </style>
 
 </resources>

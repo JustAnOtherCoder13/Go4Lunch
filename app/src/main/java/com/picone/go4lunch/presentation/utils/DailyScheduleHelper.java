@@ -1,7 +1,7 @@
 package com.picone.go4lunch.presentation.utils;
 
-import com.picone.core.domain.entity.user.UserDailySchedule;
 import com.picone.core.domain.entity.restaurant.RestaurantDailySchedule;
+import com.picone.core.domain.entity.user.UserDailySchedule;
 
 import java.util.List;
 

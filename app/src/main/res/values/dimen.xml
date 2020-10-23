@@ -20,4 +20,6 @@
     <dimen name="title">17sp</dimen>
     <dimen name="small_txt">10sp</dimen>
     <dimen name="xs_text">8.9sp</dimen>
+
+    <dimen name="chat_avatar_size">40dp</dimen>
 </resources>
