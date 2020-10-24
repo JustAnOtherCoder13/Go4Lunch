@@ -184,7 +184,7 @@ public class AuthenticationFragment extends BaseFragment {
                 email = profile.getEmail();
                 photoUrl = Objects.requireNonNull(profile.getPhotoUrl()).toString();
             }
-            mUserViewModel.setCurrentUser(uid, name, email, photoUrl);
+            mUserViewModel.createCurrentUser(uid, name, email, photoUrl);
         }
     }
 }

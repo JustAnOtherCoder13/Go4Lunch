@@ -56,7 +56,7 @@ public class UserViewModel extends ViewModel {
         UserCompletionStateMutableLiveData.setValue(UserCompletionState.START_STATE);
     }
 
-    public void setCurrentUser(String uid, String name, String email, String avatar) {
+    public void createCurrentUser(String uid, String name, String email, String avatar) {
         userMutableLiveData.setValue(new User(uid, name, email, avatar, null, SETTING_START_VALUE));
     }
 

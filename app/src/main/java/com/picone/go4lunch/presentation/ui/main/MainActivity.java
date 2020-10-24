@@ -74,24 +74,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLoginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
-        mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
-        mChatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        initViewModel();
         initMenuButton();
         setUpNavigation();
         initLoginViewModel();
         mRestaurantViewModel.getUserChosenRestaurant.observe(this, restaurant ->
                 FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-                    Log.i("TAG", "onCreate: "+restaurant.getName());
                     //TODO remove current user from interested users list
                     if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null &&
                             mRestaurantViewModel.getCurrentUser.getValue().getSettingValues().isNotificationSet())
                         mRestaurantViewModel.sendNotification(task.getResult(), createMessage(restaurant.getName(), restaurant.getAddress(), UserListToString(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers())));
                 }));
+    }
+
+    private void initViewModel() {
+        mLoginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
+        mChatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
     }
 
 
@@ -127,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton(R.string.yes, (dialog, which) -> saveChanges())
                         .create()
                         .show();
-                Log.i("TAG", "onStart: " + mBinding.settingsViewInclude.languageSpinnerSettings.getEditText().getText() + " notif " + mBinding.settingsViewInclude.notificationSwitchButton.isChecked() + " " + isReservationIsCancelled);
             });
             mBinding.settingsViewInclude.cancelReservationBtn.setOnClickListener(v -> {
                 if (getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()) != null)
@@ -137,22 +139,25 @@ public class MainActivity extends AppCompatActivity {
 
             });
             mLoginViewModel.authenticate(true);
-            mRestaurantViewModel.setCurrentUser(mFirebaseAuth.getCurrentUser().getEmail());
             mRestaurantViewModel.resetSelectedRestaurant();
             mUserViewModel.setAllDbUsers();
             mRestaurantViewModel.setAllDbRestaurants();
 
+            mUserViewModel.getAllUsers.observe(this,users ->
+                    mRestaurantViewModel.setCurrentUser(mFirebaseAuth.getCurrentUser().getEmail()));
 
             mRestaurantViewModel.getSelectedRestaurant.observe(this, restaurant -> {
                 if (restaurant != null)
                     mNavController.navigate(R.id.restaurantDetailFragment);
             });
+
+            mRestaurantViewModel.getAllDbRestaurants.observe(this,restaurants ->
+                    mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(restaurants));
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
     }
 
     private void saveChanges() {
-        Log.i("TAG", "saveChanges: "+mBinding.settingsViewInclude.languageSpinnerSettings.getEditText().getText().toString());
         mUserViewModel.updateUserSettingValues(mRestaurantViewModel.getCurrentUser.getValue()
                 , new SettingValues(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText().getText().toString().trim(),
                         mBinding.settingsViewInclude.notificationSwitchButton.isChecked()));
@@ -284,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
             EditText editText = findViewById(R.id.search_src_text);
             editText.setText("");
             searchView.setQuery("", false);
-            mRestaurantViewModel.getRestaurantFromMaps();
+            mRestaurantViewModel.getRestaurantFromMaps(true);
         };
     }
 
@@ -299,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                mRestaurantViewModel.getRestaurantFromMaps();
+                mRestaurantViewModel.getRestaurantFromMaps(true);
                 return true;
             }
         };
