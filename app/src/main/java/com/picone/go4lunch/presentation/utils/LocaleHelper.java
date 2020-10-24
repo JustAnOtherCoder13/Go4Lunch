@@ -23,7 +23,7 @@ public class LocaleHelper {
 
         String lang = getPersistedData(context, Locale.getDefault().getLanguage());
 
-        return setLocale(context, lang);
+        return setNewLocale(context, lang);
 
     }
 
@@ -31,7 +31,7 @@ public class LocaleHelper {
 
         String lang = getPersistedData(context, defaultLanguage);
 
-        return setLocale(context, lang);
+        return setNewLocale(context, lang);
     }
 
 
@@ -41,12 +41,17 @@ public class LocaleHelper {
 
     }
 
-    public static Context setLocale(Context context, String language) {
+    public static Context setNewLocale(Context context, String language) {
 
         persist(context, language);
 
         return updateResourcesLegacy(context, language);
 
+    }
+
+    public static Context setLocale(Context context){
+        return
+        setNewLocale(context,getLanguage(context));
     }
 
     private static String getPersistedData(Context context, String defaultLanguage) {

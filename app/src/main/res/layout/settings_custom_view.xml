@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     >
 
+    <!--TODO review ui-->
+
     <FrameLayout
         android:id="@+id/settings_frame"
         android:layout_width="match_parent"

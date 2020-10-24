@@ -38,6 +38,8 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
         return new RestaurantListRecyclerViewAdapter.ViewHolder(binding);
     }
 
+
+//TODO km in meter
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Restaurant restaurant = mRestaurants.get(position);

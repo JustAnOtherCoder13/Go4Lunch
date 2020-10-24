@@ -1,9 +1,12 @@
 package com.picone.go4lunch.presentation.ui.main;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -11,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -28,6 +32,7 @@ import com.picone.core.domain.entity.user.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
 import com.picone.go4lunch.presentation.utils.CustomAdapter;
+import com.picone.go4lunch.presentation.utils.LocaleHelper;
 import com.picone.go4lunch.presentation.utils.SearchViewHelper;
 import com.picone.go4lunch.presentation.viewModels.ChatViewModel;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
@@ -64,11 +69,10 @@ public class MainActivity extends AppCompatActivity {
     private NavController mNavController;
     private SearchViewHelper searchViewHelper;
     private boolean isReservationIsCancelled = false;
+    private Toolbar mToolbar;
 
-
+    //TODO delete google key from repo
     //TODO change settings doesn't update ui
-    //TODO pass in multilanguage
-    //TODO pass menu programaticaly?
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +80,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(mBinding.getRoot());
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
         searchViewHelper = new SearchViewHelper(this, mRestaurantViewModel);
-
+        mToolbar = mBinding.topNavBar;
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationIcon(R.drawable.ic_menu_icon);
+        //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_icon);
         initViewModel();
         initMenuButton();
         initInComingNavigation();
@@ -106,11 +114,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.top_nav_bar_menu,menu);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
+        //TODO resetRestaurant
         if (Objects.requireNonNull(mNavController.getCurrentDestination()).getId() == R.id.authenticationFragment) {
             this.finish();
         } else mNavController.navigateUp();
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.setLocale(newBase));
     }
 
     private void initViewModel() {
@@ -226,18 +246,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initNavigation() {
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.authenticationFragment, R.id.mapsFragment, R.id.listFragment, R.id.workmatesFragment).build();
+        //AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.authenticationFragment, R.id.mapsFragment, R.id.listFragment, R.id.workmatesFragment).build();
         NavigationUI.setupWithNavController(mBinding.bottomNavigation, mNavController);
-        NavigationUI.setupWithNavController(mBinding.topNavBar, mNavController, appBarConfiguration);
+        //NavigationUI.setupWithNavController(mBinding.topNavBar, mNavController, appBarConfiguration);
     }
 
     private void saveChanges() {
-        mUserViewModel.updateUserSettingValues(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue())
+
+        String language = mBinding.settingsViewInclude.languageSpinnerSettings.getEditText().getText().toString();
+
+        LocaleHelper.setNewLocale(this, language);
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+
+        /*mUserViewModel.updateUserSettingValues(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue())
                 , new SettingValues(Objects.requireNonNull(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText()).getText().toString().trim(),
                         mBinding.settingsViewInclude.notificationSwitchButton.isChecked()));
         if (isReservationIsCancelled) {
             mRestaurantViewModel.cancelReservation();
-        }
+        }*/
         setSettingsVisibility(false);
     }
 
@@ -273,20 +301,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private String createMessage(String restaurantName, String restaurantAddress, String interestedUsers) {
-        return (getString(R.string.notification_you_are_eating) + restaurantName + getString(R.string.notification_at) + restaurantAddress + getString(R.string.notification_with) + interestedUsers);
-    }
-
-    private String UserListToString(List<User> interestedUsers) {
-        String interestedUsersStr = null;
-        for (User interestedUser : interestedUsers)
-            if (interestedUsersStr == null)
-                interestedUsersStr = interestedUser.getName();
-            else
-                interestedUsersStr = interestedUsersStr.concat(", ").concat(interestedUser.getName());
-        return interestedUsersStr;
-    }
-
+    //TODO set in shadow not transparent
     public void setStatusBarTransparency(boolean isTransparent) {
         if (isTransparent) {
             if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
@@ -320,6 +335,20 @@ public class MainActivity extends AppCompatActivity {
             mBinding.bottomNavigation.setVisibility(View.GONE);
             mBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         }
+    }
+
+    private String createMessage(String restaurantName, String restaurantAddress, String interestedUsers) {
+        return (getString(R.string.notification_you_are_eating) + restaurantName + getString(R.string.notification_at) + restaurantAddress + getString(R.string.notification_with) + interestedUsers);
+    }
+
+    private String UserListToString(List<User> interestedUsers) {
+        String interestedUsersStr = null;
+        for (User interestedUser : interestedUsers)
+            if (interestedUsersStr == null)
+                interestedUsersStr = interestedUser.getName();
+            else
+                interestedUsersStr = interestedUsersStr.concat(", ").concat(interestedUser.getName());
+        return interestedUsersStr;
     }
 
     public void setWindowFlag(final int bits, boolean on) {

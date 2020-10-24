@@ -105,10 +105,10 @@ public class RestaurantDetailFragment extends BaseFragment {
         }
     }
 
+    //TODO if grey disable click
     //TODO when come back from call or website don't get the selected restaurant
-
     //TODO resize restaurant Photo?
-    //TODO setFabInactive if on userChosenRestaurant
+    //TODO setFabInactive if on userChosenRestaurant or if closed or out of time
     private void initView() {
         mRestaurantViewModel.isDataLoading.observe(getViewLifecycleOwner(), isDataLoading ->
                 playLoadingAnimation(isDataLoading, mBinding.animationViewInclude.animationView));

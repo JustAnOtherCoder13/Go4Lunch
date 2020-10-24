@@ -16,6 +16,7 @@ import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 
 public class SearchViewHelper {
 
+    //TODO manage workmate fragment
     MainActivity mainActivity;
     RestaurantViewModel mRestaurantViewModel;
 

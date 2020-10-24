@@ -30,6 +30,7 @@ import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentMapsBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
+import com.picone.go4lunch.presentation.utils.LocaleHelper;
 
 import java.util.List;
 import java.util.Objects;
@@ -88,7 +89,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         mMap = googleMap;
         updateLocationUI();
         mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), restaurants -> {
-            initCustomMarker(restaurants);
+            initCustomMarker(mRestaurantViewModel.getAllRestaurants.getValue());
             mRestaurantViewModel.setUserChosenRestaurant();
         });
 

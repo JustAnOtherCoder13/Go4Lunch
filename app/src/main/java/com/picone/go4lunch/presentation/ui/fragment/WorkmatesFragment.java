@@ -28,7 +28,6 @@ public class WorkmatesFragment extends BaseFragment {
     private FragmentWorkmatesBinding mBinding;
     private List<User> mUsers = new ArrayList<>();
 
-    //TODO avoid searchView
 
     @Nullable
     @Override
