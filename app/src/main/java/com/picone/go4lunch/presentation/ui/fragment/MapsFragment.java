@@ -50,6 +50,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     private FusedLocationProviderClient mFusedLocationProviderClient;
     public static String MAPS_KEY;
 
+    //TODO restaurants from firebase don't load on first time
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,11 +79,8 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
             if (restaurant != null)
                 Navigation.findNavController(requireView()).navigate(R.id.restaurantDetailFragment);
         });
-        // TODO pass boolean to getRestaurantFromMaps to avoid loading every time
-        mRestaurantViewModel.getCurrentLocation.observe(getViewLifecycleOwner(), currentLocation ->{
-            Log.i("TAG", "onViewCreated: "+mRestaurantViewModel.getAllRestaurants.getValue());
-            mRestaurantViewModel.setAllRestaurantFromMaps(false);
-        });
+        mRestaurantViewModel.getCurrentLocation.observe(getViewLifecycleOwner(), currentLocation ->
+                mRestaurantViewModel.setAllRestaurantFromMaps(false));
     }
 
     @Override

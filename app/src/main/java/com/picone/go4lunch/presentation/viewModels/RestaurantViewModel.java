@@ -68,8 +68,7 @@ public class RestaurantViewModel extends ViewModel {
             , GetCurrentUserForEmailInteractor getCurrentUserForEmailInteractor
             , FetchRestaurantFromPlaceInteractor fetchRestaurantFromPlaceInteractor, GetAllPersistedRestaurantsInteractor getAllPersistedRestaurantsInteractor
             , FetchRestaurantDistanceInteractor fetchRestaurantDistanceInteractor, FetchRestaurantDetailFromPlaceInteractor fetchRestaurantDetailFromPlaceInteractor
-            , GetPredictionInteractor getPredictionInteractor, SendNotificationInteractor sendNotificationInteractor
-    ) {
+            , GetPredictionInteractor getPredictionInteractor, SendNotificationInteractor sendNotificationInteractor) {
         this.addRestaurantInteractor = addRestaurantInteractor;
         this.updateUserChosenRestaurantInteractor = updateUserChosenRestaurantInteractor;
         this.getCurrentUserForEmailInteractor = getCurrentUserForEmailInteractor;
@@ -102,7 +101,9 @@ public class RestaurantViewModel extends ViewModel {
         likeCounter.setValue(fanListSize);
     }
 
-    public void setCurrentLocation(Location location) { locationMutableLiveData.setValue(location); }
+    public void setCurrentLocation(Location location) {
+        locationMutableLiveData.setValue(location);
+    }
 
     @SuppressLint("CheckResult")
     public void setUserChosenRestaurant() {
@@ -218,7 +219,7 @@ public class RestaurantViewModel extends ViewModel {
             addRestaurantInteractor.addRestaurant(FirstChoiceRestaurantWithUserRemoved())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(()->updateRestaurantDailySchedule(selectedRestaurant));
+                    .subscribe(() -> updateRestaurantDailySchedule(selectedRestaurant));
         }
     }
 

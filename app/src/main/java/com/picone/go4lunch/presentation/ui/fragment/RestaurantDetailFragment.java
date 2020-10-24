@@ -105,6 +105,9 @@ public class RestaurantDetailFragment extends BaseFragment {
         }
     }
 
+    //TODO when come back from call or website don't get the selected restaurant
+
+    //TODO resize restaurant Photo?
     //TODO setFabInactive if on userChosenRestaurant
     private void initView() {
         mRestaurantViewModel.isDataLoading.observe(getViewLifecycleOwner(), isDataLoading ->

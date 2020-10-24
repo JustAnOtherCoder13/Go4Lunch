@@ -44,6 +44,8 @@ public class AuthenticationFragment extends BaseFragment {
     private NavController mNavController;
     private boolean isNewUser;
 
+    //TODO little white bar on top to hide
+    //TODO settingView Shown when enter app
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

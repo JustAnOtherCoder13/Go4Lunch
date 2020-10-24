@@ -65,6 +65,10 @@ public class MainActivity extends AppCompatActivity {
     private SearchViewHelper searchViewHelper;
     private boolean isReservationIsCancelled = false;
 
+
+    //TODO change settings doesn't update ui
+    //TODO pass in multilanguage
+    //TODO pass menu programaticaly?
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -87,6 +87,4 @@ public class UserViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
     }
-
-
 }
