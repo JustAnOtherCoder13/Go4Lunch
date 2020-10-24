@@ -44,7 +44,7 @@ public class SearchViewHelper {
             EditText editText = mainActivity.findViewById(R.id.search_src_text);
             editText.setText("");
             searchView.setQuery("", false);
-            mRestaurantViewModel.getRestaurantFromMaps(true);
+            mRestaurantViewModel.setAllRestaurantFromMaps(true);
         };
     }
 
@@ -59,7 +59,7 @@ public class SearchViewHelper {
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                mRestaurantViewModel.getRestaurantFromMaps(true);
+                mRestaurantViewModel.setAllRestaurantFromMaps(true);
                 return true;
             }
         };
@@ -69,7 +69,7 @@ public class SearchViewHelper {
         return new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                mRestaurantViewModel.getPrediction(query);
+                mRestaurantViewModel.filterRestaurants(query);
                 return false;
             }
 
@@ -78,7 +78,7 @@ public class SearchViewHelper {
                 if (newText.length() < 2) {
                     return false;
                 }
-                mRestaurantViewModel.getPrediction(newText);
+                mRestaurantViewModel.filterRestaurants(newText);
                 return true;
             }
         };

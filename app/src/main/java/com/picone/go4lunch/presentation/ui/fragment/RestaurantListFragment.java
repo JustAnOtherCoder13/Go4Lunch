@@ -63,7 +63,7 @@ public class RestaurantListFragment extends BaseFragment {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewListFragment, R.layout.fragment_restaurant_list)
                 .setOnItemClickListener((recyclerView, position, v) -> {
                     Restaurant restaurant = Objects.requireNonNull(mRestaurantViewModel.getAllRestaurants.getValue()).get(position);
-                    mRestaurantViewModel.initSelectedRestaurant(restaurant.getPlaceId());
+                    mRestaurantViewModel.setInterestedUsersForRestaurant(restaurant.getPlaceId());
                 });
     }
 }

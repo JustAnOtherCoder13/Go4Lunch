@@ -81,7 +81,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         // TODO pass boolean to getRestaurantFromMaps to avoid loading every time
         mRestaurantViewModel.getCurrentLocation.observe(getViewLifecycleOwner(), currentLocation ->{
             Log.i("TAG", "onViewCreated: "+mRestaurantViewModel.getAllRestaurants.getValue());
-            mRestaurantViewModel.getRestaurantFromMaps(false);
+            mRestaurantViewModel.setAllRestaurantFromMaps(false);
         });
     }
 
@@ -180,7 +180,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
                 }
             }
             mMap.setOnMarkerClickListener(marker -> {
-                mRestaurantViewModel.initSelectedRestaurant(marker.getTitle());
+                mRestaurantViewModel.setInterestedUsersForRestaurant(marker.getTitle());
                 return false;
             });
         }

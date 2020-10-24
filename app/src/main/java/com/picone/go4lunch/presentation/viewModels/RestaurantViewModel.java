@@ -43,7 +43,7 @@ public class RestaurantViewModel extends ViewModel {
 
     private MutableLiveData<User> currentUserMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Restaurant> selectedRestaurantMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<User>> interestedUsersMutableLiveData = new MutableLiveData<List<User>>();
+    private MutableLiveData<List<User>> interestedUsersMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> isDataLoadingMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<List<Restaurant>> allRestaurantsMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Location> locationMutableLiveData = new MutableLiveData<>();
@@ -91,18 +91,18 @@ public class RestaurantViewModel extends ViewModel {
     public LiveData<Restaurant> getUserChosenRestaurant = userChosenRestaurantMutableLiveData;
     public LiveData<List<Restaurant>> getAllDbRestaurants = allDbRestaurantsMutableLiveData;
 
-    public void setLikeCounter(int fanListSize) {
-        likeCounter.setValue(fanListSize);
-    }
 
-    public void setCurrentLocation(Location location) {
-        locationMutableLiveData.setValue(location);
-    }
+    //---------------------------------------------SETTER----------------------------------------------
 
     public void resetSelectedRestaurant() {
         selectedRestaurantMutableLiveData.setValue(null);
     }
 
+    public void setLikeCounter(int fanListSize) {
+        likeCounter.setValue(fanListSize);
+    }
+
+    public void setCurrentLocation(Location location) { locationMutableLiveData.setValue(location); }
 
     @SuppressLint("CheckResult")
     public void setUserChosenRestaurant() {
@@ -119,8 +119,7 @@ public class RestaurantViewModel extends ViewModel {
         getAllPersistedRestaurantsInteractor.getAllPersistedRestaurants()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(restaurants ->
-                        allDbRestaurantsMutableLiveData.setValue(restaurants));
+                .subscribe(restaurants -> allDbRestaurantsMutableLiveData.setValue(restaurants));
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -129,23 +128,36 @@ public class RestaurantViewModel extends ViewModel {
         getCurrentUserForEmailInteractor.getCurrentUserForEmail(authUserEmail)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(currentUsers ->
-                        currentUserMutableLiveData.setValue(currentUsers.get(0)));
+                .subscribe(currentUsers -> currentUserMutableLiveData.setValue(currentUsers.get(0)));
+    }
+
+    @SuppressLint("CheckResult")
+    public void setInterestedUsersForRestaurant(String placeId) {
+        Restaurant restaurant = getRestaurantForPlaceId(placeId);
+        if (restaurant != null) {
+            selectedRestaurantMutableLiveData.setValue(getRestaurantForPlaceId(placeId));
+            if (!restaurant.getRestaurantDailySchedules().isEmpty() && getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null
+                    && getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers() != null)
+                interestedUsersMutableLiveData.setValue(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers());
+            else interestedUsersMutableLiveData.setValue(new ArrayList<>());
+        }
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
-    public void getRestaurantFromMaps(boolean isReset) {
+    public void setAllRestaurantFromMaps(boolean isReset) {
         fetchRestaurantFromPlaceInteractor.fetchRestaurantFromPlace(locationMutableLiveData.getValue(), MAPS_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(this::fetchPlaceDetail)
                 .subscribe(restaurants -> {
-                    if (allRestaurantsMutableLiveData.getValue()==null || isReset)
-                    allRestaurantsMutableLiveData.setValue(restaurants);
+                    if (allRestaurantsMutableLiveData.getValue() == null || isReset)
+                        allRestaurantsMutableLiveData.setValue(restaurants);
                     updateAllRestaurantsWithPersistedValues(allDbRestaurantsMutableLiveData.getValue());
                 });
     }
+
+    //--------------------------------------------MAPS DETAIL----------------------------------------------
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private Observable<List<Restaurant>> fetchPlaceDetail(List<Restaurant> nearBySearchRestaurants) {
@@ -170,23 +182,11 @@ public class RestaurantViewModel extends ViewModel {
                         Observable.create(emitter -> emitter.onNext(restaurantWithDistanceAdded)));
     }
 
-
-    @SuppressLint("CheckResult")
-    public void initSelectedRestaurant(String placeId) {
-        Restaurant restaurant = getRestaurantForPlaceId(placeId);
-        if (restaurant != null) {
-            selectedRestaurantMutableLiveData.setValue(getRestaurantForPlaceId(placeId));
-            if (!restaurant.getRestaurantDailySchedules().isEmpty() && getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null
-                    && getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers() != null)
-                interestedUsersMutableLiveData.setValue(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers());
-            else interestedUsersMutableLiveData.setValue(new ArrayList<>());
-        }
-    }
-
+    //---------------------------------------------ACTIONS----------------------------------------------
 
     @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
     @SuppressLint("CheckResult")
-    public void getPrediction(String query) {
+    public void filterRestaurants(String query) {
         Location location = locationMutableLiveData.getValue();
         List<Restaurant> filteredRestaurant = new ArrayList<>();
         getPredictionInteractor.getPredictions(query, MAPS_KEY, String.valueOf(location.getLatitude()).concat(",").concat(String.valueOf(location.getLongitude())))
@@ -205,56 +205,21 @@ public class RestaurantViewModel extends ViewModel {
 
     @SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
     @SuppressLint("CheckResult")
-    public void updateFanList() {
-        Restaurant restaurant = getRestaurantForPlaceId(selectedRestaurantMutableLiveData.getValue().getPlaceId());
-        User currentUser = currentUserMutableLiveData.getValue();
-        List<String> fanList = new ArrayList<>();
-        fanList.add(currentUser.getUid());
-
-        if (restaurant.getFanList() == null || restaurant.getFanList().isEmpty())
-            restaurant.setFanList(fanList);
-
-        else if (!restaurant.getFanList().contains(currentUser.getUid()))
-            restaurant.getFanList().add(currentUser.getUid());
-
-        addRestaurantInteractor.addRestaurant(restaurant)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> likeCounter.setValue(restaurant.getFanList().size()));
-    }
-
-    @SuppressWarnings({"ConstantConditions"})
-    @SuppressLint("CheckResult")
     public void addUserToRestaurant() {
         isDataLoadingMutableLiveData.setValue(true);
 
         Restaurant selectedRestaurant = getRestaurantForPlaceId(selectedRestaurantMutableLiveData.getValue().getPlaceId());
         if (currentUserMutableLiveData.getValue().getUserDailySchedules() == null ||
-                getUserDailyScheduleOnToday(currentUserMutableLiveData.getValue().getUserDailySchedules()) == null) {
-
+                getUserDailyScheduleOnToday(currentUserMutableLiveData.getValue().getUserDailySchedules()) == null)
             updateRestaurantDailySchedule(selectedRestaurant);
 
-        } else if (!getUserDailyScheduleOnToday(currentUserMutableLiveData.getValue().getUserDailySchedules()).getRestaurantPlaceId()
+        else if (!getUserDailyScheduleOnToday(currentUserMutableLiveData.getValue().getUserDailySchedules()).getRestaurantPlaceId()
                 .equals(selectedRestaurant.getPlaceId())) {
-
             addRestaurantInteractor.addRestaurant(FirstChoiceRestaurantWithUserRemoved())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe();
-
-            updateRestaurantDailySchedule(selectedRestaurant);
+                    .subscribe(()->updateRestaurantDailySchedule(selectedRestaurant));
         }
-    }
-
-    @NonNull
-    private Restaurant FirstChoiceRestaurantWithUserRemoved() {
-        Restaurant restaurant = getRestaurantForPlaceId(getUserDailyScheduleOnToday(currentUserMutableLiveData.getValue().getUserDailySchedules()).getRestaurantPlaceId());
-        RestaurantDailySchedule restaurantDailySchedule = getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules());
-        User userInfoToDelete = getCurrentUserInfoForUid(restaurantDailySchedule.getInterestedUsers());
-        restaurantDailySchedule.getInterestedUsers().remove(userInfoToDelete);
-        if (restaurantDailySchedule.getInterestedUsers().isEmpty())
-            restaurant.getRestaurantDailySchedules().remove(restaurantDailySchedule);
-        return restaurant;
     }
 
     @SuppressLint("CheckResult")
@@ -265,23 +230,26 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribe();
     }
 
-    @SuppressLint("CheckResult")
-    public void updateAllRestaurantsWithPersistedValues(List<Restaurant> allDbRestaurants) {
-        Log.i("TAG", "updateAllRestaurantsWithPersistedValues: ");
-        List<Restaurant> allRestaurants = allRestaurantsMutableLiveData.getValue();
-        if (allRestaurants != null)
-            for (Restaurant persistedRestaurant : allDbRestaurants) {
-                for (Restaurant restaurantFromMap : allRestaurants) {
-                    if (persistedRestaurant.getPlaceId().equals(restaurantFromMap.getPlaceId())) {
-                        restaurantFromMap.setFanList(persistedRestaurant.getFanList());
-                        if (persistedRestaurant.getRestaurantDailySchedules() != null)
-                            restaurantFromMap.setRestaurantDailySchedules(persistedRestaurant.getRestaurantDailySchedules());
-                    }
-                }
-            }
-        //allRestaurantsMutableLiveData.setValue(allRestaurants);
+    public void cancelReservation() {
+        User currentUser = currentUserMutableLiveData.getValue();
+        assert currentUser != null;
+        Restaurant restaurant = getRestaurantForPlaceId(getUserDailyScheduleOnToday(currentUser.getUserDailySchedules()).getRestaurantPlaceId());
+
+        getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().remove(
+                getCurrentUserInfoForUid(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers()));
+        if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().isEmpty())
+            restaurant.getRestaurantDailySchedules().remove(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()));
+
+        currentUser.getUserDailySchedules().remove(getUserDailyScheduleOnToday(currentUser.getUserDailySchedules()));
+
+        addRestaurantInteractor.addRestaurant(restaurant)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .andThen(updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(currentUser))
+                .subscribe();
     }
 
+    //---------------------------------------------UPDATE----------------------------------------------
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
@@ -299,16 +267,6 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::updateUserDailySchedule);
-    }
-
-    @NonNull
-    private User createFormatUser() {
-        return new User(currentUserMutableLiveData.getValue().getUid(),
-                currentUserMutableLiveData.getValue().getName(),
-                null,
-                currentUserMutableLiveData.getValue().getAvatar(),
-                null,
-                null);
     }
 
 
@@ -334,24 +292,42 @@ public class RestaurantViewModel extends ViewModel {
                 });
     }
 
+    @SuppressLint("CheckResult")
+    public void updateAllRestaurantsWithPersistedValues(List<Restaurant> allDbRestaurants) {
+        Log.i("TAG", "updateAllRestaurantsWithPersistedValues: ");
+        List<Restaurant> allRestaurants = allRestaurantsMutableLiveData.getValue();
+        if (allRestaurants != null)
+            for (Restaurant persistedRestaurant : allDbRestaurants) {
+                for (Restaurant restaurantFromMap : allRestaurants) {
+                    if (persistedRestaurant.getPlaceId().equals(restaurantFromMap.getPlaceId())) {
+                        restaurantFromMap.setFanList(persistedRestaurant.getFanList());
+                        if (persistedRestaurant.getRestaurantDailySchedules() != null)
+                            restaurantFromMap.setRestaurantDailySchedules(persistedRestaurant.getRestaurantDailySchedules());
+                    }
+                }
+            }
+    }
 
-    public void cancelReservation() {
+    @SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
+    @SuppressLint("CheckResult")
+    public void updateFanList() {
+        Restaurant restaurant = getRestaurantForPlaceId(selectedRestaurantMutableLiveData.getValue().getPlaceId());
         User currentUser = currentUserMutableLiveData.getValue();
-        Restaurant restaurant = getRestaurantForPlaceId(getUserDailyScheduleOnToday(currentUser.getUserDailySchedules()).getRestaurantPlaceId());
+        List<String> fanList = new ArrayList<>();
+        fanList.add(currentUser.getUid());
 
-        getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().remove(
-                getCurrentUserInfoForUid(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers()));
-        if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().isEmpty())
-            restaurant.getRestaurantDailySchedules().remove(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()));
-
-        currentUser.getUserDailySchedules().remove(getUserDailyScheduleOnToday(currentUser.getUserDailySchedules()));
+        if (restaurant.getFanList() == null || restaurant.getFanList().isEmpty())
+            restaurant.setFanList(fanList);
+        else if (!restaurant.getFanList().contains(currentUser.getUid()))
+            restaurant.getFanList().add(currentUser.getUid());
 
         addRestaurantInteractor.addRestaurant(restaurant)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .andThen(updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(currentUser))
-                .subscribe();
+                .subscribe(() -> likeCounter.setValue(restaurant.getFanList().size()));
     }
+
+    //---------------------------------------------HELPER----------------------------------------------
 
     private User getCurrentUserInfoForUid(List<User> userInfos) {
         User userToReturn = null;
@@ -369,5 +345,26 @@ public class RestaurantViewModel extends ViewModel {
                 restaurantToReturn = restaurant;
         }
         return restaurantToReturn;
+    }
+
+    @NonNull
+    private User createFormatUser() {
+        return new User(Objects.requireNonNull(currentUserMutableLiveData.getValue()).getUid(),
+                currentUserMutableLiveData.getValue().getName(),
+                null,
+                currentUserMutableLiveData.getValue().getAvatar(),
+                null,
+                null);
+    }
+
+    @NonNull
+    private Restaurant FirstChoiceRestaurantWithUserRemoved() {
+        Restaurant restaurant = getRestaurantForPlaceId(getUserDailyScheduleOnToday(Objects.requireNonNull(currentUserMutableLiveData.getValue()).getUserDailySchedules()).getRestaurantPlaceId());
+        RestaurantDailySchedule restaurantDailySchedule = getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules());
+        User userInfoToDelete = getCurrentUserInfoForUid(restaurantDailySchedule.getInterestedUsers());
+        restaurantDailySchedule.getInterestedUsers().remove(userInfoToDelete);
+        if (restaurantDailySchedule.getInterestedUsers().isEmpty())
+            restaurant.getRestaurantDailySchedules().remove(restaurantDailySchedule);
+        return restaurant;
     }
 }
