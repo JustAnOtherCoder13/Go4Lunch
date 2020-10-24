@@ -11,10 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,13 +34,11 @@ import com.picone.core.domain.entity.user.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
 import com.picone.go4lunch.presentation.utils.CustomAdapter;
-import com.picone.go4lunch.presentation.utils.LocaleHelper;
 import com.picone.go4lunch.presentation.viewModels.ChatViewModel;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -91,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         initLoginViewModel();
         mRestaurantViewModel.getUserChosenRestaurant.observe(this, restaurant ->
                 FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+                    Log.i("TAG", "onCreate: "+restaurant.getName());
                     //TODO remove current user from interested users list
                     if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null &&
                             mRestaurantViewModel.getCurrentUser.getValue().getSettingValues().isNotificationSet())
@@ -157,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void saveChanges() {
         Log.i("TAG", "saveChanges: "+mBinding.settingsViewInclude.languageSpinnerSettings.getEditText().getText().toString());
-        mUserViewModel.updateUser(mRestaurantViewModel.getCurrentUser.getValue()
+        mUserViewModel.updateUserSettingValues(mRestaurantViewModel.getCurrentUser.getValue()
                 , new SettingValues(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText().getText().toString().trim(),
                         mBinding.settingsViewInclude.notificationSwitchButton.isChecked()));
         if (isReservationIsCancelled) {

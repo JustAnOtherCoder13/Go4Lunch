@@ -80,13 +80,13 @@ public class UserViewModel extends ViewModel {
                 );
     }
 
-    public<T> void updateUser(User currentUser, T updateObject){
-        if (updateObject instanceof SettingValues){
-            currentUser.setSettingValues((SettingValues) updateObject);
-        }
+    public void updateUserSettingValues(User currentUser, SettingValues settingValues) {
+        currentUser.setSettingValues(settingValues);
         updateUserInteractor.updateUser(currentUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
     }
+
+
 }
