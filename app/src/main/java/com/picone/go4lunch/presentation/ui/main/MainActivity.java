@@ -37,6 +37,7 @@ import com.picone.core.domain.entity.user.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
 import com.picone.go4lunch.presentation.utils.CustomAdapter;
+import com.picone.go4lunch.presentation.utils.LocaleHelper;
 import com.picone.go4lunch.presentation.viewModels.ChatViewModel;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
@@ -91,7 +92,8 @@ public class MainActivity extends AppCompatActivity {
         mRestaurantViewModel.getUserChosenRestaurant.observe(this, restaurant ->
                 FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
                     //TODO remove current user from interested users list
-                    if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null)
+                    if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null &&
+                            mRestaurantViewModel.getCurrentUser.getValue().getSettingValues().isNotificationSet())
                         mRestaurantViewModel.sendNotification(task.getResult(), createMessage(restaurant.getName(), restaurant.getAddress(), UserListToString(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers())));
                 }));
     }
@@ -129,12 +131,13 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton(R.string.yes, (dialog, which) -> saveChanges())
                         .create()
                         .show();
-                Log.i("TAG", "onStart: "+ mBinding.settingsViewInclude.languageSpinnerSettings.getEditText().getText()+" notif "+mBinding.settingsViewInclude.notificationSwitchButton.isChecked()+" "+isReservationIsCancelled);
+                Log.i("TAG", "onStart: " + mBinding.settingsViewInclude.languageSpinnerSettings.getEditText().getText() + " notif " + mBinding.settingsViewInclude.notificationSwitchButton.isChecked() + " " + isReservationIsCancelled);
             });
             mBinding.settingsViewInclude.cancelReservationBtn.setOnClickListener(v -> {
-                if (getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules())!=null)
-                isReservationIsCancelled = true;
-                else Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
+                if (getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()) != null)
+                    isReservationIsCancelled = true;
+                else
+                    Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
 
             });
             mLoginViewModel.authenticate(true);
@@ -142,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
             mRestaurantViewModel.resetSelectedRestaurant();
             mUserViewModel.setAllDbUsers();
             mRestaurantViewModel.setAllDbRestaurants();
+
 
             mRestaurantViewModel.getSelectedRestaurant.observe(this, restaurant -> {
                 if (restaurant != null)
@@ -151,11 +155,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void saveChanges(){
+    private void saveChanges() {
+        Log.i("TAG", "saveChanges: "+mBinding.settingsViewInclude.languageSpinnerSettings.getEditText().getText().toString());
         mUserViewModel.updateUser(mRestaurantViewModel.getCurrentUser.getValue()
-                ,new SettingValues(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText().getText().toString(),
+                , new SettingValues(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText().getText().toString().trim(),
                         mBinding.settingsViewInclude.notificationSwitchButton.isChecked()));
-        if (isReservationIsCancelled){
+        if (isReservationIsCancelled) {
             mRestaurantViewModel.cancelReservation();
         }
         mBinding.settingsViewInclude.settings.setVisibility(View.GONE);
@@ -186,16 +191,15 @@ public class MainActivity extends AppCompatActivity {
             mBinding.drawerLayout.close();
             switch (item.getItemId()) {
                 case R.id.your_lunch_drawer_layout:
-                    mRestaurantViewModel.getCurrentUser.observe(this, user -> {
-                        if (user.getUserDailySchedules() != null && getUserDailyScheduleOnToday(user.getUserDailySchedules()) != null) {
-                            mRestaurantViewModel.initSelectedRestaurant(getUserDailyScheduleOnToday(user.getUserDailySchedules()).getRestaurantPlaceId());
+                        if (mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules() != null && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()) != null) {
+                            mRestaurantViewModel.initSelectedRestaurant(getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId());
                         } else
                             Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
-                    });
+
                     break;
 
                 case R.id.settings_drawer_layout:
-                    settingValues = new SettingValues(mRestaurantViewModel.getCurrentUser.getValue().getSettingValues().getChosenLanguage(),mRestaurantViewModel.getCurrentUser.getValue().getSettingValues().isNotificationSet());
+                    settingValues = new SettingValues(mRestaurantViewModel.getCurrentUser.getValue().getSettingValues().getChosenLanguage(), mRestaurantViewModel.getCurrentUser.getValue().getSettingValues().isNotificationSet());
                     isReservationIsCancelled = false;
 
                     if (mBinding.settingsViewInclude.settings.getVisibility() == View.GONE) {
@@ -220,16 +224,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initDropDownMenu() {
-        String[] languages;
-        int[] flags;
-
-        if (settingValues.getChosenLanguage().equalsIgnoreCase(getString(R.string.French))) {
-            languages = new String[]{(getString(R.string.French)), (getString(R.string.English))};
-            flags = new int[]{(R.drawable.ic_french_flag_30), (R.drawable.ic_united_kingdom_flag_30)};
-        } else {
-            languages = new String[]{(getString(R.string.English)), (getString(R.string.French))};
-            flags = new int[]{(R.drawable.ic_united_kingdom_flag_30), (R.drawable.ic_french_flag_30)};
-        }
+        String[] languages = {(getString(R.string.English)), (getString(R.string.French))};
+        int[] flags = {(R.drawable.ic_united_kingdom_flag_30), (R.drawable.ic_french_flag_30)};
 
         CustomAdapter adapter = new CustomAdapter(this, languages, flags);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -278,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
         assert searchManager != null;
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
-        searchView.setQueryHint("Search restaurants");
+        searchView.setQueryHint(getString(R.string.search_restaurants));
         searchView.setBackgroundColor(Color.WHITE);
         searchView.setOnQueryTextListener(getOnQueryTextListener());
         item.setOnActionExpandListener(geOnActionExpandListener(searchView));

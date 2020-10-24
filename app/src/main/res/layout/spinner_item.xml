@@ -9,7 +9,7 @@
         android:id="@+id/spinnerTextView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="En"
+        android:text="@string/English"
         android:textColor="@color/colorPrimary"
         android:layout_marginStart="@dimen/little_marge"
         android:layout_marginEnd="@dimen/little_marge"

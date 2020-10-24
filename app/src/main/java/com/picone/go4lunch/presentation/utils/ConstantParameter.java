@@ -1,6 +1,7 @@
 package com.picone.go4lunch.presentation.utils;
 
 import com.picone.core.domain.entity.user.SettingValues;
+import com.picone.go4lunch.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -12,7 +13,7 @@ public class ConstantParameter {
 
 
     public static final int NOTIFICATION_ID = 7;
-    public static final String NOTIFICATION_TAG = "FIREBASEOC";
+    public static final String NOTIFICATION_TAG = "GO4LUNCH";
     public static final int RC_SIGN_IN = 13250;
     public static final int REQUEST_CODE = 13700;
 
