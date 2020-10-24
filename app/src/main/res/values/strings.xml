@@ -98,5 +98,7 @@
     <string name="enter_your_message_here">Enter your message here</string>
     <string name="English">En</string>
     <string name="French">Fr</string>
+    <string name="change_settings">Change settings options</string>
+    <string name="haven_t_chose_restaurant">You haven\'t choose a restaurant yet</string>
 
 </resources>

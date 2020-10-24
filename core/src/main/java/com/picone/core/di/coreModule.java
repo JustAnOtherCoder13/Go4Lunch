@@ -22,6 +22,7 @@ import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserDailySchedulesInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
+import com.picone.core.domain.interactors.usersInteractors.UpdateUserInteractor;
 
 import javax.inject.Singleton;
 
@@ -85,6 +86,11 @@ public final class coreModule {
     @Provides
     static AddUserInteractor provideAddUser() {
         return new AddUserInteractor(provideUserDataSource());
+    }
+
+    @Provides
+    static UpdateUserInteractor provideUpdateUser(){
+        return  new UpdateUserInteractor(provideUserDataSource());
     }
 
     @Provides

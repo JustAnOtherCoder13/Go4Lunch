@@ -26,8 +26,11 @@ public class UserRepository {
     public Completable addUser(User user) {
         return userDao.AddUser(user);
     }
+    public Completable updateUser(User currentUser) {
+        return userDao.updateUser(currentUser);
+    }
 
-    public Observable<List<User>> getCurrentUserForEmail(String authUserEmail) {
+        public Observable<List<User>> getCurrentUserForEmail(String authUserEmail) {
         return userDao.getCurrentUserForEmail(authUserEmail);
     }
 

@@ -43,7 +43,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Spinner
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                 android:id="@+id/language_spinner_settings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -51,7 +52,16 @@
                 android:background="@color/onPrimaryColor"
                 app:layout_constraintEnd_toStartOf="@id/notification_txt_settings"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/spinner_txt_setting" />
+                app:layout_constraintTop_toBottomOf="@id/spinner_txt_setting" >
+
+                <AutoCompleteTextView
+                    android:id="@+id/language_txt_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:enabled="false"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <TextView
                 android:id="@+id/notification_txt_settings"

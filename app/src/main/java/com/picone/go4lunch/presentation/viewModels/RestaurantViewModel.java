@@ -91,9 +91,13 @@ public class RestaurantViewModel extends ViewModel {
     public LiveData<Integer> getLikeCounter = likeCounter;
     public LiveData<Restaurant> getUserChosenRestaurant = userChosenRestaurantMutableLiveData;
 
-    public void setLikeCounter(int fanListSize) { likeCounter.setValue(fanListSize); }
+    public void setLikeCounter(int fanListSize) {
+        likeCounter.setValue(fanListSize);
+    }
 
-    public void setCurrentLocation(Location location) { locationMutableLiveData.setValue(location); }
+    public void setCurrentLocation(Location location) {
+        locationMutableLiveData.setValue(location);
+    }
 
     public void resetSelectedRestaurant() {
         selectedRestaurantMutableLiveData.setValue(null);
@@ -239,7 +243,7 @@ public class RestaurantViewModel extends ViewModel {
             if (!getUserDailyScheduleOnToday(currentUserMutableLiveData.getValue().getUserDailySchedules()).getRestaurantPlaceId().equals(selectedRestaurant.getPlaceId())) {
                 Restaurant restaurant = getRestaurantForPlaceId(getUserDailyScheduleOnToday(currentUserMutableLiveData.getValue().getUserDailySchedules()).getRestaurantPlaceId());
                 RestaurantDailySchedule restaurantDailySchedule = getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules());
-                User userToDelete = getUserForUid(restaurantDailySchedule.getInterestedUsers());
+                User userToDelete = getCurrentUserForUid(restaurantDailySchedule.getInterestedUsers());
                 restaurantDailySchedule.getInterestedUsers().remove(userToDelete);
                 if (restaurantDailySchedule.getInterestedUsers().isEmpty())
                     restaurant.getRestaurantDailySchedules().remove(restaurantDailySchedule);
@@ -280,7 +284,7 @@ public class RestaurantViewModel extends ViewModel {
         if (!selectedRestaurant.getRestaurantDailySchedules().isEmpty() &&
                 getRestaurantDailyScheduleOnToday(selectedRestaurant.getRestaurantDailySchedules()) != null) {
             if (getRestaurantDailyScheduleOnToday(selectedRestaurant.getRestaurantDailySchedules()).getInterestedUsers() != null &&
-                    getUserForUid(getRestaurantDailyScheduleOnToday(selectedRestaurant.getRestaurantDailySchedules()).getInterestedUsers()) == null) {
+                    getCurrentUserForUid(getRestaurantDailyScheduleOnToday(selectedRestaurant.getRestaurantDailySchedules()).getInterestedUsers()) == null) {
                 getRestaurantDailyScheduleOnToday(selectedRestaurant.getRestaurantDailySchedules()).getInterestedUsers()
                         .add(currentUserMutableLiveData.getValue());
                 interestedUsersMutableLiveData.setValue(getRestaurantDailyScheduleOnToday(selectedRestaurant.getRestaurantDailySchedules()).getInterestedUsers());
@@ -320,7 +324,25 @@ public class RestaurantViewModel extends ViewModel {
     }
 
 
-    private User getUserForUid(List<User> users) {
+    public void cancelReservation() {
+        User currentUser = currentUserMutableLiveData.getValue();
+        Restaurant restaurant = getRestaurantForPlaceId(getUserDailyScheduleOnToday(currentUser.getUserDailySchedules()).getRestaurantPlaceId());
+
+        getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().remove(
+                getCurrentUserForUid(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers()));
+        if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().isEmpty())
+            restaurant.getRestaurantDailySchedules().remove(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()));
+
+        currentUser.getUserDailySchedules().remove(getUserDailyScheduleOnToday(currentUser.getUserDailySchedules()));
+
+        addRestaurantInteractor.addRestaurant(restaurant)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .andThen(updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(currentUser))
+                .subscribe();
+    }
+
+    private User getCurrentUserForUid(List<User> users) {
         User userToReturn = null;
         if (users != null)
             for (User user : users)

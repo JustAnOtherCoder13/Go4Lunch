@@ -7,9 +7,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.picone.core.domain.entity.user.SettingValues;
 import com.picone.core.domain.entity.user.User;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
+import com.picone.core.domain.interactors.usersInteractors.UpdateUserInteractor;
 
 import java.util.List;
 
@@ -32,14 +34,16 @@ public class UserViewModel extends ViewModel {
 
     private AddUserInteractor addUserInteractor;
     private GetAllUsersInteractor getAllUsersInteractor;
+    private UpdateUserInteractor updateUserInteractor;
 
 
     //suppress warning is safe cause subscribe is used to set allUsersMutableLiveData
     @SuppressLint("CheckResult")
     @ViewModelInject
-    public UserViewModel(GetAllUsersInteractor getAllUsersInteractor, AddUserInteractor addUserInteractor) {
+    public UserViewModel(GetAllUsersInteractor getAllUsersInteractor, AddUserInteractor addUserInteractor, UpdateUserInteractor updateUserInteractor) {
         this.addUserInteractor = addUserInteractor;
         this.getAllUsersInteractor = getAllUsersInteractor;
+        this.updateUserInteractor = updateUserInteractor;
     }
 
     public LiveData<List<User>> getAllUsers = allUsersMutableLiveData;
@@ -67,12 +71,22 @@ public class UserViewModel extends ViewModel {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
-    public void addUser(User user) {
-        addUserInteractor.addUser(user)
+    public void addUser(User currentUser) {
+        addUserInteractor.addUser(currentUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> UserCompletionStateMutableLiveData.setValue(UserCompletionState.ON_COMPLETE)
                         , throwable -> UserCompletionStateMutableLiveData.setValue(UserCompletionState.ON_ERROR)
                 );
+    }
+
+    public<T> void updateUser(User currentUser, T updateObject){
+        if (updateObject instanceof SettingValues){
+            currentUser.setSettingValues((SettingValues) updateObject);
+        }
+        updateUserInteractor.updateUser(currentUser)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
     }
 }

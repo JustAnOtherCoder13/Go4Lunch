@@ -1,5 +1,6 @@
 package com.picone.go4lunch.presentation.ui.main;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.graphics.Color;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,13 +36,13 @@ import com.picone.core.domain.entity.user.SettingValues;
 import com.picone.core.domain.entity.user.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
-import com.picone.go4lunch.databinding.SpinnerItemBinding;
 import com.picone.go4lunch.presentation.utils.CustomAdapter;
 import com.picone.go4lunch.presentation.viewModels.ChatViewModel;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -59,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
     //TODO create a chat
 
     public ActivityMainBinding mBinding;
-    private SpinnerItemBinding spinnerItemBinding;
 
     @Inject
     protected GoogleSignInClient mGoogleSignInClient;
@@ -82,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
         mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
         mChatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
-        spinnerItemBinding = SpinnerItemBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
         initMenuButton();
@@ -123,10 +123,19 @@ public class MainActivity extends AppCompatActivity {
                 mBinding.settingsViewInclude.settingsFrame.setVisibility(View.GONE);
             });
             mBinding.settingsViewInclude.saveChangesYesButtonSettings.setOnClickListener(v -> {
-                Log.i("TAG", "onStart: "+settingValues.getChosenLanguage()+" notif "+mBinding.settingsViewInclude.notificationSwitchButton.isChecked()+" "+isReservationIsCancelled);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.change_settings)
+                        .setNegativeButton(R.string.no, null)
+                        .setPositiveButton(R.string.yes, (dialog, which) -> saveChanges())
+                        .create()
+                        .show();
+                Log.i("TAG", "onStart: "+ mBinding.settingsViewInclude.languageSpinnerSettings.getEditText().getText()+" notif "+mBinding.settingsViewInclude.notificationSwitchButton.isChecked()+" "+isReservationIsCancelled);
             });
             mBinding.settingsViewInclude.cancelReservationBtn.setOnClickListener(v -> {
+                if (getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules())!=null)
                 isReservationIsCancelled = true;
+                else Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
+
             });
             mLoginViewModel.authenticate(true);
             mRestaurantViewModel.setCurrentUser(mFirebaseAuth.getCurrentUser().getEmail());
@@ -140,6 +149,17 @@ public class MainActivity extends AppCompatActivity {
             });
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void saveChanges(){
+        mUserViewModel.updateUser(mRestaurantViewModel.getCurrentUser.getValue()
+                ,new SettingValues(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText().getText().toString(),
+                        mBinding.settingsViewInclude.notificationSwitchButton.isChecked()));
+        if (isReservationIsCancelled){
+            mRestaurantViewModel.cancelReservation();
+        }
+        mBinding.settingsViewInclude.settings.setVisibility(View.GONE);
+        mBinding.settingsViewInclude.settingsFrame.setVisibility(View.GONE);
     }
 
     @Override
@@ -170,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
                         if (user.getUserDailySchedules() != null && getUserDailyScheduleOnToday(user.getUserDailySchedules()) != null) {
                             mRestaurantViewModel.initSelectedRestaurant(getUserDailyScheduleOnToday(user.getUserDailySchedules()).getRestaurantPlaceId());
                         } else
-                            Toast.makeText(this, "You haven't choose a restaurant yet", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
                     });
                     break;
 
@@ -181,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
                     if (mBinding.settingsViewInclude.settings.getVisibility() == View.GONE) {
                         mBinding.settingsViewInclude.settings.setVisibility(View.VISIBLE);
                         mBinding.settingsViewInclude.settingsFrame.setVisibility(View.VISIBLE);
-                        initSpinner();
+                        initDropDownMenu();
                     }
                     mBinding.settingsViewInclude.saveChangesNoButtonSettings.setOnClickListener(v -> {
                         mBinding.settingsViewInclude.settings.setVisibility(View.GONE);
@@ -199,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void initSpinner() {
+    private void initDropDownMenu() {
         String[] languages;
         int[] flags;
 
@@ -207,29 +227,15 @@ public class MainActivity extends AppCompatActivity {
             languages = new String[]{(getString(R.string.French)), (getString(R.string.English))};
             flags = new int[]{(R.drawable.ic_french_flag_30), (R.drawable.ic_united_kingdom_flag_30)};
         } else {
-            spinnerItemBinding.spinnerTextView.setText(getString(R.string.English));
             languages = new String[]{(getString(R.string.English)), (getString(R.string.French))};
             flags = new int[]{(R.drawable.ic_united_kingdom_flag_30), (R.drawable.ic_french_flag_30)};
         }
 
         CustomAdapter adapter = new CustomAdapter(this, languages, flags);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mBinding.settingsViewInclude.languageSpinnerSettings.setAdapter(adapter);
+        mBinding.settingsViewInclude.languageTxtView.setAdapter(adapter);
 
-        mBinding.settingsViewInclude.languageSpinnerSettings.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                TextView textView = view.findViewById(R.id.spinnerTextView);
-                   settingValues.setChosenLanguage((String) textView.getText());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
     }
-
 
     public void setStatusBarTransparency(boolean isTransparent) {
 
