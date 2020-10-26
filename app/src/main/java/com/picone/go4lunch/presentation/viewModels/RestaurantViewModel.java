@@ -163,7 +163,8 @@ public class RestaurantViewModel extends ViewModel {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private Observable<List<Restaurant>> fetchPlaceDetail(List<Restaurant> nearBySearchRestaurants) {
         return Observable.create(emitter -> {
-            for (Restaurant nearBySearchRestaurant : nearBySearchRestaurants)
+            if (nearBySearchRestaurants!=null)
+                for (Restaurant nearBySearchRestaurant : nearBySearchRestaurants)
                 fetchRestaurantDetailFromPlaceInteractor.getRestaurantDetail(nearBySearchRestaurant, MAPS_KEY)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

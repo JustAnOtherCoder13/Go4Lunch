@@ -51,7 +51,7 @@
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:id="@+id/settings_view_include"
-            layout="@layout/settings_custom_view"
+            layout="@layout/settings_layout"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

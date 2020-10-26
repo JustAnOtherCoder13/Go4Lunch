@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <!--TODO review ui-->
 
@@ -46,60 +45,102 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                 android:id="@+id/language_spinner_settings"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/basic_marge"
                 android:background="@color/onPrimaryColor"
                 app:layout_constraintEnd_toStartOf="@id/notification_txt_settings"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/spinner_txt_setting" >
+                app:layout_constraintTop_toBottomOf="@id/spinner_txt_setting">
 
                 <AutoCompleteTextView
                     android:id="@+id/language_txt_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:enabled="false"/>
+                    android:enabled="false" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+
 
 
             <TextView
                 android:id="@+id/notification_txt_settings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/big_marge"
                 android:text="@string/notifications"
                 android:textColor="@color/onPrimaryColor"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/spinner_txt_setting"
                 app:layout_constraintStart_toEndOf="@id/language_spinner_settings"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@id/spinner_txt_setting"
+                />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/notification_switch_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
+                app:layout_constraintBottom_toTopOf="@id/cancel_reservation_card_view"
                 app:layout_constraintEnd_toEndOf="@id/notification_txt_settings"
                 app:layout_constraintStart_toStartOf="@id/notification_txt_settings"
                 app:layout_constraintTop_toBottomOf="@id/notification_txt_settings" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/cancel_reservation_btn"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cancel_reservation_card_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/basic_marge"
                 android:layout_marginTop="@dimen/big_marge"
                 android:layout_marginEnd="@dimen/basic_marge"
-                android:backgroundTint="@color/onPrimaryColor"
-                android:text="@string/cancel_reservation"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/title"
-                app:cornerRadius="@dimen/big_marge"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@color/onPrimaryColor"
+                app:cardCornerRadius="@dimen/big_marge"
+                app:layout_constraintEnd_toStartOf="@id/cancel_reservation_checkbox_card_view"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/language_spinner_settings" />
+                app:layout_constraintTop_toBottomOf="@id/language_spinner_settings">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/basic_marge"
+                    android:text="@string/cancel_reservation"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/title"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cancel_reservation_checkbox_card_view"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cancel_reservation_card_view"
+                app:layout_constraintTop_toTopOf="@id/cancel_reservation_card_view"
+                app:layout_constraintBottom_toBottomOf="@id/cancel_reservation_card_view"
+                app:cardCornerRadius="15dp"
+                android:background="@color/onPrimaryColor"
+                android:layout_marginEnd="@dimen/basic_marge"
+                >
+
+
+            <ToggleButton
+                android:id="@+id/cancel_reservation_toggle_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawablePadding="@dimen/little_marge"
+                android:background="@null"
+                android:textOn="@string/yes"
+                android:textOff="@string/no"
+                android:textColor="@color/colorPrimary"
+                />
+            </androidx.cardview.widget.CardView>
+
+
 
             <TextView
                 android:id="@+id/save_changes_txt_settings"
@@ -110,7 +151,7 @@
                 android:textColor="@color/onPrimaryColor"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cancel_reservation_btn" />
+                app:layout_constraintTop_toBottomOf="@id/cancel_reservation_card_view" />
 
             <FrameLayout
                 android:id="@+id/separator_settings"
@@ -121,8 +162,7 @@
                 android:background="@color/onPrimaryColor"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/save_changes_txt_settings"
-                />
+                app:layout_constraintTop_toBottomOf="@id/save_changes_txt_settings" />
 
 
             <com.google.android.material.button.MaterialButton

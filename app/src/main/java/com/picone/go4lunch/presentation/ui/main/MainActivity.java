@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
     private ChatViewModel mChatViewModel;
     private NavController mNavController;
     private SearchViewHelper searchViewHelper;
-    private boolean isReservationIsCancelled = false;
     private Toolbar mToolbar;
 
     //TODO delete google key from repo
@@ -84,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationIcon(R.drawable.ic_menu_icon);
-        //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_icon);
         initViewModel();
         initMenuButton();
         initInComingNavigation();
@@ -115,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.top_nav_bar_menu,menu);
+        getMenuInflater().inflate(R.menu.top_nav_bar_menu, menu);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -165,8 +163,6 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.settings_drawer_layout:
-                    isReservationIsCancelled = false;
-
                     if (mBinding.settingsViewInclude.settings.getVisibility() == View.GONE) {
                         setSettingsVisibility(true);
                         initDropDownMenu();
@@ -210,13 +206,6 @@ public class MainActivity extends AppCompatActivity {
                 setSettingsVisibility(false));
         mBinding.settingsViewInclude.saveChangesYesButtonSettings.setOnClickListener(v ->
                 initAlertDialog());
-        mBinding.settingsViewInclude.cancelReservationBtn.setOnClickListener(v -> {
-            if (getUserDailyScheduleOnToday(Objects.requireNonNull
-                    (mRestaurantViewModel.getCurrentUser.getValue()).getUserDailySchedules()) != null)
-                isReservationIsCancelled = true;
-            else
-                Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
-        });
     }
 
     private void initAlertDialog() {
@@ -255,17 +244,23 @@ public class MainActivity extends AppCompatActivity {
 
         String language = mBinding.settingsViewInclude.languageSpinnerSettings.getEditText().getText().toString();
 
+        if (language.trim().isEmpty()) language = getString(R.string.English);
+
         LocaleHelper.setNewLocale(this, language);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
 
-        /*mUserViewModel.updateUserSettingValues(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue())
+        mUserViewModel.updateUserSettingValues(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue())
                 , new SettingValues(Objects.requireNonNull(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText()).getText().toString().trim(),
                         mBinding.settingsViewInclude.notificationSwitchButton.isChecked()));
-        if (isReservationIsCancelled) {
-            mRestaurantViewModel.cancelReservation();
-        }*/
+
+        if (mBinding.settingsViewInclude.cancelReservationToggleButton.isChecked()) {
+            if (getUserDailyScheduleOnToday(Objects.requireNonNull
+                    (mRestaurantViewModel.getCurrentUser.getValue()).getUserDailySchedules()) == null)
+                Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
+            else mRestaurantViewModel.cancelReservation();
+        }
         setSettingsVisibility(false);
     }
 
