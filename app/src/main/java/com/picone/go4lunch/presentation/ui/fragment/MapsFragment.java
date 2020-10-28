@@ -63,6 +63,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentMapsBinding.inflate(inflater, container, false);
         mBinding.locationFab.setOnClickListener(v -> setUpMapCurrentPosition());
+        setPageTitle(R.string.i_am_hungry_title);
         return mBinding.getRoot();
     }
 
@@ -162,12 +163,10 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
                 LatLng restaurantLatLng = new LatLng
                         (restaurant.getRestaurantPosition().getLatitude()
                                 , restaurant.getRestaurantPosition().getLongitude());
-
                 MarkerOptions customMarkerOption = new MarkerOptions()
                         .position(restaurantLatLng)
                         .title(restaurant.getPlaceId());
 
-                Log.i("TAG", "initCustomMarker: "+restaurant.getRestaurantDailySchedules()+" "+restaurant.getName());
                 if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null &&
                         getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().size() > 0) {
                     mMap.addMarker(customMarkerOption

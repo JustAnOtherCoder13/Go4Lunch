@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.picone.core.domain.entity.restaurant.Restaurant;
+import com.picone.core.domain.entity.user.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentRestaurantDetailBinding;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.ColleagueRecyclerViewAdapter;
@@ -31,6 +32,8 @@ import java.util.ArrayList;
 
 import static android.Manifest.permission.CALL_PHONE;
 import static com.picone.go4lunch.presentation.utils.ConstantParameter.REQUEST_CODE;
+import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
+import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getUserDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.utils.ManageStarUtil.manageStar;
 
 public class RestaurantDetailFragment extends BaseFragment {
@@ -62,6 +65,9 @@ public class RestaurantDetailFragment extends BaseFragment {
     }
 
     private void initButtons(Restaurant selectedRestaurant) {
+
+        if (getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId()
+                .equals(selectedRestaurant.getPlaceId())) mBinding.checkIfSelectedDetailFab.setVisibility(View.GONE);
         mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
                 mRestaurantViewModel.addUserToRestaurant());
 
@@ -105,7 +111,6 @@ public class RestaurantDetailFragment extends BaseFragment {
         }
     }
 
-    //TODO if grey disable click
     //TODO resize restaurant Photo?
     //TODO setFabInactive if on userChosenRestaurant or if closed or out of time
     private void initView() {
@@ -127,7 +132,6 @@ public class RestaurantDetailFragment extends BaseFragment {
                 else mRestaurantViewModel.setLikeCounter(0);
                 mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
                 mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getAddress());
-                mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getAddress());
                 setLikeView(restaurant);
                 setPhoto(restaurant);
             }
@@ -135,14 +139,18 @@ public class RestaurantDetailFragment extends BaseFragment {
     }
 
     private void setButtonColor(Restaurant restaurant) {
-        if (restaurant.getPhoneNumber() == null)
+        if (restaurant.getPhoneNumber() == null) {
             mBinding.callNumberDetailImageButton.setBackgroundColor(Color.LTGRAY);
-        if (restaurant.getWebsite() == null)
+            mBinding.webSiteDetailImageButton.setEnabled(false);
+        }
+        if (restaurant.getWebsite() == null){
             mBinding.webSiteDetailImageButton.setBackgroundColor(Color.LTGRAY);
+            mBinding.webSiteDetailImageButton.setEnabled(false);
+        }
         mRestaurantViewModel.getCurrentUser.observe(getViewLifecycleOwner(), user -> {
             if (restaurant.getFanList() != null && restaurant.getFanList().contains(user.getUid())) {
                 mBinding.likeDetailImageButton.setBackgroundColor(Color.LTGRAY);
-                mBinding.likeDetailImageButton.setOnClickListener(null);
+                mBinding.likeDetailImageButton.setEnabled(false);
             }
 
         });

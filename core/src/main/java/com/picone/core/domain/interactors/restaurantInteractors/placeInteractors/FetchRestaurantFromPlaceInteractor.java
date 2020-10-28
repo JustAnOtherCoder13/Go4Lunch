@@ -37,7 +37,6 @@ public class FetchRestaurantFromPlaceInteractor {
 
     private List<Restaurant> restaurantsToRestaurantModel(List<RestaurantPOJO> restaurantsPojos, String googleKey) {
         List<Restaurant> restaurantsFromMap = new ArrayList<>();
-        Log.i("TAG", "restaurantsToRestaurantModel: "+restaurantsPojos);
         for (RestaurantPOJO restaurantPOJO : restaurantsPojos) {
             Restaurant restaurant = createRestaurant(restaurantPOJO, googleKey);
             if (!restaurantsFromMap.contains(restaurant))

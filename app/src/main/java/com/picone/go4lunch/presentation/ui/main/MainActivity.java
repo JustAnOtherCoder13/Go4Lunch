@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private ChatViewModel mChatViewModel;
     private NavController mNavController;
     private SearchViewHelper searchViewHelper;
-    private Toolbar mToolbar;
+    public Toolbar mToolbar;
 
     //TODO delete google key from repo
     //TODO change settings doesn't update ui
@@ -80,15 +80,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(mBinding.getRoot());
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
         mToolbar = mBinding.topNavBar;
-        setSupportActionBar(mToolbar);
+        setSupportActionBar(mBinding.topNavBar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_icon);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle(R.string.i_am_hungry_title);
         initViewModel();
         initMenuButton();
         initInComingNavigation();
         initNavigation();
-        searchViewHelper = new SearchViewHelper(this, mRestaurantViewModel,mUserViewModel);
+        searchViewHelper = new SearchViewHelper(this, mRestaurantViewModel, mUserViewModel);
     }
 
     @Override
@@ -105,11 +106,13 @@ public class MainActivity extends AppCompatActivity {
             mRestaurantViewModel.getUserChosenRestaurant.observe(this, restaurant ->
                     FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
                         //TODO remove current user from interested users list
-                        if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null
+                        if (restaurant!=null
+                                &&restaurant.getRestaurantDailySchedules() != null
+                                && getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null
                                 && Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().isNotificationSet())
                             mRestaurantViewModel.sendNotification(task.getResult(), createMessage(restaurant.getName(), restaurant.getAddress(), UserListToString(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers())));
                     }));
-            mRestaurantViewModel.getAllFilteredUsers.observe(this,users -> {
+            mRestaurantViewModel.getAllFilteredUsers.observe(this, users -> {
                 mUserViewModel.setAllUsersMutableLiveData(users);
             });
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
@@ -192,10 +195,6 @@ public class MainActivity extends AppCompatActivity {
                     //TODO change navigation
                     mNavController.navigate(R.id.chatFragment);
             }
-    }
-
-    private void initTopNavBarItems(MenuItem item) {
-
     }
 
     private void initDropDownMenu() {
@@ -353,10 +352,12 @@ public class MainActivity extends AppCompatActivity {
     private String UserListToString(List<User> interestedUsers) {
         String interestedUsersStr = null;
         for (User interestedUser : interestedUsers)
-            if (interestedUsersStr == null)
-                interestedUsersStr = interestedUser.getName();
-            else
-                interestedUsersStr = interestedUsersStr.concat(", ").concat(interestedUser.getName());
+            if (!interestedUser.getUid().equals(mRestaurantViewModel.getCurrentUser.getValue().getUid())) {
+                if (interestedUsersStr == null)
+                    interestedUsersStr = interestedUser.getName();
+                else
+                    interestedUsersStr = interestedUsersStr.concat(", ").concat(interestedUser.getName());
+            }
         return interestedUsersStr;
     }
 

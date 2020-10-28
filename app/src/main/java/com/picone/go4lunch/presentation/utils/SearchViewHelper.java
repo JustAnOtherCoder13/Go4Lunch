@@ -21,6 +21,7 @@ import java.util.List;
 
 public class SearchViewHelper {
 
+    //TODO hide back button
     MainActivity mainActivity;
     RestaurantViewModel mRestaurantViewModel;
     UserViewModel mUserViewModel;

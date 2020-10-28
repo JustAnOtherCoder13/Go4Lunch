@@ -33,6 +33,7 @@ public class RestaurantListFragment extends BaseFragment {
         mBinding = FragmentRestaurantListBinding.inflate(inflater, container, false);
         showAppBars(true);
         setStatusBarTransparent(false);
+        setPageTitle(R.string.i_am_hungry_title);
         return mBinding.getRoot();
     }
 
@@ -52,10 +53,8 @@ public class RestaurantListFragment extends BaseFragment {
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mBinding.recyclerViewListFragment.setLayoutManager(linearLayoutManager);
         mBinding.recyclerViewListFragment.setAdapter(adapter);
-        mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), restaurants -> {
-            Log.i("TAG", "initRecyclerView: restaurant changes");
-            adapter.updateRestaurants(restaurants);
-        });
+        mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(),
+                adapter::updateRestaurants);
     }
 
     public void configureOnClickRecyclerView() {
