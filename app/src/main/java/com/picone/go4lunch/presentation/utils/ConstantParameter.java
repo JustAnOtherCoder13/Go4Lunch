@@ -11,9 +11,11 @@ public class ConstantParameter {
 
     public static final String TODAY = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(Calendar.getInstance().getTime());
 
+    public static final String SELECTED_LANGUAGE = "Locale.Helper.Selected.Language";
 
     public static final int NOTIFICATION_ID = 7;
     public static final String NOTIFICATION_TAG = "GO4LUNCH";
+    public static final String CLOSED = "Closed";
     public static final int RC_SIGN_IN = 13250;
     public static final int REQUEST_CODE = 13700;
 

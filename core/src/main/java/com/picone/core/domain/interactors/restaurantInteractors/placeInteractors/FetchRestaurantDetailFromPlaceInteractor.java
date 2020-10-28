@@ -31,6 +31,7 @@ public class FetchRestaurantDetailFromPlaceInteractor {
         return restaurant;
     }
 
+    //TODO translate
     private String formatOpeningHours(RestaurantDetail restaurantDetail) {
         String closingHour = restaurantDetail.getResult().getOpeningHours().getPeriods().get(getWeekDayTextValue()).getClose().getTime();
         if (restaurantDetail.getResult().getOpeningHours().getOpenNow())

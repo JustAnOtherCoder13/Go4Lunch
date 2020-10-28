@@ -49,7 +49,6 @@ public class ChatFragment extends BaseFragment {
             }
             mBinding.chatEditText.getText().clear();
         });
-        //TODO first click doesn't scroll down
         mBinding.chatEditText.setOnClickListener(v ->
                 mBinding.recyclerViewChatFragment.post(() ->
                         mBinding.recyclerViewChatFragment.smoothScrollToPosition(mAdapter.getItemCount()))

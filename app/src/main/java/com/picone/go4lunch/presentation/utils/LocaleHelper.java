@@ -9,15 +9,15 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 
 import java.util.Locale;
 
+import static com.picone.go4lunch.presentation.utils.ConstantParameter.SELECTED_LANGUAGE;
+
 
 public class LocaleHelper {
-
-    private static final String SELECTED_LANGUAGE = "Locale.Helper.Selected.Language";
-
 
     public static Context onAttach(Context context) {
 
@@ -42,7 +42,7 @@ public class LocaleHelper {
     }
 
     public static Context setNewLocale(Context context, String language) {
-
+        Log.i("TAG", "setNewLocale: "+language);
         persist(context, language);
 
         return updateResourcesLegacy(context, language);
@@ -64,6 +64,7 @@ public class LocaleHelper {
 
     private static void persist(Context context, String language) {
 
+        Log.i("TAG", "persist: "+language);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         SharedPreferences.Editor editor = preferences.edit();

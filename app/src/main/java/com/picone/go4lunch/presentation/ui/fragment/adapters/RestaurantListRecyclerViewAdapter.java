@@ -19,6 +19,7 @@ import com.picone.go4lunch.databinding.RecyclerViewRestaurantItemsBinding;
 
 import java.util.List;
 
+import static com.picone.go4lunch.presentation.utils.ConstantParameter.CLOSED;
 import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.utils.ManageStarUtil.manageStar;
 
@@ -105,9 +106,8 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
         }
     }
 
-    //todo french translation set closed french string to close
     private void setOpeningHour(@NonNull ViewHolder holder, Restaurant restaurant) {
-        if (restaurant.getOpeningHours().equals(holder.itemView.getContext().getString(R.string.closed)))
+        if (restaurant.getOpeningHours().equals(CLOSED))
             holder.restaurantBinding.openingTimeTextView.setTextColor(Color.RED);
         else
             holder.restaurantBinding.openingTimeTextView.setTextColor(Color.GRAY);

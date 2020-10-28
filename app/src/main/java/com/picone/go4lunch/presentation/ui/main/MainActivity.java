@@ -247,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(mBinding.bottomNavigation, mNavController);
     }
 
+    //TODO trouble when try to change language more than one time.
     private void saveChanges() {
 
         SettingValues currentUserSettingValues = Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues();
