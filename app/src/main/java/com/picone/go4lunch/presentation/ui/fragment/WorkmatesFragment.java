@@ -62,7 +62,7 @@ public class WorkmatesFragment extends BaseFragment {
     public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewWorkmatesFragment, R.layout.fragment_restaurant_list)
                 .setOnItemClickListener((recyclerView, position, v) -> {
-                    if (!mUserViewModel.getAllUsers.getValue().isEmpty() && mUserViewModel.getAllUsers.getValue().get(position).getUserDailySchedules() != null) {
+                    if (!mUserViewModel.getAllUsers.getValue().isEmpty() && mUserViewModel.getAllUsers.getValue().get(position).getUserDailySchedules() != null && getUserDailyScheduleOnToday(mUserViewModel.getAllUsers.getValue().get(position).getUserDailySchedules())!=null) {
                         mRestaurantViewModel.setInterestedUsersForRestaurant(getUserDailyScheduleOnToday(mUserViewModel.getAllUsers.getValue().get(position).getUserDailySchedules()).getRestaurantPlaceId());
                     }
                 });

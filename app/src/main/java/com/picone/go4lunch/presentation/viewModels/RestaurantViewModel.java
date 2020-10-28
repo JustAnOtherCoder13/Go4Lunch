@@ -160,6 +160,7 @@ public class RestaurantViewModel extends ViewModel {
 
     //--------------------------------------------MAPS DETAIL----------------------------------------------
 
+    //todo make trouble sometimes due to nearBySearch null pointer
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private Observable<List<Restaurant>> fetchPlaceDetail(List<Restaurant> nearBySearchRestaurants) {
         return Observable.create(emitter -> {

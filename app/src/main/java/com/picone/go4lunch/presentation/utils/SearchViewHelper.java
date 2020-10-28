@@ -49,6 +49,7 @@ public class SearchViewHelper {
         };
     }
 
+    //TODO null pointer exception when enter no value and return
     @NonNull
     private MenuItem.OnActionExpandListener geOnActionExpandListener(SearchView searchView) {
         return new MenuItem.OnActionExpandListener() {

@@ -13,13 +13,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.facebook.AccessToken;
@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
 
     //TODO delete google key from repo
     //TODO change settings doesn't update ui
+    //TODO Language don't update when enter app
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,8 +83,9 @@ public class MainActivity extends AppCompatActivity {
         searchViewHelper = new SearchViewHelper(this, mRestaurantViewModel);
         mToolbar = mBinding.topNavBar;
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToolbar.setNavigationIcon(R.drawable.ic_menu_icon);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_icon);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         initViewModel();
         initMenuButton();
         initInComingNavigation();
@@ -120,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        //TODO resetRestaurant
+        mRestaurantViewModel.resetSelectedRestaurant();
         if (Objects.requireNonNull(mNavController.getCurrentDestination()).getId() == R.id.authenticationFragment) {
             this.finish();
         } else mNavController.navigateUp();
@@ -139,6 +142,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //--------------------------------- BUTTONS ------------------------------------------
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        mBinding.drawerLayout.open();
+        return super.onOptionsItemSelected(item);
+    }
 
     private void initMenuButton() {
         mBinding.topNavBar.setOnMenuItemClickListener(item -> {
@@ -181,13 +191,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initTopNavBarItems(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.top_nav_bar_menu_button:
-                mBinding.drawerLayout.open();
-                break;
-            case R.id.top_nav_search_button:
-                searchViewHelper.initSearchView(item);
-                break;
+        if (item.getItemId() == R.id.top_nav_search_button) {
+            searchViewHelper.initSearchView(item);
         }
     }
 
@@ -201,6 +206,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initSettingButtons() {
+        mRestaurantViewModel.getCurrentUser.observe(this, user -> {
+            mBinding.settingsViewInclude.languageTxtView.setText(user.getSettingValues().getChosenLanguage());
+            mBinding.settingsViewInclude.notificationSwitchButton.setChecked(user.getSettingValues().isNotificationSet());
+        });
         setSettingsVisibility(false);
         mBinding.settingsViewInclude.saveChangesNoButtonSettings.setOnClickListener(v ->
                 setSettingsVisibility(false));
@@ -235,31 +244,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initNavigation() {
-        //AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.authenticationFragment, R.id.mapsFragment, R.id.listFragment, R.id.workmatesFragment).build();
         NavigationUI.setupWithNavController(mBinding.bottomNavigation, mNavController);
-        //NavigationUI.setupWithNavController(mBinding.topNavBar, mNavController, appBarConfiguration);
     }
 
     private void saveChanges() {
 
-        String language = mBinding.settingsViewInclude.languageSpinnerSettings.getEditText().getText().toString();
+        SettingValues currentUserSettingValues = Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues();
+        String language = Objects.requireNonNull(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText()).getText().toString();
 
-        if (language.trim().isEmpty()) language = getString(R.string.English);
+        if (!language.equalsIgnoreCase(currentUserSettingValues.getChosenLanguage())
+                || mBinding.settingsViewInclude.notificationSwitchButton.isChecked() != currentUserSettingValues.isNotificationSet()
+                || mBinding.settingsViewInclude.cancelReservationToggleButton.isChecked()) {
 
-        LocaleHelper.setNewLocale(this, language);
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
+            if (!language.equalsIgnoreCase(currentUserSettingValues.getChosenLanguage())) {
+                LocaleHelper.setNewLocale(this, language);
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+            mUserViewModel.updateUserSettingValues(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue())
+                    , new SettingValues(Objects.requireNonNull(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText()).getText().toString().trim(),
+                            mBinding.settingsViewInclude.notificationSwitchButton.isChecked()));
 
-        mUserViewModel.updateUserSettingValues(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue())
-                , new SettingValues(Objects.requireNonNull(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText()).getText().toString().trim(),
-                        mBinding.settingsViewInclude.notificationSwitchButton.isChecked()));
-
-        if (mBinding.settingsViewInclude.cancelReservationToggleButton.isChecked()) {
-            if (getUserDailyScheduleOnToday(Objects.requireNonNull
-                    (mRestaurantViewModel.getCurrentUser.getValue()).getUserDailySchedules()) == null)
-                Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
-            else mRestaurantViewModel.cancelReservation();
+            if (mBinding.settingsViewInclude.cancelReservationToggleButton.isChecked()) {
+                if (getUserDailyScheduleOnToday(Objects.requireNonNull
+                        (mRestaurantViewModel.getCurrentUser.getValue()).getUserDailySchedules()) == null)
+                    Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
+                else mRestaurantViewModel.cancelReservation();
+            }
         }
         setSettingsVisibility(false);
     }
@@ -275,7 +287,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViewModelsValues() {
         mLoginViewModel.authenticate(true);
-        mRestaurantViewModel.resetSelectedRestaurant();
         mUserViewModel.setAllDbUsers();
         mRestaurantViewModel.setAllDbRestaurants();
         mUserViewModel.getAllUsers.observe(this, users ->

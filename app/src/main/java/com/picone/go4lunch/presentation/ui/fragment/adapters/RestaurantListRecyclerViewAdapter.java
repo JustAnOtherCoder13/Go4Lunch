@@ -105,6 +105,7 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
         }
     }
 
+    //todo french translation set closed french string to close
     private void setOpeningHour(@NonNull ViewHolder holder, Restaurant restaurant) {
         if (restaurant.getOpeningHours().equals(holder.itemView.getContext().getString(R.string.closed)))
             holder.restaurantBinding.openingTimeTextView.setTextColor(Color.RED);

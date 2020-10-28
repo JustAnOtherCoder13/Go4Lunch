@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
     <item
-        android:id="@+id/top_nav_bar_menu_button"
-        android:enabled="true"
-        android:icon="@drawable/ic_menu_icon"
-        android:title=""
-        app:showAsAction="ifRoom"/>
-    <item
         android:id="@+id/top_nav_search_button"
         android:enabled="true"
         android:icon="@drawable/ic_search_icon"
