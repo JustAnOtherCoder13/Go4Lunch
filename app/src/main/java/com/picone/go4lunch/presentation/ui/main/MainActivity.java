@@ -79,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        searchViewHelper = new SearchViewHelper(this, mRestaurantViewModel);
         mToolbar = mBinding.topNavBar;
         setSupportActionBar(mToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -89,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         initMenuButton();
         initInComingNavigation();
         initNavigation();
+        searchViewHelper = new SearchViewHelper(this, mRestaurantViewModel,mUserViewModel);
     }
 
     @Override
@@ -109,6 +109,9 @@ public class MainActivity extends AppCompatActivity {
                                 && Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().isNotificationSet())
                             mRestaurantViewModel.sendNotification(task.getResult(), createMessage(restaurant.getName(), restaurant.getAddress(), UserListToString(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers())));
                     }));
+            mRestaurantViewModel.getAllFilteredUsers.observe(this,users -> {
+                mUserViewModel.setAllUsersMutableLiveData(users);
+            });
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
     }
@@ -151,7 +154,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void initMenuButton() {
         mBinding.topNavBar.setOnMenuItemClickListener(item -> {
-            initTopNavBarItems(item);
+            if (item.getItemId() == R.id.top_nav_search_button) {
+                searchViewHelper.initSearchView(item);
+            }
             return false;
         });
         mBinding.navView.setNavigationItemSelectedListener(item -> {
@@ -190,9 +195,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initTopNavBarItems(MenuItem item) {
-        if (item.getItemId() == R.id.top_nav_search_button) {
-            searchViewHelper.initSearchView(item);
-        }
+
     }
 
     private void initDropDownMenu() {

@@ -188,9 +188,10 @@ public class RestaurantViewModel extends ViewModel {
 
     @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
     @SuppressLint("CheckResult")
-    public void filterRestaurants(String query) {
+    public void filterRestaurants(String query,List<User> allUsers) {
         Location location = locationMutableLiveData.getValue();
         List<Restaurant> filteredRestaurant = new ArrayList<>();
+        List<User> filteredUsers = new ArrayList<>();
         getPredictionInteractor.getPredictions(query, MAPS_KEY, String.valueOf(location.getLatitude()).concat(",").concat(String.valueOf(location.getLongitude())))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -201,9 +202,22 @@ public class RestaurantViewModel extends ViewModel {
                                 filteredRestaurant.add(restaurant);
                         }
                     }
+                    for (Restaurant restaurant : filteredRestaurant){
+                        for (User user : allUsers){
+                            if (user.getUserDailySchedules()!=null && getUserDailyScheduleOnToday(user.getUserDailySchedules())!=null){
+                                if (getUserDailyScheduleOnToday(user.getUserDailySchedules()).getRestaurantPlaceId().equals(restaurant.getPlaceId())){
+                                    filteredUsers.add(user);
+                                }
+                            }
+                        }
+                    }
                     allRestaurantsMutableLiveData.setValue(filteredRestaurant);
+                    filteredUsersMutableLiveData.setValue(filteredUsers);
                 });
     }
+
+    private MutableLiveData<List<User>> filteredUsersMutableLiveData = new MutableLiveData<>();
+    public LiveData<List<User>> getAllFilteredUsers = filteredUsersMutableLiveData;
 
     @SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
     @SuppressLint("CheckResult")

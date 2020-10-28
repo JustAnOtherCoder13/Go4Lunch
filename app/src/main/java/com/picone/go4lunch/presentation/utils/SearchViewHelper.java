@@ -3,6 +3,7 @@ package com.picone.go4lunch.presentation.utils;
 import android.app.SearchManager;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -10,19 +11,24 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 
+import com.picone.core.domain.entity.user.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.presentation.ui.main.MainActivity;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
+import com.picone.go4lunch.presentation.viewModels.UserViewModel;
+
+import java.util.List;
 
 public class SearchViewHelper {
 
-    //TODO manage workmate fragment
     MainActivity mainActivity;
     RestaurantViewModel mRestaurantViewModel;
+    UserViewModel mUserViewModel;
 
-    public SearchViewHelper(MainActivity mainActivity, RestaurantViewModel mRestaurantViewModel) {
+    public SearchViewHelper(MainActivity mainActivity, RestaurantViewModel mRestaurantViewModel, UserViewModel mUserViewModel) {
         this.mainActivity = mainActivity;
         this.mRestaurantViewModel = mRestaurantViewModel;
+        this.mUserViewModel= mUserViewModel;
     }
 
     public void initSearchView(MenuItem item) {
@@ -46,10 +52,10 @@ public class SearchViewHelper {
             editText.setText("");
             searchView.setQuery("", false);
             mRestaurantViewModel.setAllRestaurantFromMaps(true);
+            mUserViewModel.setAllDbUsers();
         };
     }
 
-    //TODO null pointer exception when enter no value and return
     @NonNull
     private MenuItem.OnActionExpandListener geOnActionExpandListener(SearchView searchView) {
         return new MenuItem.OnActionExpandListener() {
@@ -62,16 +68,18 @@ public class SearchViewHelper {
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 mRestaurantViewModel.setAllRestaurantFromMaps(true);
+                mUserViewModel.setAllDbUsers();
                 return true;
             }
         };
     }
 
     private SearchView.OnQueryTextListener getOnQueryTextListener() {
+        List<User> allUsers = mUserViewModel.getAllUsers.getValue();
         return new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                mRestaurantViewModel.filterRestaurants(query);
+                mRestaurantViewModel.filterRestaurants(query, allUsers);
                 return false;
             }
 
@@ -80,12 +88,9 @@ public class SearchViewHelper {
                 if (newText.length() < 2) {
                     return false;
                 }
-                mRestaurantViewModel.filterRestaurants(newText);
+                mRestaurantViewModel.filterRestaurants(newText, allUsers);
                 return true;
             }
         };
     }
-
-
-
 }
