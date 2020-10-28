@@ -106,7 +106,6 @@ public class RestaurantDetailFragment extends BaseFragment {
     }
 
     //TODO if grey disable click
-    //TODO when come back from call or website don't get the selected restaurant
     //TODO resize restaurant Photo?
     //TODO setFabInactive if on userChosenRestaurant or if closed or out of time
     private void initView() {

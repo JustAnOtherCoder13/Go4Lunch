@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
     //TODO delete google key from repo
     //TODO change settings doesn't update ui
-    //TODO Language don't update when enter app
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -293,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
         mUserViewModel.getAllUsers.observe(this, users ->
                 mRestaurantViewModel.setCurrentUser(Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getEmail()));
         mRestaurantViewModel.getAllDbRestaurants.observe(this, restaurants ->
-                mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(restaurants));
+                mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(null));
     }
 
     //--------------------------------- UI VISIBILITY ------------------------------------------

@@ -17,7 +17,7 @@
     <string name="food_style_address_restaurant_detail">Adresse</string>
     <string name="text_for_call_button_restaurant_detail">APPEL</string>
     <string name="text_for_like_button_restaurant_detail">LIKE</string>
-    <string name="text_for_website_button_restaurant_detail">SITE INTERNET</string>
+    <string name="text_for_website_button_restaurant_detail">SITE WEB</string>
     <string name="restaurant_name_text_restaurant_items">Nom du restaurant</string>
     <string name="distance_text_restaurant_items">distance</string>
     <string name="food_style_address_text_restaurant_items">adresse</string>

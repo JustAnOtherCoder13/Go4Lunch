@@ -43,7 +43,6 @@ public class WorkmatesFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         initRecyclerView();
         configureOnClickRecyclerView();
-        mRestaurantViewModel.resetSelectedRestaurant();
         mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant -> {
             if (restaurant != null)
                 Navigation.findNavController(view).navigate(R.id.restaurantDetailFragment);

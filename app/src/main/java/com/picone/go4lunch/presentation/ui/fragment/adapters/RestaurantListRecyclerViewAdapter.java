@@ -107,7 +107,7 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
     }
 
     private void setOpeningHour(@NonNull ViewHolder holder, Restaurant restaurant) {
-        if (restaurant.getOpeningHours().equals(CLOSED))
+        if (restaurant.getOpeningHours().equalsIgnoreCase(holder.itemView.getContext().getString(R.string.closed)))
             holder.restaurantBinding.openingTimeTextView.setTextColor(Color.RED);
         else
             holder.restaurantBinding.openingTimeTextView.setTextColor(Color.GRAY);

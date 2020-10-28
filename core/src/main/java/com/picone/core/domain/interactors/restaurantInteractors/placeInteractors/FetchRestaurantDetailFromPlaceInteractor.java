@@ -31,14 +31,21 @@ public class FetchRestaurantDetailFromPlaceInteractor {
         return restaurant;
     }
 
-    //TODO translate
+    //TODO how to know language or pass opening hours in restaurantViewModel
     private String formatOpeningHours(RestaurantDetail restaurantDetail) {
         String closingHour = restaurantDetail.getResult().getOpeningHours().getPeriods().get(getWeekDayTextValue()).getClose().getTime();
         if (restaurantDetail.getResult().getOpeningHours().getOpenNow())
+           // if (userChosenLanguage.equalsIgnoreCase("En"))
             closingHour = "Open until : " + closingHour.substring(0, 2) + ":" + closingHour.substring(2, 4);
+           /* else
+                closingHour = "Ouvert j'usqu'as : " + closingHour.substring(0, 2) + ":" + closingHour.substring(2, 4);
+*/
         else
+        //if (userChosenLanguage.equalsIgnoreCase("En"))
             closingHour = "Closed";
-
+        /*else
+            closingHour="Fermé";
+*/
         return closingHour;
     }
 

@@ -1,6 +1,7 @@
 package com.picone.core.domain.interactors.restaurantInteractors.placeInteractors;
 
 import android.location.Location;
+import android.util.Log;
 
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.domain.entity.restaurant.Restaurant;
@@ -36,6 +37,7 @@ public class FetchRestaurantFromPlaceInteractor {
 
     private List<Restaurant> restaurantsToRestaurantModel(List<RestaurantPOJO> restaurantsPojos, String googleKey) {
         List<Restaurant> restaurantsFromMap = new ArrayList<>();
+        Log.i("TAG", "restaurantsToRestaurantModel: "+restaurantsPojos);
         for (RestaurantPOJO restaurantPOJO : restaurantsPojos) {
             Restaurant restaurant = createRestaurant(restaurantPOJO, googleKey);
             if (!restaurantsFromMap.contains(restaurant))

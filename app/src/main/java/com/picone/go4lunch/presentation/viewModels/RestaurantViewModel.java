@@ -147,25 +147,22 @@ public class RestaurantViewModel extends ViewModel {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void setAllRestaurantFromMaps(boolean isReset) {
-        fetchRestaurantFromPlaceInteractor.fetchRestaurantFromPlace(locationMutableLiveData.getValue(), MAPS_KEY)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(this::fetchPlaceDetail)
-                .subscribe(restaurants -> {
-                    if (allRestaurantsMutableLiveData.getValue() == null || isReset)
-                        allRestaurantsMutableLiveData.setValue(restaurants);
-                    updateAllRestaurantsWithPersistedValues(allDbRestaurantsMutableLiveData.getValue());
-                });
+        if (allRestaurantsMutableLiveData.getValue() == null || isReset)
+            fetchRestaurantFromPlaceInteractor.fetchRestaurantFromPlace(locationMutableLiveData.getValue(), MAPS_KEY)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .flatMap(this::fetchPlaceDetail)
+                    .subscribe(restaurants -> {
+                        updateAllRestaurantsWithPersistedValues(restaurants);
+                    });
     }
 
     //--------------------------------------------MAPS DETAIL----------------------------------------------
 
-    //todo make trouble sometimes due to nearBySearch null pointer
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private Observable<List<Restaurant>> fetchPlaceDetail(List<Restaurant> nearBySearchRestaurants) {
+    public Observable<List<Restaurant>> fetchPlaceDetail(List<Restaurant> nearBySearchRestaurants) {
         return Observable.create(emitter -> {
-            if (nearBySearchRestaurants!=null)
-                for (Restaurant nearBySearchRestaurant : nearBySearchRestaurants)
+            for (Restaurant nearBySearchRestaurant : nearBySearchRestaurants)
                 fetchRestaurantDetailFromPlaceInteractor.getRestaurantDetail(nearBySearchRestaurant, MAPS_KEY)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -182,7 +179,9 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(restaurantWithDistanceAdded ->
-                        Observable.create(emitter -> emitter.onNext(restaurantWithDistanceAdded)));
+                        Observable.create(emitter -> {
+                            emitter.onNext(restaurantWithDistanceAdded);
+                        }));
     }
 
     //---------------------------------------------ACTIONS----------------------------------------------
@@ -296,10 +295,11 @@ public class RestaurantViewModel extends ViewModel {
     }
 
     @SuppressLint("CheckResult")
-    public void updateAllRestaurantsWithPersistedValues(List<Restaurant> allDbRestaurants) {
-        Log.i("TAG", "updateAllRestaurantsWithPersistedValues: ");
-        List<Restaurant> allRestaurants = allRestaurantsMutableLiveData.getValue();
-        if (allRestaurants != null)
+    public void updateAllRestaurantsWithPersistedValues(List<Restaurant> allRestaurants) {
+        if (allRestaurants == null)
+            allRestaurants = allRestaurantsMutableLiveData.getValue();
+        List<Restaurant> allDbRestaurants = allDbRestaurantsMutableLiveData.getValue();
+        if (allRestaurants != null && allDbRestaurants != null) {
             for (Restaurant persistedRestaurant : allDbRestaurants) {
                 for (Restaurant restaurantFromMap : allRestaurants) {
                     if (persistedRestaurant.getPlaceId().equals(restaurantFromMap.getPlaceId())) {
@@ -309,6 +309,8 @@ public class RestaurantViewModel extends ViewModel {
                     }
                 }
             }
+            allRestaurantsMutableLiveData.setValue(allRestaurants);
+        }
     }
 
     @SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})

@@ -51,7 +51,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     private FusedLocationProviderClient mFusedLocationProviderClient;
     public static String MAPS_KEY;
 
-    //TODO restaurants from firebase don't load on first time
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +74,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         showAppBars(true);
         setStatusBarTransparent(false);
         fetchLastLocation();
-        mRestaurantViewModel.resetSelectedRestaurant();
         mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant -> {
             if (restaurant != null)
                 Navigation.findNavController(requireView()).navigate(R.id.restaurantDetailFragment);
@@ -89,7 +87,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         mMap = googleMap;
         updateLocationUI();
         mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), restaurants -> {
-            initCustomMarker(mRestaurantViewModel.getAllRestaurants.getValue());
+            initCustomMarker(restaurants);
             mRestaurantViewModel.setUserChosenRestaurant();
         });
 
@@ -169,6 +167,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
                         .position(restaurantLatLng)
                         .title(restaurant.getPlaceId());
 
+                Log.i("TAG", "initCustomMarker: "+restaurant.getRestaurantDailySchedules()+" "+restaurant.getName());
                 if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null &&
                         getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().size() > 0) {
                     mMap.addMarker(customMarkerOption
