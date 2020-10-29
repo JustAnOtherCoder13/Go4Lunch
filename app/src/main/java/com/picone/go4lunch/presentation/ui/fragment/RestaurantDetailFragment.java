@@ -65,13 +65,13 @@ public class RestaurantDetailFragment extends BaseFragment {
     }
 
     private void initButtons(Restaurant selectedRestaurant) {
-        if (mRestaurantViewModel.getCurrentUser.getValue() != null
+       /* if (mRestaurantViewModel.getCurrentUser.getValue() != null
                 && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()) != null
                 && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId()
                 .equals(selectedRestaurant.getPlaceId())
                 || CURRENT_HOUR >= 13
                 || selectedRestaurant.getOpeningHours().equals(getResources().getString(R.string.closed)))
-            mBinding.checkIfSelectedDetailFab.setVisibility(View.GONE);
+            mBinding.checkIfSelectedDetailFab.setVisibility(View.GONE);*/
 
         mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
                 mRestaurantViewModel.addUserToRestaurant());

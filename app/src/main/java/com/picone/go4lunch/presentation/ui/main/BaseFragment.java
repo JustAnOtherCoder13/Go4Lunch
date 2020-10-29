@@ -81,6 +81,12 @@ public abstract class BaseFragment extends Fragment {
         mainActivity.setStatusBarTransparency(isTransparent);
     }
 
+    protected void hideSettingView(){
+        MainActivity mainActivity = (MainActivity) getActivity();
+        assert mainActivity != null;
+        mainActivity.setSettingsVisibility(false);
+    }
+
     protected void playLoadingAnimation(boolean bol, LottieAnimationView mAnimationView) {
         this.mAnimationView = mAnimationView;
         if (bol) {

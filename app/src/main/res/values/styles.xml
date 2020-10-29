@@ -8,6 +8,7 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+
     <style name="top_bottom_margin">
         <item name="android:layout_marginTop">?attr/actionBarSize</item>
         <item name="android:layout_marginBottom">?attr/actionBarSize</item>

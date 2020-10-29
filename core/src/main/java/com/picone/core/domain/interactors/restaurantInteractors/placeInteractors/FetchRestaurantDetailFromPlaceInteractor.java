@@ -31,7 +31,6 @@ public class FetchRestaurantDetailFromPlaceInteractor {
         return restaurant;
     }
 
-    //TODO how to know language or pass opening hours in restaurantViewModel
     private String formatOpeningHours(RestaurantDetail restaurantDetail) {
         String closingHour = restaurantDetail.getResult().getOpeningHours().getPeriods().get(getWeekDayTextValue()).getClose().getTime();
         if (restaurantDetail.getResult().getOpeningHours().getOpenNow())
