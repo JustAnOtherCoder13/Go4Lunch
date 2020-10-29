@@ -152,7 +152,7 @@ public class RestaurantViewModel extends ViewModel {
             fetchRestaurantFromPlaceInteractor.fetchRestaurantFromPlace(locationMutableLiveData.getValue(), MAPS_KEY)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .flatMap(this::fetchPlaceDetail)
+                    //.flatMap(this::fetchPlaceDetail)
                     .subscribe(this::updateAllRestaurantsWithPersistedValues);
     }
 

@@ -8,13 +8,15 @@
 
     <ImageView
         android:id="@+id/restaurant_photo_detail_image_view"
-        android:layout_width="0dp"
-        android:layout_height="260dp"
+        android:layout_width="450dp"
+        android:layout_height="280dp"
+        android:scaleType="centerCrop"
         android:contentDescription="@string/restaurant_photo_content_description_restaurant_detail"
         android:src="@drawable/dinner_with_friends"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+         />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/check_if_selected_detail_fab"
@@ -55,15 +57,14 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="@dimen/basic_marge"
-            app:layout_constraintStart_toEndOf="@id/restaurant_name_detail_text_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/restaurant_name_detail_text_view"
             app:layout_constraintBottom_toBottomOf="@id/restaurant_name_detail_text_view"
-            >
-        <include
-            android:id="@+id/opinion_star_detail_image_view"
-            layout="@layout/star_layout"
-            />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/restaurant_name_detail_text_view"
+            app:layout_constraintTop_toTopOf="@id/restaurant_name_detail_text_view">
+
+            <include
+                android:id="@+id/opinion_star_detail_image_view"
+                layout="@layout/star_layout" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -86,9 +87,9 @@
         style="@style/call_button_text_detail_fragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/call_number_detail_image_button"
+        app:layout_constraintBottom_toBottomOf="@id/call_number_detail_image_button"
         app:layout_constraintEnd_toEndOf="@id/call_number_detail_image_button"
-        app:layout_constraintBottom_toBottomOf="@id/call_number_detail_image_button"/>
+        app:layout_constraintStart_toStartOf="@id/call_number_detail_image_button" />
 
     <ImageButton
         android:id="@+id/like_detail_image_button"
@@ -107,9 +108,9 @@
         style="@style/like_button_text_detail_fragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/like_detail_image_button"
         app:layout_constraintEnd_toEndOf="@id/like_detail_image_button"
-        app:layout_constraintStart_toStartOf="@id/like_detail_image_button"
-        app:layout_constraintBottom_toBottomOf="@id/like_detail_image_button" />
+        app:layout_constraintStart_toStartOf="@id/like_detail_image_button" />
 
     <ImageButton
         android:id="@+id/web_site_detail_image_button"
@@ -128,9 +129,9 @@
         style="@style/website_button_text_detail_fragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/web_site_detail_image_button"
         app:layout_constraintEnd_toEndOf="@id/web_site_detail_image_button"
-        app:layout_constraintStart_toStartOf="@id/web_site_detail_image_button"
-        app:layout_constraintBottom_toBottomOf="@id/web_site_detail_image_button" />
+        app:layout_constraintStart_toStartOf="@id/web_site_detail_image_button" />
 
     <FrameLayout
         android:id="@+id/separator"

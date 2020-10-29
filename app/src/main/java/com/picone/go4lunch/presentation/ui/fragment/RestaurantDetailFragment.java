@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.picone.core.domain.entity.restaurant.Restaurant;
-import com.picone.core.domain.entity.user.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentRestaurantDetailBinding;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.ColleagueRecyclerViewAdapter;
@@ -31,8 +31,8 @@ import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import java.util.ArrayList;
 
 import static android.Manifest.permission.CALL_PHONE;
+import static com.picone.go4lunch.presentation.utils.ConstantParameter.CURRENT_HOUR;
 import static com.picone.go4lunch.presentation.utils.ConstantParameter.REQUEST_CODE;
-import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getUserDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.utils.ManageStarUtil.manageStar;
 
@@ -65,11 +65,12 @@ public class RestaurantDetailFragment extends BaseFragment {
     }
 
     private void initButtons(Restaurant selectedRestaurant) {
-
         if (mRestaurantViewModel.getCurrentUser.getValue() != null
-                && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules())!= null
+                && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()) != null
                 && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId()
-                .equals(selectedRestaurant.getPlaceId()))
+                .equals(selectedRestaurant.getPlaceId())
+                || CURRENT_HOUR >= 13
+                || selectedRestaurant.getOpeningHours().equals(getResources().getString(R.string.closed)))
             mBinding.checkIfSelectedDetailFab.setVisibility(View.GONE);
 
         mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
@@ -115,8 +116,6 @@ public class RestaurantDetailFragment extends BaseFragment {
         }
     }
 
-    //TODO resize restaurant Photo?
-    //TODO setFabInactive if on userChosenRestaurant or if closed or out of time
     private void initView() {
         mRestaurantViewModel.isDataLoading.observe(getViewLifecycleOwner(), isDataLoading ->
                 playLoadingAnimation(isDataLoading, mBinding.animationViewInclude.animationView));
