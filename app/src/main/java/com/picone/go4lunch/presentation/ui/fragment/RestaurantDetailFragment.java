@@ -66,8 +66,12 @@ public class RestaurantDetailFragment extends BaseFragment {
 
     private void initButtons(Restaurant selectedRestaurant) {
 
-        if (getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId()
-                .equals(selectedRestaurant.getPlaceId())) mBinding.checkIfSelectedDetailFab.setVisibility(View.GONE);
+        if (mRestaurantViewModel.getCurrentUser.getValue() != null
+                && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules())!= null
+                && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId()
+                .equals(selectedRestaurant.getPlaceId()))
+            mBinding.checkIfSelectedDetailFab.setVisibility(View.GONE);
+
         mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
                 mRestaurantViewModel.addUserToRestaurant());
 
@@ -143,7 +147,7 @@ public class RestaurantDetailFragment extends BaseFragment {
             mBinding.callNumberDetailImageButton.setBackgroundColor(Color.LTGRAY);
             mBinding.webSiteDetailImageButton.setEnabled(false);
         }
-        if (restaurant.getWebsite() == null){
+        if (restaurant.getWebsite() == null) {
             mBinding.webSiteDetailImageButton.setBackgroundColor(Color.LTGRAY);
             mBinding.webSiteDetailImageButton.setEnabled(false);
         }

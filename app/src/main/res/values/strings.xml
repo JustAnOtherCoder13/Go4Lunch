@@ -87,6 +87,8 @@
     <string name="no">No</string>
     <string name="yes">Yes</string>
     <string name="tel">tel: </string>
+    <string name="open_until">Open until :</string>
+
 
     <!-- NOTIFICATION -->
     <string name="notification_you_are_eating">You are eating in : </string>

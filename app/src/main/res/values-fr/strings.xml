@@ -81,6 +81,8 @@
     <!-- RESTAURANT_LIST_ADAPTER -->
     <string name="closed">Fermé</string>
     <string name="email">email</string>
+    <string name="open_until">Ouvert jusqu\'à :</string>
+
 
     <!-- RESTAURANT_DETAIL -->
     <string name="like_restaurant_question">Aimer se restaurant ?</string>

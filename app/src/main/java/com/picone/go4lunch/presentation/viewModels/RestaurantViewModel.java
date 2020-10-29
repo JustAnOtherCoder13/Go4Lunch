@@ -144,6 +144,7 @@ public class RestaurantViewModel extends ViewModel {
         }
     }
 
+    //TODO reuse flatMap
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void setAllRestaurantFromMaps(boolean isReset) {
@@ -152,9 +153,7 @@ public class RestaurantViewModel extends ViewModel {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .flatMap(this::fetchPlaceDetail)
-                    .subscribe(restaurants -> {
-                        updateAllRestaurantsWithPersistedValues(restaurants);
-                    });
+                    .subscribe(this::updateAllRestaurantsWithPersistedValues);
     }
 
     //--------------------------------------------MAPS DETAIL----------------------------------------------
