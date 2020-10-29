@@ -19,7 +19,6 @@ import com.picone.go4lunch.databinding.RecyclerViewRestaurantItemsBinding;
 
 import java.util.List;
 
-import static com.picone.go4lunch.presentation.utils.ConstantParameter.CLOSED;
 import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.utils.ManageStarUtil.manageStar;
 

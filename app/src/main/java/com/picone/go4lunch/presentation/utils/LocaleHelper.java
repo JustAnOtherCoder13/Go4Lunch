@@ -1,16 +1,10 @@
 package com.picone.go4lunch.presentation.utils;
 
 import android.content.Context;
-
 import android.content.SharedPreferences;
-
 import android.content.res.Configuration;
-
 import android.content.res.Resources;
-
 import android.preference.PreferenceManager;
-import android.util.Log;
-
 
 import java.util.Locale;
 

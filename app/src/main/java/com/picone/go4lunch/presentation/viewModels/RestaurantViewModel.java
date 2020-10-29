@@ -2,7 +2,6 @@ package com.picone.go4lunch.presentation.viewModels;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.hilt.lifecycle.ViewModelInject;
@@ -34,7 +33,7 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.picone.go4lunch.presentation.ui.fragment.MapsFragment.MAPS_KEY;
+import static com.picone.go4lunch.presentation.utils.ConstantParameter.MAPS_KEY;
 import static com.picone.go4lunch.presentation.utils.ConstantParameter.TODAY;
 import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getUserDailyScheduleOnToday;
@@ -178,9 +177,8 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(restaurantWithDistanceAdded ->
-                        Observable.create(emitter -> {
-                            emitter.onNext(restaurantWithDistanceAdded);
-                        }));
+                        Observable.create(emitter ->
+                                emitter.onNext(restaurantWithDistanceAdded)));
     }
 
     //---------------------------------------------ACTIONS----------------------------------------------

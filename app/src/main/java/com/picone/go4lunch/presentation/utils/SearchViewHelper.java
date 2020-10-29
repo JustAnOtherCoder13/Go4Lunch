@@ -3,7 +3,6 @@ package com.picone.go4lunch.presentation.utils;
 import android.app.SearchManager;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;

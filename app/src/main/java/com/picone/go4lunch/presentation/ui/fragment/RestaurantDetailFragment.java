@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +30,7 @@ import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import java.util.ArrayList;
 
 import static android.Manifest.permission.CALL_PHONE;
-import static com.picone.go4lunch.presentation.utils.ConstantParameter.CURRENT_HOUR;
 import static com.picone.go4lunch.presentation.utils.ConstantParameter.REQUEST_CODE;
-import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getUserDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.utils.ManageStarUtil.manageStar;
 
 public class RestaurantDetailFragment extends BaseFragment {

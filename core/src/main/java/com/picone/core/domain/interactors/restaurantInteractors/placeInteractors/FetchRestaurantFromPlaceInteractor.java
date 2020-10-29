@@ -1,7 +1,6 @@
 package com.picone.core.domain.interactors.restaurantInteractors.placeInteractors;
 
 import android.location.Location;
-import android.util.Log;
 
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.domain.entity.restaurant.Restaurant;
@@ -29,7 +28,7 @@ public class FetchRestaurantFromPlaceInteractor {
     public Observable<List<Restaurant>> fetchRestaurantFromPlace(Location mCurrentLocation, String googleKey) {
 
         return restaurantDataSource
-                .googlePlaceService(mCurrentLocation, googleKey)
+                .getNearBySearch(mCurrentLocation, googleKey)
                 .map(NearBySearch::getRestaurantPOJOS)
                 .map(restaurantPOJOS -> restaurantsToRestaurantModel(restaurantPOJOS, googleKey));
 

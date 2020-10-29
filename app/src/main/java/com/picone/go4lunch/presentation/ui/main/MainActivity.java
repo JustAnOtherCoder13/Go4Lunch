@@ -125,9 +125,8 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                     }));
-            mRestaurantViewModel.getAllFilteredUsers.observe(this, users -> {
-                mUserViewModel.setAllUsersMutableLiveData(users);
-            });
+            mRestaurantViewModel.getAllFilteredUsers.observe(this, users ->
+                    mUserViewModel.setAllUsersMutableLiveData(users));
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
     }
@@ -205,7 +204,6 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.chat_drawer_layout:
                     mChatViewModel.setAllMessages();
-                    //TODO change navigation
                     mNavController.navigate(R.id.chatFragment);
             }
     }

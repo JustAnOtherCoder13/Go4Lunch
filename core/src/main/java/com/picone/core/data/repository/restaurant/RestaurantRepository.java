@@ -38,7 +38,7 @@ public class RestaurantRepository {
         return restaurantDao.getAllPersistedRestaurants();
     }
 
-    public Observable<NearBySearch> googlePlaceService(Location mCurrentLocation, String googleKey) {
+    public Observable<NearBySearch> getNearBySearch(Location mCurrentLocation, String googleKey) {
         return restaurantDao.getNearBySearch(mCurrentLocation, googleKey);
     }
 

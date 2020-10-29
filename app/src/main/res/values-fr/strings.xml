@@ -37,7 +37,7 @@
     <string name="colleague_avatar_content_description_colleague_items">avatar d\'un collègue</string>
     <string name="restaurant_photo_content_description_restaurant_items">photo du restaurant</string>
     <string name="toolbar_menu_icon_content_description_activity_main">Icon du menu</string>
-    <string name="dinner_with_friend_background">arrière plan dinné avec amis</string>
+    <string name="dinner_with_friend_background">arrière plan diné avec amis</string>
     <string name="interested_colleague_logo">logo pour les collègues interéssés</string>
     <string name="star_logo">logo d\'étoile</string>
 
@@ -74,14 +74,14 @@
     <string name="exception">Exception: %s</string>
 
     <!-- WORKMATE_ADAPTER -->
-    <string name="is_eating"> mange à </string>
-    <string name="has_not_decide"> n\'as pas encore décidé</string>
-    <string name="is_joining"> se joint à vous!</string>
+    <string name="is_eating"> \u0020mange à\u0020 </string>
+    <string name="has_not_decide"> \u0020n\'as pas encore décidé</string>
+    <string name="is_joining"> \u0020se joint à vous!</string>
 
     <!-- RESTAURANT_LIST_ADAPTER -->
     <string name="closed">Fermé</string>
     <string name="email">email</string>
-    <string name="open_until">Ouvert jusqu\'à :</string>
+    <string name="open_until">Ouvert jusqu\'à :\u0020</string>
 
 
     <!-- RESTAURANT_DETAIL -->
@@ -91,9 +91,9 @@
     <string name="tel">tel: </string>
 
     <!-- NOTIFICATION -->
-    <string name="notification_you_are_eating">Vous mangez à : </string>
-    <string name="notification_at"> au : </string>
-    <string name="notification_with"> avec : </string>
+    <string name="notification_you_are_eating">Vous mangez à :\u0020 </string>
+    <string name="notification_at">\u0020au :\u0020 </string>
+    <string name="notification_with"> \u0020avec :\u0020 </string>
 
     <!-- CHAT -->
     <string name="enter_your_message_here">Taper votre message ici</string>

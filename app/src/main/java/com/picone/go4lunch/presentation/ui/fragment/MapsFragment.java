@@ -30,13 +30,13 @@ import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentMapsBinding;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
-import com.picone.go4lunch.presentation.utils.LocaleHelper;
 
 import java.util.List;
 import java.util.Objects;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.picone.go4lunch.presentation.utils.ConstantParameter.MAPS_CAMERA_ZOOM;
+import static com.picone.go4lunch.presentation.utils.ConstantParameter.MAPS_KEY;
 import static com.picone.go4lunch.presentation.utils.ConstantParameter.REQUEST_CODE;
 import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.utils.GetBitmapFromVectorUtil.getBitmapFromVectorDrawable;
@@ -49,7 +49,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     private boolean mLocationPermissionGranted;
     private Location mCurrentLocation;
     private FusedLocationProviderClient mFusedLocationProviderClient;
-    public static String MAPS_KEY;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

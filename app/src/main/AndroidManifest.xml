@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
-
+<!--TODO look for warning-->
     <application
         android:name=".presentation.ui.main.GoForLunch"
         android:allowBackup="true"
