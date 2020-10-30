@@ -37,9 +37,8 @@ public class ChatViewModel extends ViewModel {
         getAllMessagesInteractor.getAllMessages()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(chatMessages -> {
-                    chatMessageMutableLiveData.setValue(chatMessages);
-                });
+                .subscribe(chatMessages ->
+                        chatMessageMutableLiveData.setValue(chatMessages));
     }
 
     public void postMessage(ChatMessage chatMessage){

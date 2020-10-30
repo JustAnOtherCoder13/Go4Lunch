@@ -36,6 +36,7 @@ import java.util.Objects;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.picone.go4lunch.presentation.utils.ConstantParameter.MAPS_CAMERA_ZOOM;
+import static com.picone.go4lunch.presentation.utils.ConstantParameter.MAPS_KEY;
 import static com.picone.go4lunch.presentation.utils.ConstantParameter.REQUEST_CODE;
 import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.utils.GetBitmapFromVectorUtil.getBitmapFromVectorDrawable;
@@ -48,7 +49,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     private boolean mLocationPermissionGranted;
     private Location mCurrentLocation;
     private FusedLocationProviderClient mFusedLocationProviderClient;
-    public static String MAPS_KEY;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentMapsBinding.inflate(inflater, container, false);
         mBinding.locationFab.setOnClickListener(v -> setUpMapCurrentPosition());
+        setPageTitle(R.string.i_am_hungry_title);
         return mBinding.getRoot();
     }
 
@@ -73,16 +75,12 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         showAppBars(true);
         setStatusBarTransparent(false);
         fetchLastLocation();
-        mRestaurantViewModel.resetSelectedRestaurant();
         mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant -> {
             if (restaurant != null)
                 Navigation.findNavController(requireView()).navigate(R.id.restaurantDetailFragment);
         });
-        // TODO pass boolean to getRestaurantFromMaps to avoid loading every time
-        mRestaurantViewModel.getCurrentLocation.observe(getViewLifecycleOwner(), currentLocation ->{
-            Log.i("TAG", "onViewCreated: "+mRestaurantViewModel.getAllRestaurants.getValue());
-            mRestaurantViewModel.getRestaurantFromMaps();
-        });
+        mRestaurantViewModel.getCurrentLocation.observe(getViewLifecycleOwner(), currentLocation ->
+                mRestaurantViewModel.setAllRestaurantFromMaps(false));
     }
 
     @Override
@@ -165,7 +163,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
                 LatLng restaurantLatLng = new LatLng
                         (restaurant.getRestaurantPosition().getLatitude()
                                 , restaurant.getRestaurantPosition().getLongitude());
-
                 MarkerOptions customMarkerOption = new MarkerOptions()
                         .position(restaurantLatLng)
                         .title(restaurant.getPlaceId());
@@ -180,7 +177,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
                 }
             }
             mMap.setOnMarkerClickListener(marker -> {
-                mRestaurantViewModel.initSelectedRestaurant(marker.getTitle());
+                mRestaurantViewModel.setInterestedUsersForRestaurant(marker.getTitle());
                 return false;
             });
         }

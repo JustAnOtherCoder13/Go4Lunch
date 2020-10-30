@@ -43,7 +43,6 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
         final Restaurant restaurant = mRestaurants.get(position);
         holder.restaurantBinding.restaurantNameTextView.setText(restaurant.getName());
         setOpeningHour(holder, restaurant);
-        holder.restaurantBinding.openingTimeTextView.setText(restaurant.getOpeningHours());
         holder.restaurantBinding.foodStyleAndAddressTextView.setText(restaurant.getAddress());
         holder.restaurantBinding.distanceTextView.setText(restaurant.getDistance());
         setInterestedUsers(holder, restaurant);
@@ -104,9 +103,14 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
     }
 
     private void setOpeningHour(@NonNull ViewHolder holder, Restaurant restaurant) {
-        if (restaurant.getOpeningHours().equals(holder.itemView.getContext().getString(R.string.closed)))
+        String formatOpeningHour = holder.itemView.getContext().getString(R.string.open_until).concat(restaurant.getOpeningHours());
+        if (restaurant.getOpeningHours().equalsIgnoreCase("Closed")){
+            holder.restaurantBinding.openingTimeTextView.setText(R.string.closed);
             holder.restaurantBinding.openingTimeTextView.setTextColor(Color.RED);
-        else
+        }
+        else{
             holder.restaurantBinding.openingTimeTextView.setTextColor(Color.GRAY);
+            holder.restaurantBinding.openingTimeTextView.setText(formatOpeningHour);
+        }
     }
 }

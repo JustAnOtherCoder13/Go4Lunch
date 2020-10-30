@@ -45,7 +45,7 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
     public void onBindViewHolder(@NonNull ColleagueRecyclerViewAdapter.ViewHolder holder, int position) {
         final User user = mUsers.get(position);
         if (tag.equals(WorkmatesFragment.TAG)) {
-            if (user.getUserDailySchedules() != null) {
+            if (user.getUserDailySchedules() != null && getUserDailyScheduleOnToday(user.getUserDailySchedules()) != null) {
                 holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(holder.itemView.getContext().getString(R.string.is_eating)).concat(getUserDailyScheduleOnToday(user.getUserDailySchedules()).getRestaurantName()));
                 holder.colleagueBinding.userSelectedRestaurant.setTextColor(Color.BLACK);
             } else {

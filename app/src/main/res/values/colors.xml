@@ -8,4 +8,5 @@
     <color name="black">#000000</color>
     <color name="grey">#666666</color>
     <color name="lightGrey">#AAAAAA</color>
+    <color name="statusBarShadow">#7f000000</color>
     </resources>

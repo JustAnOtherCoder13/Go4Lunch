@@ -51,6 +51,7 @@ public class AuthenticationFragment extends BaseFragment {
         initView();
         showAppBars(false);
         setStatusBarTransparent(true);
+        hideSettingView();
         mNavController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
         return mBinding.getRoot();
     }
@@ -184,7 +185,7 @@ public class AuthenticationFragment extends BaseFragment {
                 email = profile.getEmail();
                 photoUrl = Objects.requireNonNull(profile.getPhotoUrl()).toString();
             }
-            mUserViewModel.setCurrentUser(uid, name, email, photoUrl);
+            mUserViewModel.createCurrentUser(uid, name, email, photoUrl);
         }
     }
 }

@@ -12,17 +12,19 @@ public class User {
     private String email;
     private String avatar;
     private List<UserDailySchedule> userDailySchedules;
+    private SettingValues settingValues;
 
 
     public User() {
     }
 
-    public User(String uid, String name, String email, String avatar, List<UserDailySchedule> userDailySchedules) {
+    public User(String uid, String name, String email, String avatar, List<UserDailySchedule> userDailySchedules,SettingValues settingValues) {
         this.uid = uid;
         this.name = name;
         this.email = email;
         this.avatar = avatar;
         this.userDailySchedules = userDailySchedules;
+        this.settingValues = settingValues;
     }
 
     public String getUid() {
@@ -51,4 +53,12 @@ public class User {
     }
 
     public void setUid(String uid) { this.uid = uid;}
+
+    public SettingValues getSettingValues() {
+        return settingValues;
+    }
+
+    public void setSettingValues(SettingValues settingValues) {
+        this.settingValues = settingValues;
+    }
 }

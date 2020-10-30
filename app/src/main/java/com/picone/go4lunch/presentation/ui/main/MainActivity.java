@@ -1,25 +1,24 @@
 package com.picone.go4lunch.presentation.ui.main;
 
-import android.app.SearchManager;
+import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.facebook.AccessToken;
@@ -27,14 +26,19 @@ import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.picone.core.domain.entity.user.SettingValues;
 import com.picone.core.domain.entity.user.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
+import com.picone.go4lunch.presentation.utils.CustomAdapter;
+import com.picone.go4lunch.presentation.utils.LocaleHelper;
+import com.picone.go4lunch.presentation.utils.SearchViewHelper;
 import com.picone.go4lunch.presentation.viewModels.ChatViewModel;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,7 +54,6 @@ import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getUser
 @ActivityScoped
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
-    //TODO create a chat
 
     public ActivityMainBinding mBinding;
 
@@ -64,40 +67,33 @@ public class MainActivity extends AppCompatActivity {
     private RestaurantViewModel mRestaurantViewModel;
     private ChatViewModel mChatViewModel;
     private NavController mNavController;
+    private SearchViewHelper searchViewHelper;
+    public Toolbar mToolbar;
+
+    //TODO delete google key from repo
+    //TODO change settings doesn't update ui
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLoginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
-        mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
-        mChatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        initToolBar();
+        initViewModel();
         initMenuButton();
-        setUpNavigation();
-        initLoginViewModel();
-        mRestaurantViewModel.getUserChosenRestaurant.observe(this,restaurant ->
-                FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task ->{
-                    //TODO remove current user from interested users list
-            if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules())!=null)
-                mRestaurantViewModel.sendNotification(task.getResult(),createMessage(restaurant.getName(),restaurant.getAddress(),UserListToString(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers())));}));
-        }
-
-
-    private String createMessage(String restaurantName, String restaurantAddress, String interestedUsers) {
-        return (getString(R.string.notification_you_are_eating) + restaurantName + getString(R.string.notification_at) + restaurantAddress + getString(R.string.notification_with) + interestedUsers);
+        initInComingNavigation();
+        initNavigation();
+        searchViewHelper = new SearchViewHelper(this, mRestaurantViewModel, mUserViewModel);
     }
 
-    private String UserListToString(List<User> interestedUsers) {
-        String interestedUsersStr = null;
-        for (User interestedUser : interestedUsers)
-            if (interestedUsersStr == null)
-                interestedUsersStr = interestedUser.getName();
-            else
-                interestedUsersStr = interestedUsersStr.concat(", ").concat(interestedUser.getName());
-        return interestedUsersStr;
+    private void initToolBar() {
+        mToolbar = mBinding.topNavBar;
+        setSupportActionBar(mBinding.topNavBar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_icon);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle(R.string.i_am_hungry_title);
     }
 
     @Override
@@ -105,52 +101,103 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (mFirebaseAuth.getCurrentUser() != null || accessToken != null && !accessToken.isExpired()) {
-            mLoginViewModel.authenticate(true);
-            mRestaurantViewModel.setCurrentUser(mFirebaseAuth.getCurrentUser().getEmail());
-            mRestaurantViewModel.resetSelectedRestaurant();
-            mUserViewModel.setAllDbUsers();
-            mRestaurantViewModel.setAllDbRestaurants();
-
+            initViewModelsValues();
+            initSettingButtons();
             mRestaurantViewModel.getSelectedRestaurant.observe(this, restaurant -> {
                 if (restaurant != null)
                     mNavController.navigate(R.id.restaurantDetailFragment);
             });
+            mRestaurantViewModel.getUserChosenRestaurant.observe(this, restaurant ->
+                    FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+                        if (restaurant != null
+                                && restaurant.getRestaurantDailySchedules() != null
+                                && getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null
+                                && Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().isNotificationSet()) {
+
+                            List<User> userToPass = new ArrayList<>(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers());
+                            userToPass.addAll(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers());
+
+                            for (User user : getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers())
+                                if (user.getUid().equals(mRestaurantViewModel.getCurrentUser.getValue().getUid()))
+                                    userToPass.remove(user);
+
+                            mRestaurantViewModel.sendNotification(task.getResult(), createMessage(restaurant.getName(), restaurant.getAddress(), UserListToString(userToPass)));
+
+                        }
+                    }));
+            mRestaurantViewModel.getAllFilteredUsers.observe(this, users ->
+                    mUserViewModel.setAllUsersMutableLiveData(users));
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.top_nav_bar_menu, menu);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
+        mRestaurantViewModel.resetSelectedRestaurant();
         if (Objects.requireNonNull(mNavController.getCurrentDestination()).getId() == R.id.authenticationFragment) {
             this.finish();
         } else mNavController.navigateUp();
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.setLocale(newBase));
+    }
+
+    private void initViewModel() {
+        mLoginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
+        mChatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
+    }
+
+    //--------------------------------- BUTTONS ------------------------------------------
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        mBinding.drawerLayout.open();
+        return super.onOptionsItemSelected(item);
+    }
+
     private void initMenuButton() {
         mBinding.topNavBar.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.top_nav_bar_menu_button:
-                    mBinding.drawerLayout.open();
-                    break;
-                case R.id.top_nav_search_button:
-                    initSearchView(item);
-                    break;
+            if (item.getItemId() == R.id.top_nav_search_button) {
+                searchViewHelper.initSearchView(item);
             }
             return false;
         });
         mBinding.navView.setNavigationItemSelectedListener(item -> {
             mBinding.drawerLayout.close();
+            initDrawerMenuItems(item);
+            return false;
+        });
+    }
+
+    private void initDrawerMenuItems(MenuItem item) {
+        if (mRestaurantViewModel.getCurrentUser.getValue() != null)
             switch (item.getItemId()) {
                 case R.id.your_lunch_drawer_layout:
-                    mRestaurantViewModel.getCurrentUser.observe(this, user -> {
-                        if (user.getUserDailySchedules() != null && getUserDailyScheduleOnToday(user.getUserDailySchedules())!=null) {
-                            mRestaurantViewModel.initSelectedRestaurant(getUserDailyScheduleOnToday(user.getUserDailySchedules()).getRestaurantPlaceId());
-                        } else
-                            Toast.makeText(this, "You haven't choose a restaurant yet", Toast.LENGTH_SHORT).show();
-                    });
-                    //TODO add setting view to change language, access notification, avoid reservation
+                    if (mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules() != null && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()) != null) {
+                        mRestaurantViewModel.setInterestedUsersForRestaurant(getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId());
+                    } else
+                        Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
+                    break;
+
                 case R.id.settings_drawer_layout:
+                    if (mBinding.settingsViewInclude.settings.getVisibility() == View.GONE) {
+                        setSettingsVisibility(true);
+                        initDropDownMenu();
+                    }
+                    mBinding.settingsViewInclude.saveChangesNoButtonSettings.setOnClickListener(v ->
+                            setSettingsVisibility(false));
                     break;
                 case R.id.logout_drawer_layout:
                     signOut();
@@ -159,109 +206,147 @@ public class MainActivity extends AppCompatActivity {
                     mChatViewModel.setAllMessages();
                     mNavController.navigate(R.id.chatFragment);
             }
-            return false;
-        });
     }
 
+    private void initDropDownMenu() {
+        String[] languages = {(getString(R.string.English)), (getString(R.string.French))};
+        int[] flags = {(R.drawable.ic_united_kingdom_flag_30), (R.drawable.ic_french_flag_30)};
+
+        CustomAdapter adapter = new CustomAdapter(this, languages, flags);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mBinding.settingsViewInclude.languageTxtView.setAdapter(adapter);
+    }
+
+    private void initSettingButtons() {
+        mRestaurantViewModel.getCurrentUser.observe(this, user -> {
+            mBinding.settingsViewInclude.languageTxtView.setText(user.getSettingValues().getChosenLanguage());
+            mBinding.settingsViewInclude.notificationSwitchButton.setChecked(user.getSettingValues().isNotificationSet());
+        });
+        setSettingsVisibility(false);
+        mBinding.settingsViewInclude.saveChangesNoButtonSettings.setOnClickListener(v ->
+                setSettingsVisibility(false));
+        mBinding.settingsViewInclude.saveChangesYesButtonSettings.setOnClickListener(v ->
+                initAlertDialog());
+    }
+
+    private void initAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.change_settings)
+                .setNegativeButton(R.string.no, null)
+                .setPositiveButton(R.string.yes, (dialog, which) -> saveChanges())
+                .create()
+                .show();
+    }
+
+    //--------------------------------- NAVIGATION ------------------------------------------
+
+    private void initInComingNavigation() {
+        mLoginViewModel.getAuthenticationState().observe(this,
+                authenticationState -> {
+                    switch (authenticationState) {
+                        case AUTHENTICATED:
+                            mNavController.navigateUp();
+                            break;
+                        case INVALID_AUTHENTICATION:
+                        case UNAUTHENTICATED:
+                            mNavController.navigate(R.id.authenticationFragment);
+                            break;
+                    }
+                });
+    }
+
+    private void initNavigation() {
+        NavigationUI.setupWithNavController(mBinding.bottomNavigation, mNavController);
+    }
+
+    //TODO trouble when try to change language more than one time.
+    private void saveChanges() {
+
+        SettingValues currentUserSettingValues = Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues();
+        String language = Objects.requireNonNull(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText()).getText().toString();
+
+        if (!language.equalsIgnoreCase(currentUserSettingValues.getChosenLanguage())
+                || mBinding.settingsViewInclude.notificationSwitchButton.isChecked() != currentUserSettingValues.isNotificationSet()
+                || mBinding.settingsViewInclude.cancelReservationToggleButton.isChecked()) {
+
+            if (!language.equalsIgnoreCase(currentUserSettingValues.getChosenLanguage())) {
+                LocaleHelper.setNewLocale(this, language);
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+            mUserViewModel.updateUserSettingValues(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue())
+                    , new SettingValues(Objects.requireNonNull(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText()).getText().toString().trim(),
+                            mBinding.settingsViewInclude.notificationSwitchButton.isChecked()));
+
+            if (mBinding.settingsViewInclude.cancelReservationToggleButton.isChecked()) {
+                if (getUserDailyScheduleOnToday(Objects.requireNonNull
+                        (mRestaurantViewModel.getCurrentUser.getValue()).getUserDailySchedules()) == null)
+                    Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
+                else mRestaurantViewModel.cancelReservation();
+            }
+        }
+        setSettingsVisibility(false);
+    }
+
+    private void signOut() {
+        LoginManager.getInstance().logOut();
+        mFirebaseAuth.signOut();
+        mLoginViewModel.authenticate(false);
+        mUserViewModel.resetUserCompletionState();
+    }
+
+    //--------------------------------- UPDATE VALUE ------------------------------------------
+
+    private void initViewModelsValues() {
+        mLoginViewModel.authenticate(true);
+        mUserViewModel.setAllDbUsers();
+        mRestaurantViewModel.setAllDbRestaurants();
+        mUserViewModel.getAllUsers.observe(this, users ->
+                mRestaurantViewModel.setCurrentUser(Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getEmail()));
+        mRestaurantViewModel.getAllDbRestaurants.observe(this, restaurants ->
+                mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(null));
+    }
+
+    //--------------------------------- UI VISIBILITY ------------------------------------------
+
+    public void setSettingsVisibility(boolean isVisible) {
+        if (isVisible) {
+            mBinding.settingsViewInclude.settings.setVisibility(View.VISIBLE);
+            mBinding.settingsViewInclude.settingsFrame.setVisibility(View.VISIBLE);
+        } else {
+            mBinding.settingsViewInclude.settings.setVisibility(View.GONE);
+            mBinding.settingsViewInclude.settingsFrame.setVisibility(View.GONE);
+        }
+    }
+
+    //TODO set in shadow not transparent
     public void setStatusBarTransparency(boolean isTransparent) {
 
         if (isTransparent) {
+
             if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
                 setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true);
+                setWindowFlag(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, true);
             }
 
             if (Build.VERSION.SDK_INT >= 21) {
                 setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-                getWindow().setStatusBarColor(Color.TRANSPARENT);
+                setWindowFlag(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, true);
             }
         } else {
             if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
+                setWindowFlag(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, false);
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             }
 
             if (Build.VERSION.SDK_INT >= 21) {
+                setWindowFlag(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, false);
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
             }
 
         }
-    }
-
-    public void setWindowFlag(final int bits, boolean on) {
-        Window win = this.getWindow();
-        WindowManager.LayoutParams winParams = win.getAttributes();
-        if (on) {
-            winParams.flags |= bits;
-        } else {
-            winParams.flags &= ~bits;
-        }
-        win.setAttributes(winParams);
-    }
-
-    private void initSearchView(MenuItem item) {
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = item.getActionView().findViewById(R.id.top_nav_search_button);
-        assert searchManager != null;
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
-        searchView.setQueryHint("Search restaurants");
-        searchView.setBackgroundColor(Color.WHITE);
-        searchView.setOnQueryTextListener(getOnQueryTextListener());
-        item.setOnActionExpandListener(geOnActionExpandListener(searchView));
-        View deleteButton = searchView.findViewById(R.id.search_close_btn);
-        deleteButton.setOnClickListener(getOnClickListener(searchView));
-    }
-
-    @NonNull
-    private View.OnClickListener getOnClickListener(SearchView searchView) {
-        return v -> {
-            EditText editText = findViewById(R.id.search_src_text);
-            editText.setText("");
-            searchView.setQuery("", false);
-            mRestaurantViewModel.getRestaurantFromMaps();
-        };
-    }
-
-    @NonNull
-    private MenuItem.OnActionExpandListener geOnActionExpandListener(SearchView searchView) {
-        return new MenuItem.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                searchView.setOnQueryTextListener(getOnQueryTextListener());
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                mRestaurantViewModel.getRestaurantFromMaps();
-                return true;
-            }
-        };
-    }
-
-    private SearchView.OnQueryTextListener getOnQueryTextListener() {
-        return new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                mRestaurantViewModel.getPrediction(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (newText.length() < 2) {
-                    return false;
-                }
-                mRestaurantViewModel.getPrediction(newText);
-                return true;
-            }
-        };
-    }
-
-    private void setUpNavigation() {
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.authenticationFragment, R.id.mapsFragment, R.id.listFragment, R.id.workmatesFragment).build();
-        NavigationUI.setupWithNavController(mBinding.bottomNavigation, mNavController);
-        NavigationUI.setupWithNavController(mBinding.topNavBar, mNavController, appBarConfiguration);
     }
 
     public void setMenuVisibility(Boolean bool) {
@@ -276,25 +361,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void signOut() {
-        LoginManager.getInstance().logOut();
-        mFirebaseAuth.signOut();
-        mLoginViewModel.authenticate(false);
-        mUserViewModel.resetUserCompletionState();
+    private String createMessage(String restaurantName, String restaurantAddress, String interestedUsers) {
+        return (getString(R.string.notification_you_are_eating) + restaurantName + getString(R.string.notification_at) + restaurantAddress + getString(R.string.notification_with) + interestedUsers);
     }
 
-    private void initLoginViewModel() {
-        mLoginViewModel.getAuthenticationState().observe(this,
-                authenticationState -> {
-                    switch (authenticationState) {
-                        case AUTHENTICATED:
-                            mNavController.navigateUp();
-                            break;
-                        case INVALID_AUTHENTICATION:
-                        case UNAUTHENTICATED:
-                            mNavController.navigate(R.id.authenticationFragment);
-                            break;
-                    }
-                });
+    private String UserListToString(List<User> interestedUsers) {
+        String interestedUsersStr = " ";
+        if (interestedUsers != null && !interestedUsers.isEmpty())
+            for (User interestedUser : interestedUsers)
+
+                if (interestedUsersStr.trim().isEmpty())
+                    interestedUsersStr = interestedUser.getName();
+                else
+                    interestedUsersStr = interestedUsersStr.concat(", ").concat(interestedUser.getName());
+
+        return interestedUsersStr;
+    }
+
+    public void setWindowFlag(final int bits, boolean on) {
+        Window win = this.getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        if (on) winParams.flags |= bits;
+        else winParams.flags &= ~bits;
+        win.setAttributes(winParams);
     }
 }

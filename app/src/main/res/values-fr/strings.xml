@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Go4Lunch</string>
+
+    <!--LOGOS and BUTTONS-->
+    <string name="go_for_lunch_logo_authentication">logo Go for lunch</string>
+    <string name="sign_in_with_facebook_authentication">Se connecter avec Facebook</string>
+    <string name="sign_in_with_google_authentication">Se connecter avec google</string>
+    <string name="map_view_title_bottom_nav_menu">Carte</string>
+    <string name="list_view_title_bottom_nav_menu">Restaurants</string>
+    <string name="workmates_title_bottom_nav_menu">Collègues</string>
+
+    <!-- TEXT VIEWS -->
+    <string name="user_selected_restaurant_text_colleague_items">User X is eating YYYY(restaurant)</string>
+    <string name="restaurant_name_restaurant_detail">Nom du restaurant</string>
+    <string name="food_style_address_restaurant_detail">Adresse</string>
+    <string name="text_for_call_button_restaurant_detail">APPEL</string>
+    <string name="text_for_like_button_restaurant_detail">LIKE</string>
+    <string name="text_for_website_button_restaurant_detail">SITE WEB</string>
+    <string name="restaurant_name_text_restaurant_items">Nom du restaurant</string>
+    <string name="distance_text_restaurant_items">distance</string>
+    <string name="food_style_address_text_restaurant_items">adresse</string>
+    <string name="opening_time_text_restaurant_items">horaire d\'ouverture</string>
+    <string name="find_a_nice_restaurant_and_invite_your_co_workers_for_lunch">Trouvez un bon restaurant, et invitez y vos collègues!</string>
+    <string name="_2">(2)</string>
+    <string name="date">date</string>
+    <string name="user_name">Nom de l\'utilisateur</string>
+
+
+    <!-- CONTENT DESCRIPTION -->
+    <string name="restaurant_photo_content_description_restaurant_detail">Photo du restaurant</string>
+    <string name="restaurant_button_content_description_restaurant_detail">boutton d\'appel téléphonique</string>
+    <string name="opinion_star_detail_content_description_restaurant_detail">Satisfaction</string>
+    <string name="call_restaurant_content_description_restaurant_detail">boutton d\'appel téléphonique</string>
+    <string name="web_site_button_content_description_restaurant_detail">visité le site du restaurant</string>
+    <string name="colleague_avatar_content_description_colleague_items">avatar d\'un collègue</string>
+    <string name="restaurant_photo_content_description_restaurant_items">photo du restaurant</string>
+    <string name="toolbar_menu_icon_content_description_activity_main">Icon du menu</string>
+    <string name="dinner_with_friend_background">arrière plan diné avec amis</string>
+    <string name="interested_colleague_logo">logo pour les collègues interéssés</string>
+    <string name="star_logo">logo d\'étoile</string>
+
+    <!-- MAPS -->
+    <string name="maps_token_title">Ma position</string>
+
+    <!-- WARNING MESSAGES -->
+    <string name="google_auth_failed">Votre authentification avec Google n\'as pas fonctionné, merci d\'essayer à nouveau</string>
+    <string name="facebook_auth_failed">Votre authentification avec Facebook n\'as pas fonctionné, merci d\'essayer à nouveau</string>
+    <string name="facebook_auth_canceled">Votre authentification avec Facebook as été annulé, merci d\'essayer à nouveau</string>
+    <string name="invalid_authentication">"Vous n'êtes pas authentifié, merci de vous authentifier."</string>
+
+    <!-- LOGIN MESSAGES -->
+    <string name="welcome_message">Bienvenu </string>
+    <string name="welcome_back_message">Bienvenu</string>
+
+    <!-- DRAWER MENU -->
+    <string name="user_avatar_drawer_menu">avatar de l\'utilisateur</string>
+    <string name="user_mail_drawer_menu">Email de l\'utilisateur</string>
+    <string name="your_lunch_drawer_menu_title">VOTRE RESERVATION</string>
+    <string name="settings_drawer_menu_title">PARAMETRES</string>
+    <string name="logout_drawer_menu_title">SE DECONNECTER</string>
+    <string name="chat_drawer_menu_title">CHAT</string>
+
+    <!-- NAV GRAPH LABEL -->
+    <string name="i_am_hungry_title">J\'ai Faim!</string>
+    <string name="available_workmates">Collègue connectés</string>
+
+    <!-- CONSTANT -->
+    <string name="chanel_id">fcm_default_channel</string>
+    <string name="chanel_name">Message from Firebase</string>
+    <string name="intent_extra_name">message</string>
+    <string name="public_profile">public_profile</string>
+    <string name="exception">Exception: %s</string>
+
+    <!-- WORKMATE_ADAPTER -->
+    <string name="is_eating"> \u0020mange à\u0020 </string>
+    <string name="has_not_decide"> \u0020n\'as pas encore décidé</string>
+    <string name="is_joining"> \u0020se joint à vous!</string>
+
+    <!-- RESTAURANT_LIST_ADAPTER -->
+    <string name="closed">Fermé</string>
+    <string name="email">email</string>
+    <string name="open_until">Ouvert jusqu\'à :\u0020</string>
+
+
+    <!-- RESTAURANT_DETAIL -->
+    <string name="like_restaurant_question">Aimer se restaurant ?</string>
+    <string name="no">Non</string>
+    <string name="yes">Oui</string>
+    <string name="tel">tel: </string>
+
+    <!-- NOTIFICATION -->
+    <string name="notification_you_are_eating">Vous mangez à :\u0020 </string>
+    <string name="notification_at">\u0020au :\u0020 </string>
+    <string name="notification_with"> \u0020avec :\u0020 </string>
+
+    <!-- CHAT -->
+    <string name="enter_your_message_here">Taper votre message ici</string>
+
+
+    <!-- SETTINGS -->
+    <string name="English">En</string>
+    <string name="French">Fr</string>
+    <string name="change_settings">Changer les paramètres</string>
+    <string name="haven_t_chose_restaurant">Vous n\'avez pas encor choisis de restaurant</string>
+    <string name="search_restaurants">chercher les restaurants</string>
+    <string name="language">Language</string>
+    <string name="notifications">Notifications</string>
+    <string name="cancel_reservation">ANNULER VOTRE RESERVATION</string>
+    <string name="save_changes">Sauvegarder</string>
+
+
+</resources>

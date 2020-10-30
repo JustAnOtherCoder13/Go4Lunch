@@ -8,6 +8,7 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+
     <style name="top_bottom_margin">
         <item name="android:layout_marginTop">?attr/actionBarSize</item>
         <item name="android:layout_marginBottom">?attr/actionBarSize</item>
@@ -149,46 +150,45 @@
     <style name="call_button">
         <item name="android:background">@color/onPrimaryColor</item>
         <item name="android:src">@drawable/ic_baseline_call_24</item>
-        <item name="android:layout_marginTop">@dimen/xl_marge</item>
+        <item name="android:paddingBottom">@dimen/big_marge</item>
     </style>
 
     <style name="call_button_text_detail_fragment">
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:layout_marginTop">@dimen/basic_marge</item>
         <item name="android:text">@string/text_for_call_button_restaurant_detail</item>
-        <item name="android:layout_marginStart">@dimen/xl_marge</item>
+        <item name="android:layout_marginBottom">@dimen/little_marge</item>
     </style>
 
     <style name="like_button">
         <item name="android:background">@color/onPrimaryColor</item>
         <item name="android:src">@drawable/ic_star_icon</item>
         <item name="android:tint">@color/colorPrimary</item>
+        <item name="android:paddingBottom">@dimen/big_marge</item>
     </style>
 
     <style name="like_button_text_detail_fragment">
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:layout_marginTop">@dimen/basic_marge</item>
+        <item name="android:layout_marginBottom">@dimen/little_marge</item>
         <item name="android:text">@string/text_for_like_button_restaurant_detail</item>
     </style>
 
     <style name="website_button">
         <item name="android:background">@color/onPrimaryColor</item>
         <item name="android:src">@drawable/ic_web_site_24</item>
+        <item name="android:paddingBottom">@dimen/big_marge</item>
     </style>
 
     <style name="website_button_text_detail_fragment">
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:layout_marginTop">@dimen/basic_marge</item>
-        <item name="android:layout_marginEnd">@dimen/xl_marge</item>
+        <item name="android:layout_marginBottom">@dimen/little_marge</item>
         <item name="android:text">@string/text_for_website_button_restaurant_detail</item>
     </style>
 
     <style name="restaurant_detail_separator">
         <item name="android:layout_height">@dimen/separator</item>
-        <item name="android:layout_marginTop">50dp</item>
         <item name="android:layout_marginBottom">@dimen/little_marge</item>
         <item name="android:alpha">0.3</item>
         <item name="android:background">@color/lightGrey</item>
@@ -337,5 +337,102 @@
         <item name="android:textColor">@color/onPrimaryColor</item>
         <item name="android:textSize">@dimen/small_txt</item>
     </style>
+
+    <!-- *************************SETTINGS********************************* -->
+
+    <style name="setting_main_card_view">
+        <item name="android:layout_marginTop">?attr/actionBarSize</item>
+        <item name="cardBackgroundColor">@color/colorPrimaryLight</item>
+        <item name="cardCornerRadius">@dimen/xxl_marge</item>
+    </style>
+
+    <style name="setting_spinner_label">
+        <item name="android:layout_marginTop">@dimen/big_marge</item>
+        <item name="android:text">@string/language</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+    </style>
+
+    <style name="setting_spinner" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu">
+        <item name="android:layout_marginTop">@dimen/basic_marge</item>
+        <item name="android:background">@color/onPrimaryColor</item>
+    </style>
+
+    <style name="setting_notification_label">
+        <item name="android:text">@string/notifications</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+    </style>
+
+    <style name="setting_cancel_label">
+        <item name="android:layout_marginStart">@dimen/basic_marge</item>
+        <item name="android:layout_marginTop">@dimen/big_marge</item>
+        <item name="android:layout_marginEnd">@dimen/basic_marge</item>
+        <item name="cardBackgroundColor">@color/colorPrimary</item>
+        <item name="cardCornerRadius">@dimen/big_marge</item>
+        <item name="cardElevation">0dp</item>
+    </style>
+
+    <style name="setting_cancel_label_txt">
+        <item name="android:layout_margin">@dimen/basic_marge</item>
+        <item name="android:text">@string/cancel_reservation</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+        <item name="android:textSize">@dimen/title</item>
+    </style>
+
+    <style name="setting_check_box_card_view">
+        <item name="android:layout_marginEnd">@dimen/basic_marge</item>
+        <item name="android:background">@color/onPrimaryColor</item>
+        <item name="cardCornerRadius">15dp</item>
+    </style>
+
+    <style name="setting_check_box">
+        <item name="android:background">@null</item>
+        <item name="android:drawablePadding">@dimen/little_marge</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textOff">@string/no</item>
+        <item name="android:textOn">@string/yes</item>
+    </style>
+
+    <style name="setting_save_change_txt">
+        <item name="android:layout_marginTop">@dimen/big_marge</item>
+        <item name="android:text">@string/save_changes</item>
+        <item name="android:textColor">@color/onPrimaryColor</item>
+    </style>
+
+    <style name="setting_separator">
+        <item name="android:layout_height">@dimen/separator</item>
+        <item name="android:layout_marginStart">@dimen/basic_marge</item>
+        <item name="android:layout_marginEnd">@dimen/basic_marge</item>
+        <item name="android:background">@color/onPrimaryColor</item>
+    </style>
+
+    <style name="setting_save_change_yes">
+        <item name="android:layout_marginBottom">@dimen/basic_marge</item>
+        <item name="backgroundTint">@color/onPrimaryColor</item>
+        <item name="android:text">@string/yes</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="cornerRadius">@dimen/big_marge</item>
+    </style>
+
+    <style name="setting_save_change_no">
+        <item name="android:layout_marginBottom">@dimen/basic_marge</item>
+        <item name="backgroundTint">@color/onPrimaryColor</item>
+        <item name="android:text">@string/no</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="cornerRadius">@dimen/big_marge</item>
+    </style>
+
+    <style name="setting_text_item">
+        <item name="android:text">@string/English</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:layout_marginStart">@dimen/little_marge</item>
+        <item name="android:layout_marginEnd">@dimen/little_marge</item>
+    </style>
+
+    <style name="setting_image_item">
+        <item name="srcCompat">@drawable/ic_united_kingdom_flag_30</item>
+        <item name="android:layout_marginEnd">@dimen/little_marge</item>
+    </style>
+
 
 </resources>

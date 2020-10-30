@@ -1,6 +1,5 @@
 <resources>
 
-    <!--TODO translate in french an spanish -->
 
     <string name="app_name">Go4Lunch</string>
 
@@ -75,9 +74,9 @@
     <string name="exception">Exception: %s</string>
 
     <!-- WORKMATE_ADAPTER -->
-    <string name="is_eating"> is eating </string>
-    <string name="has_not_decide"> hasn\'t decided yet</string>
-    <string name="is_joining"> is joining!</string>
+    <string name="is_eating"> \u0020is eating\u0020 </string>
+    <string name="has_not_decide"> \u0020hasn\'t decided yet</string>
+    <string name="is_joining"> \u0020is joining!</string>
 
     <!-- RESTAURANT_LIST_ADAPTER -->
     <string name="closed">Closed</string>
@@ -88,13 +87,26 @@
     <string name="no">No</string>
     <string name="yes">Yes</string>
     <string name="tel">tel: </string>
+    <string name="open_until">Open until :\u0020</string>
+
 
     <!-- NOTIFICATION -->
-    <string name="notification_you_are_eating">You are eating in : </string>
-    <string name="notification_at"> at : </string>
-    <string name="notification_with"> with : </string>
+    <string name="notification_you_are_eating">You are eating in :\u0020 </string>
+    <string name="notification_at"> \u0020at :\u0020 </string>
+    <string name="notification_with"> \u0020with :\u0020 </string>
 
     <!-- CHAT -->
     <string name="enter_your_message_here">Enter your message here</string>
+    <string name="English">En</string>
+    <string name="French">Fr</string>
+
+    <!-- SETTINGS -->
+    <string name="change_settings">Change settings options</string>
+    <string name="haven_t_chose_restaurant">You haven\'t choose a restaurant yet</string>
+    <string name="search_restaurants">Search restaurants</string>
+    <string name="language">Language</string>
+    <string name="notifications">Notifications</string>
+    <string name="cancel_reservation">CANCEL RESERVATION</string>
+    <string name="save_changes">Save changes</string>
 
 </resources>

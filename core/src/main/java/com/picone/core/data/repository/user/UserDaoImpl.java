@@ -38,10 +38,14 @@ public class UserDaoImpl implements UserDao {
         return RxFirebaseDatabase.setValue(usersDatabaseReference.child(user.getUid()), user);
     }
 
+    public Completable updateUser(User currentUser) {
+        return RxFirebaseDatabase.setValue(usersDatabaseReference.child(currentUser.getUid()), currentUser);
+    }
+
     @Override
     public Observable<List<User>> getCurrentUserForEmail(String authUserEmail) {
         Query query = usersDatabaseReference.orderByChild("email").equalTo(authUserEmail);
-        return RxFirebaseDatabase.observeSingleValueEvent(query, DataSnapshotMapper.listOf(User.class)).toObservable();
+        return RxFirebaseDatabase.observeValueEvent(query, DataSnapshotMapper.listOf(User.class)).toObservable();
     }
 
     @Override

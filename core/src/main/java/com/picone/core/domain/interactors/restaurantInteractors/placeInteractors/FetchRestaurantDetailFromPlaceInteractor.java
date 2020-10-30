@@ -34,7 +34,7 @@ public class FetchRestaurantDetailFromPlaceInteractor {
     private String formatOpeningHours(RestaurantDetail restaurantDetail) {
         String closingHour = restaurantDetail.getResult().getOpeningHours().getPeriods().get(getWeekDayTextValue()).getClose().getTime();
         if (restaurantDetail.getResult().getOpeningHours().getOpenNow())
-            closingHour = "Open until : " + closingHour.substring(0, 2) + ":" + closingHour.substring(2, 4);
+            closingHour = closingHour.substring(0, 2) + ":" + closingHour.substring(2, 4);
         else
             closingHour = "Closed";
 

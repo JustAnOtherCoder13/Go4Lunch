@@ -23,11 +23,24 @@ public class FetchRestaurantDistanceInteractor {
         String restaurantLocation = String.valueOf(restaurant.getRestaurantPosition().getLatitude()).concat(",").concat(String.valueOf(restaurant.getRestaurantPosition().getLongitude()));
         return restaurantDataSource.getRestaurantDistance(currentLocationStr, restaurantLocation, googleKey)
                 .map(restaurantDistance -> restaurantDistance.getRows().get(0).getElements().get(0).getDistance().getText())
-                .map(distance -> restaurantDistanceToRestaurantModel(restaurant, distance));
+                .map(distance -> restaurantDistanceToRestaurantModel_(restaurant, distance));
     }
 
     private Restaurant restaurantDistanceToRestaurantModel(Restaurant restaurant, String distance) {
         restaurant.setDistance(distance);
         return restaurant;
+    }
+
+    private Restaurant restaurantDistanceToRestaurantModel_(Restaurant restaurant, String distance) {
+
+        double distanceNumber = Double.parseDouble(distance.substring(0,3));
+        String distanceToPass;
+        if (distanceNumber < 1)
+            distanceToPass = String.valueOf(distanceNumber * 1000).substring(0,3).concat(" m");
+        else
+            distanceToPass = String.valueOf(distanceNumber).concat(" km");
+        restaurant.setDistance(distanceToPass);
+        return restaurant;
+
     }
 }
