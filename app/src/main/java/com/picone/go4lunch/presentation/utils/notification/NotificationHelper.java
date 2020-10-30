@@ -14,6 +14,7 @@ import static com.picone.go4lunch.presentation.utils.ConstantParameter.NOTIFICAT
 import static com.picone.go4lunch.presentation.utils.ConstantParameter.NOTIFICATION_TAG;
 
 class NotificationHelper {
+    //TODO Notif don't show if app is closed
 
     static void createNotification(Context context, String message) {
         NotificationCompat.Builder notificationBuilder =

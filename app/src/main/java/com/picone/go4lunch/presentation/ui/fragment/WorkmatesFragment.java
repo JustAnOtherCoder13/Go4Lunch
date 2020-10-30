@@ -35,6 +35,7 @@ public class WorkmatesFragment extends BaseFragment {
         mBinding = FragmentWorkmatesBinding.inflate(getLayoutInflater());
         showAppBars(true);
         setStatusBarTransparent(false);
+        setPageTitle(R.string.available_workmates);
         return mBinding.getRoot();
     }
 
@@ -43,7 +44,6 @@ public class WorkmatesFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         initRecyclerView();
         configureOnClickRecyclerView();
-        mRestaurantViewModel.resetSelectedRestaurant();
         mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant -> {
             if (restaurant != null)
                 Navigation.findNavController(view).navigate(R.id.restaurantDetailFragment);

@@ -3,7 +3,6 @@ package com.picone.go4lunch.presentation.ui.main;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -39,6 +38,7 @@ import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,11 +68,10 @@ public class MainActivity extends AppCompatActivity {
     private ChatViewModel mChatViewModel;
     private NavController mNavController;
     private SearchViewHelper searchViewHelper;
-    private Toolbar mToolbar;
+    public Toolbar mToolbar;
 
     //TODO delete google key from repo
     //TODO change settings doesn't update ui
-    //TODO Language don't update when enter app
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,16 +79,21 @@ public class MainActivity extends AppCompatActivity {
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        searchViewHelper = new SearchViewHelper(this, mRestaurantViewModel);
-        mToolbar = mBinding.topNavBar;
-        setSupportActionBar(mToolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_icon);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        initToolBar();
         initViewModel();
         initMenuButton();
         initInComingNavigation();
         initNavigation();
+        searchViewHelper = new SearchViewHelper(this, mRestaurantViewModel, mUserViewModel);
+    }
+
+    private void initToolBar() {
+        mToolbar = mBinding.topNavBar;
+        setSupportActionBar(mBinding.topNavBar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_icon);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle(R.string.i_am_hungry_title);
     }
 
     @Override
@@ -105,11 +109,24 @@ public class MainActivity extends AppCompatActivity {
             });
             mRestaurantViewModel.getUserChosenRestaurant.observe(this, restaurant ->
                     FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-                        //TODO remove current user from interested users list
-                        if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null
-                                && Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().isNotificationSet())
-                            mRestaurantViewModel.sendNotification(task.getResult(), createMessage(restaurant.getName(), restaurant.getAddress(), UserListToString(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers())));
+                        if (restaurant != null
+                                && restaurant.getRestaurantDailySchedules() != null
+                                && getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null
+                                && Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().isNotificationSet()) {
+
+                            List<User> userToPass = new ArrayList<>(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers());
+                            userToPass.addAll(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers());
+
+                            for (User user : getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers())
+                                if (user.getUid().equals(mRestaurantViewModel.getCurrentUser.getValue().getUid()))
+                                    userToPass.remove(user);
+
+                            mRestaurantViewModel.sendNotification(task.getResult(), createMessage(restaurant.getName(), restaurant.getAddress(), UserListToString(userToPass)));
+
+                        }
                     }));
+            mRestaurantViewModel.getAllFilteredUsers.observe(this, users ->
+                    mUserViewModel.setAllUsersMutableLiveData(users));
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
     }
@@ -152,7 +169,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void initMenuButton() {
         mBinding.topNavBar.setOnMenuItemClickListener(item -> {
-            initTopNavBarItems(item);
+            if (item.getItemId() == R.id.top_nav_search_button) {
+                searchViewHelper.initSearchView(item);
+            }
             return false;
         });
         mBinding.navView.setNavigationItemSelectedListener(item -> {
@@ -185,15 +204,8 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.chat_drawer_layout:
                     mChatViewModel.setAllMessages();
-                    //TODO change navigation
                     mNavController.navigate(R.id.chatFragment);
             }
-    }
-
-    private void initTopNavBarItems(MenuItem item) {
-        if (item.getItemId() == R.id.top_nav_search_button) {
-            searchViewHelper.initSearchView(item);
-        }
     }
 
     private void initDropDownMenu() {
@@ -293,12 +305,12 @@ public class MainActivity extends AppCompatActivity {
         mUserViewModel.getAllUsers.observe(this, users ->
                 mRestaurantViewModel.setCurrentUser(Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getEmail()));
         mRestaurantViewModel.getAllDbRestaurants.observe(this, restaurants ->
-                mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(restaurants));
+                mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(null));
     }
 
     //--------------------------------- UI VISIBILITY ------------------------------------------
 
-    private void setSettingsVisibility(boolean isVisible) {
+    public void setSettingsVisibility(boolean isVisible) {
         if (isVisible) {
             mBinding.settingsViewInclude.settings.setVisibility(View.VISIBLE);
             mBinding.settingsViewInclude.settingsFrame.setVisibility(View.VISIBLE);
@@ -310,21 +322,26 @@ public class MainActivity extends AppCompatActivity {
 
     //TODO set in shadow not transparent
     public void setStatusBarTransparency(boolean isTransparent) {
+
         if (isTransparent) {
+
             if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
                 setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true);
+                setWindowFlag(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, true);
             }
 
             if (Build.VERSION.SDK_INT >= 21) {
                 setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-                getWindow().setStatusBarColor(Color.TRANSPARENT);
+                setWindowFlag(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, true);
             }
         } else {
             if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
+                setWindowFlag(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, false);
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             }
 
             if (Build.VERSION.SDK_INT >= 21) {
+                setWindowFlag(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, false);
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
             }
@@ -349,12 +366,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String UserListToString(List<User> interestedUsers) {
-        String interestedUsersStr = null;
-        for (User interestedUser : interestedUsers)
-            if (interestedUsersStr == null)
-                interestedUsersStr = interestedUser.getName();
-            else
-                interestedUsersStr = interestedUsersStr.concat(", ").concat(interestedUser.getName());
+        String interestedUsersStr = " ";
+        if (interestedUsers != null && !interestedUsers.isEmpty())
+            for (User interestedUser : interestedUsers)
+
+                if (interestedUsersStr.trim().isEmpty())
+                    interestedUsersStr = interestedUser.getName();
+                else
+                    interestedUsersStr = interestedUsersStr.concat(", ").concat(interestedUser.getName());
+
         return interestedUsersStr;
     }
 

@@ -60,6 +60,9 @@ public class UserViewModel extends ViewModel {
         userMutableLiveData.setValue(new User(uid, name, email, avatar, null, SETTING_START_VALUE));
     }
 
+    public void setAllUsersMutableLiveData(List<User> filteredUsers){
+        allUsersMutableLiveData.setValue(filteredUsers);
+    }
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void setAllDbUsers() {

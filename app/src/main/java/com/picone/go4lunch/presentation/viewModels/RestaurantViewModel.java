@@ -2,7 +2,6 @@ package com.picone.go4lunch.presentation.viewModels;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.hilt.lifecycle.ViewModelInject;
@@ -34,7 +33,7 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.picone.go4lunch.presentation.ui.fragment.MapsFragment.MAPS_KEY;
+import static com.picone.go4lunch.presentation.utils.ConstantParameter.MAPS_KEY;
 import static com.picone.go4lunch.presentation.utils.ConstantParameter.TODAY;
 import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getUserDailyScheduleOnToday;
@@ -144,28 +143,24 @@ public class RestaurantViewModel extends ViewModel {
         }
     }
 
+    //TODO reuse flatMap
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void setAllRestaurantFromMaps(boolean isReset) {
-        fetchRestaurantFromPlaceInteractor.fetchRestaurantFromPlace(locationMutableLiveData.getValue(), MAPS_KEY)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(this::fetchPlaceDetail)
-                .subscribe(restaurants -> {
-                    if (allRestaurantsMutableLiveData.getValue() == null || isReset)
-                        allRestaurantsMutableLiveData.setValue(restaurants);
-                    updateAllRestaurantsWithPersistedValues(allDbRestaurantsMutableLiveData.getValue());
-                });
+        if (allRestaurantsMutableLiveData.getValue() == null || isReset)
+            fetchRestaurantFromPlaceInteractor.fetchRestaurantFromPlace(locationMutableLiveData.getValue(), MAPS_KEY)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    //.flatMap(this::fetchPlaceDetail)
+                    .subscribe(this::updateAllRestaurantsWithPersistedValues);
     }
 
     //--------------------------------------------MAPS DETAIL----------------------------------------------
 
-    //todo make trouble sometimes due to nearBySearch null pointer
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private Observable<List<Restaurant>> fetchPlaceDetail(List<Restaurant> nearBySearchRestaurants) {
+    public Observable<List<Restaurant>> fetchPlaceDetail(List<Restaurant> nearBySearchRestaurants) {
         return Observable.create(emitter -> {
-            if (nearBySearchRestaurants!=null)
-                for (Restaurant nearBySearchRestaurant : nearBySearchRestaurants)
+            for (Restaurant nearBySearchRestaurant : nearBySearchRestaurants)
                 fetchRestaurantDetailFromPlaceInteractor.getRestaurantDetail(nearBySearchRestaurant, MAPS_KEY)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -182,16 +177,18 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(restaurantWithDistanceAdded ->
-                        Observable.create(emitter -> emitter.onNext(restaurantWithDistanceAdded)));
+                        Observable.create(emitter ->
+                                emitter.onNext(restaurantWithDistanceAdded)));
     }
 
     //---------------------------------------------ACTIONS----------------------------------------------
 
     @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
     @SuppressLint("CheckResult")
-    public void filterRestaurants(String query) {
+    public void filterRestaurants(String query,List<User> allUsers) {
         Location location = locationMutableLiveData.getValue();
         List<Restaurant> filteredRestaurant = new ArrayList<>();
+        List<User> filteredUsers = new ArrayList<>();
         getPredictionInteractor.getPredictions(query, MAPS_KEY, String.valueOf(location.getLatitude()).concat(",").concat(String.valueOf(location.getLongitude())))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -202,9 +199,22 @@ public class RestaurantViewModel extends ViewModel {
                                 filteredRestaurant.add(restaurant);
                         }
                     }
+                    for (Restaurant restaurant : filteredRestaurant){
+                        for (User user : allUsers){
+                            if (user.getUserDailySchedules()!=null && getUserDailyScheduleOnToday(user.getUserDailySchedules())!=null){
+                                if (getUserDailyScheduleOnToday(user.getUserDailySchedules()).getRestaurantPlaceId().equals(restaurant.getPlaceId())){
+                                    filteredUsers.add(user);
+                                }
+                            }
+                        }
+                    }
                     allRestaurantsMutableLiveData.setValue(filteredRestaurant);
+                    filteredUsersMutableLiveData.setValue(filteredUsers);
                 });
     }
+
+    private MutableLiveData<List<User>> filteredUsersMutableLiveData = new MutableLiveData<>();
+    public LiveData<List<User>> getAllFilteredUsers = filteredUsersMutableLiveData;
 
     @SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
     @SuppressLint("CheckResult")
@@ -296,10 +306,11 @@ public class RestaurantViewModel extends ViewModel {
     }
 
     @SuppressLint("CheckResult")
-    public void updateAllRestaurantsWithPersistedValues(List<Restaurant> allDbRestaurants) {
-        Log.i("TAG", "updateAllRestaurantsWithPersistedValues: ");
-        List<Restaurant> allRestaurants = allRestaurantsMutableLiveData.getValue();
-        if (allRestaurants != null)
+    public void updateAllRestaurantsWithPersistedValues(List<Restaurant> allRestaurants) {
+        if (allRestaurants == null)
+            allRestaurants = allRestaurantsMutableLiveData.getValue();
+        List<Restaurant> allDbRestaurants = allDbRestaurantsMutableLiveData.getValue();
+        if (allRestaurants != null && allDbRestaurants != null) {
             for (Restaurant persistedRestaurant : allDbRestaurants) {
                 for (Restaurant restaurantFromMap : allRestaurants) {
                     if (persistedRestaurant.getPlaceId().equals(restaurantFromMap.getPlaceId())) {
@@ -309,6 +320,8 @@ public class RestaurantViewModel extends ViewModel {
                     }
                 }
             }
+            allRestaurantsMutableLiveData.setValue(allRestaurants);
+        }
     }
 
     @SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})

@@ -24,6 +24,8 @@ import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
+import java.util.Objects;
+
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -79,6 +81,12 @@ public abstract class BaseFragment extends Fragment {
         mainActivity.setStatusBarTransparency(isTransparent);
     }
 
+    protected void hideSettingView(){
+        MainActivity mainActivity = (MainActivity) getActivity();
+        assert mainActivity != null;
+        mainActivity.setSettingsVisibility(false);
+    }
+
     protected void playLoadingAnimation(boolean bol, LottieAnimationView mAnimationView) {
         this.mAnimationView = mAnimationView;
         if (bol) {
@@ -97,6 +105,13 @@ public abstract class BaseFragment extends Fragment {
         mUserViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         mRestaurantViewModel = new ViewModelProvider(requireActivity()).get(RestaurantViewModel.class);
         mChatViewModel = new ViewModelProvider(requireActivity()).get(ChatViewModel.class);
+    }
+
+    protected void setPageTitle(int title){
+        MainActivity mainActivity = (MainActivity) getActivity();
+        assert mainActivity != null;
+        Objects.requireNonNull(mainActivity.getSupportActionBar()).setTitle(title);
+
     }
 
     private void populateDrawerMenu(FirebaseUser currentUser) {

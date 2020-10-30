@@ -1,16 +1,10 @@
 package com.picone.go4lunch.presentation.utils;
 
 import android.content.Context;
-
 import android.content.SharedPreferences;
-
 import android.content.res.Configuration;
-
 import android.content.res.Resources;
-
 import android.preference.PreferenceManager;
-import android.util.Log;
-
 
 import java.util.Locale;
 
@@ -42,7 +36,6 @@ public class LocaleHelper {
     }
 
     public static Context setNewLocale(Context context, String language) {
-        Log.i("TAG", "setNewLocale: "+language);
         persist(context, language);
 
         return updateResourcesLegacy(context, language);
@@ -64,7 +57,6 @@ public class LocaleHelper {
 
     private static void persist(Context context, String language) {
 
-        Log.i("TAG", "persist: "+language);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         SharedPreferences.Editor editor = preferences.edit();

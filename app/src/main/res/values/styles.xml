@@ -8,6 +8,7 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+
     <style name="top_bottom_margin">
         <item name="android:layout_marginTop">?attr/actionBarSize</item>
         <item name="android:layout_marginBottom">?attr/actionBarSize</item>
@@ -149,46 +150,45 @@
     <style name="call_button">
         <item name="android:background">@color/onPrimaryColor</item>
         <item name="android:src">@drawable/ic_baseline_call_24</item>
-        <item name="android:layout_marginTop">@dimen/xl_marge</item>
+        <item name="android:paddingBottom">@dimen/big_marge</item>
     </style>
 
     <style name="call_button_text_detail_fragment">
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:layout_marginTop">@dimen/basic_marge</item>
         <item name="android:text">@string/text_for_call_button_restaurant_detail</item>
-        <item name="android:layout_marginStart">@dimen/xl_marge</item>
+        <item name="android:layout_marginBottom">@dimen/little_marge</item>
     </style>
 
     <style name="like_button">
         <item name="android:background">@color/onPrimaryColor</item>
         <item name="android:src">@drawable/ic_star_icon</item>
         <item name="android:tint">@color/colorPrimary</item>
+        <item name="android:paddingBottom">@dimen/big_marge</item>
     </style>
 
     <style name="like_button_text_detail_fragment">
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:layout_marginTop">@dimen/basic_marge</item>
+        <item name="android:layout_marginBottom">@dimen/little_marge</item>
         <item name="android:text">@string/text_for_like_button_restaurant_detail</item>
     </style>
 
     <style name="website_button">
         <item name="android:background">@color/onPrimaryColor</item>
         <item name="android:src">@drawable/ic_web_site_24</item>
+        <item name="android:paddingBottom">@dimen/big_marge</item>
     </style>
 
     <style name="website_button_text_detail_fragment">
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:layout_marginTop">@dimen/basic_marge</item>
-        <item name="android:layout_marginEnd">@dimen/xl_marge</item>
+        <item name="android:layout_marginBottom">@dimen/little_marge</item>
         <item name="android:text">@string/text_for_website_button_restaurant_detail</item>
     </style>
 
     <style name="restaurant_detail_separator">
         <item name="android:layout_height">@dimen/separator</item>
-        <item name="android:layout_marginTop">50dp</item>
         <item name="android:layout_marginBottom">@dimen/little_marge</item>
         <item name="android:alpha">0.3</item>
         <item name="android:background">@color/lightGrey</item>

@@ -62,6 +62,14 @@ public class RestaurantDetailFragment extends BaseFragment {
     }
 
     private void initButtons(Restaurant selectedRestaurant) {
+       /* if (mRestaurantViewModel.getCurrentUser.getValue() != null
+                && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()) != null
+                && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId()
+                .equals(selectedRestaurant.getPlaceId())
+                || CURRENT_HOUR >= 13
+                || selectedRestaurant.getOpeningHours().equals(getResources().getString(R.string.closed)))
+            mBinding.checkIfSelectedDetailFab.setVisibility(View.GONE);*/
+
         mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
                 mRestaurantViewModel.addUserToRestaurant());
 
@@ -105,10 +113,6 @@ public class RestaurantDetailFragment extends BaseFragment {
         }
     }
 
-    //TODO if grey disable click
-    //TODO when come back from call or website don't get the selected restaurant
-    //TODO resize restaurant Photo?
-    //TODO setFabInactive if on userChosenRestaurant or if closed or out of time
     private void initView() {
         mRestaurantViewModel.isDataLoading.observe(getViewLifecycleOwner(), isDataLoading ->
                 playLoadingAnimation(isDataLoading, mBinding.animationViewInclude.animationView));
@@ -128,7 +132,6 @@ public class RestaurantDetailFragment extends BaseFragment {
                 else mRestaurantViewModel.setLikeCounter(0);
                 mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
                 mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getAddress());
-                mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getAddress());
                 setLikeView(restaurant);
                 setPhoto(restaurant);
             }
@@ -136,14 +139,18 @@ public class RestaurantDetailFragment extends BaseFragment {
     }
 
     private void setButtonColor(Restaurant restaurant) {
-        if (restaurant.getPhoneNumber() == null)
+        if (restaurant.getPhoneNumber() == null) {
             mBinding.callNumberDetailImageButton.setBackgroundColor(Color.LTGRAY);
-        if (restaurant.getWebsite() == null)
+            mBinding.webSiteDetailImageButton.setEnabled(false);
+        }
+        if (restaurant.getWebsite() == null) {
             mBinding.webSiteDetailImageButton.setBackgroundColor(Color.LTGRAY);
+            mBinding.webSiteDetailImageButton.setEnabled(false);
+        }
         mRestaurantViewModel.getCurrentUser.observe(getViewLifecycleOwner(), user -> {
             if (restaurant.getFanList() != null && restaurant.getFanList().contains(user.getUid())) {
                 mBinding.likeDetailImageButton.setBackgroundColor(Color.LTGRAY);
-                mBinding.likeDetailImageButton.setOnClickListener(null);
+                mBinding.likeDetailImageButton.setEnabled(false);
             }
 
         });
