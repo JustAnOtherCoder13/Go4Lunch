@@ -26,7 +26,7 @@ public class ChatMessageDaoImpl implements ChatMessageDao {
 
     @Override
     public Observable<List<ChatMessage>> getAllMessages() {
-        return RxFirebaseDatabase.observeValueEvent(chatDatabaseReference, DataSnapshotMapper.listOf(ChatMessage.class)).toObservable();
+        return RxFirebaseDatabase.observeValueEvent(chatDatabaseReference.limitToLast(50), DataSnapshotMapper.listOf(ChatMessage.class)).toObservable();
     }
 
     @Override

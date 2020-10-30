@@ -14,18 +14,19 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.core.domain.entity.user.SettingValues;
 import com.picone.core.domain.entity.user.User;
 import com.picone.go4lunch.R;
@@ -68,10 +69,9 @@ public class MainActivity extends AppCompatActivity {
     private ChatViewModel mChatViewModel;
     private NavController mNavController;
     private SearchViewHelper searchViewHelper;
-    public Toolbar mToolbar;
+    public LottieAnimationView mAnimationView;
 
     //TODO delete google key from repo
-    //TODO change settings doesn't update ui
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,16 +79,17 @@ public class MainActivity extends AppCompatActivity {
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        searchViewHelper = new SearchViewHelper(this, mRestaurantViewModel, mUserViewModel);
+        initLoadingAnimation();
+        setSettingsVisibility(false);
         initToolBar();
         initViewModel();
         initMenuButton();
         initInComingNavigation();
         initNavigation();
-        searchViewHelper = new SearchViewHelper(this, mRestaurantViewModel, mUserViewModel);
     }
 
     private void initToolBar() {
-        mToolbar = mBinding.topNavBar;
         setSupportActionBar(mBinding.topNavBar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_icon);
@@ -107,29 +108,14 @@ public class MainActivity extends AppCompatActivity {
                 if (restaurant != null)
                     mNavController.navigate(R.id.restaurantDetailFragment);
             });
-            mRestaurantViewModel.getUserChosenRestaurant.observe(this, restaurant ->
-                    FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-                        if (restaurant != null
-                                && restaurant.getRestaurantDailySchedules() != null
-                                && getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null
-                                && Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().isNotificationSet()) {
+            mRestaurantViewModel.getUserChosenRestaurant.observe(this, this::initNotificationMessage);
 
-                            List<User> userToPass = new ArrayList<>(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers());
-                            userToPass.addAll(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers());
-
-                            for (User user : getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers())
-                                if (user.getUid().equals(mRestaurantViewModel.getCurrentUser.getValue().getUid()))
-                                    userToPass.remove(user);
-
-                            mRestaurantViewModel.sendNotification(task.getResult(), createMessage(restaurant.getName(), restaurant.getAddress(), UserListToString(userToPass)));
-
-                        }
-                    }));
             mRestaurantViewModel.getAllFilteredUsers.observe(this, users ->
                     mUserViewModel.setAllUsersMutableLiveData(users));
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
     }
+
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -151,6 +137,12 @@ public class MainActivity extends AppCompatActivity {
         super.attachBaseContext(LocaleHelper.setLocale(newBase));
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        mBinding.drawerLayout.open();
+        return super.onOptionsItemSelected(item);
+    }
+
     private void initViewModel() {
         mLoginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
@@ -160,12 +152,6 @@ public class MainActivity extends AppCompatActivity {
 
     //--------------------------------- BUTTONS ------------------------------------------
 
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        mBinding.drawerLayout.open();
-        return super.onOptionsItemSelected(item);
-    }
 
     private void initMenuButton() {
         mBinding.topNavBar.setOnMenuItemClickListener(item -> {
@@ -222,7 +208,6 @@ public class MainActivity extends AppCompatActivity {
             mBinding.settingsViewInclude.languageTxtView.setText(user.getSettingValues().getChosenLanguage());
             mBinding.settingsViewInclude.notificationSwitchButton.setChecked(user.getSettingValues().isNotificationSet());
         });
-        setSettingsVisibility(false);
         mBinding.settingsViewInclude.saveChangesNoButtonSettings.setOnClickListener(v ->
                 setSettingsVisibility(false));
         mBinding.settingsViewInclude.saveChangesYesButtonSettings.setOnClickListener(v ->
@@ -241,6 +226,7 @@ public class MainActivity extends AppCompatActivity {
     //--------------------------------- NAVIGATION ------------------------------------------
 
     private void initInComingNavigation() {
+
         mLoginViewModel.getAuthenticationState().observe(this,
                 authenticationState -> {
                     switch (authenticationState) {
@@ -257,43 +243,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initNavigation() {
         NavigationUI.setupWithNavController(mBinding.bottomNavigation, mNavController);
-    }
-
-    //TODO trouble when try to change language more than one time.
-    private void saveChanges() {
-
-        SettingValues currentUserSettingValues = Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues();
-        String language = Objects.requireNonNull(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText()).getText().toString();
-
-        if (!language.equalsIgnoreCase(currentUserSettingValues.getChosenLanguage())
-                || mBinding.settingsViewInclude.notificationSwitchButton.isChecked() != currentUserSettingValues.isNotificationSet()
-                || mBinding.settingsViewInclude.cancelReservationToggleButton.isChecked()) {
-
-            if (!language.equalsIgnoreCase(currentUserSettingValues.getChosenLanguage())) {
-                LocaleHelper.setNewLocale(this, language);
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-            mUserViewModel.updateUserSettingValues(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue())
-                    , new SettingValues(Objects.requireNonNull(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText()).getText().toString().trim(),
-                            mBinding.settingsViewInclude.notificationSwitchButton.isChecked()));
-
-            if (mBinding.settingsViewInclude.cancelReservationToggleButton.isChecked()) {
-                if (getUserDailyScheduleOnToday(Objects.requireNonNull
-                        (mRestaurantViewModel.getCurrentUser.getValue()).getUserDailySchedules()) == null)
-                    Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
-                else mRestaurantViewModel.cancelReservation();
-            }
-        }
-        setSettingsVisibility(false);
-    }
-
-    private void signOut() {
-        LoginManager.getInstance().logOut();
-        mFirebaseAuth.signOut();
-        mLoginViewModel.authenticate(false);
-        mUserViewModel.resetUserCompletionState();
     }
 
     //--------------------------------- UPDATE VALUE ------------------------------------------
@@ -322,7 +271,6 @@ public class MainActivity extends AppCompatActivity {
 
     //TODO set in shadow not transparent
     public void setStatusBarTransparency(boolean isTransparent) {
-
         if (isTransparent) {
 
             if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
@@ -345,12 +293,11 @@ public class MainActivity extends AppCompatActivity {
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
             }
-
         }
     }
 
-    public void setMenuVisibility(Boolean bool) {
-        if (bool) {
+    public void setMenuVisibility(Boolean isVisible) {
+        if (isVisible) {
             mBinding.topNavBar.setVisibility(View.VISIBLE);
             mBinding.bottomNavigation.setVisibility(View.VISIBLE);
             mBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
@@ -361,6 +308,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    //--------------------------------- HELPERS ------------------------------------------
+
+    private void initNotificationMessage(Restaurant restaurant){
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            if (restaurant != null
+                    && restaurant.getRestaurantDailySchedules() != null
+                    && getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null
+                    && Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().isNotificationSet()) {
+
+                List<User> userToPass = new ArrayList<>(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers());
+
+                for (User user : getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers())
+                    if (user.getUid().equals(mRestaurantViewModel.getCurrentUser.getValue().getUid()))
+                        userToPass.remove(user);
+
+                mRestaurantViewModel.sendNotification(task.getResult(),
+                        getString(R.string.today_lunch),createMessage(restaurant.getName(), restaurant.getAddress(), UserListToString(userToPass)));
+            }
+        });
+    }
     private String createMessage(String restaurantName, String restaurantAddress, String interestedUsers) {
         return (getString(R.string.notification_you_are_eating) + restaurantName + getString(R.string.notification_at) + restaurantAddress + getString(R.string.notification_with) + interestedUsers);
     }
@@ -378,11 +346,68 @@ public class MainActivity extends AppCompatActivity {
         return interestedUsersStr;
     }
 
-    public void setWindowFlag(final int bits, boolean on) {
+    private void saveChanges() {
+        SettingValues currentUserSettingValues = Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues();
+        String language = Objects.requireNonNull(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText()).getText().toString();
+
+        if (!language.equalsIgnoreCase(LocaleHelper.getLanguage(this))
+                || mBinding.settingsViewInclude.notificationSwitchButton.isChecked() != currentUserSettingValues.isNotificationSet()
+                || mBinding.settingsViewInclude.cancelReservationToggleButton.isChecked()) {
+
+            setLanguageAndRestart(language);
+
+            mUserViewModel.updateUserSettingValues(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue())
+                    , new SettingValues(Objects.requireNonNull(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText()).getText().toString().trim(),
+                            mBinding.settingsViewInclude.notificationSwitchButton.isChecked()));
+
+            if (mBinding.settingsViewInclude.cancelReservationToggleButton.isChecked()) {
+                if (getUserDailyScheduleOnToday(Objects.requireNonNull
+                        (mRestaurantViewModel.getCurrentUser.getValue()).getUserDailySchedules()) == null)
+                    Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
+                else mRestaurantViewModel.cancelReservation();
+            }
+        }
+        setSettingsVisibility(false);
+    }
+
+    private void setLanguageAndRestart(String language) {
+        if (!language.equalsIgnoreCase(LocaleHelper.getLanguage(this))) {
+            LocaleHelper.setNewLocale(this, language);
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    private void signOut() {
+        LoginManager.getInstance().logOut();
+        mFirebaseAuth.signOut();
+        mLoginViewModel.authenticate(false);
+        mUserViewModel.resetUserCompletionState();
+    }
+
+    private void setWindowFlag(final int bits, boolean on) {
         Window win = this.getWindow();
         WindowManager.LayoutParams winParams = win.getAttributes();
         if (on) winParams.flags |= bits;
         else winParams.flags &= ~bits;
         win.setAttributes(winParams);
+    }
+
+    private void initLoadingAnimation() {
+        mAnimationView = mBinding.animationViewInclude.animationView;
+        mAnimationView.setAnimation(R.raw.loading_animation);
+        mAnimationView.setVisibility(View.GONE);
+        playLoadingAnimation(true);
+    }
+
+    public void playLoadingAnimation(boolean bol) {
+        if (bol) {
+            mAnimationView.setVisibility(View.VISIBLE);
+            mAnimationView.playAnimation();
+        } else if (mAnimationView != null) {
+            mAnimationView.setVisibility(View.GONE);
+            mAnimationView.pauseAnimation();
+        }
     }
 }

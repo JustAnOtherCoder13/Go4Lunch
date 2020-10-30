@@ -41,7 +41,6 @@ import static com.picone.go4lunch.presentation.utils.ConstantParameter.REQUEST_C
 import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.utils.GetBitmapFromVectorUtil.getBitmapFromVectorDrawable;
 
-
 public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
 
     private FragmentMapsBinding mBinding;
@@ -49,7 +48,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     private boolean mLocationPermissionGranted;
     private Location mCurrentLocation;
     private FusedLocationProviderClient mFusedLocationProviderClient;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,14 +65,14 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         return mBinding.getRoot();
     }
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initMapView(savedInstanceState);
-        showAppBars(true);
-        setStatusBarTransparent(false);
+        setAppBarVisibility(true);
+        setStatusBarTransparency(false);
         fetchLastLocation();
+        mRestaurantViewModel.isDataLoading.observe(getViewLifecycleOwner(), this::playLoadingAnimation);
         mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant -> {
             if (restaurant != null)
                 Navigation.findNavController(requireView()).navigate(R.id.restaurantDetailFragment);
@@ -138,7 +136,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(latLng).zoom(MAPS_CAMERA_ZOOM).build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        playLoadingAnimation(false, mAnimationView);
     }
 
     private void updateLocationUI() {

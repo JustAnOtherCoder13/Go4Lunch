@@ -12,12 +12,10 @@ import androidx.core.graphics.drawable.DrawableCompat;
 public class GetBitmapFromVectorUtil {
 
     public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {
-
         Drawable drawable = ContextCompat.getDrawable(context, drawableId);
         assert drawable != null;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
             drawable = (DrawableCompat.wrap(drawable)).mutate();
-        }
 
         Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
                 drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);

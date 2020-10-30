@@ -94,6 +94,8 @@
     <string name="notification_you_are_eating">You are eating in :\u0020 </string>
     <string name="notification_at"> \u0020at :\u0020 </string>
     <string name="notification_with"> \u0020with :\u0020 </string>
+    <string name="today_lunch">Today\'s Lunch</string>
+
 
     <!-- CHAT -->
     <string name="enter_your_message_here">Enter your message here</string>

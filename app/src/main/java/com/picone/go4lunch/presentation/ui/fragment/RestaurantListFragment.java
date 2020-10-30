@@ -21,7 +21,6 @@ import com.picone.go4lunch.presentation.utils.RecyclerViewItemClickUtil;
 import java.util.ArrayList;
 import java.util.Objects;
 
-
 public class RestaurantListFragment extends BaseFragment {
 
     private FragmentRestaurantListBinding mBinding;
@@ -30,8 +29,8 @@ public class RestaurantListFragment extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentRestaurantListBinding.inflate(inflater, container, false);
-        showAppBars(true);
-        setStatusBarTransparent(false);
+        setAppBarVisibility(true);
+        setStatusBarTransparency(false);
         setPageTitle(R.string.i_am_hungry_title);
         return mBinding.getRoot();
     }
@@ -47,6 +46,14 @@ public class RestaurantListFragment extends BaseFragment {
         });
     }
 
+    public void configureOnClickRecyclerView() {
+        RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewListFragment, R.layout.fragment_restaurant_list)
+                .setOnItemClickListener((recyclerView, position, v) -> {
+                    Restaurant restaurant = Objects.requireNonNull(mRestaurantViewModel.getAllRestaurants.getValue()).get(position);
+                    mRestaurantViewModel.setInterestedUsersForRestaurant(restaurant.getPlaceId());
+                });
+    }
+
     private void initRecyclerView() {
         RestaurantListRecyclerViewAdapter adapter = new RestaurantListRecyclerViewAdapter(new ArrayList<>());
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -54,13 +61,5 @@ public class RestaurantListFragment extends BaseFragment {
         mBinding.recyclerViewListFragment.setAdapter(adapter);
         mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(),
                 adapter::updateRestaurants);
-    }
-
-    public void configureOnClickRecyclerView() {
-        RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewListFragment, R.layout.fragment_restaurant_list)
-                .setOnItemClickListener((recyclerView, position, v) -> {
-                    Restaurant restaurant = Objects.requireNonNull(mRestaurantViewModel.getAllRestaurants.getValue()).get(position);
-                    mRestaurantViewModel.setInterestedUsersForRestaurant(restaurant.getPlaceId());
-                });
     }
 }

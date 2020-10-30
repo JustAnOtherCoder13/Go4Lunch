@@ -33,7 +33,7 @@ public class ChatViewModel extends ViewModel {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
-    public void setAllMessages (){
+    public void setAllMessages() {
         getAllMessagesInteractor.getAllMessages()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -41,7 +41,7 @@ public class ChatViewModel extends ViewModel {
                         chatMessageMutableLiveData.setValue(chatMessages));
     }
 
-    public void postMessage(ChatMessage chatMessage){
+    public void postMessage(ChatMessage chatMessage) {
         postMessageInteractor.postMessage(chatMessage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

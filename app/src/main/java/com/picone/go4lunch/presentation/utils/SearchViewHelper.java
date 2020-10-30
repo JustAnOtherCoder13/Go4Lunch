@@ -79,7 +79,7 @@ public class SearchViewHelper {
         return new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                mRestaurantViewModel.filterRestaurants(query, allUsers);
+                mRestaurantViewModel.filterExistingResults(query, allUsers);
                 return false;
             }
 
@@ -88,7 +88,7 @@ public class SearchViewHelper {
                 if (newText.length() < 2) {
                     return false;
                 }
-                mRestaurantViewModel.filterRestaurants(newText, allUsers);
+                mRestaurantViewModel.filterExistingResults(newText, allUsers);
                 return true;
             }
         };

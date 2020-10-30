@@ -26,12 +26,10 @@ public class FetchRestaurantFromPlaceInteractor {
     }
 
     public Observable<List<Restaurant>> fetchRestaurantFromPlace(Location mCurrentLocation, String googleKey) {
-
         return restaurantDataSource
                 .getNearBySearch(mCurrentLocation, googleKey)
                 .map(NearBySearch::getRestaurantPOJOS)
                 .map(restaurantPOJOS -> restaurantsToRestaurantModel(restaurantPOJOS, googleKey));
-
     }
 
     private List<Restaurant> restaurantsToRestaurantModel(List<RestaurantPOJO> restaurantsPojos, String googleKey) {
@@ -64,9 +62,7 @@ public class FetchRestaurantFromPlaceInteractor {
                 "",
                 "",
                 "",
-                0,
                 new ArrayList<>(),
                 new ArrayList<>());
-
     }
 }

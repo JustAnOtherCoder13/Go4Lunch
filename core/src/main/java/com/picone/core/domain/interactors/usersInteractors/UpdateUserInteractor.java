@@ -19,4 +19,4 @@ public class UpdateUserInteractor {
     public Completable updateUser(User currentUser) {
         return userDataSource.updateUser(currentUser);
     }
-    }
+}

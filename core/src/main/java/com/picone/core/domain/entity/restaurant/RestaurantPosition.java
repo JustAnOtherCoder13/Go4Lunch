@@ -1,13 +1,11 @@
 package com.picone.core.domain.entity.restaurant;
 
-import com.google.firebase.database.IgnoreExtraProperties;
-
-@IgnoreExtraProperties
 public class RestaurantPosition {
 
     private double latitude;
     private double Longitude;
 
+    @SuppressWarnings("unused")
     public RestaurantPosition() {
     }
 
@@ -20,15 +18,7 @@ public class RestaurantPosition {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
     public double getLongitude() {
         return Longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        Longitude = longitude;
     }
 }

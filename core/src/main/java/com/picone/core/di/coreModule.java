@@ -20,7 +20,6 @@ import com.picone.core.domain.interactors.restaurantInteractors.restaurantIntera
 import com.picone.core.domain.interactors.restaurantInteractors.restaurantInteractors.UpdateUserChosenRestaurantInteractor;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
-import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserDailySchedulesInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
 import com.picone.core.domain.interactors.usersInteractors.UpdateUserInteractor;
 
@@ -61,6 +60,12 @@ public final class coreModule {
         return new ChatMessageRepository(provideChatMessageDaoImpl());
     }
 
+    @Singleton
+    @Provides
+    static RetrofitClient provideRetrofitClient() {
+        return new RetrofitClient();
+    }
+
     //--------------------------------------DAO-----------------------------------------------------
     @Provides
     static UserDaoImpl provideUserDaoImpl() {
@@ -89,8 +94,8 @@ public final class coreModule {
     }
 
     @Provides
-    static UpdateUserInteractor provideUpdateUser(){
-        return  new UpdateUserInteractor(provideUserDataSource());
+    static UpdateUserInteractor provideUpdateUser() {
+        return new UpdateUserInteractor(provideUserDataSource());
     }
 
     @Provides
@@ -133,11 +138,6 @@ public final class coreModule {
     }
 
     @Provides
-    static RetrofitClient provideRetrofitClient() {
-        return new RetrofitClient();
-    }
-
-    @Provides
     static GetPredictionInteractor provideGetPredictions() {
         return new GetPredictionInteractor(provideRestaurantDataSource());
     }
@@ -145,11 +145,6 @@ public final class coreModule {
     @Provides
     static SendNotificationInteractor provideSendNotification() {
         return new SendNotificationInteractor(provideRestaurantDataSource());
-    }
-
-    @Provides
-    static GetCurrentUserDailySchedulesInteractor provideGetCurrentUserDailyScheduleOnToday() {
-        return new GetCurrentUserDailySchedulesInteractor(provideUserDataSource());
     }
 
     //-----------------------------CHAT INTERACTORS------------------------------------------
@@ -160,7 +155,7 @@ public final class coreModule {
     }
 
     @Provides
-    static PostMessageInteractor postMessageInteractor() {
+    static PostMessageInteractor providePostMessage() {
         return new PostMessageInteractor(provideChatMessageDataSource());
     }
 

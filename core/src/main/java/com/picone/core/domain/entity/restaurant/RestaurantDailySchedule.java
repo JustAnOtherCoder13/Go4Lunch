@@ -1,17 +1,15 @@
 package com.picone.core.domain.entity.restaurant;
 
-import com.google.firebase.database.IgnoreExtraProperties;
 import com.picone.core.domain.entity.user.User;
 
 import java.util.List;
-
-@IgnoreExtraProperties
 
 public class RestaurantDailySchedule {
 
     private String date;
     private List<User> interestedUsers;
 
+    @SuppressWarnings("unused")
     public RestaurantDailySchedule() {
     }
 
@@ -24,15 +22,8 @@ public class RestaurantDailySchedule {
         return date;
     }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public List<User> getInterestedUsers() {
         return interestedUsers;
     }
 
-    public void setInterestedUsers(List<User> interestedUsers) {
-        this.interestedUsers = interestedUsers;
-    }
 }

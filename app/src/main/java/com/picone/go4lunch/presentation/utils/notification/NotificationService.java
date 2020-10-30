@@ -15,8 +15,7 @@ public class NotificationService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         if (remoteMessage.getData().size() > 0)
-            Log.i("TAG", "onMessageReceived: "+remoteMessage.getData());
-            setAlarm(this,remoteMessage.getData().get(getString(R.string.intent_extra_name)));
+            setAlarm(this, remoteMessage.getData().get(getString(R.string.intent_extra_name)));
     }
 
     @Override

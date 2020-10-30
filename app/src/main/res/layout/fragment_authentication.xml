@@ -66,12 +66,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/login_with_facebook" />
 
-    <include
-        android:id="@+id/animation_view_include"
-        layout="@layout/lottie_loader_animation"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

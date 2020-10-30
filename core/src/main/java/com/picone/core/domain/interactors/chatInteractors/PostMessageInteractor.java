@@ -16,7 +16,7 @@ public class PostMessageInteractor {
         this.chatMessageDataSource = chatMessageDataSource;
     }
 
-    public Completable postMessage(ChatMessage chatMessage){
+    public Completable postMessage(ChatMessage chatMessage) {
         return chatMessageDataSource.postMessage(chatMessage);
     }
 }
