@@ -15,6 +15,7 @@ import com.picone.core.domain.interactors.usersInteractors.UpdateUserInteractor;
 
 import java.util.List;
 
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -32,8 +33,8 @@ public class UserViewModel extends ViewModel {
     private MutableLiveData<List<User>> allUsersMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
 
-    private AddUserInteractor addUserInteractor;
-    private GetAllUsersInteractor getAllUsersInteractor;
+    public AddUserInteractor addUserInteractor;
+    public GetAllUsersInteractor getAllUsersInteractor;
     private UpdateUserInteractor updateUserInteractor;
 
 
@@ -44,6 +45,7 @@ public class UserViewModel extends ViewModel {
         this.addUserInteractor = addUserInteractor;
         this.getAllUsersInteractor = getAllUsersInteractor;
         this.updateUserInteractor = updateUserInteractor;
+        //setAllDbUsers();
     }
 
     public LiveData<List<User>> getAllUsers = allUsersMutableLiveData;
@@ -88,5 +90,9 @@ public class UserViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
+    }
+
+    public Scheduler getSchedulerIo() {
+        return Schedulers.io();
     }
 }
