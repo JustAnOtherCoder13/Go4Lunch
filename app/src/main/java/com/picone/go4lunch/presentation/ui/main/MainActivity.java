@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
                     mUserViewModel.setAllUsersMutableLiveData(users));
 
             mRestaurantViewModel.getErrorState.observe(this, error_state -> {
+                //todo Toast here
                 if (error_state.equals(ErrorHandler.ERROR_STATE.NO_CONNEXION_ERROR)) {
                     errorHandler.onConnexionError(this);
                     playLoadingAnimation(false);
