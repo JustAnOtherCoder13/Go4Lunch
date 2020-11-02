@@ -8,6 +8,7 @@ public class ChatMessage {
     private String userText;
     private String uid;
 
+    @SuppressWarnings("unused")
     public ChatMessage() {
     }
 
@@ -23,39 +24,19 @@ public class ChatMessage {
         return time;
     }
 
-    public void setTime(String time) {
-        this.time = time;
-    }
-
     public String getUserAvatar() {
         return userAvatar;
-    }
-
-    public void setUserAvatar(String userAvatar) {
-        this.userAvatar = userAvatar;
     }
 
     public String getUserText() {
         return userText;
     }
 
-    public void setUserText(String userText) {
-        this.userText = userText;
-    }
-
     public String getUserName() {
         return userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public String getUid() {
         return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
     }
 }

@@ -11,6 +11,7 @@ public class ConstantParameter {
     private static Calendar rightNow = Calendar.getInstance();
     public static final String TODAY = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(rightNow.getTime());
     public static final int CURRENT_HOUR = rightNow.get(Calendar.HOUR_OF_DAY);
+    public static final int MAX_RESERVATION_HOUR = 13;
 
     public static final String SELECTED_LANGUAGE = "Locale.Helper.Selected.Language";
 
@@ -21,9 +22,8 @@ public class ConstantParameter {
     public static final int REQUEST_CODE = 13700;
     public static String MAPS_KEY;
 
-
-    public static final int ALARM_HOUR = 12;
-    public static final int ALARM_MINUTE = 0;
+    public static final int ALARM_HOUR = 14;
+    public static final int ALARM_MINUTE = 23;
 
     public static final int MAPS_CAMERA_ZOOM = 16;
 

@@ -47,9 +47,7 @@ public class UserViewModel extends ViewModel {
     }
 
     public LiveData<List<User>> getAllUsers = allUsersMutableLiveData;
-
     public LiveData<User> getCurrentUser = userMutableLiveData;
-
     public LiveData<UserCompletionState> getAddUserState = UserCompletionStateMutableLiveData;
 
     public void resetUserCompletionState() {
@@ -60,9 +58,10 @@ public class UserViewModel extends ViewModel {
         userMutableLiveData.setValue(new User(uid, name, email, avatar, null, SETTING_START_VALUE));
     }
 
-    public void setAllUsersMutableLiveData(List<User> filteredUsers){
+    public void setAllUsersMutableLiveData(List<User> filteredUsers) {
         allUsersMutableLiveData.setValue(filteredUsers);
     }
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void setAllDbUsers() {

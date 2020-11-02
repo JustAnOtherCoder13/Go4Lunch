@@ -25,4 +25,4 @@ public class ChatMessageRepository {
     public Completable postMessage(ChatMessage chatMessage) {
         return chatMessageDao.postMessage(chatMessage);
     }
-    }
+}

@@ -1,14 +1,12 @@
 package com.picone.core.domain.entity.user;
 
-import com.google.firebase.database.IgnoreExtraProperties;
-
-@IgnoreExtraProperties
 public class UserDailySchedule {
 
     private String date;
     private String restaurantPlaceId;
     private String restaurantName;
 
+    @SuppressWarnings("unused")
     public UserDailySchedule() {
     }
 
@@ -20,10 +18,6 @@ public class UserDailySchedule {
 
     public String getDate() {
         return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
     }
 
     public String getRestaurantPlaceId() {

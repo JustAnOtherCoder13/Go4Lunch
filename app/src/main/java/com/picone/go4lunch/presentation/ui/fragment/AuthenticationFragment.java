@@ -48,10 +48,11 @@ public class AuthenticationFragment extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentAuthenticationBinding.inflate(inflater, container, false);
-        initView();
-        showAppBars(false);
-        setStatusBarTransparent(true);
-        hideSettingView();
+        initButtons();
+        setAppBarVisibility(false);
+        setStatusBarTransparency(true);
+        setSettingViewVisibility();
+        playLoadingAnimation(false);
         mNavController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
         return mBinding.getRoot();
     }
@@ -81,16 +82,13 @@ public class AuthenticationFragment extends BaseFragment {
                 assert account != null;
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
-                playLoadingAnimation(false, mAnimationView);
+                playLoadingAnimation(false);
                 Toast.makeText(getContext(), R.string.google_auth_failed, Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void initView() {
-        mAnimationView = mBinding.animationViewInclude.animationView;
-        mAnimationView.setAnimation(R.raw.loading_animation);
-        mAnimationView.setVisibility(View.GONE);
+    private void initButtons() {
         mBinding.loginWithFacebook.setOnClickListener(v -> signInWithFacebook());
         mBinding.loginWithGoogle.setOnClickListener(v -> signInWithGoogle());
     }
@@ -108,7 +106,7 @@ public class AuthenticationFragment extends BaseFragment {
     //----------------------------------Google authentication----------------------------
 
     private void signInWithGoogle() {
-        playLoadingAnimation(true, mAnimationView);
+        playLoadingAnimation(true);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -146,7 +144,7 @@ public class AuthenticationFragment extends BaseFragment {
     }
 
     private void signInWithFacebook() {
-        playLoadingAnimation(true, mAnimationView);
+        playLoadingAnimation(true);
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList(getString(R.string.email), getString(R.string.public_profile)));
         LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -156,7 +154,7 @@ public class AuthenticationFragment extends BaseFragment {
 
             @Override
             public void onCancel() {
-                playLoadingAnimation(false, mAnimationView);
+                playLoadingAnimation(false);
                 Toast.makeText(requireContext(), R.string.facebook_auth_canceled, Toast.LENGTH_SHORT).show();
             }
 

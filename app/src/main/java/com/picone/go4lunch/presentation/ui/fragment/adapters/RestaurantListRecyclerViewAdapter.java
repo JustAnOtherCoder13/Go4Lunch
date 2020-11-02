@@ -19,6 +19,7 @@ import com.picone.go4lunch.databinding.RecyclerViewRestaurantItemsBinding;
 
 import java.util.List;
 
+import static com.picone.go4lunch.presentation.utils.ConstantParameter.CLOSED;
 import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.utils.ManageStarUtil.manageStar;
 
@@ -41,13 +42,13 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Restaurant restaurant = mRestaurants.get(position);
-        holder.restaurantBinding.restaurantNameTextView.setText(restaurant.getName());
-        setOpeningHour(holder, restaurant);
-        holder.restaurantBinding.foodStyleAndAddressTextView.setText(restaurant.getAddress());
-        holder.restaurantBinding.distanceTextView.setText(restaurant.getDistance());
+        setRestaurantPhoto(holder, restaurant);
         setInterestedUsers(holder, restaurant);
         setNumberOfStars(holder, restaurant);
-        setRestaurantPhoto(holder, restaurant);
+        setOpeningHour(holder, restaurant);
+        holder.restaurantBinding.restaurantNameTextView.setText(restaurant.getName());
+        holder.restaurantBinding.addressTextView.setText(restaurant.getAddress());
+        holder.restaurantBinding.distanceTextView.setText(restaurant.getDistance());
     }
 
     @Override
@@ -104,7 +105,7 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
 
     private void setOpeningHour(@NonNull ViewHolder holder, Restaurant restaurant) {
         String formatOpeningHour = holder.itemView.getContext().getString(R.string.open_until).concat(restaurant.getOpeningHours());
-        if (restaurant.getOpeningHours().equalsIgnoreCase("Closed")){
+        if (restaurant.getOpeningHours().equalsIgnoreCase(CLOSED)){
             holder.restaurantBinding.openingTimeTextView.setText(R.string.closed);
             holder.restaurantBinding.openingTimeTextView.setTextColor(Color.RED);
         }

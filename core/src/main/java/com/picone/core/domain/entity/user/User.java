@@ -1,10 +1,7 @@
 package com.picone.core.domain.entity.user;
 
-import com.google.firebase.database.IgnoreExtraProperties;
-
 import java.util.List;
 
-@IgnoreExtraProperties
 public class User {
 
     private String uid;
@@ -13,7 +10,6 @@ public class User {
     private String avatar;
     private List<UserDailySchedule> userDailySchedules;
     private SettingValues settingValues;
-
 
     public User() {
     }
@@ -34,7 +30,6 @@ public class User {
     public String getName() {
         return name;
     }
-
 
     public String getEmail() {
         return email;

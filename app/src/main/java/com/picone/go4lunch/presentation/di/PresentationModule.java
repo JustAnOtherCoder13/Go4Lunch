@@ -20,10 +20,7 @@ import dagger.hilt.android.qualifiers.ActivityContext;
 public final class PresentationModule {
 
     @Provides
-    static BaseFragment provideBaseFragment() {
-        return new BaseFragment() {
-        };
-    }
+    static BaseFragment provideBaseFragment() { return new BaseFragment() {}; }
 
     @Provides
     static FirebaseAuth provideFirebaseAuth() {

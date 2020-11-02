@@ -30,7 +30,10 @@ import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import java.util.ArrayList;
 
 import static android.Manifest.permission.CALL_PHONE;
+import static com.picone.go4lunch.presentation.utils.ConstantParameter.CURRENT_HOUR;
+import static com.picone.go4lunch.presentation.utils.ConstantParameter.MAX_RESERVATION_HOUR;
 import static com.picone.go4lunch.presentation.utils.ConstantParameter.REQUEST_CODE;
+import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getUserDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.utils.ManageStarUtil.manageStar;
 
 public class RestaurantDetailFragment extends BaseFragment {
@@ -40,17 +43,12 @@ public class RestaurantDetailFragment extends BaseFragment {
     private ColleagueRecyclerViewAdapter mAdapter;
     private boolean mCallPermission;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentRestaurantDetailBinding.inflate(inflater, container, false);
-        showAppBars(false);
-        setStatusBarTransparent(true);
+        setAppBarVisibility(false);
+        setStatusBarTransparency(true);
         return mBinding.getRoot();
     }
 
@@ -62,43 +60,19 @@ public class RestaurantDetailFragment extends BaseFragment {
     }
 
     private void initButtons(Restaurant selectedRestaurant) {
-       /* if (mRestaurantViewModel.getCurrentUser.getValue() != null
-                && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()) != null
-                && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId()
-                .equals(selectedRestaurant.getPlaceId())
-                || CURRENT_HOUR >= 13
-                || selectedRestaurant.getOpeningHours().equals(getResources().getString(R.string.closed)))
-            mBinding.checkIfSelectedDetailFab.setVisibility(View.GONE);*/
+        setChooseRestaurantFabVisibility(selectedRestaurant);
 
-        mBinding.checkIfSelectedDetailFab.setOnClickListener(v ->
+        mBinding.chooseRestaurantFab.setOnClickListener(v ->
                 mRestaurantViewModel.addUserToRestaurant());
 
-        mBinding.likeDetailImageButton.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-            builder.setTitle(R.string.like_restaurant_question)
-                    .setNegativeButton(R.string.no, null)
-                    .setPositiveButton(R.string.yes, (dialog, which) -> mRestaurantViewModel.updateFanList())
-                    .create()
-                    .show();
-        });
+        mBinding.likeDetailImageButton.setOnClickListener(v ->
+                initLikeAlertDialog());
 
-        mBinding.callNumberDetailImageButton.setOnClickListener(v -> {
-            if (selectedRestaurant.getPhoneNumber() != null) {
-                Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse(getString(R.string.tel).concat(selectedRestaurant.getPhoneNumber().trim())));
-                if (mCallPermission) {
-                    startActivity(callIntent);
-                } else getCallPermission();
-            }
-        });
+        mBinding.callNumberDetailImageButton.setOnClickListener(v ->
+                initCallIntent(selectedRestaurant));
 
-        mBinding.webSiteDetailImageButton.setOnClickListener(v -> {
-            if (selectedRestaurant.getWebsite() != null) {
-                Intent myWebLink = new Intent(android.content.Intent.ACTION_VIEW);
-                myWebLink.setData(Uri.parse(selectedRestaurant.getWebsite()));
-                startActivity(myWebLink);
-            }
-        });
+        mBinding.webSiteDetailImageButton.setOnClickListener(v ->
+                initWebSiteIntent(selectedRestaurant));
     }
 
     private void getCallPermission() {
@@ -113,9 +87,15 @@ public class RestaurantDetailFragment extends BaseFragment {
         }
     }
 
+    private void initRecyclerView() {
+        mAdapter = new ColleagueRecyclerViewAdapter(new ArrayList<>(), TAG);
+        RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        mBinding.recyclerViewRestaurantDetail.setLayoutManager(linearLayoutManager);
+        mBinding.recyclerViewRestaurantDetail.setAdapter(mAdapter);
+    }
+
     private void initView() {
-        mRestaurantViewModel.isDataLoading.observe(getViewLifecycleOwner(), isDataLoading ->
-                playLoadingAnimation(isDataLoading, mBinding.animationViewInclude.animationView));
+        mRestaurantViewModel.isDataLoading.observe(getViewLifecycleOwner(), this::playLoadingAnimation);
 
         mRestaurantViewModel.getInterestedUsersForRestaurant.observe(getViewLifecycleOwner(), users ->
                 mAdapter.updateUsers(users));
@@ -131,8 +111,8 @@ public class RestaurantDetailFragment extends BaseFragment {
                     mRestaurantViewModel.setLikeCounter(restaurant.getFanList().size());
                 else mRestaurantViewModel.setLikeCounter(0);
                 mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
-                mBinding.foodStyleAndAddressDetailTextView.setText(restaurant.getAddress());
-                setLikeView(restaurant);
+                mBinding.addressDetailTextView.setText(restaurant.getAddress());
+                initLike(restaurant);
                 setPhoto(restaurant);
             }
         });
@@ -172,17 +152,47 @@ public class RestaurantDetailFragment extends BaseFragment {
                 });
     }
 
-    private void setLikeView(Restaurant restaurant) {
+    private void initLike(Restaurant restaurant) {
         int numberOfLike = 0;
         if (restaurant.getFanList() != null && !restaurant.getFanList().isEmpty())
             numberOfLike = restaurant.getFanList().size();
         manageStar(mBinding.opinionStarDetailImageView, numberOfLike);
     }
 
-    private void initRecyclerView() {
-        mAdapter = new ColleagueRecyclerViewAdapter(new ArrayList<>(), TAG);
-        RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        mBinding.recyclerViewRestaurantDetail.setLayoutManager(linearLayoutManager);
-        mBinding.recyclerViewRestaurantDetail.setAdapter(mAdapter);
+    private void initWebSiteIntent(Restaurant selectedRestaurant) {
+        if (selectedRestaurant.getWebsite() != null) {
+            Intent myWebLink = new Intent(Intent.ACTION_VIEW);
+            myWebLink.setData(Uri.parse(selectedRestaurant.getWebsite()));
+            startActivity(myWebLink);
+        }
+    }
+
+    private void initCallIntent(Restaurant selectedRestaurant) {
+        if (selectedRestaurant.getPhoneNumber() != null) {
+            Intent callIntent = new Intent(Intent.ACTION_CALL);
+            callIntent.setData(Uri.parse(getString(R.string.tel).concat(selectedRestaurant.getPhoneNumber().trim())));
+            if (mCallPermission) {
+                startActivity(callIntent);
+            } else getCallPermission();
+        }
+    }
+
+    private void initLikeAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle(R.string.like_restaurant_question)
+                .setNegativeButton(R.string.no, null)
+                .setPositiveButton(R.string.yes, (dialog, which) -> mRestaurantViewModel.updateFanList())
+                .create()
+                .show();
+    }
+
+    private void setChooseRestaurantFabVisibility(Restaurant selectedRestaurant) {
+        if (mRestaurantViewModel.getCurrentUser.getValue() != null
+                && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()) != null
+                && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId()
+                .equals(selectedRestaurant.getPlaceId())
+                || CURRENT_HOUR >= MAX_RESERVATION_HOUR
+                || selectedRestaurant.getOpeningHours().equals(getResources().getString(R.string.closed)))
+            mBinding.chooseRestaurantFab.setVisibility(View.GONE);
     }
 }

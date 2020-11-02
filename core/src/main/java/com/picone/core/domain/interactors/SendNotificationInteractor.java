@@ -16,19 +16,13 @@ public class SendNotificationInteractor {
         this.restaurantDataSource = restaurantDataSource;
     }
 
-    public Observable<JsonObject> sendNotification(String token, String message) {
-        // compose notification json payload
+    public Observable<JsonObject> sendNotification(String token, String title, String message) {
         JsonObject payload = new JsonObject();
         payload.addProperty("to", token);
-
-        // compose data payload here
         JsonObject data = new JsonObject();
-        data.addProperty("title", "Today's Lunch");
+        data.addProperty("title", title);
         data.addProperty("message", message);
-        // add data payload
         payload.add("data", data);
         return restaurantDataSource.sendNotification(payload);
     }
-
-
 }

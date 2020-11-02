@@ -50,6 +50,4 @@ public class FetchRestaurantDetailFromPlaceInteractor {
             weekDayTextValue = 1;
         return weekDayTextValue;
     }
-
-
 }

@@ -19,7 +19,7 @@
          />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/check_if_selected_detail_fab"
+        android:id="@+id/choose_restaurant_fab"
         style="@style/fab_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,13 +38,13 @@
             style="@style/restaurant_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/food_style_and_address_detail_text_view"
+            app:layout_constraintBottom_toTopOf="@id/address_detail_text_view"
             app:layout_constraintEnd_toStartOf="@id/star_constraint"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/food_style_and_address_detail_text_view"
+            android:id="@+id/address_detail_text_view"
             style="@style/food_and_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -150,8 +150,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/separator" />
 
-    <include
-        android:id="@+id/animation_view_include"
-        layout="@layout/lottie_loader_animation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

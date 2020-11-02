@@ -17,14 +17,11 @@ import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.picone.go4lunch.databinding.ActivityMainBinding;
 import com.picone.go4lunch.databinding.DrawerMenuHeaderLayoutBinding;
 import com.picone.go4lunch.presentation.viewModels.ChatViewModel;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
-
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -48,12 +45,14 @@ public abstract class BaseFragment extends Fragment {
 
     protected LottieAnimationView mAnimationView;
 
+    private MainActivity mainActivity;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initViewModels();
+        mainActivity = (MainActivity) getActivity();
     }
 
     //Current user can't be null cause set when enter app
@@ -69,35 +68,26 @@ public abstract class BaseFragment extends Fragment {
 
     }
 
-    protected void showAppBars(boolean isVisible) {
-        MainActivity mainActivity = (MainActivity) getActivity();
-        assert mainActivity != null;
+    protected void setAppBarVisibility(boolean isVisible) {
         mainActivity.setMenuVisibility(isVisible);
     }
 
-    protected void setStatusBarTransparent(boolean isTransparent){
-        MainActivity mainActivity = (MainActivity) getActivity();
-        assert mainActivity != null;
+    protected void setStatusBarTransparency(boolean isTransparent) {
         mainActivity.setStatusBarTransparency(isTransparent);
     }
 
-    protected void hideSettingView(){
-        MainActivity mainActivity = (MainActivity) getActivity();
-        assert mainActivity != null;
+    protected void setSettingViewVisibility() {
         mainActivity.setSettingsVisibility(false);
     }
 
-    protected void playLoadingAnimation(boolean bol, LottieAnimationView mAnimationView) {
-        this.mAnimationView = mAnimationView;
-        if (bol) {
-            mAnimationView.setVisibility(View.VISIBLE);
-            mAnimationView.playAnimation();
-        } else {
-            if (mAnimationView != null) {
-                mAnimationView.setVisibility(View.GONE);
-                mAnimationView.pauseAnimation();
-            }
-        }
+    @SuppressWarnings("ConstantConditions")
+    protected void setPageTitle(int title) {
+        mainActivity.getSupportActionBar().setTitle(title);
+    }
+
+    protected void playLoadingAnimation(boolean bol) {
+        mainActivity.playLoadingAnimation(bol);
+        mAnimationView = mainActivity.mAnimationView;
     }
 
     private void initViewModels() {
@@ -107,19 +97,8 @@ public abstract class BaseFragment extends Fragment {
         mChatViewModel = new ViewModelProvider(requireActivity()).get(ChatViewModel.class);
     }
 
-    protected void setPageTitle(int title){
-        MainActivity mainActivity = (MainActivity) getActivity();
-        assert mainActivity != null;
-        Objects.requireNonNull(mainActivity.getSupportActionBar()).setTitle(title);
-
-    }
-
     private void populateDrawerMenu(FirebaseUser currentUser) {
-
-        MainActivity mainActivity = (MainActivity) getActivity();
-        assert mainActivity != null : "main activity don't exist when try to populate drawer menu";
-        ActivityMainBinding mBinding = mainActivity.mBinding;
-        View hView = mBinding.navView.getHeaderView(0);
+        View hView = mainActivity.mBinding.navView.getHeaderView(0);
         DrawerMenuHeaderLayoutBinding headerLayoutBinding = DrawerMenuHeaderLayoutBinding.bind(hView);
         headerLayoutBinding.drawerUserName.setText(currentUser.getDisplayName());
         headerLayoutBinding.drawerUserMail.setText(currentUser.getEmail());
@@ -139,5 +118,3 @@ public abstract class BaseFragment extends Fragment {
                 });
     }
 }
-
-

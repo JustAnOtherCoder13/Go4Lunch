@@ -18,7 +18,7 @@ public class GetCurrentUserForEmailInteractor {
         this.userDataSource = userDataSource;
     }
 
-    public Observable<List<User>> getCurrentUserForEmail (String authUserEmail){
+    public Observable<List<User>> getCurrentUserForEmail(String authUserEmail){
         return userDataSource.getCurrentUserForEmail(authUserEmail);
     }
 }

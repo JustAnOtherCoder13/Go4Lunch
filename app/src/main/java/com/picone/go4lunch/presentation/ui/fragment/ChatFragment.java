@@ -21,7 +21,6 @@ import java.util.Objects;
 
 import static com.picone.go4lunch.presentation.utils.ConstantParameter.TODAY;
 
-
 public class ChatFragment extends BaseFragment {
 
     private FragmentChatBinding mBinding;
@@ -31,11 +30,10 @@ public class ChatFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mBinding = FragmentChatBinding.inflate(inflater, container, false);
-        showAppBars(false);
-        setStatusBarTransparent(false);
+        setAppBarVisibility(false);
+        setStatusBarTransparency(false);
         return mBinding.getRoot();
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -43,10 +41,9 @@ public class ChatFragment extends BaseFragment {
         initRecyclerView();
         mBinding.postMessageFab.setOnClickListener(v -> {
             User user = mRestaurantViewModel.getCurrentUser.getValue();
-            if (!mBinding.chatEditText.getText().toString().trim().isEmpty()) {
-                assert user != null;
+            if (!mBinding.chatEditText.getText().toString().trim().isEmpty() && user != null)
                 mChatViewModel.postMessage(new ChatMessage(TODAY, user.getAvatar(), user.getName(), mBinding.chatEditText.getText().toString(), user.getUid()));
-            }
+
             mBinding.chatEditText.getText().clear();
         });
         mBinding.chatEditText.setOnClickListener(v ->
