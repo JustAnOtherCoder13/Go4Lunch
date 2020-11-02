@@ -20,7 +20,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.picone.go4lunch.presentation.utils.ConstantParameter.SETTING_START_VALUE;
 
-public class UserViewModel extends ViewModel {
+public class UserViewModel extends BaseViewModel {
 
     public enum UserCompletionState {
         START_STATE,
@@ -68,7 +68,7 @@ public class UserViewModel extends ViewModel {
         getAllUsersInteractor.getAllUsers()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(users -> allUsersMutableLiveData.setValue(users));
+                .subscribe(users -> allUsersMutableLiveData.setValue(users), this::checkException);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -78,15 +78,19 @@ public class UserViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> UserCompletionStateMutableLiveData.setValue(UserCompletionState.ON_COMPLETE)
-                        , throwable -> UserCompletionStateMutableLiveData.setValue(UserCompletionState.ON_ERROR)
-                );
+                        , throwable -> {
+                            UserCompletionStateMutableLiveData.setValue(UserCompletionState.ON_ERROR);
+                            checkException(throwable);
+                        });
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
     public void updateUserSettingValues(User currentUser, SettingValues settingValues) {
         currentUser.setSettingValues(settingValues);
         updateUserInteractor.updateUser(currentUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .subscribe(()->{}, this::checkException);
     }
 }

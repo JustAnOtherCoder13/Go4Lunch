@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +33,7 @@ import com.picone.core.domain.entity.user.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
 import com.picone.go4lunch.presentation.utils.CustomAdapter;
+import com.picone.go4lunch.presentation.utils.ErrorHandler;
 import com.picone.go4lunch.presentation.utils.LocaleHelper;
 import com.picone.go4lunch.presentation.utils.SearchViewHelper;
 import com.picone.go4lunch.presentation.viewModels.ChatViewModel;
@@ -69,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     private ChatViewModel mChatViewModel;
     private NavController mNavController;
     private SearchViewHelper searchViewHelper;
+    private ErrorHandler errorHandler;
     public LottieAnimationView mAnimationView;
 
     //TODO delete google key from repo
@@ -80,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(mBinding.getRoot());
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
         searchViewHelper = new SearchViewHelper(this, mRestaurantViewModel, mUserViewModel);
+        errorHandler = new ErrorHandler();
         initLoadingAnimation();
         setSettingsVisibility(false);
         initToolBar();
@@ -112,6 +116,13 @@ public class MainActivity extends AppCompatActivity {
 
             mRestaurantViewModel.getAllFilteredUsers.observe(this, users ->
                     mUserViewModel.setAllUsersMutableLiveData(users));
+
+            mRestaurantViewModel.getErrorState.observe(this, error_state -> {
+                if (error_state.equals(ErrorHandler.ERROR_STATE.NO_CONNEXION_ERROR)) {
+                    errorHandler.onConnexionError(this);
+                    playLoadingAnimation(false);
+                }
+            });
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
     }
@@ -311,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
 
     //--------------------------------- HELPERS ------------------------------------------
 
-    private void initNotificationMessage(Restaurant restaurant){
+    private void initNotificationMessage(Restaurant restaurant) {
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
             if (restaurant != null
                     && restaurant.getRestaurantDailySchedules() != null
@@ -325,10 +336,11 @@ public class MainActivity extends AppCompatActivity {
                         userToPass.remove(user);
 
                 mRestaurantViewModel.sendNotification(task.getResult(),
-                        getString(R.string.today_lunch),createMessage(restaurant.getName(), restaurant.getAddress(), UserListToString(userToPass)));
+                        getString(R.string.today_lunch), createMessage(restaurant.getName(), restaurant.getAddress(), UserListToString(userToPass)));
             }
         });
     }
+
     private String createMessage(String restaurantName, String restaurantAddress, String interestedUsers) {
         return (getString(R.string.notification_you_are_eating) + restaurantName + getString(R.string.notification_at) + restaurantAddress + getString(R.string.notification_with) + interestedUsers);
     }
