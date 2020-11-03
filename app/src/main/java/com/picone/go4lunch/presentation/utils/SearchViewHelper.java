@@ -78,7 +78,7 @@ public class SearchViewHelper {
     }
 
     private SearchView.OnQueryTextListener getOnQueryTextListener() {
-        List<User> allUsers = mUserViewModel.getAllUsers.getValue();
+        List<User> allUsers = mUserViewModel.getAllUsers().getValue();
         return new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

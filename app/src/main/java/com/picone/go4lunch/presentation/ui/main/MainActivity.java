@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
         mLoginViewModel.authenticate(true);
         mUserViewModel.setAllDbUsers();
         mRestaurantViewModel.setAllDbRestaurants();
-        mUserViewModel.getAllUsers.observe(this, users ->
+        mUserViewModel.getAllUsers().observe(this, users ->
                 mRestaurantViewModel.setCurrentUser(Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getEmail()));
         mRestaurantViewModel.getAllDbRestaurants.observe(this, restaurants ->
                 mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(null));

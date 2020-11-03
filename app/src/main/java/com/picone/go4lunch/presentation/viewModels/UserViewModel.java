@@ -47,7 +47,7 @@ public class UserViewModel extends BaseViewModel {
         //setAllDbUsers();
     }
 
-    public LiveData<List<User>> getAllUsers = allUsersMutableLiveData;
+    public LiveData<List<User>> getAllUsers() {return allUsersMutableLiveData;}
     public LiveData<User> getCurrentUser = userMutableLiveData;
     public LiveData<UserCompletionState> getAddUserState = UserCompletionStateMutableLiveData;
 

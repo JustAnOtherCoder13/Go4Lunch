@@ -53,7 +53,7 @@ public class WorkmatesFragment extends BaseFragment {
         ColleagueRecyclerViewAdapter adapter = new ColleagueRecyclerViewAdapter(mUsers, TAG);
         mBinding.recyclerViewWorkmatesFragment.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.recyclerViewWorkmatesFragment.setAdapter(adapter);
-        mUserViewModel.getAllUsers.observe(getViewLifecycleOwner(), adapter::updateUsers);
+        mUserViewModel.getAllUsers().observe(getViewLifecycleOwner(), adapter::updateUsers);
     }
 
     //getAllUsers can't be null cause set in main
@@ -61,8 +61,8 @@ public class WorkmatesFragment extends BaseFragment {
     public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewWorkmatesFragment, R.layout.fragment_restaurant_list)
                 .setOnItemClickListener((recyclerView, position, v) -> {
-                    if (!mUserViewModel.getAllUsers.getValue().isEmpty() && mUserViewModel.getAllUsers.getValue().get(position).getUserDailySchedules() != null && getUserDailyScheduleOnToday(mUserViewModel.getAllUsers.getValue().get(position).getUserDailySchedules()) != null) {
-                        mRestaurantViewModel.setInterestedUsersForRestaurant(getUserDailyScheduleOnToday(mUserViewModel.getAllUsers.getValue().get(position).getUserDailySchedules()).getRestaurantPlaceId());
+                    if (!mUserViewModel.getAllUsers().getValue().isEmpty() && mUserViewModel.getAllUsers().getValue().get(position).getUserDailySchedules() != null && getUserDailyScheduleOnToday(mUserViewModel.getAllUsers().getValue().get(position).getUserDailySchedules()) != null) {
+                        mRestaurantViewModel.setInterestedUsersForRestaurant(getUserDailyScheduleOnToday(mUserViewModel.getAllUsers().getValue().get(position).getUserDailySchedules()).getRestaurantPlaceId());
                     }
                 });
     }

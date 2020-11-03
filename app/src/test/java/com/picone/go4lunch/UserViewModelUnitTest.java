@@ -1,6 +1,8 @@
 package com.picone.go4lunch;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.picone.core.data.repository.user.UserDaoImpl;
@@ -9,7 +11,6 @@ import com.picone.core.domain.entity.user.User;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
 import com.picone.core.domain.interactors.usersInteractors.UpdateUserInteractor;
-import com.picone.go4lunch.presentation.ui.main.MainActivity;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
 import org.junit.Before;
@@ -17,7 +18,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
@@ -29,7 +29,6 @@ import io.reactivex.Observable;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class UserViewModelUnitTest {
@@ -42,24 +41,19 @@ public class UserViewModelUnitTest {
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
-    @Rule public MockitoRule rule = MockitoJUnit.rule();
+    //@Rule public MockitoRule rule = MockitoJUnit.rule();
     /*@Rule
     public ImmediateRxSchedulersOverrideRule immediateRxSchedulersOverrideRule = new ImmediateRxSchedulersOverrideRule();*/
+
+    @InjectMocks
+    UserViewModel userViewModel;
 
     @Mock
     AddUserInteractor addUserInteractor;
     @Mock
     UpdateUserInteractor updateUserInteractor;
-
     @Mock
     GetAllUsersInteractor getAllUsersInteractor;
-
-    @Mock
-    UserDaoImpl userDao;
-
-    @InjectMocks
-    UserViewModel userViewModel;
-
     @Mock
     Observer<List<User>> userObserver;
 
@@ -67,11 +61,7 @@ public class UserViewModelUnitTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        GetAllUsersInteractor getAllUsersInteractor = Mockito.mock(GetAllUsersInteractor.class);
-        AddUserInteractor addUserInteractor = Mockito.mock(AddUserInteractor.class);
-        UpdateUserInteractor updateUserInteractor = Mockito.mock(UpdateUserInteractor.class);
-        userViewModel = new UserViewModel(getAllUsersInteractor, addUserInteractor, updateUserInteractor);
-        userViewModel.getAllUsers.observeForever(userObserver);
+        userViewModel.getAllUsers().observeForever(userObserver);
     }
 
     @Test
@@ -80,8 +70,8 @@ public class UserViewModelUnitTest {
         assertNotNull(userViewModel.getAllUsersInteractor);
         assertNotNull(userViewModel.addUserInteractor);
         assertNotNull(userViewModel.updateUserInteractor);
-        assertNotNull(userViewModel.getAllUsers);
-        assertTrue(userViewModel.getAllUsers.hasObservers());
+        assertNotNull(userViewModel.getAllUsers());
+        assertTrue(userViewModel.getAllUsers().hasObservers());
     }
     @Test
     public void setGetAllUsersInteractor() {
@@ -90,12 +80,12 @@ public class UserViewModelUnitTest {
         List<User> allUsers2 = new ArrayList<>();
         allUsers2.add(user);
 
-       when(userDao.getAllUsers()).thenReturn(Observable.just(
-                allUsers2
-        ));
+        MutableLiveData<List<User>> users = new MutableLiveData<>();
+        users.setValue(allUsers2);
+        LiveData<List<User>> getAllUsers = users;
+        when(userViewModel.getAllUsersInteractor.getAllUsers()).thenReturn(Observable.create(emitter -> emitter.onNext(getAllUsers.getValue())));
 
-
-       userViewModel.setAllDbUsers();
+       assertNotNull(userViewModel.getAllUsers());
 
         /* userViewModel.getAllUsers.getValue().add(user);
 
