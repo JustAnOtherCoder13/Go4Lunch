@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -71,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
     private ChatViewModel mChatViewModel;
     private NavController mNavController;
     private SearchViewHelper searchViewHelper;
-    private ErrorHandler errorHandler;
     public LottieAnimationView mAnimationView;
 
     //TODO delete google key from repo
@@ -81,13 +79,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
+        initViewModel();
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
         searchViewHelper = new SearchViewHelper(this, mRestaurantViewModel, mUserViewModel);
-        errorHandler = new ErrorHandler();
         initLoadingAnimation();
         setSettingsVisibility(false);
         initToolBar();
-        initViewModel();
         initMenuButton();
         initInComingNavigation();
         initNavigation();
@@ -95,10 +92,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void initToolBar() {
         setSupportActionBar(mBinding.topNavBar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_icon);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        setToolBarIconsVisibility(true);
+        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_menu_icon);
         getSupportActionBar().setTitle(R.string.i_am_hungry_title);
+    }
+
+    public void setToolBarIconsVisibility(boolean isVisible){
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(isVisible);
+        getSupportActionBar().setDisplayShowHomeEnabled(isVisible);
     }
 
     @Override
@@ -119,8 +120,8 @@ public class MainActivity extends AppCompatActivity {
 
             mRestaurantViewModel.getErrorState.observe(this, error_state -> {
                 //todo Toast here
-                if (error_state.equals(ErrorHandler.ERROR_STATE.NO_CONNEXION_ERROR)) {
-                    errorHandler.onConnexionError(this);
+                if (error_state.equals(ErrorHandler.ON_ERROR)) {
+                    Toast.makeText(this,ErrorHandler.ON_ERROR.label,Toast.LENGTH_LONG).show();
                     playLoadingAnimation(false);
                 }
             });

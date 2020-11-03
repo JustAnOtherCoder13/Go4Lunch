@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.picone.core.domain.entity.user.SettingValues;
 import com.picone.core.domain.entity.user.User;
@@ -68,7 +67,7 @@ public class UserViewModel extends BaseViewModel {
         getAllUsersInteractor.getAllUsers()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(users -> allUsersMutableLiveData.setValue(users), this::checkException);
+                .subscribe(users -> allUsersMutableLiveData.setValue(users), throwable -> checkException());
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -80,7 +79,7 @@ public class UserViewModel extends BaseViewModel {
                 .subscribe(() -> UserCompletionStateMutableLiveData.setValue(UserCompletionState.ON_COMPLETE)
                         , throwable -> {
                             UserCompletionStateMutableLiveData.setValue(UserCompletionState.ON_ERROR);
-                            checkException(throwable);
+                            checkException();
                         });
     }
 
@@ -91,6 +90,6 @@ public class UserViewModel extends BaseViewModel {
         updateUserInteractor.updateUser(currentUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(()->{}, this::checkException);
+                .subscribe(()->{},throwable -> checkException());
     }
 }

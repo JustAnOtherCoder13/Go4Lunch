@@ -41,7 +41,7 @@ public class ChatViewModel extends BaseViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(chatMessages ->
-                        chatMessageMutableLiveData.setValue(chatMessages), this::checkException);
+                        chatMessageMutableLiveData.setValue(chatMessages),throwable -> checkException());
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -50,6 +50,6 @@ public class ChatViewModel extends BaseViewModel {
         postMessageInteractor.postMessage(chatMessage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(()->{},this::checkException);
+                .subscribe(()->{},throwable -> checkException());
     }
 }
