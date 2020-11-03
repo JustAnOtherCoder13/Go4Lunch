@@ -32,6 +32,7 @@ import com.picone.core.domain.entity.user.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
 import com.picone.go4lunch.presentation.utils.CustomAdapter;
+import com.picone.go4lunch.presentation.utils.ErrorHandler;
 import com.picone.go4lunch.presentation.utils.LocaleHelper;
 import com.picone.go4lunch.presentation.utils.SearchViewHelper;
 import com.picone.go4lunch.presentation.viewModels.ChatViewModel;
@@ -78,12 +79,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
+        initViewModel();
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
         searchViewHelper = new SearchViewHelper(this, mRestaurantViewModel, mUserViewModel);
         initLoadingAnimation();
         setSettingsVisibility(false);
         initToolBar();
-        initViewModel();
         initMenuButton();
         initInComingNavigation();
         initNavigation();
@@ -91,10 +92,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void initToolBar() {
         setSupportActionBar(mBinding.topNavBar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_icon);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        setToolBarIconsVisibility(true);
+        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_menu_icon);
         getSupportActionBar().setTitle(R.string.i_am_hungry_title);
+    }
+
+    public void setToolBarIconsVisibility(boolean isVisible){
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(isVisible);
+        getSupportActionBar().setDisplayShowHomeEnabled(isVisible);
     }
 
     @Override
@@ -112,6 +117,14 @@ public class MainActivity extends AppCompatActivity {
 
             mRestaurantViewModel.getAllFilteredUsers.observe(this, users ->
                     mUserViewModel.setAllUsersMutableLiveData(users));
+
+            mRestaurantViewModel.getErrorState.observe(this, error_state -> {
+                //todo Toast here
+                if (error_state.equals(ErrorHandler.ON_ERROR)) {
+                    Toast.makeText(this,ErrorHandler.ON_ERROR.label,Toast.LENGTH_LONG).show();
+                    playLoadingAnimation(false);
+                }
+            });
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
     }
@@ -311,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
 
     //--------------------------------- HELPERS ------------------------------------------
 
-    private void initNotificationMessage(Restaurant restaurant){
+    private void initNotificationMessage(Restaurant restaurant) {
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
             if (restaurant != null
                     && restaurant.getRestaurantDailySchedules() != null
@@ -325,10 +338,11 @@ public class MainActivity extends AppCompatActivity {
                         userToPass.remove(user);
 
                 mRestaurantViewModel.sendNotification(task.getResult(),
-                        getString(R.string.today_lunch),createMessage(restaurant.getName(), restaurant.getAddress(), UserListToString(userToPass)));
+                        getString(R.string.today_lunch), createMessage(restaurant.getName(), restaurant.getAddress(), UserListToString(userToPass)));
             }
         });
     }
+
     private String createMessage(String restaurantName, String restaurantAddress, String interestedUsers) {
         return (getString(R.string.notification_you_are_eating) + restaurantName + getString(R.string.notification_at) + restaurantAddress + getString(R.string.notification_with) + interestedUsers);
     }

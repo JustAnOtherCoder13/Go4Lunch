@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.picone.core.domain.entity.predictionPOJO.Prediction;
 import com.picone.core.domain.entity.restaurant.Restaurant;
@@ -38,7 +37,7 @@ import static com.picone.go4lunch.presentation.utils.ConstantParameter.TODAY;
 import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getUserDailyScheduleOnToday;
 
-public class RestaurantViewModel extends ViewModel {
+public class RestaurantViewModel extends BaseViewModel {
 
     private MutableLiveData<User> currentUserMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Restaurant> selectedRestaurantMutableLiveData = new MutableLiveData<>();
@@ -123,7 +122,8 @@ public class RestaurantViewModel extends ViewModel {
         getAllPersistedRestaurantsInteractor.getAllPersistedRestaurants()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(restaurants -> allDbRestaurantsMutableLiveData.setValue(restaurants));
+                .subscribe(restaurants -> allDbRestaurantsMutableLiveData.setValue(restaurants),
+                        throwable -> checkException());
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -132,7 +132,8 @@ public class RestaurantViewModel extends ViewModel {
         getCurrentUserForEmailInteractor.getCurrentUserForEmail(authUserEmail)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(currentUsers -> currentUserMutableLiveData.setValue(currentUsers.get(0)));
+                .subscribe(currentUsers -> currentUserMutableLiveData.setValue(currentUsers.get(0)),
+                        throwable -> checkException());
     }
 
     @SuppressLint("CheckResult")
@@ -147,6 +148,7 @@ public class RestaurantViewModel extends ViewModel {
         }
     }
 
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void setAllRestaurantFromMaps(boolean isReset) {
@@ -156,8 +158,10 @@ public class RestaurantViewModel extends ViewModel {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .flatMap(this::fetchPlaceDetail)
-                    .subscribe(this::updateAllRestaurantsWithPersistedValues);
+                    .subscribe(this::updateAllRestaurantsWithPersistedValues,
+                            throwable -> checkException());
     }
+
 
     //--------------------------------------------MAPS DETAIL----------------------------------------------
 
@@ -171,7 +175,7 @@ public class RestaurantViewModel extends ViewModel {
                         .flatMap(restaurantWithDetailAdded -> fetchPlaceDistance(locationMutableLiveData.getValue(), nearBySearchRestaurant))
                         .flatMap(restaurantWithDistanceAdded -> Observable.create((ObservableOnSubscribe<List<Restaurant>>)
                                 emitter1 -> emitter1.onNext(nearBySearchRestaurants)))
-                        .subscribe(emitter::onNext);
+                        .subscribe(emitter::onNext, throwable -> checkException());
         });
     }
 
@@ -214,9 +218,8 @@ public class RestaurantViewModel extends ViewModel {
                     }
                     allRestaurantsMutableLiveData.setValue(filteredRestaurant);
                     filteredUsersMutableLiveData.setValue(filteredUsers);
-                });
+                },throwable -> checkException());
     }
-
 
 
     @SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
@@ -234,18 +237,21 @@ public class RestaurantViewModel extends ViewModel {
             addRestaurantInteractor.addRestaurant(FirstChoiceRestaurantWithUserRemoved())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(() -> updateRestaurantDailySchedule(selectedRestaurant));
+                    .subscribe(() -> updateRestaurantDailySchedule(selectedRestaurant), throwable -> checkException());
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
-    public void sendNotification(String token,String title, String message) {
-        sendNotificationInteractor.sendNotification(token,title, message)
+    public void sendNotification(String token, String title, String message) {
+        sendNotificationInteractor.sendNotification(token, title, message)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .subscribe(o ->{ }, throwable -> checkException());
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
     public void cancelReservation() {
         User currentUser = currentUserMutableLiveData.getValue();
         assert currentUser != null;
@@ -262,7 +268,7 @@ public class RestaurantViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .andThen(updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(currentUser))
-                .subscribe();
+                .subscribe(()->{},throwable -> checkException());
     }
 
     //---------------------------------------------UPDATE----------------------------------------------
@@ -282,7 +288,7 @@ public class RestaurantViewModel extends ViewModel {
         addRestaurantInteractor.addRestaurant(selectedRestaurant)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::updateUserDailySchedule);
+                .subscribe(this::updateUserDailySchedule,throwable -> checkException());
     }
 
 
@@ -302,9 +308,7 @@ public class RestaurantViewModel extends ViewModel {
                 .doFinally(() -> isDataLoadingMutableLiveData.setValue(false))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> {
-                }, throwable -> {
-                });
+                .subscribe(() -> {},throwable -> checkException());
     }
 
     @SuppressLint("CheckResult")
@@ -343,17 +347,17 @@ public class RestaurantViewModel extends ViewModel {
         addRestaurantInteractor.addRestaurant(restaurant)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> likeCounter.setValue(restaurant.getFanList().size()));
+                .subscribe(() -> likeCounter.setValue(restaurant.getFanList().size()),throwable -> checkException());
     }
 
     //---------------------------------------------HELPER----------------------------------------------
 
-    private User getCurrentUserInfoForUid(List<User> userInfos) {
+    private User getCurrentUserInfoForUid(List<User> allUsers) {
         User userToReturn = null;
-        if (userInfos != null)
-            for (User userInfo : userInfos)
-                if (userInfo.getUid().equals(Objects.requireNonNull(currentUserMutableLiveData.getValue()).getUid()))
-                    userToReturn = userInfo;
+        if (allUsers != null)
+            for (User user : allUsers)
+                if (user.getUid().equals(Objects.requireNonNull(currentUserMutableLiveData.getValue()).getUid()))
+                    userToReturn = user;
         return userToReturn;
     }
 
@@ -386,4 +390,6 @@ public class RestaurantViewModel extends ViewModel {
             restaurant.getRestaurantDailySchedules().remove(restaurantDailySchedule);
         return restaurant;
     }
+
+
 }

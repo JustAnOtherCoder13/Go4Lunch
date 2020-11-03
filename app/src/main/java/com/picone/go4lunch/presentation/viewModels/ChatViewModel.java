@@ -1,22 +1,25 @@
 package com.picone.go4lunch.presentation.viewModels;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.bumptech.glide.load.HttpException;
 import com.picone.core.domain.entity.ChatMessage;
 import com.picone.core.domain.interactors.chatInteractors.GetAllMessagesInteractor;
 import com.picone.core.domain.interactors.chatInteractors.PostMessageInteractor;
 
+import java.io.IOException;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class ChatViewModel extends ViewModel {
+public class ChatViewModel extends BaseViewModel {
 
     private MutableLiveData<List<ChatMessage>> chatMessageMutableLiveData = new MutableLiveData<>();
 
@@ -38,13 +41,15 @@ public class ChatViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(chatMessages ->
-                        chatMessageMutableLiveData.setValue(chatMessages));
+                        chatMessageMutableLiveData.setValue(chatMessages),throwable -> checkException());
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
     public void postMessage(ChatMessage chatMessage) {
         postMessageInteractor.postMessage(chatMessage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .subscribe(()->{},throwable -> checkException());
     }
 }

@@ -3,6 +3,7 @@ package com.picone.go4lunch.presentation.utils;
 import android.app.SearchManager;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -62,6 +63,7 @@ public class SearchViewHelper {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 searchView.setOnQueryTextListener(getOnQueryTextListener());
+                mainActivity.setToolBarIconsVisibility(false);
                 return true;
             }
 
@@ -69,6 +71,7 @@ public class SearchViewHelper {
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 mRestaurantViewModel.setAllRestaurantFromMaps(true);
                 mUserViewModel.setAllDbUsers();
+                mainActivity.setToolBarIconsVisibility(true);
                 return true;
             }
         };

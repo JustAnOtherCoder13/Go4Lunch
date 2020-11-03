@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.picone.core.domain.entity.user.SettingValues;
 import com.picone.core.domain.entity.user.User;
@@ -21,7 +20,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.picone.go4lunch.presentation.utils.ConstantParameter.SETTING_START_VALUE;
 
-public class UserViewModel extends ViewModel {
+public class UserViewModel extends BaseViewModel {
 
     public enum UserCompletionState {
         START_STATE,
@@ -70,7 +69,7 @@ public class UserViewModel extends ViewModel {
         getAllUsersInteractor.getAllUsers()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(users -> allUsersMutableLiveData.setValue(users));
+                .subscribe(users -> allUsersMutableLiveData.setValue(users), throwable -> checkException());
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -80,16 +79,20 @@ public class UserViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> UserCompletionStateMutableLiveData.setValue(UserCompletionState.ON_COMPLETE)
-                        , throwable -> UserCompletionStateMutableLiveData.setValue(UserCompletionState.ON_ERROR)
-                );
+                        , throwable -> {
+                            UserCompletionStateMutableLiveData.setValue(UserCompletionState.ON_ERROR);
+                            checkException();
+                        });
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
     public void updateUserSettingValues(User currentUser, SettingValues settingValues) {
         currentUser.setSettingValues(settingValues);
         updateUserInteractor.updateUser(currentUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .subscribe(()->{},throwable -> checkException());
     }
 
     public Scheduler getSchedulerIo() {
