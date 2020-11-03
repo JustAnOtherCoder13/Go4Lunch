@@ -34,7 +34,7 @@ public class UserViewModel extends BaseViewModel {
 
     public AddUserInteractor addUserInteractor;
     public GetAllUsersInteractor getAllUsersInteractor;
-    private UpdateUserInteractor updateUserInteractor;
+    public UpdateUserInteractor updateUserInteractor;
 
 
     //suppress warning is safe cause subscribe is used to set allUsersMutableLiveData
