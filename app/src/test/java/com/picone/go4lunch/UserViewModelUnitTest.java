@@ -1,11 +1,8 @@
 package com.picone.go4lunch;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
-import com.google.firebase.database.FirebaseDatabase;
 import com.picone.core.data.repository.user.UserDaoImpl;
 import com.picone.core.data.repository.user.UserRepository;
 import com.picone.core.domain.entity.user.SettingValues;
@@ -19,22 +16,21 @@ import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
-import io.reactivex.observers.TestObserver;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.picone.go4lunch.presentation.utils.ConstantParameter.SETTING_START_VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -43,31 +39,35 @@ public class UserViewModelUnitTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
-    UserViewModel userViewModel;
+    private UserViewModel userViewModel;
 
-    @Mock
-    AddUserInteractor addUserInteractor;
-    @Mock
-    UpdateUserInteractor updateUserInteractor;
+    private SchedulerProvider schedulerProvider = new SchedulerProvider(Schedulers.trampoline(), Schedulers.trampoline());
+    private User user = new User("", "Marc", "", "", new ArrayList<>(), new SettingValues());
 
-    @Mock
-    Observer<List<User>> userObserver;
-
-    UserRepository userRepository;
+    private List<User> allUsers = new ArrayList<>();
 
     @Mock
     UserDaoImpl userDao;
-
-    SchedulerProvider schedulerProvider = new SchedulerProvider(Schedulers.trampoline(), Schedulers.trampoline());
-
+    @Mock
+    Observer<List<User>> userObserver;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        userRepository = new UserRepository(userDao);
+        UserRepository userRepository = new UserRepository(userDao);
         GetAllUsersInteractor getAllUsersInteractor = new GetAllUsersInteractor(userRepository);
+        AddUserInteractor addUserInteractor = new AddUserInteractor(userRepository);
+        UpdateUserInteractor updateUserInteractor = new UpdateUserInteractor(userRepository);
         userViewModel = new UserViewModel(getAllUsersInteractor, addUserInteractor, updateUserInteractor, schedulerProvider);
         userViewModel.getAllUsers().observeForever(userObserver);
+
+        allUsers.add(user);
+
+        when(userDao.getAllUsers()).thenReturn(Observable.create(emitter -> emitter.onNext(allUsers)));
+        when(userDao.AddUser(user)).thenReturn(Completable.create(emitter -> allUsers.add(user)));
+        when(userDao.updateUser(user)).thenReturn(Completable.create(emitter -> user.setSettingValues(SETTING_START_VALUE)));
+
+        userViewModel.setAllDbUsers();
     }
 
     @Test
@@ -77,19 +77,26 @@ public class UserViewModelUnitTest {
         assertNotNull(userViewModel.addUserInteractor);
         assertNotNull(userViewModel.updateUserInteractor);
         assertNotNull(userViewModel.getAllUsers());
+        assertNotNull(userViewModel.getAllUsers().getValue());
         assertTrue(userViewModel.getAllUsers().hasObservers());
     }
 
     @Test
     public void setGetAllUsersInteractor() {
-
-        User user = new User("", "Marc", "", "", new ArrayList<>(), new SettingValues());
-        List<User> allUsers = new ArrayList<>();
-        allUsers.add(user);
-        when(userViewModel.getAllUsersInteractor.getAllUsers()).thenReturn(Observable.create(emitter -> emitter.onNext(allUsers)));
-        userViewModel.setAllDbUsers();
-
         assertNotNull(userViewModel.getAllUsers().getValue());
-        assertEquals("Marc",userViewModel.getAllUsers().getValue().get(0).getName());
-        }
+        assertEquals("Marc", userViewModel.getAllUsers().getValue().get(0).getName());
+    }
+
+    @Test
+    public void addUserShouldAddUserInList() {
+        userViewModel.addUser(user);
+        assertEquals(2, Objects.requireNonNull(userViewModel.getAllUsers().getValue()).size());
+    }
+
+    @Test
+    public void updateUserSettingValueShouldUpdateUser(){
+        assertNull(user.getSettingValues().getChosenLanguage());
+        userViewModel.updateUserSettingValues(user,SETTING_START_VALUE);
+        assertNotNull(user.getSettingValues().getChosenLanguage());
+    }
 }
