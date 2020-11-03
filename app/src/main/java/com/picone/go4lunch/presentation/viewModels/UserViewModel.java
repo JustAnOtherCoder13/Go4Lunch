@@ -11,10 +11,10 @@ import com.picone.core.domain.entity.user.User;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
 import com.picone.core.domain.interactors.usersInteractors.UpdateUserInteractor;
+import com.picone.go4lunch.presentation.utils.SchedulerProvider;
 
 import java.util.List;
 
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -35,16 +35,17 @@ public class UserViewModel extends BaseViewModel {
     public AddUserInteractor addUserInteractor;
     public GetAllUsersInteractor getAllUsersInteractor;
     public UpdateUserInteractor updateUserInteractor;
+    private SchedulerProvider schedulerProvider;
 
 
     //suppress warning is safe cause subscribe is used to set allUsersMutableLiveData
     @SuppressLint("CheckResult")
     @ViewModelInject
-    public UserViewModel(GetAllUsersInteractor getAllUsersInteractor, AddUserInteractor addUserInteractor, UpdateUserInteractor updateUserInteractor) {
+    public UserViewModel(GetAllUsersInteractor getAllUsersInteractor, AddUserInteractor addUserInteractor, UpdateUserInteractor updateUserInteractor,SchedulerProvider schedulerProvider) {
         this.addUserInteractor = addUserInteractor;
         this.getAllUsersInteractor = getAllUsersInteractor;
         this.updateUserInteractor = updateUserInteractor;
-        //setAllDbUsers();
+        this.schedulerProvider = schedulerProvider;
     }
 
     public LiveData<List<User>> getAllUsers() {return allUsersMutableLiveData;}
@@ -67,8 +68,8 @@ public class UserViewModel extends BaseViewModel {
     @SuppressLint("CheckResult")
     public void setAllDbUsers() {
         getAllUsersInteractor.getAllUsers()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(schedulerProvider.getIo())
+                .observeOn(schedulerProvider.getUi())
                 .subscribe(users -> allUsersMutableLiveData.setValue(users), throwable -> checkException());
     }
 
@@ -76,8 +77,8 @@ public class UserViewModel extends BaseViewModel {
     @SuppressLint("CheckResult")
     public void addUser(User currentUser) {
         addUserInteractor.addUser(currentUser)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(schedulerProvider.getIo())
+                .observeOn(schedulerProvider.getUi())
                 .subscribe(() -> UserCompletionStateMutableLiveData.setValue(UserCompletionState.ON_COMPLETE)
                         , throwable -> {
                             UserCompletionStateMutableLiveData.setValue(UserCompletionState.ON_ERROR);
@@ -90,12 +91,8 @@ public class UserViewModel extends BaseViewModel {
     public void updateUserSettingValues(User currentUser, SettingValues settingValues) {
         currentUser.setSettingValues(settingValues);
         updateUserInteractor.updateUser(currentUser)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(schedulerProvider.getIo())
+                .observeOn(schedulerProvider.getUi())
                 .subscribe(()->{},throwable -> checkException());
-    }
-
-    public Scheduler getSchedulerIo() {
-        return Schedulers.io();
     }
 }
