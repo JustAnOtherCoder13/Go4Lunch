@@ -86,10 +86,10 @@ public class UserViewModelUnitTest {
         User user = new User("", "Marc", "", "", new ArrayList<>(), new SettingValues());
         List<User> allUsers = new ArrayList<>();
         allUsers.add(user);
+        when(userViewModel.getAllUsersInteractor.getAllUsers()).thenReturn(Observable.create(emitter -> emitter.onNext(allUsers)));
+        userViewModel.setAllDbUsers();
 
-        when(userRepository.getAllUsers()).thenReturn(Observable.create(emitter -> emitter.onNext(allUsers)));
-        TestObserver<List<User>> testObserver = new TestObserver<>();
-        assertEquals(1,userViewModel.getAllUsersInteractor.getAllUsers().blockingFirst().size());
-        assertNotNull(userViewModel.getAllUsersInteractor.getAllUsers().blockingFirst());
+        assertNotNull(userViewModel.getAllUsers().getValue());
+        assertEquals("Marc",userViewModel.getAllUsers().getValue().get(0).getName());
         }
 }
