@@ -16,6 +16,7 @@ import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -47,25 +48,27 @@ public class UserViewModelUnitTest {
     private List<User> allUsers = new ArrayList<>();
 
     @Mock
-    UserDaoImpl userDao;
-    @Mock
     Observer<List<User>> userObserver;
+    @InjectMocks
+    GetAllUsersInteractor getAllUsersInteractor;
+    @InjectMocks
+    AddUserInteractor addUserInteractor;
+    @InjectMocks
+    UpdateUserInteractor updateUserInteractor;
+    @Mock
+    UserRepository userRepository;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        UserRepository userRepository = new UserRepository(userDao);
-        GetAllUsersInteractor getAllUsersInteractor = new GetAllUsersInteractor(userRepository);
-        AddUserInteractor addUserInteractor = new AddUserInteractor(userRepository);
-        UpdateUserInteractor updateUserInteractor = new UpdateUserInteractor(userRepository);
         userViewModel = new UserViewModel(getAllUsersInteractor, addUserInteractor, updateUserInteractor, schedulerProvider);
         userViewModel.getAllUsers().observeForever(userObserver);
 
         allUsers.add(user);
 
-        when(userDao.getAllUsers()).thenReturn(Observable.create(emitter -> emitter.onNext(allUsers)));
-        when(userDao.AddUser(user)).thenReturn(Completable.create(emitter -> allUsers.add(user)));
-        when(userDao.updateUser(user)).thenReturn(Completable.create(emitter -> user.setSettingValues(SETTING_START_VALUE)));
+        when(userRepository.getAllUsers()).thenReturn(Observable.create(emitter -> emitter.onNext(allUsers)));
+        when(userRepository.addUser(user)).thenReturn(Completable.create(emitter -> allUsers.add(user)));
+        when(userRepository.updateUser(user)).thenReturn(Completable.create(emitter -> user.setSettingValues(SETTING_START_VALUE)));
 
         userViewModel.setAllDbUsers();
     }
