@@ -28,6 +28,7 @@ import com.picone.go4lunch.presentation.ui.fragment.adapters.ColleagueRecyclerVi
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static android.Manifest.permission.CALL_PHONE;
 import static com.picone.core.data.ConstantParameter.CURRENT_HOUR;
@@ -62,8 +63,10 @@ public class RestaurantDetailFragment extends BaseFragment {
     private void initButtons(Restaurant selectedRestaurant) {
         //setChooseRestaurantFabVisibility(selectedRestaurant);
 
-        mBinding.chooseRestaurantFab.setOnClickListener(v ->
-                mRestaurantViewModel.addUserToRestaurant(selectedRestaurant,mRestaurantViewModel.getCurrentUser.getValue()));
+        mBinding.chooseRestaurantFab.setOnClickListener(v -> {
+            mRestaurantViewModel.addUserToRestaurant(selectedRestaurant,mRestaurantViewModel.getAllRestaurants.getValue());
+            mRestaurantViewModel.updateUserDailySchedule(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()),selectedRestaurant);
+        });
 
         mBinding.likeDetailImageButton.setOnClickListener(v ->
                 initLikeAlertDialog());
@@ -181,7 +184,7 @@ public class RestaurantDetailFragment extends BaseFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle(R.string.like_restaurant_question)
                 .setNegativeButton(R.string.no, null)
-                .setPositiveButton(R.string.yes, (dialog, which) -> mRestaurantViewModel.updateFanList())
+                .setPositiveButton(R.string.yes, (dialog, which) -> mRestaurantViewModel.updateFanList(mRestaurantViewModel.getAllRestaurants.getValue()))
                 .create()
                 .show();
     }

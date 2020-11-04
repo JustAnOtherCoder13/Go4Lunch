@@ -19,6 +19,7 @@ import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import com.picone.go4lunch.presentation.utils.RecyclerViewItemClickUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class RestaurantListFragment extends BaseFragment {
@@ -49,8 +50,10 @@ public class RestaurantListFragment extends BaseFragment {
     public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewListFragment, R.layout.fragment_restaurant_list)
                 .setOnItemClickListener((recyclerView, position, v) -> {
-                    Restaurant restaurant = Objects.requireNonNull(mRestaurantViewModel.getAllRestaurants.getValue()).get(position);
-                    mRestaurantViewModel.setInterestedUsersForRestaurant(restaurant.getPlaceId());
+                    List<Restaurant> allRestaurants = mRestaurantViewModel.getAllRestaurants.getValue();
+                    Restaurant restaurant = Objects.requireNonNull(allRestaurants.get(position));
+                    mRestaurantViewModel.setInterestedUsersForRestaurant(restaurant.getPlaceId(),allRestaurants);
+                    mRestaurantViewModel.persistRestaurant(restaurant);
                 });
     }
 

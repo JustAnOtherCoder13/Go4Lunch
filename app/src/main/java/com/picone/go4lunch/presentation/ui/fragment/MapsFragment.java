@@ -39,6 +39,7 @@ import static com.picone.core.data.ConstantParameter.MAPS_CAMERA_ZOOM;
 import static com.picone.core.data.ConstantParameter.MAPS_KEY;
 import static com.picone.core.data.ConstantParameter.REQUEST_CODE;
 import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
+import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantForPlaceId;
 import static com.picone.go4lunch.presentation.utils.GetBitmapFromVectorUtil.getBitmapFromVectorDrawable;
 
 public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
@@ -87,7 +88,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         updateLocationUI();
         mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), restaurants -> {
             initCustomMarker(restaurants);
-            mRestaurantViewModel.setUserChosenRestaurant();
+            mRestaurantViewModel.setUserChosenRestaurant(restaurants);
         });
 
     }
@@ -174,7 +175,8 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
                 }
             }
             mMap.setOnMarkerClickListener(marker -> {
-                mRestaurantViewModel.setInterestedUsersForRestaurant(marker.getTitle());
+                mRestaurantViewModel.setInterestedUsersForRestaurant(marker.getTitle(), mRestaurantViewModel.getAllRestaurants.getValue());
+                mRestaurantViewModel.persistRestaurant(getRestaurantForPlaceId(marker.getTitle(),mRestaurantViewModel.getAllRestaurants.getValue()));
                 return false;
             });
         }

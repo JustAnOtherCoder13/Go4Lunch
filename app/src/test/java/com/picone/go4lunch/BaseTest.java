@@ -43,7 +43,7 @@ abstract class BaseTest {
     //common values
     final String USER_EMAIL = "marc@gmail.com";
     SchedulerProvider schedulerProvider = new SchedulerProvider(Schedulers.trampoline(), Schedulers.trampoline());
-    Restaurant restaurantToAdd = new Restaurant("Chez Marco", "50m", "", new RestaurantPosition(), "avenue Marco", "", "10", "", "", new ArrayList<>(), new ArrayList<>());
+    Restaurant restaurantToAdd = new Restaurant("Chez Marco", "50m", "", new RestaurantPosition(), "avenue Marco", "13250", "10", "", "", new ArrayList<>(), new ArrayList<>());
     User userToAdd = new User("4", "Marc", "marc@gmail.com", "", new ArrayList<>(), new SettingValues());
     UserDailySchedule userDailyScheduleToAdd = new UserDailySchedule(TODAY,restaurantToAdd.getPlaceId(),restaurantToAdd.getName());
 

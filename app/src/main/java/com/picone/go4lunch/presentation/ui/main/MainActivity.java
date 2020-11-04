@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.your_lunch_drawer_layout:
                     if (mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules() != null && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()) != null) {
-                        mRestaurantViewModel.setInterestedUsersForRestaurant(getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId());
+                        mRestaurantViewModel.setInterestedUsersForRestaurant(getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId(),mRestaurantViewModel.getAllRestaurants.getValue());
                     } else
                         Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
                     break;
@@ -378,7 +378,7 @@ public class MainActivity extends AppCompatActivity {
                 if (getUserDailyScheduleOnToday(Objects.requireNonNull
                         (mRestaurantViewModel.getCurrentUser.getValue()).getUserDailySchedules()) == null)
                     Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
-                else mRestaurantViewModel.cancelReservation();
+                else mRestaurantViewModel.cancelReservation(mRestaurantViewModel.getAllRestaurants.getValue());
             }
         }
         setSettingsVisibility(false);
