@@ -36,7 +36,7 @@ import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static com.picone.go4lunch.presentation.utils.ConstantParameter.RC_SIGN_IN;
+import static com.picone.core.data.ConstantParameter.RC_SIGN_IN;
 
 public class AuthenticationFragment extends BaseFragment {
 

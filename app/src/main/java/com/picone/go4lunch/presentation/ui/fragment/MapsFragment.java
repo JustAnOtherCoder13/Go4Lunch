@@ -35,9 +35,9 @@ import java.util.List;
 import java.util.Objects;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static com.picone.go4lunch.presentation.utils.ConstantParameter.MAPS_CAMERA_ZOOM;
-import static com.picone.go4lunch.presentation.utils.ConstantParameter.MAPS_KEY;
-import static com.picone.go4lunch.presentation.utils.ConstantParameter.REQUEST_CODE;
+import static com.picone.core.data.ConstantParameter.MAPS_CAMERA_ZOOM;
+import static com.picone.core.data.ConstantParameter.MAPS_KEY;
+import static com.picone.core.data.ConstantParameter.REQUEST_CODE;
 import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.utils.GetBitmapFromVectorUtil.getBitmapFromVectorDrawable;
 

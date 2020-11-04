@@ -47,11 +47,6 @@ public class UserDaoImpl implements UserDao {
         Query query = usersDatabaseReference.orderByChild("email").equalTo(authUserEmail);
         return RxFirebaseDatabase.observeValueEvent(query, DataSnapshotMapper.listOf(User.class)).toObservable();
     }
-
-    @Override
-    public Observable<List<UserDailySchedule>> getCurrentUserDailySchedules(String uId) {
-        return RxFirebaseDatabase.observeValueEvent(usersDatabaseReference.child(uId).child("userDailySchedules"), DataSnapshotMapper.listOf(UserDailySchedule.class)).toObservable();
-    }
 }
 
 

@@ -15,10 +15,7 @@ import com.picone.go4lunch.presentation.utils.SchedulerProvider;
 
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-
-import static com.picone.go4lunch.presentation.utils.ConstantParameter.SETTING_START_VALUE;
+import static com.picone.core.data.ConstantParameter.SETTING_START_VALUE;
 
 public class UserViewModel extends BaseViewModel {
 
@@ -32,9 +29,9 @@ public class UserViewModel extends BaseViewModel {
     private MutableLiveData<List<User>> allUsersMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
 
-    public AddUserInteractor addUserInteractor;
-    public GetAllUsersInteractor getAllUsersInteractor;
-    public UpdateUserInteractor updateUserInteractor;
+    private AddUserInteractor addUserInteractor;
+    private GetAllUsersInteractor getAllUsersInteractor;
+    private UpdateUserInteractor updateUserInteractor;
     private SchedulerProvider schedulerProvider;
 
 

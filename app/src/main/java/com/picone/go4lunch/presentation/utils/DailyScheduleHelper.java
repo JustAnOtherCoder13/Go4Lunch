@@ -5,7 +5,7 @@ import com.picone.core.domain.entity.user.UserDailySchedule;
 
 import java.util.List;
 
-import static com.picone.go4lunch.presentation.utils.ConstantParameter.TODAY;
+import static com.picone.core.data.ConstantParameter.TODAY;
 
 public class DailyScheduleHelper {
 

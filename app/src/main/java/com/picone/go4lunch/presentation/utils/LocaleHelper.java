@@ -8,7 +8,7 @@ import android.preference.PreferenceManager;
 
 import java.util.Locale;
 
-import static com.picone.go4lunch.presentation.utils.ConstantParameter.SELECTED_LANGUAGE;
+import static com.picone.core.data.ConstantParameter.SELECTED_LANGUAGE;
 
 public class LocaleHelper {
 

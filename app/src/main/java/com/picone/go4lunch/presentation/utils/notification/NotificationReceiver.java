@@ -12,8 +12,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static android.content.Context.ALARM_SERVICE;
-import static com.picone.go4lunch.presentation.utils.ConstantParameter.ALARM_HOUR;
-import static com.picone.go4lunch.presentation.utils.ConstantParameter.ALARM_MINUTE;
+import static com.picone.core.data.ConstantParameter.ALARM_HOUR;
+import static com.picone.core.data.ConstantParameter.ALARM_MINUTE;
 
 public class NotificationReceiver extends BroadcastReceiver {
     @Override

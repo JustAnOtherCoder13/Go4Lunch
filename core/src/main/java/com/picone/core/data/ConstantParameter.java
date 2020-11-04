@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.utils;
+package com.picone.core.data;
 
 import com.picone.core.domain.entity.user.SettingValues;
 
