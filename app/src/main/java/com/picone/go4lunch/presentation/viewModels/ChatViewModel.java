@@ -1,19 +1,16 @@
 package com.picone.go4lunch.presentation.viewModels;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.bumptech.glide.load.HttpException;
 import com.picone.core.domain.entity.ChatMessage;
 import com.picone.core.domain.interactors.chatInteractors.GetAllMessagesInteractor;
 import com.picone.core.domain.interactors.chatInteractors.PostMessageInteractor;
+import com.picone.go4lunch.presentation.utils.SchedulerProvider;
 
-import java.io.IOException;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -25,11 +22,13 @@ public class ChatViewModel extends BaseViewModel {
 
     private GetAllMessagesInteractor getAllMessagesInteractor;
     private PostMessageInteractor postMessageInteractor;
+    private SchedulerProvider schedulerProvider;
 
     @ViewModelInject
-    public ChatViewModel(GetAllMessagesInteractor getAllMessagesInteractor, PostMessageInteractor postMessageInteractor) {
+    public ChatViewModel(GetAllMessagesInteractor getAllMessagesInteractor, PostMessageInteractor postMessageInteractor,SchedulerProvider schedulerProvider) {
         this.getAllMessagesInteractor = getAllMessagesInteractor;
         this.postMessageInteractor = postMessageInteractor;
+        this.schedulerProvider = schedulerProvider;
     }
 
     public LiveData<List<ChatMessage>> getAllMessages = chatMessageMutableLiveData;
@@ -38,8 +37,8 @@ public class ChatViewModel extends BaseViewModel {
     @SuppressLint("CheckResult")
     public void setAllMessages() {
         getAllMessagesInteractor.getAllMessages()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(schedulerProvider.getIo())
+                .observeOn(schedulerProvider.getUi())
                 .subscribe(chatMessages ->
                         chatMessageMutableLiveData.setValue(chatMessages),throwable -> checkException());
     }
@@ -48,8 +47,8 @@ public class ChatViewModel extends BaseViewModel {
     @SuppressLint("CheckResult")
     public void postMessage(ChatMessage chatMessage) {
         postMessageInteractor.postMessage(chatMessage)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(schedulerProvider.getIo())
+                .observeOn(schedulerProvider.getUi())
                 .subscribe(()->{},throwable -> checkException());
     }
 }

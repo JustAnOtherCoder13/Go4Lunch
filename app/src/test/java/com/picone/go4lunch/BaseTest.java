@@ -4,8 +4,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.Observer;
 
 import com.picone.core.data.Generator;
+import com.picone.core.data.repository.chat.ChatMessageRepository;
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.data.repository.user.UserRepository;
+import com.picone.core.domain.entity.ChatMessage;
 import com.picone.core.domain.entity.predictionPOJO.Prediction;
 import com.picone.core.domain.entity.predictionPOJO.PredictionResponse;
 import com.picone.core.domain.entity.restaurant.Restaurant;
@@ -13,6 +15,8 @@ import com.picone.core.domain.entity.restaurant.RestaurantPosition;
 import com.picone.core.domain.entity.user.SettingValues;
 import com.picone.core.domain.entity.user.User;
 import com.picone.core.domain.interactors.SendNotificationInteractor;
+import com.picone.core.domain.interactors.chatInteractors.GetAllMessagesInteractor;
+import com.picone.core.domain.interactors.chatInteractors.PostMessageInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.placeInteractors.FetchRestaurantDetailFromPlaceInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.placeInteractors.FetchRestaurantDistanceInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.placeInteractors.FetchRestaurantFromPlaceInteractor;
@@ -25,6 +29,7 @@ import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
 import com.picone.core.domain.interactors.usersInteractors.UpdateUserInteractor;
 import com.picone.go4lunch.presentation.utils.SchedulerProvider;
+import com.picone.go4lunch.presentation.viewModels.ChatViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
@@ -52,9 +57,10 @@ abstract class BaseTest {
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     //common values
-    List<Restaurant> allRestaurants = new ArrayList<>();
+    List<Restaurant> allRestaurants = new ArrayList<>(Generator.generateRestaurants());
     List<User> currentUsers = new ArrayList<>();
-    List<User> allUsers = new ArrayList<>();
+    List<User> allUsers = new ArrayList<>(Generator.generateUsers());
+    List<ChatMessage> allMessages = new ArrayList<>(Generator.generateChatMessages());
     Prediction prediction = new Prediction();
     PredictionResponse predictionResponse = new PredictionResponse();
     final String locationStr = "location";
@@ -62,10 +68,12 @@ abstract class BaseTest {
 
     Restaurant restaurantToAdd = new Restaurant("Chez Marco", "50m", "", new RestaurantPosition(), "avenue Marco", "13250", "10", "", "", new ArrayList<>(), new ArrayList<>());
     User userToAdd = new User("13012", "Marc", "marc@gmail.com", "", new ArrayList<>(), new SettingValues());
+    ChatMessage messageToAdd = new ChatMessage("now","",userToAdd.getName(),"is there anyone who would like to eat burger?",userToAdd.getUid());
+
 
     SchedulerProvider schedulerProvider = new SchedulerProvider(Schedulers.trampoline(), Schedulers.trampoline());
 
-    //mock userViewModel values
+    //mock UserViewModel
     UserViewModel userViewModel;
     @Mock
     UserRepository userRepository;
@@ -77,7 +85,7 @@ abstract class BaseTest {
     UpdateUserInteractor updateUserInteractor;
 
 
-    //mock RestaurantViewModelValue
+    //mock RestaurantViewModel
     RestaurantViewModel restaurantViewModel;
     @Mock
     RestaurantRepository restaurantRepository;
@@ -100,6 +108,15 @@ abstract class BaseTest {
     @InjectMocks
     SendNotificationInteractor sendNotificationInteractor;
 
+    //mock ChatViewModel
+    ChatViewModel chatViewModel;
+    @Mock
+    ChatMessageRepository chatMessageRepository;
+    @InjectMocks
+    GetAllMessagesInteractor getAllMessagesInteractor;
+    @InjectMocks
+    PostMessageInteractor postMessageInteractor;
+
    //mock observers
     @Mock
     Observer<List<Restaurant>> allDbRestaurantsObserver;
@@ -111,6 +128,8 @@ abstract class BaseTest {
     Observer<List<Restaurant>> filteredRestaurantsObserver;
     @Mock
     Observer<List<User>> filteredUsersObserver;
+    @Mock
+    Observer<List<ChatMessage>> chatMessageObserver;
 
 
     @Before
@@ -129,16 +148,18 @@ abstract class BaseTest {
 
         userViewModel = new UserViewModel(getAllUsersInteractor, addUserInteractor, updateUserInteractor, schedulerProvider);
 
+        chatViewModel = new ChatViewModel(getAllMessagesInteractor,postMessageInteractor,schedulerProvider);
+
         //initObserver
         userViewModel.getAllUsers().observeForever(userObserver);
-        allUsers.addAll(Generator.generateUsers());
 
         restaurantViewModel.getAllDbRestaurants.observeForever(allDbRestaurantsObserver);
         restaurantViewModel.getCurrentUser.observeForever(currentUserObserver);
         restaurantViewModel.getAllRestaurants.observeForever(filteredRestaurantsObserver);
         restaurantViewModel.getAllFilteredUsers.observeForever(filteredUsersObserver);
-        allRestaurants.addAll(Generator.generateRestaurants());
         currentUsers.add(userToAdd);
+
+        chatViewModel.getAllMessages.observeForever(chatMessageObserver);
 
         //mocks Repository returns
         //-----------------------------------------USER REPOSITORY-----------------------------------------------------------
@@ -173,10 +194,19 @@ abstract class BaseTest {
         when(restaurantRepository.getPredictions(Generator.generateRestaurants().get(0).getName(),GOOGLE_KEY,locationStr))
                 .thenReturn(Observable.create(emitter -> emitter.onNext(predictionResponse)));
 
+        //-----------------------------------------CHAT REPOSITORY-----------------------------------------------------------
+
+        when(chatMessageRepository.getAllMessages())
+                .thenReturn(Observable.create(emitter -> emitter.onNext(allMessages)));
+        when(chatMessageRepository.postMessage(messageToAdd))
+                .thenReturn(Completable.create(emitter ->
+                        Objects.requireNonNull(chatViewModel.getAllMessages.getValue()).add(messageToAdd)));
+
         //set viewModels initial values
         userViewModel.setAllDbUsers();
         restaurantViewModel.setAllDbRestaurants();
         restaurantViewModel.setCurrentUser(userToAdd.getEmail());
         restaurantViewModel.updateAllRestaurantsWithPersistedValues(allRestaurants);
+        chatViewModel.setAllMessages();
     }
 }

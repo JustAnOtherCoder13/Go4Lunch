@@ -1,5 +1,6 @@
 package com.picone.core.data;
 
+import com.picone.core.domain.entity.ChatMessage;
 import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.core.domain.entity.restaurant.RestaurantPosition;
 import com.picone.core.domain.entity.user.SettingValues;
@@ -16,7 +17,6 @@ public abstract class Generator {
             new User("2", "Jaja", "jaja@gmail.com", "", new ArrayList<>(), new SettingValues()),
             new User("3", "Jojo", "jojo@gmail.com", "", new ArrayList<>(), new SettingValues())
     );
-
     public static List<User> generateUsers() {
         return new ArrayList<>(FAKE_USERS);
     }
@@ -27,8 +27,12 @@ public abstract class Generator {
             new Restaurant("Chez Jaja", "20m", "", new RestaurantPosition(), "avenue jaja", "13700", "11", "", "", new ArrayList<>(), new ArrayList<>()),
             new Restaurant("Chez Jojo", "30m", "", new RestaurantPosition(), "avenue jojo", "13013", "12", "", "", new ArrayList<>(), new ArrayList<>())
     );
+    public static List<Restaurant> generateRestaurants() { return new ArrayList<>(FAKE_RESTAURANTS); }
 
-    public static List<Restaurant> generateRestaurants() {
-        return new ArrayList<>(FAKE_RESTAURANTS);
-    }
+    static List<ChatMessage> FAKE_MESSAGES = Arrays.asList(
+            new ChatMessage("now","","Jiji","hello","1"),
+            new ChatMessage("now","","Jaja","hi, how are you","2"),
+            new ChatMessage("now","","Jojo","hey, where we gonna eat on twelve?","3")
+    );
+    public static List<ChatMessage> generateChatMessages(){ return new ArrayList<>(FAKE_MESSAGES); }
 }
