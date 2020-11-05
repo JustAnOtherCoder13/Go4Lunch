@@ -31,10 +31,10 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static android.Manifest.permission.CALL_PHONE;
-import static com.picone.core.data.ConstantParameter.CURRENT_HOUR;
-import static com.picone.core.data.ConstantParameter.MAX_RESERVATION_HOUR;
-import static com.picone.core.data.ConstantParameter.REQUEST_CODE;
-import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getUserDailyScheduleOnToday;
+import static com.picone.core.utils.ConstantParameter.CURRENT_HOUR;
+import static com.picone.core.utils.ConstantParameter.MAX_RESERVATION_HOUR;
+import static com.picone.core.utils.ConstantParameter.REQUEST_CODE;
+import static com.picone.core.utils.FindInListHelper.getUserDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.utils.ManageStarUtil.manageStar;
 
 public class RestaurantDetailFragment extends BaseFragment {

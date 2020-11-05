@@ -1,15 +1,16 @@
-package com.picone.go4lunch.presentation.utils;
+package com.picone.core.utils;
 
 import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.core.domain.entity.restaurant.RestaurantDailySchedule;
+import com.picone.core.domain.entity.user.User;
 import com.picone.core.domain.entity.user.UserDailySchedule;
 
 import java.util.List;
 import java.util.Objects;
 
-import static com.picone.core.data.ConstantParameter.TODAY;
+import static com.picone.core.utils.ConstantParameter.TODAY;
 
-public class DailyScheduleHelper {
+public class FindInListHelper {
 
     public static RestaurantDailySchedule getRestaurantDailyScheduleOnToday(List<RestaurantDailySchedule> dailySchedules) {
         RestaurantDailySchedule restaurantDailyScheduleToReturn = null;
@@ -38,5 +39,14 @@ public class DailyScheduleHelper {
                 restaurantToReturn = restaurant;
         }
         return restaurantToReturn;
+    }
+
+    public static User getCurrentUserInfoForUid(List<User> allUsers, User currentUser) {
+        User userToReturn = null;
+        if (allUsers != null)
+            for (User user : allUsers)
+                if (user.getUid().equals(Objects.requireNonNull(currentUser.getUid())))
+                    userToReturn = user;
+        return userToReturn;
     }
 }

@@ -20,7 +20,7 @@ import com.picone.go4lunch.presentation.utils.RecyclerViewItemClickUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getUserDailyScheduleOnToday;
+import static com.picone.core.utils.FindInListHelper.getUserDailyScheduleOnToday;
 
 public class WorkmatesFragment extends BaseFragment {
 

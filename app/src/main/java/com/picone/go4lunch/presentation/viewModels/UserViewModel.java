@@ -15,7 +15,7 @@ import com.picone.go4lunch.presentation.utils.SchedulerProvider;
 
 import java.util.List;
 
-import static com.picone.core.data.ConstantParameter.SETTING_START_VALUE;
+import static com.picone.core.utils.ConstantParameter.SETTING_START_VALUE;
 
 public class UserViewModel extends BaseViewModel {
 

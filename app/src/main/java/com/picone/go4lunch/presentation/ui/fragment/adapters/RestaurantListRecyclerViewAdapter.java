@@ -19,8 +19,8 @@ import com.picone.go4lunch.databinding.RecyclerViewRestaurantItemsBinding;
 
 import java.util.List;
 
-import static com.picone.core.data.ConstantParameter.CLOSED;
-import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
+import static com.picone.core.utils.ConstantParameter.CLOSED;
+import static com.picone.core.utils.FindInListHelper.getRestaurantDailyScheduleOnToday;
 import static com.picone.go4lunch.presentation.utils.ManageStarUtil.manageStar;
 
 public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantListRecyclerViewAdapter.ViewHolder> {

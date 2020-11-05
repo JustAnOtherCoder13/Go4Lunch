@@ -21,7 +21,7 @@ import com.picone.go4lunch.presentation.ui.fragment.WorkmatesFragment;
 
 import java.util.List;
 
-import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getUserDailyScheduleOnToday;
+import static com.picone.core.utils.FindInListHelper.getUserDailyScheduleOnToday;
 
 public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<ColleagueRecyclerViewAdapter.ViewHolder> {
 

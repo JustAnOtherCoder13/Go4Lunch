@@ -48,7 +48,7 @@ import io.reactivex.CompletableEmitter;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.picone.core.data.ConstantParameter.SETTING_START_VALUE;
+import static com.picone.core.utils.ConstantParameter.SETTING_START_VALUE;
 import static org.mockito.Mockito.when;
 
 abstract class BaseTest {

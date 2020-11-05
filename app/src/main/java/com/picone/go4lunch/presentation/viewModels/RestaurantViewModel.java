@@ -31,11 +31,12 @@ import java.util.Objects;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 
-import static com.picone.core.data.ConstantParameter.MAPS_KEY;
-import static com.picone.core.data.ConstantParameter.TODAY;
-import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
-import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantForPlaceId;
-import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getUserDailyScheduleOnToday;
+import static com.picone.core.utils.ConstantParameter.MAPS_KEY;
+import static com.picone.core.utils.ConstantParameter.TODAY;
+import static com.picone.core.utils.FindInListHelper.getCurrentUserInfoForUid;
+import static com.picone.core.utils.FindInListHelper.getRestaurantDailyScheduleOnToday;
+import static com.picone.core.utils.FindInListHelper.getRestaurantForPlaceId;
+import static com.picone.core.utils.FindInListHelper.getUserDailyScheduleOnToday;
 
 public class RestaurantViewModel extends BaseViewModel {
 
@@ -266,7 +267,7 @@ public class RestaurantViewModel extends BaseViewModel {
         Restaurant firstChoiceRestaurant = getRestaurantForPlaceId(getUserDailyScheduleOnToday(currentUser.getUserDailySchedules()).getRestaurantPlaceId(),allRestaurants);
 
         getRestaurantDailyScheduleOnToday(firstChoiceRestaurant.getRestaurantDailySchedules()).getInterestedUsers().remove(
-                getCurrentUserInfoForUid(getRestaurantDailyScheduleOnToday(firstChoiceRestaurant.getRestaurantDailySchedules()).getInterestedUsers()));
+                getCurrentUserInfoForUid(getRestaurantDailyScheduleOnToday(firstChoiceRestaurant.getRestaurantDailySchedules()).getInterestedUsers(),currentUser));
         if (getRestaurantDailyScheduleOnToday(firstChoiceRestaurant.getRestaurantDailySchedules()).getInterestedUsers().isEmpty())
             firstChoiceRestaurant.getRestaurantDailySchedules().remove(getRestaurantDailyScheduleOnToday(firstChoiceRestaurant.getRestaurantDailySchedules()));
 
@@ -353,14 +354,7 @@ public class RestaurantViewModel extends BaseViewModel {
 
     //---------------------------------------------HELPER----------------------------------------------
 
-    private User getCurrentUserInfoForUid(List<User> allUsers) {
-        User userToReturn = null;
-        if (allUsers != null)
-            for (User user : allUsers)
-                if (user.getUid().equals(Objects.requireNonNull(currentUserMutableLiveData.getValue()).getUid()))
-                    userToReturn = user;
-        return userToReturn;
-    }
+
 
 
     @NonNull
@@ -377,7 +371,7 @@ public class RestaurantViewModel extends BaseViewModel {
     private Restaurant firstChoiceRestaurantWithUserRemoved(List<Restaurant> allRestaurants) {
         Restaurant restaurant = getRestaurantForPlaceId(getUserDailyScheduleOnToday(Objects.requireNonNull(currentUserMutableLiveData.getValue()).getUserDailySchedules()).getRestaurantPlaceId(),allRestaurants);
         RestaurantDailySchedule restaurantDailySchedule = getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules());
-        User userInfoToDelete = getCurrentUserInfoForUid(restaurantDailySchedule.getInterestedUsers());
+        User userInfoToDelete = getCurrentUserInfoForUid(restaurantDailySchedule.getInterestedUsers(),currentUserMutableLiveData.getValue());
         restaurantDailySchedule.getInterestedUsers().remove(userInfoToDelete);
         if (restaurantDailySchedule.getInterestedUsers().isEmpty())
             restaurant.getRestaurantDailySchedules().remove(restaurantDailySchedule);

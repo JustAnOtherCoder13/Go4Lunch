@@ -1,4 +1,4 @@
-package com.picone.core.data;
+package com.picone.core.utils;
 
 import com.picone.core.domain.entity.user.SettingValues;
 

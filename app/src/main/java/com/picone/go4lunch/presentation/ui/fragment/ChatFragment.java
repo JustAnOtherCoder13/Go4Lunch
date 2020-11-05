@@ -19,7 +19,7 @@ import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static com.picone.core.data.ConstantParameter.TODAY;
+import static com.picone.core.utils.ConstantParameter.TODAY;
 
 public class ChatFragment extends BaseFragment {
 

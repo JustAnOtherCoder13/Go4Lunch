@@ -49,8 +49,8 @@ import javax.inject.Inject;
 import dagger.hilt.android.AndroidEntryPoint;
 import dagger.hilt.android.scopes.ActivityScoped;
 
-import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
-import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getUserDailyScheduleOnToday;
+import static com.picone.core.utils.FindInListHelper.getRestaurantDailyScheduleOnToday;
+import static com.picone.core.utils.FindInListHelper.getUserDailyScheduleOnToday;
 
 
 @ActivityScoped

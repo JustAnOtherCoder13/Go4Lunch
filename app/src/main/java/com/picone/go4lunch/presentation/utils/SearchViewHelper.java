@@ -19,7 +19,7 @@ import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
 import java.util.List;
 
-import static com.picone.core.data.ConstantParameter.MAPS_KEY;
+import static com.picone.core.utils.ConstantParameter.MAPS_KEY;
 
 public class SearchViewHelper {
 

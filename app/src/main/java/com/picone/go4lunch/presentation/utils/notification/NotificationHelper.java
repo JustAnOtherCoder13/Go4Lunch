@@ -10,8 +10,8 @@ import androidx.core.app.NotificationCompat;
 
 import com.picone.go4lunch.R;
 
-import static com.picone.core.data.ConstantParameter.NOTIFICATION_ID;
-import static com.picone.core.data.ConstantParameter.NOTIFICATION_TAG;
+import static com.picone.core.utils.ConstantParameter.NOTIFICATION_ID;
+import static com.picone.core.utils.ConstantParameter.NOTIFICATION_TAG;
 
 class NotificationHelper {
 

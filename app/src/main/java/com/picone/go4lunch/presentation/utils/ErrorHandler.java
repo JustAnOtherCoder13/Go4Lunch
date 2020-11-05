@@ -1,14 +1,10 @@
 package com.picone.go4lunch.presentation.utils;
 
-import android.content.Context;
-import android.icu.util.ValueIterator;
-import android.widget.Toast;
-
+//TODO do i have to translate this?
 public enum ErrorHandler {
 
     NO_ERROR(""),
     ON_ERROR("An error have occurred, please check your parameters and try again");
-
 
     public final String label;
 
