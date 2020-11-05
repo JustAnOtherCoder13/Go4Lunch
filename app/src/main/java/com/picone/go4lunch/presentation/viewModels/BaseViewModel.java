@@ -8,7 +8,7 @@ import com.picone.go4lunch.presentation.utils.ErrorHandler;
 
 import java.io.IOException;
 
-public class BaseViewModel extends ViewModel {
+public abstract class BaseViewModel extends ViewModel {
 
     protected MutableLiveData<ErrorHandler> errorState = new MutableLiveData<>(ErrorHandler.NO_ERROR);
     public LiveData<ErrorHandler> getErrorState = errorState;

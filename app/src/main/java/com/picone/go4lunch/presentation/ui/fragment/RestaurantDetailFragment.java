@@ -69,7 +69,7 @@ public class RestaurantDetailFragment extends BaseFragment {
         });
 
         mBinding.likeDetailImageButton.setOnClickListener(v ->
-                initLikeAlertDialog());
+                initLikeAlertDialog(selectedRestaurant));
 
         mBinding.callNumberDetailImageButton.setOnClickListener(v ->
                 initCallIntent(selectedRestaurant));
@@ -111,8 +111,8 @@ public class RestaurantDetailFragment extends BaseFragment {
                 setButtonColor(restaurant);
                 initButtons(restaurant);
                 if (restaurant.getFanList() != null)
-                    mRestaurantViewModel.setLikeCounter(restaurant.getFanList().size());
-                else mRestaurantViewModel.setLikeCounter(0);
+                    mRestaurantViewModel.setLikeCounterMutableLiveData(restaurant.getFanList().size());
+                else mRestaurantViewModel.setLikeCounterMutableLiveData(0);
                 mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
                 mBinding.addressDetailTextView.setText(restaurant.getAddress());
                 initLike(restaurant);
@@ -180,11 +180,11 @@ public class RestaurantDetailFragment extends BaseFragment {
         }
     }
 
-    private void initLikeAlertDialog() {
+    private void initLikeAlertDialog(Restaurant selectedRestaurant) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle(R.string.like_restaurant_question)
                 .setNegativeButton(R.string.no, null)
-                .setPositiveButton(R.string.yes, (dialog, which) -> mRestaurantViewModel.updateFanList(mRestaurantViewModel.getAllRestaurants.getValue()))
+                .setPositiveButton(R.string.yes, (dialog, which) -> mRestaurantViewModel.updateFanList(selectedRestaurant))
                 .create()
                 .show();
     }

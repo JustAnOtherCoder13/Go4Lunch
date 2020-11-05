@@ -1,10 +1,7 @@
 package com.picone.core.data;
 
 import com.picone.core.domain.entity.restaurant.Restaurant;
-import com.picone.core.domain.entity.restaurant.RestaurantDailySchedule;
 import com.picone.core.domain.entity.restaurant.RestaurantPosition;
-import com.picone.core.domain.entity.restaurantPOJO.NearBySearch;
-import com.picone.core.domain.entity.restaurantPOJO.RestaurantPOJO;
 import com.picone.core.domain.entity.user.SettingValues;
 import com.picone.core.domain.entity.user.User;
 
@@ -26,22 +23,12 @@ public abstract class Generator {
 
 
     static List<Restaurant> FAKE_RESTAURANTS = Arrays.asList(
-            new Restaurant("Chez Jiji", "10m", "", new RestaurantPosition(), "avenue jiji", "", "10", "", "", new ArrayList<>(), new ArrayList<>()),
-            new Restaurant("Chez Jaja", "20m", "", new RestaurantPosition(), "avenue jaja", "", "11", "", "", new ArrayList<>(), new ArrayList<>()),
-            new Restaurant("Chez Jojo", "30m", "", new RestaurantPosition(), "avenue jojo", "", "12", "", "", new ArrayList<>(), new ArrayList<>())
+            new Restaurant("Chez Jiji", "10m", "", new RestaurantPosition(), "avenue jiji", "13127", "10", "", "", new ArrayList<>(), new ArrayList<>()),
+            new Restaurant("Chez Jaja", "20m", "", new RestaurantPosition(), "avenue jaja", "13700", "11", "", "", new ArrayList<>(), new ArrayList<>()),
+            new Restaurant("Chez Jojo", "30m", "", new RestaurantPosition(), "avenue jojo", "13013", "12", "", "", new ArrayList<>(), new ArrayList<>())
     );
 
     public static List<Restaurant> generateRestaurants() {
         return new ArrayList<>(FAKE_RESTAURANTS);
-    }
-
-    static List<NearBySearch> FAKE_NEAR_BY_SEARCH= Arrays.asList(
-            new NearBySearch(),
-            new NearBySearch(),
-            new NearBySearch()
-    );
-
-    public static List<NearBySearch> generateNearBySearch() {
-        return new ArrayList<>(FAKE_NEAR_BY_SEARCH);
     }
 }

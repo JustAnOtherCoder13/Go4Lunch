@@ -3,7 +3,7 @@ package com.picone.go4lunch.presentation.utils;
 import android.app.SearchManager;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
+import android.location.Location;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -18,6 +18,8 @@ import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
 import java.util.List;
+
+import static com.picone.core.data.ConstantParameter.MAPS_KEY;
 
 public class SearchViewHelper {
 
@@ -79,10 +81,13 @@ public class SearchViewHelper {
 
     private SearchView.OnQueryTextListener getOnQueryTextListener() {
         List<User> allUsers = mUserViewModel.getAllUsers().getValue();
+        Location location = mRestaurantViewModel.getCurrentLocation.getValue();
+        assert location != null;
+        String locationStr = String.valueOf(location.getLatitude()).concat(",").concat(String.valueOf(location.getLongitude()));
         return new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                mRestaurantViewModel.filterExistingResults(query, allUsers);
+                mRestaurantViewModel.filterExistingResults(query, allUsers,locationStr,MAPS_KEY);
                 return false;
             }
 
@@ -91,7 +96,7 @@ public class SearchViewHelper {
                 if (newText.length() < 2) {
                     return false;
                 }
-                mRestaurantViewModel.filterExistingResults(newText, allUsers);
+                mRestaurantViewModel.filterExistingResults(newText, allUsers,locationStr,MAPS_KEY);
                 return true;
             }
         };

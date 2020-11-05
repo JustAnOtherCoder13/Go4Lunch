@@ -45,10 +45,10 @@ public class RestaurantViewModel extends BaseViewModel {
     private MutableLiveData<Boolean> isDataLoadingMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<List<Restaurant>> allRestaurantsMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Location> locationMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<Integer> likeCounter = new MutableLiveData<>();
+    private MutableLiveData<Integer> likeCounterMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<List<Restaurant>> allDbRestaurantsMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Restaurant> userChosenRestaurantMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<User>> filteredUsersMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<User>> filteredUsersMutableLiveData = new MutableLiveData<>(new ArrayList<>());
 
 
     private AddRestaurantInteractor addRestaurantInteractor;
@@ -89,7 +89,7 @@ public class RestaurantViewModel extends BaseViewModel {
     public LiveData<List<Restaurant>> getAllRestaurants = allRestaurantsMutableLiveData;
     public LiveData<User> getCurrentUser = currentUserMutableLiveData;
     public LiveData<Location> getCurrentLocation = locationMutableLiveData;
-    public LiveData<Integer> getLikeCounter = likeCounter;
+    public LiveData<Integer> getLikeCounter = likeCounterMutableLiveData;
     public LiveData<Restaurant> getUserChosenRestaurant = userChosenRestaurantMutableLiveData;
     public LiveData<List<Restaurant>> getAllDbRestaurants = allDbRestaurantsMutableLiveData;
     public LiveData<List<User>> getAllFilteredUsers = filteredUsersMutableLiveData;
@@ -100,8 +100,8 @@ public class RestaurantViewModel extends BaseViewModel {
         selectedRestaurantMutableLiveData.setValue(null);
     }
 
-    public void setLikeCounter(int fanListSize) {
-        likeCounter.setValue(fanListSize);
+    public void setLikeCounterMutableLiveData(int fanListSize) {
+        likeCounterMutableLiveData.setValue(fanListSize);
     }
 
     public void setCurrentLocation(Location location) {
@@ -196,11 +196,10 @@ public class RestaurantViewModel extends BaseViewModel {
 
     @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
     @SuppressLint("CheckResult")
-    public void filterExistingResults(String query, List<User> allUsers) {
-        Location location = locationMutableLiveData.getValue();
+    public void filterExistingResults(String query, List<User> allUsers,String locationStr,String googleKey) {
         List<Restaurant> filteredRestaurant = new ArrayList<>();
         List<User> filteredUsers = new ArrayList<>();
-        getPredictionInteractor.getPredictions(query, MAPS_KEY, String.valueOf(location.getLatitude()).concat(",").concat(String.valueOf(location.getLongitude())))
+        getPredictionInteractor.getPredictions(query, googleKey, locationStr)
                 .subscribeOn(schedulerProvider.getIo())
                 .observeOn(schedulerProvider.getUi())
                 .subscribe(predictionResponse -> {
@@ -333,10 +332,10 @@ public class RestaurantViewModel extends BaseViewModel {
         }
     }
 
+    //TODO update fanList should disable like button
     @SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
     @SuppressLint("CheckResult")
-    public void updateFanList(List<Restaurant> allRestaurants) {
-        Restaurant restaurant = getRestaurantForPlaceId(selectedRestaurantMutableLiveData.getValue().getPlaceId(),allRestaurants);
+    public void updateFanList(Restaurant restaurant) {
         User currentUser = currentUserMutableLiveData.getValue();
         List<String> fanList = new ArrayList<>();
         fanList.add(currentUser.getUid());
@@ -349,7 +348,7 @@ public class RestaurantViewModel extends BaseViewModel {
         addRestaurantInteractor.addRestaurant(restaurant)
                 .subscribeOn(schedulerProvider.getIo())
                 .observeOn(schedulerProvider.getUi())
-                .subscribe(() -> likeCounter.setValue(restaurant.getFanList().size()),throwable -> checkException());
+                .subscribe(() -> likeCounterMutableLiveData.setValue(restaurant.getFanList().size()), throwable -> checkException());
     }
 
     //---------------------------------------------HELPER----------------------------------------------

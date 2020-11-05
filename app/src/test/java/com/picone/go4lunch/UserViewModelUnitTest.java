@@ -27,28 +27,6 @@ import static org.mockito.Mockito.when;
 
 public class UserViewModelUnitTest extends BaseTest {
 
-    private List<User> allUsers = new ArrayList<>();
-    @Mock
-    Observer<List<User>> userObserver;
-
-
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-        userViewModel = new UserViewModel(getAllUsersInteractor, addUserInteractor, updateUserInteractor, schedulerProvider);
-        userViewModel.getAllUsers().observeForever(userObserver);
-
-        allUsers.addAll(Generator.generateUsers());
-
-        when(userRepository.getAllUsers()).thenReturn(Observable.create(emitter -> emitter.onNext(allUsers)));
-        when(userRepository.addUser(userToAdd)).thenReturn(Completable.create(emitter -> Objects.requireNonNull(userViewModel.getAllUsers().getValue()).add(userToAdd)));
-        when(userRepository.updateUser(userToAdd)).thenReturn(Completable.create(emitter -> {
-            if (Objects.requireNonNull(userViewModel.getAllUsers().getValue()).contains(userToAdd))
-            userToAdd.setSettingValues(SETTING_START_VALUE);}));
-
-        userViewModel.setAllDbUsers();
-    }
-
     @Test
     public void testNotNull() {
         assertNotNull(userViewModel);
@@ -59,14 +37,14 @@ public class UserViewModelUnitTest extends BaseTest {
     @Test
     public void getAllUsersShouldReturnGeneratedUsers() {
         assertEquals(3, Objects.requireNonNull(userViewModel.getAllUsers().getValue()).size());
-        assertEquals("Jiji", userViewModel.getAllUsers().getValue().get(0).getName());
+        assertEquals(Generator.generateUsers().get(0).getName(), userViewModel.getAllUsers().getValue().get(0).getName());
     }
 
     @Test
     public void addUserShouldAddUserInList() {
         userViewModel.addUser(userToAdd);
         assertEquals(4, Objects.requireNonNull(userViewModel.getAllUsers().getValue()).size());
-        assertEquals("Marc", userViewModel.getAllUsers().getValue().get(3).getName());
+        assertEquals(userToAdd.getName(), userViewModel.getAllUsers().getValue().get(3).getName());
     }
 
     @Test
