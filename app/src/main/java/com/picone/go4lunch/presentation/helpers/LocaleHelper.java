@@ -17,7 +17,6 @@ public class LocaleHelper {
     }
 
     public static Context setNewLocale(Context context, String language) {
-        persist(context, language);
         return updateResourcesLegacy(context, language);
     }
 
@@ -30,9 +29,7 @@ public class LocaleHelper {
         return preferences.getString(SELECTED_LANGUAGE, defaultLanguage);
     }
 
-    //Todo persist when quit app
-    //TODO persist language is helpful to start with chosen language but cause trouble when select language more than 1 time
-    private static void persist(Context context, String language) {
+     public static void persist(Context context, String language) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(SELECTED_LANGUAGE, language);

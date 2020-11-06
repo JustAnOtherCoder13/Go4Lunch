@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,8 +66,8 @@ public class RestaurantDetailFragment extends BaseFragment {
         //setChooseRestaurantFabVisibility(selectedRestaurant);
 
         mBinding.chooseRestaurantFab.setOnClickListener(v -> {
-            mRestaurantViewModel.addUserToRestaurant(selectedRestaurant,mRestaurantViewModel.getAllRestaurants.getValue());
-            mRestaurantViewModel.updateUserDailySchedule(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()),selectedRestaurant);
+            mRestaurantViewModel.addUserToRestaurant(selectedRestaurant, mRestaurantViewModel.getAllRestaurants.getValue());
+            mRestaurantViewModel.updateUserDailySchedule(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()), selectedRestaurant);
         });
 
         mBinding.likeDetailImageButton.setOnClickListener(v ->
@@ -90,6 +91,7 @@ public class RestaurantDetailFragment extends BaseFragment {
                     REQUEST_CODE);
         }
     }
+
 
     private void initRecyclerView() {
         mAdapter = new ColleagueRecyclerViewAdapter(new ArrayList<>(), TAG);
@@ -131,13 +133,14 @@ public class RestaurantDetailFragment extends BaseFragment {
             mBinding.webSiteDetailImageButton.setBackgroundColor(Color.LTGRAY);
             mBinding.webSiteDetailImageButton.setEnabled(false);
         }
-        mRestaurantViewModel.getCurrentUser.observe(getViewLifecycleOwner(), user -> {
-            if (restaurant.getFanList() != null && restaurant.getFanList().contains(user.getUid())) {
+
+        mRestaurantViewModel.getFanList.observe(getViewLifecycleOwner(),fanList->{
+            if (fanList!=null&&fanList.contains(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getUid())) {
                 mBinding.likeDetailImageButton.setBackgroundColor(Color.LTGRAY);
                 mBinding.likeDetailImageButton.setEnabled(false);
             }
-
         });
+
     }
 
     private void setPhoto(Restaurant restaurant) {

@@ -85,7 +85,6 @@ public class RestaurantDaoImpl implements RestaurantDao {
 
     @Override
     public Observable<JsonObject> sendNotification(JsonObject payload) {
-        Log.i("TAG", "sendNotification: notif dao");
         return retrofitClient.getNotificationService().sendNotification(payload);
 
     }

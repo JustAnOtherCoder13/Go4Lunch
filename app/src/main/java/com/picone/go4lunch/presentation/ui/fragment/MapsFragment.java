@@ -73,6 +73,11 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         setAppBarVisibility(true);
         setStatusBarTransparency(false);
         fetchLastLocation();
+        mRestaurantViewModel.setAllDbRestaurants();
+        mUserViewModel.setAllDbUsers();
+        if (mAuth.getCurrentUser()!=null)
+        mRestaurantViewModel.setCurrentUser(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail());
+        initSettingButtons();
         mRestaurantViewModel.isDataLoading.observe(getViewLifecycleOwner(), this::playLoadingAnimation);
         mRestaurantViewModel.getSelectedRestaurant.observe(getViewLifecycleOwner(), restaurant -> {
             if (restaurant != null)
@@ -81,6 +86,8 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         mRestaurantViewModel.getCurrentLocation.observe(getViewLifecycleOwner(), currentLocation ->
                 mRestaurantViewModel.setAllRestaurantFromMaps(false));
     }
+
+    //--------------------------------- UPDATE VALUE ------------------------------------------
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

@@ -1,5 +1,6 @@
 package com.picone.go4lunch.presentation.ui.main;
 
+import android.app.AlertDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.DrawerMenuHeaderLayoutBinding;
 import com.picone.go4lunch.presentation.viewModels.ChatViewModel;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
@@ -115,5 +117,25 @@ public abstract class BaseFragment extends Fragment {
 
                     }
                 });
+    }
+
+    protected void initSettingButtons() {
+        mRestaurantViewModel.getCurrentUser.observe(getViewLifecycleOwner(), user -> {
+            mainActivity.mBinding.settingsViewInclude.languageTxtView.setText(user.getSettingValues().getChosenLanguage());
+            mainActivity.mBinding.settingsViewInclude.notificationSwitchButton.setChecked(user.getSettingValues().isNotificationSet());
+        });
+        mainActivity.mBinding.settingsViewInclude.saveChangesNoButtonSettings.setOnClickListener(v ->
+                setSettingViewVisibility());
+        mainActivity.mBinding.settingsViewInclude.saveChangesYesButtonSettings.setOnClickListener(v ->
+                initAlertDialog());
+    }
+
+    private void initAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle(R.string.change_settings)
+                .setNegativeButton(R.string.no, null)
+                .setPositiveButton(R.string.yes, (dialog, which) -> mainActivity.saveChanges())
+                .create()
+                .show();
     }
 }
