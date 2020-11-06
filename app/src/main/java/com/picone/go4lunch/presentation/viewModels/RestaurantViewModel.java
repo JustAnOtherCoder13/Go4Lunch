@@ -299,8 +299,7 @@ public class RestaurantViewModel extends BaseViewModel {
         updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(user)
                 .subscribeOn(schedulerProvider.getIo())
                 .observeOn(schedulerProvider.getUi())
-                .subscribe(() -> {
-                }, throwable -> checkException());
+                .subscribe(() -> isDataLoadingMutableLiveData.setValue(false), throwable -> checkException());
     }
 
     @SuppressLint("CheckResult")
