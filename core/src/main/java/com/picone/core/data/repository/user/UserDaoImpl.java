@@ -4,7 +4,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.picone.core.domain.entity.user.User;
-import com.picone.core.domain.entity.user.UserDailySchedule;
 
 import java.util.List;
 

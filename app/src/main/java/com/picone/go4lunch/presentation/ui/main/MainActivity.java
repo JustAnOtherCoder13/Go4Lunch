@@ -90,13 +90,12 @@ public class MainActivity extends AppCompatActivity {
     private void initToolBar() {
         setSupportActionBar(mBinding.topNavBar);
         setToolBarIconsVisibility(true);
-        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_menu_icon);
         getSupportActionBar().setTitle(R.string.i_am_hungry_title);
     }
 
     public void setToolBarIconsVisibility(boolean isVisible) {
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(isVisible);
-        getSupportActionBar().setDisplayShowHomeEnabled(isVisible);
+       getSupportActionBar().setDisplayHomeAsUpEnabled(isVisible);
+       if (isVisible)Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_menu_icon);
     }
 
     @Override
@@ -130,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.top_nav_bar_menu, menu);
         return super.onPrepareOptionsMenu(menu);
     }
+
 
     @Override
     public void onBackPressed() {

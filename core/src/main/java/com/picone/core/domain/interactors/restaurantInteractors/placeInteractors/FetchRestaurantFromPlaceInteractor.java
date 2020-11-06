@@ -1,13 +1,11 @@
 package com.picone.core.domain.interactors.restaurantInteractors.placeInteractors;
 
 import android.location.Location;
-import android.util.Log;
 
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.core.domain.entity.restaurant.RestaurantPosition;
 import com.picone.core.domain.entity.restaurantPOJO.NearBySearch;
-import com.picone.core.domain.entity.restaurantPOJO.Photo;
 import com.picone.core.domain.entity.restaurantPOJO.RestaurantPOJO;
 
 import java.util.ArrayList;

@@ -7,8 +7,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import com.picone.core.utils.SchedulerProvider;
+import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 import dagger.Module;
 import dagger.Provides;

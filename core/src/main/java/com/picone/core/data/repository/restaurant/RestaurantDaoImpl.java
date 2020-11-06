@@ -1,7 +1,6 @@
 package com.picone.core.data.repository.restaurant;
 
 import android.location.Location;
-import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;

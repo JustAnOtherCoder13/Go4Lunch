@@ -31,7 +31,7 @@ public class SearchViewHelper {
     public SearchViewHelper(MainActivity mainActivity, RestaurantViewModel mRestaurantViewModel, UserViewModel mUserViewModel) {
         this.mainActivity = mainActivity;
         this.mRestaurantViewModel = mRestaurantViewModel;
-        this.mUserViewModel= mUserViewModel;
+        this.mUserViewModel = mUserViewModel;
     }
 
     public void initSearchView(MenuItem item) {
@@ -46,6 +46,7 @@ public class SearchViewHelper {
         item.setOnActionExpandListener(geOnActionExpandListener(searchView));
         View deleteButton = searchView.findViewById(R.id.search_close_btn);
         deleteButton.setOnClickListener(getOnClickListener(searchView));
+        //searchView.setMaxWidth(Integer.MAX_VALUE);
     }
 
     @NonNull
@@ -64,8 +65,10 @@ public class SearchViewHelper {
         return new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
+                searchView.setIconified(false);
                 searchView.setOnQueryTextListener(getOnQueryTextListener());
                 mainActivity.setToolBarIconsVisibility(false);
+                mainActivity.getSupportActionBar().setHomeAsUpIndicator(null);
                 return true;
             }
 
@@ -87,7 +90,7 @@ public class SearchViewHelper {
         return new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                mRestaurantViewModel.filterExistingResults(query, allUsers,locationStr,MAPS_KEY);
+                mRestaurantViewModel.filterExistingResults(query, allUsers, locationStr, MAPS_KEY);
                 return false;
             }
 
@@ -96,7 +99,7 @@ public class SearchViewHelper {
                 if (newText.length() < 2) {
                     return false;
                 }
-                mRestaurantViewModel.filterExistingResults(newText, allUsers,locationStr,MAPS_KEY);
+                mRestaurantViewModel.filterExistingResults(newText, allUsers, locationStr, MAPS_KEY);
                 return true;
             }
         };

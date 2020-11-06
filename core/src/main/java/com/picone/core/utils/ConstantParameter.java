@@ -23,7 +23,7 @@ public class ConstantParameter {
     public static String MAPS_KEY;
 
     public static final int ALARM_HOUR = 13;
-    public static final int ALARM_MINUTE = 53;
+    public static final int ALARM_MINUTE = 55;
 
     public static final int MAPS_CAMERA_ZOOM = 16;
 

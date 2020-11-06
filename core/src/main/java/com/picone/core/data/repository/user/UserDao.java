@@ -1,7 +1,6 @@
 package com.picone.core.data.repository.user;
 
 import com.picone.core.domain.entity.user.User;
-import com.picone.core.domain.entity.user.UserDailySchedule;
 
 import java.util.List;
 

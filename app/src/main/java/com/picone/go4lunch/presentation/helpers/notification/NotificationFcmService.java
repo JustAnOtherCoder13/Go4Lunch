@@ -31,6 +31,7 @@ public class NotificationFcmService extends FirebaseMessagingService {
         Log.d("TAG", "Refreshed token: " + token);
     }
 
+    // todo notif don't show if app is totally closed,(not in background)
     private void setAlarm(Context context, String message) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, ALARM_HOUR);
