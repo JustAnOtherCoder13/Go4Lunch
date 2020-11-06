@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.utils;
+package com.picone.go4lunch.presentation.helpers;
 
 import android.content.Context;
 import android.graphics.Bitmap;

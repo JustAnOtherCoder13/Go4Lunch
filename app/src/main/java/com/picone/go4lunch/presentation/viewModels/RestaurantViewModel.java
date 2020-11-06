@@ -22,7 +22,7 @@ import com.picone.core.domain.interactors.restaurantInteractors.restaurantIntera
 import com.picone.core.domain.interactors.restaurantInteractors.restaurantInteractors.GetAllPersistedRestaurantsInteractor;
 import com.picone.core.domain.interactors.restaurantInteractors.restaurantInteractors.UpdateUserChosenRestaurantInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetCurrentUserForEmailInteractor;
-import com.picone.go4lunch.presentation.utils.SchedulerProvider;
+import com.picone.core.utils.SchedulerProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +33,10 @@ import io.reactivex.ObservableOnSubscribe;
 
 import static com.picone.core.utils.ConstantParameter.MAPS_KEY;
 import static com.picone.core.utils.ConstantParameter.TODAY;
-import static com.picone.core.utils.FindInListHelper.getCurrentUserInfoForUid;
-import static com.picone.core.utils.FindInListHelper.getRestaurantDailyScheduleOnToday;
-import static com.picone.core.utils.FindInListHelper.getRestaurantForPlaceId;
-import static com.picone.core.utils.FindInListHelper.getUserDailyScheduleOnToday;
+import static com.picone.core.utils.FindInListUtil.getCurrentUserInfoForUid;
+import static com.picone.core.utils.FindInListUtil.getRestaurantDailyScheduleOnToday;
+import static com.picone.core.utils.FindInListUtil.getRestaurantForPlaceId;
+import static com.picone.core.utils.FindInListUtil.getUserDailyScheduleOnToday;
 
 public class RestaurantViewModel extends BaseViewModel {
 
@@ -50,19 +50,6 @@ public class RestaurantViewModel extends BaseViewModel {
     private MutableLiveData<List<Restaurant>> allDbRestaurantsMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Restaurant> userChosenRestaurantMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<List<User>> filteredUsersMutableLiveData = new MutableLiveData<>(new ArrayList<>());
-
-
-    private AddRestaurantInteractor addRestaurantInteractor;
-    private UpdateUserChosenRestaurantInteractor updateUserChosenRestaurantInteractor;
-    private GetCurrentUserForEmailInteractor getCurrentUserForEmailInteractor;
-    private GetAllPersistedRestaurantsInteractor getAllPersistedRestaurantsInteractor;
-    private FetchRestaurantFromPlaceInteractor fetchRestaurantFromPlaceInteractor;
-    private FetchRestaurantDistanceInteractor fetchRestaurantDistanceInteractor;
-    private FetchRestaurantDetailFromPlaceInteractor fetchRestaurantDetailFromPlaceInteractor;
-    private GetPredictionInteractor getPredictionInteractor;
-    private SendNotificationInteractor sendNotificationInteractor;
-    private SchedulerProvider schedulerProvider;
-
 
     @ViewModelInject
     public RestaurantViewModel(AddRestaurantInteractor addRestaurantInteractor, UpdateUserChosenRestaurantInteractor updateUserChosenRestaurantInteractor
@@ -96,7 +83,6 @@ public class RestaurantViewModel extends BaseViewModel {
     public LiveData<List<User>> getAllFilteredUsers = filteredUsersMutableLiveData;
 
     //---------------------------------------------SETTER----------------------------------------------
-
     public void resetSelectedRestaurant() {
         selectedRestaurantMutableLiveData.setValue(null);
     }
@@ -152,7 +138,6 @@ public class RestaurantViewModel extends BaseViewModel {
         }
     }
 
-
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void setAllRestaurantFromMaps(boolean isReset) {
@@ -165,7 +150,6 @@ public class RestaurantViewModel extends BaseViewModel {
                     .subscribe(this::updateAllRestaurantsWithPersistedValues,
                             throwable -> checkException());
     }
-
 
     //--------------------------------------------MAPS DETAIL----------------------------------------------
 
@@ -194,7 +178,6 @@ public class RestaurantViewModel extends BaseViewModel {
     }
 
     //---------------------------------------------ACTIONS----------------------------------------------
-
     @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
     @SuppressLint("CheckResult")
     public void filterExistingResults(String query, List<User> allUsers,String locationStr,String googleKey) {
@@ -223,7 +206,6 @@ public class RestaurantViewModel extends BaseViewModel {
                     filteredUsersMutableLiveData.setValue(filteredUsers);
                 },throwable -> checkException());
     }
-
 
     @SuppressWarnings({"ConstantConditions"})
     @SuppressLint("CheckResult")
@@ -281,7 +263,6 @@ public class RestaurantViewModel extends BaseViewModel {
     }
 
     //---------------------------------------------UPDATE----------------------------------------------
-
     @SuppressLint("CheckResult")
     private void updateRestaurantDailySchedule(Restaurant selectedRestaurant) {
 
@@ -353,10 +334,6 @@ public class RestaurantViewModel extends BaseViewModel {
     }
 
     //---------------------------------------------HELPER----------------------------------------------
-
-
-
-
     @NonNull
     private User createFormatUser() {
         return new User(Objects.requireNonNull(currentUserMutableLiveData.getValue()).getUid(),

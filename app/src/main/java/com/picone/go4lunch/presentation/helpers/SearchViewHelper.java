@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.utils;
+package com.picone.go4lunch.presentation.helpers;
 
 import android.app.SearchManager;
 import android.content.Context;

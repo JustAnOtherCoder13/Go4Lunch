@@ -32,12 +32,12 @@ public class FetchRestaurantDetailFromPlaceInteractor {
     }
 
     private String formatOpeningHours(RestaurantDetail restaurantDetail) {
-        String closingHour = restaurantDetail.getResult().getOpeningHours().getPeriods().get(getWeekDayTextValue()).getClose().getTime();
-        if (restaurantDetail.getResult().getOpeningHours().getOpenNow())
-            closingHour = closingHour.substring(0, 2) + ":" + closingHour.substring(2, 4);
-        else
-            closingHour = "Closed";
-
+        String closingHour="Closed";
+        if (restaurantDetail.getResult().getOpeningHours() != null) {
+            if (restaurantDetail.getResult().getOpeningHours().getOpenNow()){
+                closingHour = restaurantDetail.getResult().getOpeningHours().getPeriods().get(getWeekDayTextValue()).getClose().getTime();
+                closingHour = closingHour.substring(0, 2) + ":" + closingHour.substring(2, 4);}
+        }
         return closingHour;
     }
 

@@ -1,11 +1,6 @@
-package com.picone.go4lunch.presentation.utils;
+package com.picone.core.utils;
 
-import io.reactivex.Completable;
-import io.reactivex.CompletableSource;
-import io.reactivex.CompletableTransformer;
 import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class SchedulerProvider {
 

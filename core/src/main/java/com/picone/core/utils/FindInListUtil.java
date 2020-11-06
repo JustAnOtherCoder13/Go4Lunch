@@ -10,7 +10,7 @@ import java.util.Objects;
 
 import static com.picone.core.utils.ConstantParameter.TODAY;
 
-public class FindInListHelper {
+public class FindInListUtil {
 
     public static RestaurantDailySchedule getRestaurantDailyScheduleOnToday(List<RestaurantDailySchedule> dailySchedules) {
         RestaurantDailySchedule restaurantDailyScheduleToReturn = null;

@@ -127,7 +127,6 @@ public class AuthenticationFragment extends BaseFragment {
 
 //------------------------------------Facebook authentication----------------------------
 
-    //TODO new method to get avatar? have a look at facebook api
     private void handleFacebookAccessToken(AccessToken token) {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)

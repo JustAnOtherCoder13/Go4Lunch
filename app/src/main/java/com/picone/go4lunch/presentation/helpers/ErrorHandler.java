@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.utils;
+package com.picone.go4lunch.presentation.helpers;
 
 //TODO do i have to translate this?
 public enum ErrorHandler {

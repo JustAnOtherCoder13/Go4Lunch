@@ -11,7 +11,7 @@ import com.picone.core.domain.entity.user.User;
 import com.picone.core.domain.interactors.usersInteractors.AddUserInteractor;
 import com.picone.core.domain.interactors.usersInteractors.GetAllUsersInteractor;
 import com.picone.core.domain.interactors.usersInteractors.UpdateUserInteractor;
-import com.picone.go4lunch.presentation.utils.SchedulerProvider;
+import com.picone.core.utils.SchedulerProvider;
 
 import java.util.List;
 
@@ -28,12 +28,6 @@ public class UserViewModel extends BaseViewModel {
     private MutableLiveData<UserCompletionState> UserCompletionStateMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<List<User>> allUsersMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
-
-    private AddUserInteractor addUserInteractor;
-    private GetAllUsersInteractor getAllUsersInteractor;
-    private UpdateUserInteractor updateUserInteractor;
-    private SchedulerProvider schedulerProvider;
-
 
     //suppress warning is safe cause subscribe is used to set allUsersMutableLiveData
     @SuppressLint("CheckResult")
@@ -54,6 +48,7 @@ public class UserViewModel extends BaseViewModel {
     }
 
     public void createCurrentUser(String uid, String name, String email, String avatar) {
+        if (avatar == null)avatar = "";
         userMutableLiveData.setValue(new User(uid, name, email, avatar, null, SETTING_START_VALUE));
     }
 

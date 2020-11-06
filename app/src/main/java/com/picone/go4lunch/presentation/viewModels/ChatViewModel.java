@@ -9,20 +9,13 @@ import androidx.lifecycle.MutableLiveData;
 import com.picone.core.domain.entity.ChatMessage;
 import com.picone.core.domain.interactors.chatInteractors.GetAllMessagesInteractor;
 import com.picone.core.domain.interactors.chatInteractors.PostMessageInteractor;
-import com.picone.go4lunch.presentation.utils.SchedulerProvider;
+import com.picone.core.utils.SchedulerProvider;
 
 import java.util.List;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class ChatViewModel extends BaseViewModel {
 
     private MutableLiveData<List<ChatMessage>> chatMessageMutableLiveData = new MutableLiveData<>();
-
-    private GetAllMessagesInteractor getAllMessagesInteractor;
-    private PostMessageInteractor postMessageInteractor;
-    private SchedulerProvider schedulerProvider;
 
     @ViewModelInject
     public ChatViewModel(GetAllMessagesInteractor getAllMessagesInteractor, PostMessageInteractor postMessageInteractor,SchedulerProvider schedulerProvider) {

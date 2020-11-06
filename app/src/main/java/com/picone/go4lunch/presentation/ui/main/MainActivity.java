@@ -31,10 +31,10 @@ import com.picone.core.domain.entity.user.SettingValues;
 import com.picone.core.domain.entity.user.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
-import com.picone.go4lunch.presentation.utils.CustomAdapter;
-import com.picone.go4lunch.presentation.utils.ErrorHandler;
-import com.picone.go4lunch.presentation.utils.LocaleHelper;
-import com.picone.go4lunch.presentation.utils.SearchViewHelper;
+import com.picone.go4lunch.presentation.helpers.CustomAdapter;
+import com.picone.go4lunch.presentation.helpers.ErrorHandler;
+import com.picone.go4lunch.presentation.helpers.LocaleHelper;
+import com.picone.go4lunch.presentation.helpers.SearchViewHelper;
 import com.picone.go4lunch.presentation.viewModels.ChatViewModel;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
@@ -49,8 +49,8 @@ import javax.inject.Inject;
 import dagger.hilt.android.AndroidEntryPoint;
 import dagger.hilt.android.scopes.ActivityScoped;
 
-import static com.picone.core.utils.FindInListHelper.getRestaurantDailyScheduleOnToday;
-import static com.picone.core.utils.FindInListHelper.getUserDailyScheduleOnToday;
+import static com.picone.core.utils.FindInListUtil.getRestaurantDailyScheduleOnToday;
+import static com.picone.core.utils.FindInListUtil.getUserDailyScheduleOnToday;
 
 
 @ActivityScoped
@@ -128,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
     }
-
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {

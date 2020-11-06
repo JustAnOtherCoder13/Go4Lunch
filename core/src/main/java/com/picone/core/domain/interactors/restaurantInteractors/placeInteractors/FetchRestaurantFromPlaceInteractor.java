@@ -43,12 +43,13 @@ public class FetchRestaurantFromPlaceInteractor {
     }
 
     private String createPhotoUrl(String googleKey, RestaurantPOJO restaurantPOJO) {
-        Photo photo = restaurantPOJO.getPhotos().get(0);
+        if (!restaurantPOJO.getPhotos().isEmpty())
         return "https://maps.googleapis.com/maps/api/place/photo?"
-                .concat("maxwidth=" + photo.getWidth())
-                .concat("&photoreference=" + photo.getPhotoReference())
+                .concat("maxwidth=" + restaurantPOJO.getPhotos().get(0).getWidth())
+                .concat("&photoreference=" + restaurantPOJO.getPhotos().get(0).getPhotoReference())
                 .concat("&key=")
                 .concat(googleKey);
+        else return "";
     }
 
     private Restaurant createRestaurant(RestaurantPOJO restaurantPOJO, String googleKey) {

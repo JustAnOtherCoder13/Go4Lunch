@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.utils;
+package com.picone.go4lunch.presentation.helpers;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 
 import com.picone.go4lunch.R;
 
-import static com.picone.go4lunch.presentation.utils.GetBitmapFromVectorUtil.getBitmapFromVectorDrawable;
+import static com.picone.go4lunch.presentation.helpers.GetBitmapFromVectorUtil.getBitmapFromVectorDrawable;
 
 public class CustomAdapter extends ArrayAdapter<String> {
 

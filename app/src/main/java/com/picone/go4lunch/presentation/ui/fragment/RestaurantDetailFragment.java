@@ -34,8 +34,8 @@ import static android.Manifest.permission.CALL_PHONE;
 import static com.picone.core.utils.ConstantParameter.CURRENT_HOUR;
 import static com.picone.core.utils.ConstantParameter.MAX_RESERVATION_HOUR;
 import static com.picone.core.utils.ConstantParameter.REQUEST_CODE;
-import static com.picone.core.utils.FindInListHelper.getUserDailyScheduleOnToday;
-import static com.picone.go4lunch.presentation.utils.ManageStarUtil.manageStar;
+import static com.picone.core.utils.FindInListUtil.getUserDailyScheduleOnToday;
+import static com.picone.go4lunch.presentation.helpers.ManageStarHelper.manageStar;
 
 public class RestaurantDetailFragment extends BaseFragment {
 
@@ -60,6 +60,7 @@ public class RestaurantDetailFragment extends BaseFragment {
         initView();
     }
 
+    //todo reuse
     private void initButtons(Restaurant selectedRestaurant) {
         //setChooseRestaurantFabVisibility(selectedRestaurant);
 

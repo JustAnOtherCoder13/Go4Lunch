@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.utils;
+package com.picone.go4lunch.presentation.helpers;
 
 import android.view.View;
 
@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.picone.go4lunch.databinding.StarLayoutBinding;
 
-public class ManageStarUtil {
+public class ManageStarHelper {
 
     public static void manageStar(@NonNull StarLayoutBinding starLayoutBinding, int averageSatisfaction) {
         switch (averageSatisfaction) {

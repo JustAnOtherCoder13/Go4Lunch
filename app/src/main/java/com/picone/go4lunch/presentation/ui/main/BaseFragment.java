@@ -65,7 +65,6 @@ public abstract class BaseFragment extends Fragment {
                 populateDrawerMenu(mAuth.getCurrentUser());
             }
         });
-
     }
 
     protected void setAppBarVisibility(boolean isVisible) {

@@ -15,12 +15,13 @@ import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentWorkmatesBinding;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.ColleagueRecyclerViewAdapter;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
-import com.picone.go4lunch.presentation.utils.RecyclerViewItemClickUtil;
+import com.picone.go4lunch.presentation.helpers.RecyclerViewItemClickUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import static com.picone.core.utils.FindInListHelper.getUserDailyScheduleOnToday;
+import static com.picone.core.utils.FindInListUtil.getUserDailyScheduleOnToday;
 
 public class WorkmatesFragment extends BaseFragment {
 
@@ -56,13 +57,17 @@ public class WorkmatesFragment extends BaseFragment {
         mUserViewModel.getAllUsers().observe(getViewLifecycleOwner(), adapter::updateUsers);
     }
 
-    //getAllUsers can't be null cause set in main
-    @SuppressWarnings("ConstantConditions")
     public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewWorkmatesFragment, R.layout.fragment_restaurant_list)
                 .setOnItemClickListener((recyclerView, position, v) -> {
-                    if (!mUserViewModel.getAllUsers().getValue().isEmpty() && mUserViewModel.getAllUsers().getValue().get(position).getUserDailySchedules() != null && getUserDailyScheduleOnToday(mUserViewModel.getAllUsers().getValue().get(position).getUserDailySchedules()) != null) {
-                        mRestaurantViewModel.setInterestedUsersForRestaurant(getUserDailyScheduleOnToday(mUserViewModel.getAllUsers().getValue().get(position).getUserDailySchedules()).getRestaurantPlaceId(),mRestaurantViewModel.getAllRestaurants.getValue());
+                    if (!Objects.requireNonNull(mUserViewModel.getAllUsers().getValue()).isEmpty()
+                            && mUserViewModel.getAllUsers().getValue().get(position).getUserDailySchedules() != null
+                            && getUserDailyScheduleOnToday(mUserViewModel.getAllUsers().getValue().get(position).getUserDailySchedules()) != null) {
+
+                            mRestaurantViewModel.setInterestedUsersForRestaurant
+                                (getUserDailyScheduleOnToday
+                                        (mUserViewModel.getAllUsers().getValue().get(position).getUserDailySchedules())
+                                        .getRestaurantPlaceId(),mRestaurantViewModel.getAllRestaurants.getValue());
                     }
                 });
     }

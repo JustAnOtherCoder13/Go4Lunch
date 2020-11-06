@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.utils.notification;
+package com.picone.go4lunch.presentation.helpers.notification;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

@@ -59,14 +59,14 @@
 
         <!-- [START firebase_service] -->
         <service
-            android:name=".presentation.utils.notification.NotificationFcmService"
+            android:name=".presentation.helpers.notification.NotificationFcmService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <!-- [END firebase_service] -->
-        <receiver android:name="com.picone.go4lunch.presentation.utils.notification.NotificationReceiver" />
+        <receiver android:name="com.picone.go4lunch.presentation.helpers.notification.NotificationReceiver" />
 
 
     </application>

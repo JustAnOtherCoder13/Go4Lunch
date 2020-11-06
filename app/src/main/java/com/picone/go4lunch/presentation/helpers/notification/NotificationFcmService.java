@@ -1,4 +1,4 @@
-package com.picone.go4lunch.presentation.utils.notification;
+package com.picone.go4lunch.presentation.helpers.notification;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

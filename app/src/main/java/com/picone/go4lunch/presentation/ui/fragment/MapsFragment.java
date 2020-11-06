@@ -38,9 +38,9 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.picone.core.utils.ConstantParameter.MAPS_CAMERA_ZOOM;
 import static com.picone.core.utils.ConstantParameter.MAPS_KEY;
 import static com.picone.core.utils.ConstantParameter.REQUEST_CODE;
-import static com.picone.core.utils.FindInListHelper.getRestaurantDailyScheduleOnToday;
-import static com.picone.core.utils.FindInListHelper.getRestaurantForPlaceId;
-import static com.picone.go4lunch.presentation.utils.GetBitmapFromVectorUtil.getBitmapFromVectorDrawable;
+import static com.picone.core.utils.FindInListUtil.getRestaurantDailyScheduleOnToday;
+import static com.picone.core.utils.FindInListUtil.getRestaurantForPlaceId;
+import static com.picone.go4lunch.presentation.helpers.GetBitmapFromVectorUtil.getBitmapFromVectorDrawable;
 
 public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
 
