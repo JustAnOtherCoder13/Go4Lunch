@@ -110,6 +110,7 @@
     <string name="notifications">Notifications</string>
     <string name="cancel_reservation">ANNULER VOTRE RESERVATION</string>
     <string name="save_changes">Sauvegarder</string>
+    <string name="on_error">Une erreur est survenue, merci de vérifier vos paramètre et d\'essayer à nouveau</string>
 
 
 </resources>

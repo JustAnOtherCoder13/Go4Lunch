@@ -1,14 +1,15 @@
 package com.picone.go4lunch.presentation.helpers;
 
-//TODO do i have to translate this?
+import com.picone.go4lunch.R;
+
 public enum ErrorHandler {
 
-    NO_ERROR(""),
-    ON_ERROR("An error have occurred, please check your parameters and try again");
+    NO_ERROR(0),
+    ON_ERROR(R.string.on_error);
 
-    public final String label;
+    public final int label;
 
-    ErrorHandler(String label) {
+    ErrorHandler(int label) {
         this.label = label;
     }
 }

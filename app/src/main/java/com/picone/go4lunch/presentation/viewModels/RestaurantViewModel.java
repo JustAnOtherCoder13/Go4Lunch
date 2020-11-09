@@ -2,6 +2,7 @@ package com.picone.go4lunch.presentation.viewModels;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.hilt.lifecycle.ViewModelInject;
@@ -186,6 +187,7 @@ public class RestaurantViewModel extends BaseViewModel {
     @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
     @SuppressLint("CheckResult")
     public void filterExistingResults(String query, List<User> allUsers, String locationStr, String googleKey) {
+        Log.i("TAG", "filterExistingResults: "+allUsers);
         List<Restaurant> filteredRestaurant = new ArrayList<>();
         List<User> filteredUsers = new ArrayList<>();
         getPredictionInteractor.getPredictions(query, googleKey, locationStr)

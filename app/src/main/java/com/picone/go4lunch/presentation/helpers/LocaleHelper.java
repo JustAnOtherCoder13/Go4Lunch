@@ -30,6 +30,7 @@ public class LocaleHelper {
     }
 
      public static void persist(Context context, String language) {
+        //updateResourcesLegacy(context, language);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(SELECTED_LANGUAGE, language);

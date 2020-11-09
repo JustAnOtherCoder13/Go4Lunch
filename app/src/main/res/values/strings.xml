@@ -110,5 +110,6 @@
     <string name="notifications">Notifications</string>
     <string name="cancel_reservation">CANCEL RESERVATION</string>
     <string name="save_changes">Save changes</string>
+    <string name="on_error">An error have occurred, please check your parameters and try again</string>
 
 </resources>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -89,13 +90,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void initToolBar() {
         setSupportActionBar(mBinding.topNavBar);
-        setToolBarIconsVisibility(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_icon);
         getSupportActionBar().setTitle(R.string.i_am_hungry_title);
-    }
-
-    public void setToolBarIconsVisibility(boolean isVisible) {
-       getSupportActionBar().setDisplayHomeAsUpEnabled(isVisible);
-       if (isVisible)Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_menu_icon);
     }
 
     @Override
@@ -105,7 +103,8 @@ public class MainActivity extends AppCompatActivity {
         if (mFirebaseAuth.getCurrentUser() != null || accessToken != null && !accessToken.isExpired()) {
             mRestaurantViewModel.getAllDbRestaurants.observe(this, restaurants ->
                     mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(null));
-            mLoginViewModel.authenticate(true);            mRestaurantViewModel.getSelectedRestaurant.observe(this, restaurant -> {
+            mLoginViewModel.authenticate(true);
+            mRestaurantViewModel.getSelectedRestaurant.observe(this, restaurant -> {
                 if (restaurant != null)
                     mNavController.navigate(R.id.restaurantDetailFragment);
             });
@@ -122,6 +121,9 @@ public class MainActivity extends AppCompatActivity {
             });
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
+        mRestaurantViewModel.getCurrentUser.observe(this,user ->
+                Log.i("TAG", "onStart: "+LocaleHelper.getLanguage(this)+" "+mRestaurantViewModel.getCurrentUser.getValue().getSettingValues().getChosenLanguage())
+                );
     }
 
     @Override
@@ -130,17 +132,18 @@ public class MainActivity extends AppCompatActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (Objects.requireNonNull(mNavController.getCurrentDestination()).getId() == R.id.authenticationFragment) {
-            if (!LocaleHelper.getLanguage(this).equalsIgnoreCase(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().getChosenLanguage()))
-                LocaleHelper.persist(this,mRestaurantViewModel.getCurrentUser.getValue().getSettingValues().getChosenLanguage());
-            this.finish();
-        }
         mRestaurantViewModel.resetSelectedRestaurant();
         mNavController.navigateUp();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocaleHelper.persist(this, Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().getChosenLanguage());
+
     }
 
     @Override
@@ -150,7 +153,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        mBinding.drawerLayout.open();
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mBinding.drawerLayout.open();
+                break;
+            case R.id.top_nav_search_button:
+                searchViewHelper.initSearchView(item);
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -164,12 +173,6 @@ public class MainActivity extends AppCompatActivity {
     //--------------------------------- BUTTONS ------------------------------------------
 
     private void initMenuButton() {
-        mBinding.topNavBar.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.top_nav_search_button) {
-                searchViewHelper.initSearchView(item);
-            }
-            return false;
-        });
         mBinding.navView.setNavigationItemSelectedListener(item -> {
             mBinding.drawerLayout.close();
             initDrawerMenuItems(item);
@@ -239,6 +242,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void setSettingsVisibility(boolean isVisible) {
         if (isVisible) {
+            //todo force focus requestFocus Android bottom sheet fragment
+            mBinding.settingsViewInclude.settings.requestFocus();
+            mBinding.settingsViewInclude.settings.bringToFront();
+            mBinding.settingsViewInclude.settings.requestLayout();
             mBinding.settingsViewInclude.settings.setVisibility(View.VISIBLE);
             mBinding.settingsViewInclude.settingsFrame.setVisibility(View.VISIBLE);
         } else {

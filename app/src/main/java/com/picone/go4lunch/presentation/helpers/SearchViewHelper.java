@@ -23,7 +23,6 @@ import static com.picone.core.utils.ConstantParameter.MAPS_KEY;
 
 public class SearchViewHelper {
 
-    //TODO hide back button
     MainActivity mainActivity;
     RestaurantViewModel mRestaurantViewModel;
     UserViewModel mUserViewModel;
@@ -34,9 +33,13 @@ public class SearchViewHelper {
         this.mUserViewModel = mUserViewModel;
     }
 
+// h_Cube
+    
     public void initSearchView(MenuItem item) {
         SearchManager searchManager = (SearchManager) mainActivity.getSystemService(Context.SEARCH_SERVICE);
+
         SearchView searchView = item.getActionView().findViewById(R.id.top_nav_search_button);
+        searchView.onActionViewExpanded();
         assert searchManager != null;
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(mainActivity.getComponentName()));
@@ -46,7 +49,6 @@ public class SearchViewHelper {
         item.setOnActionExpandListener(geOnActionExpandListener(searchView));
         View deleteButton = searchView.findViewById(R.id.search_close_btn);
         deleteButton.setOnClickListener(getOnClickListener(searchView));
-        //searchView.setMaxWidth(Integer.MAX_VALUE);
     }
 
     @NonNull
@@ -60,6 +62,7 @@ public class SearchViewHelper {
         };
     }
 
+
     @NonNull
     private MenuItem.OnActionExpandListener geOnActionExpandListener(SearchView searchView) {
         return new MenuItem.OnActionExpandListener() {
@@ -67,8 +70,6 @@ public class SearchViewHelper {
             public boolean onMenuItemActionExpand(MenuItem item) {
                 searchView.setIconified(false);
                 searchView.setOnQueryTextListener(getOnQueryTextListener());
-                mainActivity.setToolBarIconsVisibility(false);
-                mainActivity.getSupportActionBar().setHomeAsUpIndicator(null);
                 return true;
             }
 
@@ -76,7 +77,6 @@ public class SearchViewHelper {
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 mRestaurantViewModel.setAllRestaurantFromMaps(true);
                 mUserViewModel.setAllDbUsers();
-                mainActivity.setToolBarIconsVisibility(true);
                 return true;
             }
         };
