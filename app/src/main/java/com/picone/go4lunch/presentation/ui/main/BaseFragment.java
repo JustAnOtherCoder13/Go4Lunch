@@ -77,10 +77,6 @@ public abstract class BaseFragment extends Fragment {
         mainActivity.setStatusBarTransparency(isTransparent);
     }
 
-    protected void setSettingViewVisibility() {
-        mainActivity.setSettingsVisibility(false);
-    }
-
     @SuppressWarnings("ConstantConditions")
     protected void setPageTitle(int title) {
         mainActivity.getSupportActionBar().setTitle(title);
@@ -121,12 +117,10 @@ public abstract class BaseFragment extends Fragment {
 
     protected void initSettingButtons() {
         mRestaurantViewModel.getCurrentUser.observe(getViewLifecycleOwner(), user -> {
-            mainActivity.mBinding.settingsViewInclude.languageTxtView.setText(user.getSettingValues().getChosenLanguage());
-            mainActivity.mBinding.settingsViewInclude.notificationSwitchButton.setChecked(user.getSettingValues().isNotificationSet());
+            mainActivity.mBinding.bottomSheetInclude.languageTxtView.setText(user.getSettingValues().getChosenLanguage());
+            mainActivity.mBinding.bottomSheetInclude.notificationSwitchButton.setChecked(user.getSettingValues().isNotificationSet());
         });
-        mainActivity.mBinding.settingsViewInclude.saveChangesNoButtonSettings.setOnClickListener(v ->
-                setSettingViewVisibility());
-        mainActivity.mBinding.settingsViewInclude.saveChangesYesButtonSettings.setOnClickListener(v ->
+        mainActivity.mBinding.bottomSheetInclude.saveChangesYesButtonSettings.setOnClickListener(v ->
                 initAlertDialog());
     }
 

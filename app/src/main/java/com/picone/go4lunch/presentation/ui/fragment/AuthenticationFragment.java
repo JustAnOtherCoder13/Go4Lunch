@@ -51,7 +51,6 @@ public class AuthenticationFragment extends BaseFragment {
         initButtons();
         setAppBarVisibility(false);
         setStatusBarTransparency(true);
-        setSettingViewVisibility();
         playLoadingAnimation(false);
         mNavController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
         return mBinding.getRoot();

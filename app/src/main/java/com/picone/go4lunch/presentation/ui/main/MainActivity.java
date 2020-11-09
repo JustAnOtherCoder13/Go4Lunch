@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,15 +11,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
-import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
@@ -28,6 +24,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.picone.core.domain.entity.restaurant.Restaurant;
@@ -53,6 +50,8 @@ import javax.inject.Inject;
 import dagger.hilt.android.AndroidEntryPoint;
 import dagger.hilt.android.scopes.ActivityScoped;
 
+import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED;
+import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
 import static com.picone.core.utils.FindInListUtil.getRestaurantDailyScheduleOnToday;
 import static com.picone.core.utils.FindInListUtil.getUserDailyScheduleOnToday;
 
@@ -75,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
     private ChatViewModel mChatViewModel;
     private NavController mNavController;
     private SearchViewHelper searchViewHelper;
-    private int finishAppCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
         searchViewHelper = new SearchViewHelper(this, mRestaurantViewModel, mUserViewModel);
         initLoadingAnimation();
-        setSettingsVisibility(false);
         initToolBar();
         initMenuButton();
         initInComingNavigation();
@@ -101,9 +98,12 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(R.string.i_am_hungry_title);
     }
 
+    private BottomSheetBehavior<ConstraintLayout> bottomSheetBehavior;
+
     @Override
     protected void onStart() {
         super.onStart();
+        initBottomSheet();
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (mFirebaseAuth.getCurrentUser() != null || accessToken != null && !accessToken.isExpired()) {
 
@@ -127,9 +127,38 @@ public class MainActivity extends AppCompatActivity {
             });
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
-        mRestaurantViewModel.getCurrentUser.observe(this, user ->
-                Log.i("TAG", "onStart: " + LocaleHelper.getLanguage(this) + " " + mRestaurantViewModel.getCurrentUser.getValue().getSettingValues().getChosenLanguage())
-        );
+    }
+
+    private void initBottomSheet() {
+        mBinding.bottomSheetInclude.settingsLayout.setVisibility(View.GONE);
+        bottomSheetBehavior = BottomSheetBehavior.from(mBinding.bottomSheetInclude.bottomSheet);
+        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == STATE_EXPANDED) {
+                    mBinding.bottomSheetInclude.settingsLayout.setVisibility(View.VISIBLE);
+                    mBinding.bottomSheetInclude.openBtn.setImageResource(R.drawable.ic_baseline_arrow_drop_down_24);
+                    mBinding.bottomSheetInclude.openBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+
+                } else {
+                    mBinding.bottomSheetInclude.settingsLayout.setVisibility(View.GONE);
+                    mBinding.bottomSheetInclude.openBtn.setImageResource(R.drawable.ic_settings_icon);
+                    mBinding.bottomSheetInclude.openBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+        mBinding.bottomSheetInclude.openBtn.setOnClickListener(v -> {
+            if (bottomSheetBehavior.getState() == STATE_EXPANDED) {
+                bottomSheetBehavior.setState(STATE_COLLAPSED);
+            } else {
+                initDropDownMenu();
+                bottomSheetBehavior.setState(STATE_EXPANDED);}
+        });
     }
 
     @Override
@@ -144,8 +173,7 @@ public class MainActivity extends AppCompatActivity {
         if (bol) {
             LocaleHelper.persist(this, Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().getChosenLanguage());
             finish();
-        }
-        else super.onBackPressed();
+        } else super.onBackPressed();
         mRestaurantViewModel.resetSelectedRestaurant();
         mNavController.navigateUp();
     }
@@ -195,12 +223,6 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.settings_drawer_layout:
-                    if (mBinding.settingsViewInclude.settings.getVisibility() == View.GONE) {
-                        setSettingsVisibility(true);
-                        initDropDownMenu();
-                    }
-                    mBinding.settingsViewInclude.saveChangesNoButtonSettings.setOnClickListener(v ->
-                            setSettingsVisibility(false));
                     break;
                 case R.id.logout_drawer_layout:
                     signOut();
@@ -217,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
 
         CustomAdapter adapter = new CustomAdapter(this, languages, flags);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mBinding.settingsViewInclude.languageTxtView.setAdapter(adapter);
+        mBinding.bottomSheetInclude.languageTxtView.setAdapter(adapter);
     }
 
     //--------------------------------- NAVIGATION ------------------------------------------
@@ -242,21 +264,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(mBinding.bottomNavigation, mNavController);
     }
 
-    //--------------------------------- UI VISIBILITY ------------------------------------------
-
-    public void setSettingsVisibility(boolean isVisible) {
-        if (isVisible) {
-            //todo force focus requestFocus Android bottom sheet fragment
-            mBinding.settingsViewInclude.settings.requestFocus();
-            mBinding.settingsViewInclude.settings.bringToFront();
-            mBinding.settingsViewInclude.settings.requestLayout();
-            mBinding.settingsViewInclude.settings.setVisibility(View.VISIBLE);
-            mBinding.settingsViewInclude.settingsFrame.setVisibility(View.VISIBLE);
-        } else {
-            mBinding.settingsViewInclude.settings.setVisibility(View.GONE);
-            mBinding.settingsViewInclude.settingsFrame.setVisibility(View.GONE);
-        }
-    }
+    //--------------------------------- UI VISIBILITY -----------------------------------------
 
     public void setStatusBarTransparency(boolean isTransparent) {
         if (isTransparent) {
@@ -336,19 +344,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void saveChanges() {
         SettingValues currentUserSettingValues = Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues();
-        String language = Objects.requireNonNull(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText()).getText().toString();
+        String language = Objects.requireNonNull(mBinding.bottomSheetInclude.languageSpinnerSettings.getEditText()).getText().toString();
 
         if (!language.equalsIgnoreCase(currentUserSettingValues.getChosenLanguage())
-                || mBinding.settingsViewInclude.notificationSwitchButton.isChecked() != currentUserSettingValues.isNotificationSet()
-                || mBinding.settingsViewInclude.cancelReservationToggleButton.isChecked()) {
+                || mBinding.bottomSheetInclude.notificationSwitchButton.isChecked() != currentUserSettingValues.isNotificationSet()
+                || mBinding.bottomSheetInclude.cancelReservationToggleButton.isChecked()) {
 
             setLanguageAndRestart(language);
 
             mUserViewModel.updateUserSettingValues(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue())
-                    , new SettingValues(Objects.requireNonNull(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText()).getText().toString().trim(),
-                            mBinding.settingsViewInclude.notificationSwitchButton.isChecked()));
+                    , new SettingValues(Objects.requireNonNull(mBinding.bottomSheetInclude.languageSpinnerSettings.getEditText()).getText().toString().trim(),
+                            mBinding.bottomSheetInclude.notificationSwitchButton.isChecked()));
 
-            if (mBinding.settingsViewInclude.cancelReservationToggleButton.isChecked()) {
+            if (mBinding.bottomSheetInclude.cancelReservationToggleButton.isChecked()) {
                 if (getUserDailyScheduleOnToday(Objects.requireNonNull
                         (mRestaurantViewModel.getCurrentUser.getValue()).getUserDailySchedules()) == null)
                     Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
@@ -356,7 +364,6 @@ public class MainActivity extends AppCompatActivity {
                     mRestaurantViewModel.cancelReservation(mRestaurantViewModel.getAllRestaurants.getValue());
             }
         }
-        setSettingsVisibility(false);
     }
 
     private void setLanguageAndRestart(String language) {
