@@ -12,11 +12,15 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
@@ -71,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
     private ChatViewModel mChatViewModel;
     private NavController mNavController;
     private SearchViewHelper searchViewHelper;
+    private int finishAppCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (mFirebaseAuth.getCurrentUser() != null || accessToken != null && !accessToken.isExpired()) {
+
             mRestaurantViewModel.getAllDbRestaurants.observe(this, restaurants ->
                     mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(null));
             mLoginViewModel.authenticate(true);
@@ -121,9 +127,9 @@ public class MainActivity extends AppCompatActivity {
             });
             Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
-        mRestaurantViewModel.getCurrentUser.observe(this,user ->
-                Log.i("TAG", "onStart: "+LocaleHelper.getLanguage(this)+" "+mRestaurantViewModel.getCurrentUser.getValue().getSettingValues().getChosenLanguage())
-                );
+        mRestaurantViewModel.getCurrentUser.observe(this, user ->
+                Log.i("TAG", "onStart: " + LocaleHelper.getLanguage(this) + " " + mRestaurantViewModel.getCurrentUser.getValue().getSettingValues().getChosenLanguage())
+        );
     }
 
     @Override
@@ -134,16 +140,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        boolean bol = mNavController.getCurrentDestination().getId() == R.id.mapsFragment;
+        if (bol) {
+            LocaleHelper.persist(this, Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().getChosenLanguage());
+            finish();
+        }
+        else super.onBackPressed();
         mRestaurantViewModel.resetSelectedRestaurant();
         mNavController.navigateUp();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        LocaleHelper.persist(this, Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().getChosenLanguage());
-
     }
 
     @Override
