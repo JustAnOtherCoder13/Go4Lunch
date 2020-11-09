@@ -35,6 +35,7 @@ public class WorkmatesFragment extends BaseFragment {
         mBinding = FragmentWorkmatesBinding.inflate(getLayoutInflater());
         setAppBarVisibility(true);
         setStatusBarTransparency(false);
+        setBottomSheetVisibility(true);
         setPageTitle(R.string.available_workmates);
         return mBinding.getRoot();
     }

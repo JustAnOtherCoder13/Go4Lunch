@@ -32,6 +32,7 @@ public class RestaurantListFragment extends BaseFragment {
         mBinding = FragmentRestaurantListBinding.inflate(inflater, container, false);
         setAppBarVisibility(true);
         setStatusBarTransparency(false);
+        setBottomSheetVisibility(true);
         setPageTitle(R.string.i_am_hungry_title);
         return mBinding.getRoot();
     }

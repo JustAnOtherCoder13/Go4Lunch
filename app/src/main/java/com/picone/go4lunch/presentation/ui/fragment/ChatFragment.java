@@ -32,6 +32,7 @@ public class ChatFragment extends BaseFragment {
         mBinding = FragmentChatBinding.inflate(inflater, container, false);
         setAppBarVisibility(false);
         setStatusBarTransparency(false);
+        setBottomSheetVisibility(false);
         return mBinding.getRoot();
     }
 

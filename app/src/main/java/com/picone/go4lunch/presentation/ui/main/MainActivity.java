@@ -1,11 +1,14 @@
 package com.picone.go4lunch.presentation.ui.main;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -98,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(R.string.i_am_hungry_title);
     }
 
-    private BottomSheetBehavior<ConstraintLayout> bottomSheetBehavior;
+    public BottomSheetBehavior<ConstraintLayout> bottomSheetBehavior;
 
     @Override
     protected void onStart() {
@@ -129,21 +132,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void setBottomSheetVisibility(boolean isVisible) {
+        //if (isVisible) mBinding.bottomSheetInclude.openBtn.setVisibility(View.VISIBLE);
+        //else mBinding.bottomSheetInclude.openBtn.setVisibility(View.GONE);
+    }
+
+
     private void initBottomSheet() {
         mBinding.bottomSheetInclude.settingsLayout.setVisibility(View.GONE);
         bottomSheetBehavior = BottomSheetBehavior.from(mBinding.bottomSheetInclude.bottomSheet);
+        mBinding.bottomSheetInclude.bottomSheet.setClickable(false);
+        bottomSheetBehavior.setSkipCollapsed(true);
         bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == STATE_EXPANDED) {
                     mBinding.bottomSheetInclude.settingsLayout.setVisibility(View.VISIBLE);
-                    mBinding.bottomSheetInclude.openBtn.setImageResource(R.drawable.ic_baseline_arrow_drop_down_24);
-                    mBinding.bottomSheetInclude.openBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+                    mBinding.bottomSheetInclude.bottomSheet.setClickable(true);
+                    //mBinding.bottomSheetInclude.openBtn.setImageResource(R.drawable.ic_baseline_arrow_drop_down_24);
+                   // mBinding.bottomSheetInclude.openBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
 
                 } else {
                     mBinding.bottomSheetInclude.settingsLayout.setVisibility(View.GONE);
-                    mBinding.bottomSheetInclude.openBtn.setImageResource(R.drawable.ic_settings_icon);
-                    mBinding.bottomSheetInclude.openBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                    mBinding.bottomSheetInclude.bottomSheet.setClickable(false);
+                    //mBinding.bottomSheetInclude.openBtn.setImageResource(R.drawable.ic_settings_icon);
+                    //mBinding.bottomSheetInclude.openBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                 }
             }
 
@@ -152,12 +165,21 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        mBinding.bottomSheetInclude.openBtn.setOnClickListener(v -> {
+       /* mBinding.bottomSheetInclude.openBtn.setOnClickListener(v -> {
             if (bottomSheetBehavior.getState() == STATE_EXPANDED) {
                 bottomSheetBehavior.setState(STATE_COLLAPSED);
             } else {
                 initDropDownMenu();
-                bottomSheetBehavior.setState(STATE_EXPANDED);}
+                bottomSheetBehavior.setState(STATE_EXPANDED);
+            }
+        });*/
+        mBinding.drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                if (slideOffset >= 0.4) setBottomSheetVisibility(false);
+                else setBottomSheetVisibility(true);
+            }
         });
     }
 
@@ -223,6 +245,12 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.settings_drawer_layout:
+                    if (bottomSheetBehavior.getState() == STATE_EXPANDED) {
+                        bottomSheetBehavior.setState(STATE_COLLAPSED);
+                    } else {
+                        initDropDownMenu();
+                        bottomSheetBehavior.setState(STATE_EXPANDED);
+                    }
                     break;
                 case R.id.logout_drawer_layout:
                     signOut();

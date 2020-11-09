@@ -50,6 +50,7 @@ public class RestaurantDetailFragment extends BaseFragment {
         mBinding = FragmentRestaurantDetailBinding.inflate(inflater, container, false);
         setAppBarVisibility(false);
         setStatusBarTransparency(true);
+        setBottomSheetVisibility(false);
         return mBinding.getRoot();
     }
 

@@ -72,6 +72,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         initMapView(savedInstanceState);
         setAppBarVisibility(true);
         setStatusBarTransparency(false);
+        setBottomSheetVisibility(true);
         fetchLastLocation();
         if (mAuth.getCurrentUser()!=null)
         mRestaurantViewModel.setCurrentUser(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail());
