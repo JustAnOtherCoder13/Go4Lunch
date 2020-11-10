@@ -25,11 +25,8 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void authenticate(boolean bool) {
-        if (bool) {
-            authenticationState.setValue(AuthenticationState.AUTHENTICATED);
-        } else {
-            authenticationState.setValue(AuthenticationState.INVALID_AUTHENTICATION);
-        }
+        if (bool) authenticationState.setValue(AuthenticationState.AUTHENTICATED);
+        else authenticationState.setValue(AuthenticationState.INVALID_AUTHENTICATION);
     }
 
     public void refuseAuthentication() {

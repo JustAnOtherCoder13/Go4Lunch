@@ -1,10 +1,9 @@
-
-package com.picone.core.domain.entity.predictionPOJO;
+package com.picone.core.domain.entity.pOJOprediction;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class MainTextMatchedSubstring {
+public class MatchedSubstring {
 
     @SerializedName("length")
     @Expose

@@ -20,7 +20,6 @@ import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class RestaurantListFragment extends BaseFragment {
 
@@ -32,7 +31,6 @@ public class RestaurantListFragment extends BaseFragment {
         mBinding = FragmentRestaurantListBinding.inflate(inflater, container, false);
         setAppBarVisibility(true);
         setStatusBarTransparency(false);
-        setBottomSheetVisibility(true);
         setPageTitle(R.string.i_am_hungry_title);
         return mBinding.getRoot();
     }
@@ -52,7 +50,8 @@ public class RestaurantListFragment extends BaseFragment {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewListFragment, R.layout.fragment_restaurant_list)
                 .setOnItemClickListener((recyclerView, position, v) -> {
                     List<Restaurant> allRestaurants = mRestaurantViewModel.getAllRestaurants.getValue();
-                    Restaurant restaurant = Objects.requireNonNull(allRestaurants.get(position));
+                    assert allRestaurants != null;
+                    Restaurant restaurant = allRestaurants.get(position);
                     mRestaurantViewModel.setInterestedUsersForRestaurant(restaurant.getPlaceId(),allRestaurants);
                     mRestaurantViewModel.persistRestaurant(restaurant);
                 });

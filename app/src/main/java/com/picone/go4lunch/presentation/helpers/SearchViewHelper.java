@@ -33,8 +33,6 @@ public class SearchViewHelper {
         this.mUserViewModel = mUserViewModel;
     }
 
-// h_Cube
-    
     public void initSearchView(MenuItem item) {
         SearchManager searchManager = (SearchManager) mainActivity.getSystemService(Context.SEARCH_SERVICE);
 
@@ -61,7 +59,6 @@ public class SearchViewHelper {
             mUserViewModel.setAllDbUsers();
         };
     }
-
 
     @NonNull
     private MenuItem.OnActionExpandListener geOnActionExpandListener(SearchView searchView) {

@@ -12,8 +12,11 @@ import static com.picone.core.utils.ConstantParameter.SELECTED_LANGUAGE;
 
 public class LocaleHelper {
 
-    public static String getLanguage(Context context) {
-        return getPersistedData(context, Locale.getDefault().getLanguage());
+    public static void persist(Context context, String language) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(SELECTED_LANGUAGE, language);
+        editor.apply();
     }
 
     public static Context setNewLocale(Context context, String language) {
@@ -29,12 +32,8 @@ public class LocaleHelper {
         return preferences.getString(SELECTED_LANGUAGE, defaultLanguage);
     }
 
-     public static void persist(Context context, String language) {
-        //updateResourcesLegacy(context, language);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(SELECTED_LANGUAGE, language);
-        editor.apply();
+    private static String getLanguage(Context context) {
+        return getPersistedData(context, Locale.getDefault().getLanguage());
     }
 
     private static Context updateResourcesLegacy(Context context, String language) {

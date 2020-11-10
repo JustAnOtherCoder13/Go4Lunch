@@ -72,13 +72,12 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         initMapView(savedInstanceState);
         setAppBarVisibility(true);
         setStatusBarTransparency(false);
-        setBottomSheetVisibility(true);
         fetchLastLocation();
         if (mAuth.getCurrentUser()!=null)
         mRestaurantViewModel.setCurrentUser(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail());
         initSettingButtons();
-        mRestaurantViewModel.getAllFilteredUsers.observe(getViewLifecycleOwner(),users -> {
-            if(users.isEmpty()){
+        mRestaurantViewModel.getAllFilteredUsers.observe(getViewLifecycleOwner(),filteredUsers -> {
+            if(filteredUsers.isEmpty()){
                 mRestaurantViewModel.setAllDbRestaurants();
                 mUserViewModel.setAllDbUsers();
             }
@@ -102,7 +101,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), restaurants -> {
             initCustomMarker(restaurants);
             mRestaurantViewModel.setUserChosenRestaurant(restaurants);
-            //mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(restaurants);
         });
 
     }

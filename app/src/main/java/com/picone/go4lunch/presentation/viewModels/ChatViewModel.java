@@ -11,14 +11,15 @@ import com.picone.core.domain.interactors.chatInteractors.GetAllMessagesInteract
 import com.picone.core.domain.interactors.chatInteractors.PostMessageInteractor;
 import com.picone.core.utils.SchedulerProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChatViewModel extends BaseViewModel {
 
-    private MutableLiveData<List<ChatMessage>> chatMessageMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<ChatMessage>> chatMessageMutableLiveData = new MutableLiveData<>(new ArrayList<>());
 
     @ViewModelInject
-    public ChatViewModel(GetAllMessagesInteractor getAllMessagesInteractor, PostMessageInteractor postMessageInteractor,SchedulerProvider schedulerProvider) {
+    public ChatViewModel(GetAllMessagesInteractor getAllMessagesInteractor, PostMessageInteractor postMessageInteractor, SchedulerProvider schedulerProvider) {
         this.getAllMessagesInteractor = getAllMessagesInteractor;
         this.postMessageInteractor = postMessageInteractor;
         this.schedulerProvider = schedulerProvider;
@@ -33,15 +34,17 @@ public class ChatViewModel extends BaseViewModel {
                 .subscribeOn(schedulerProvider.getIo())
                 .observeOn(schedulerProvider.getUi())
                 .subscribe(chatMessages ->
-                        chatMessageMutableLiveData.setValue(chatMessages),throwable -> checkException());
+                        chatMessageMutableLiveData.setValue(chatMessages), throwable -> checkException());
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void postMessage(ChatMessage chatMessage) {
-        postMessageInteractor.postMessage(chatMessage)
-                .subscribeOn(schedulerProvider.getIo())
-                .observeOn(schedulerProvider.getUi())
-                .subscribe(()->{},throwable -> checkException());
+        if (chatMessage != null && chatMessage.getUserText() != null && !chatMessage.getUserText().trim().isEmpty())
+            postMessageInteractor.postMessage(chatMessage)
+                    .subscribeOn(schedulerProvider.getIo())
+                    .observeOn(schedulerProvider.getUi())
+                    .subscribe(() -> {
+                    }, throwable -> checkException());
     }
 }

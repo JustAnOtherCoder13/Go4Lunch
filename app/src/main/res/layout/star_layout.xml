@@ -9,25 +9,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/opinion_star_detail_content_description_restaurant_detail"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_star_icon" />
+
     <ImageView
         android:id="@+id/opinion_star_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/opinion_star_detail_content_description_restaurant_detail"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/opinion_star_1"
         app:layout_constraintEnd_toStartOf="@id/opinion_star_3"
+        app:layout_constraintStart_toEndOf="@id/opinion_star_1"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_star_icon" />
+
     <ImageView
         android:id="@+id/opinion_star_3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/opinion_star_detail_content_description_restaurant_detail"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/opinion_star_2"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_star_icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

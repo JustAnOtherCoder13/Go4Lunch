@@ -1,14 +1,11 @@
 package com.picone.go4lunch.presentation.ui.main;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -75,8 +72,11 @@ public class MainActivity extends AppCompatActivity {
     private LoginViewModel mLoginViewModel;
     private RestaurantViewModel mRestaurantViewModel;
     private ChatViewModel mChatViewModel;
+
     private NavController mNavController;
     private SearchViewHelper searchViewHelper;
+    private BottomSheetBehavior<ConstraintLayout> bottomSheetBehavior;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,97 +90,17 @@ public class MainActivity extends AppCompatActivity {
         initToolBar();
         initMenuButton();
         initInComingNavigation();
-        initNavigation();
+        NavigationUI.setupWithNavController(mBinding.bottomNavigation, mNavController);
     }
-
-    private void initToolBar() {
-        setSupportActionBar(mBinding.topNavBar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_icon);
-        getSupportActionBar().setTitle(R.string.i_am_hungry_title);
-    }
-
-    public BottomSheetBehavior<ConstraintLayout> bottomSheetBehavior;
 
     @Override
     protected void onStart() {
         super.onStart();
         initBottomSheet();
+        initDropDownMenu();
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if (mFirebaseAuth.getCurrentUser() != null || accessToken != null && !accessToken.isExpired()) {
-
-            mRestaurantViewModel.getAllDbRestaurants.observe(this, restaurants ->
-                    mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(null));
-            mLoginViewModel.authenticate(true);
-            mRestaurantViewModel.getSelectedRestaurant.observe(this, restaurant -> {
-                if (restaurant != null)
-                    mNavController.navigate(R.id.restaurantDetailFragment);
-            });
-            mRestaurantViewModel.getUserChosenRestaurant.observe(this, this::initNotificationMessage);
-
-            mRestaurantViewModel.getAllFilteredUsers.observe(this, users ->
-                    mUserViewModel.setAllUsersMutableLiveData(users));
-
-            mRestaurantViewModel.getErrorState.observe(this, error_state -> {
-                if (error_state.equals(ErrorHandler.ON_ERROR)) {
-                    Toast.makeText(this, ErrorHandler.ON_ERROR.label, Toast.LENGTH_LONG).show();
-                    playLoadingAnimation(false);
-                }
-            });
-            Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    public void setBottomSheetVisibility(boolean isVisible) {
-        //if (isVisible) mBinding.bottomSheetInclude.openBtn.setVisibility(View.VISIBLE);
-        //else mBinding.bottomSheetInclude.openBtn.setVisibility(View.GONE);
-    }
-
-
-    private void initBottomSheet() {
-        mBinding.bottomSheetInclude.settingsLayout.setVisibility(View.GONE);
-        bottomSheetBehavior = BottomSheetBehavior.from(mBinding.bottomSheetInclude.bottomSheet);
-        mBinding.bottomSheetInclude.bottomSheet.setClickable(false);
-        bottomSheetBehavior.setSkipCollapsed(true);
-        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == STATE_EXPANDED) {
-                    mBinding.bottomSheetInclude.settingsLayout.setVisibility(View.VISIBLE);
-                    mBinding.bottomSheetInclude.bottomSheet.setClickable(true);
-                    //mBinding.bottomSheetInclude.openBtn.setImageResource(R.drawable.ic_baseline_arrow_drop_down_24);
-                   // mBinding.bottomSheetInclude.openBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
-
-                } else {
-                    mBinding.bottomSheetInclude.settingsLayout.setVisibility(View.GONE);
-                    mBinding.bottomSheetInclude.bottomSheet.setClickable(false);
-                    //mBinding.bottomSheetInclude.openBtn.setImageResource(R.drawable.ic_settings_icon);
-                    //mBinding.bottomSheetInclude.openBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
-       /* mBinding.bottomSheetInclude.openBtn.setOnClickListener(v -> {
-            if (bottomSheetBehavior.getState() == STATE_EXPANDED) {
-                bottomSheetBehavior.setState(STATE_COLLAPSED);
-            } else {
-                initDropDownMenu();
-                bottomSheetBehavior.setState(STATE_EXPANDED);
-            }
-        });*/
-        mBinding.drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                super.onDrawerSlide(drawerView, slideOffset);
-                if (slideOffset >= 0.4) setBottomSheetVisibility(false);
-                else setBottomSheetVisibility(true);
-            }
-        });
+        if (mFirebaseAuth.getCurrentUser() != null || accessToken != null && !accessToken.isExpired())
+            initValues();
     }
 
     @Override
@@ -191,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        boolean bol = mNavController.getCurrentDestination().getId() == R.id.mapsFragment;
+        boolean bol = Objects.requireNonNull(mNavController.getCurrentDestination()).getId() == R.id.mapsFragment;
         if (bol) {
             LocaleHelper.persist(this, Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().getChosenLanguage());
             finish();
@@ -217,11 +137,43 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //--------------------------------- INIT ------------------------------------------
+
     private void initViewModel() {
         mLoginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
         mChatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
+    }
+
+    private void initValues() {
+        mRestaurantViewModel.getAllDbRestaurants.observe(this, restaurants ->
+                mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(null));
+        mLoginViewModel.authenticate(true);
+        mRestaurantViewModel.getSelectedRestaurant.observe(this, restaurant -> {
+            if (restaurant != null)
+                mNavController.navigate(R.id.restaurantDetailFragment);
+        });
+        mRestaurantViewModel.getUserChosenRestaurant.observe(this, this::initNotificationMessage);
+
+        mRestaurantViewModel.getAllFilteredUsers.observe(this, users ->
+                mUserViewModel.setAllUsersMutableLiveData(users));
+
+        mRestaurantViewModel.getErrorState.observe(this, error_state -> {
+            if (error_state.equals(ErrorHandler.ON_ERROR)) {
+                Toast.makeText(this, ErrorHandler.ON_ERROR.label, Toast.LENGTH_LONG).show();
+                playLoadingAnimation(false);
+            }
+        });
+        Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getDisplayName(), Toast.LENGTH_LONG).show();
+    }
+
+    private void initToolBar() {
+        setSupportActionBar(mBinding.topNavBar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_icon);
+        getSupportActionBar().setTitle(R.string.i_am_hungry_title);
     }
 
     //--------------------------------- BUTTONS ------------------------------------------
@@ -238,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
         if (mRestaurantViewModel.getCurrentUser.getValue() != null)
             switch (item.getItemId()) {
                 case R.id.your_lunch_drawer_layout:
+                    closeSetting();
                     if (mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules() != null && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()) != null) {
                         mRestaurantViewModel.setInterestedUsersForRestaurant(getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId(), mRestaurantViewModel.getAllRestaurants.getValue());
                     } else
@@ -245,17 +198,20 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.settings_drawer_layout:
+                    if (mBinding.bottomSheetInclude.bottomSheet.getVisibility() == View.GONE)
+                        mBinding.bottomSheetInclude.bottomSheet.setVisibility(View.VISIBLE);
                     if (bottomSheetBehavior.getState() == STATE_EXPANDED) {
                         bottomSheetBehavior.setState(STATE_COLLAPSED);
                     } else {
-                        initDropDownMenu();
                         bottomSheetBehavior.setState(STATE_EXPANDED);
                     }
                     break;
                 case R.id.logout_drawer_layout:
+                    closeSetting();
                     signOut();
                     break;
                 case R.id.chat_drawer_layout:
+                    closeSetting();
                     mChatViewModel.setAllMessages();
                     mNavController.navigate(R.id.chatFragment);
             }
@@ -268,6 +224,26 @@ public class MainActivity extends AppCompatActivity {
         CustomAdapter adapter = new CustomAdapter(this, languages, flags);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mBinding.bottomSheetInclude.languageTxtView.setAdapter(adapter);
+    }
+
+    private void initBottomSheet() {
+        mBinding.bottomSheetInclude.bottomSheet.setVisibility(View.GONE);
+        bottomSheetBehavior = BottomSheetBehavior.from(mBinding.bottomSheetInclude.bottomSheet);
+        mBinding.bottomSheetInclude.bottomSheet.setClickable(true);
+        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == STATE_COLLAPSED)
+                    mBinding.bottomSheetInclude.bottomSheet.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                if (slideOffset <= 0.1)
+                    mBinding.bottomSheetInclude.bottomSheet.setVisibility(View.GONE);
+                else mBinding.bottomSheetInclude.bottomSheet.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     //--------------------------------- NAVIGATION ------------------------------------------
@@ -286,10 +262,6 @@ public class MainActivity extends AppCompatActivity {
                             break;
                     }
                 });
-    }
-
-    private void initNavigation() {
-        NavigationUI.setupWithNavController(mBinding.bottomNavigation, mNavController);
     }
 
     //--------------------------------- UI VISIBILITY -----------------------------------------
@@ -354,7 +326,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String createMessage(String restaurantName, String restaurantAddress, String interestedUsers) {
-        return (getString(R.string.notification_you_are_eating) + restaurantName + getString(R.string.notification_at) + restaurantAddress + getString(R.string.notification_with) + interestedUsers);
+        if (!interestedUsers.trim().isEmpty())
+            return (getString(R.string.notification_you_are_eating) + restaurantName + getString(R.string.notification_at) + restaurantAddress + getString(R.string.notification_with) + interestedUsers);
+        else
+            return (getString(R.string.notification_you_are_eating) + restaurantName + getString(R.string.notification_at) + restaurantAddress);
+
     }
 
     private String UserListToString(List<User> interestedUsers) {
@@ -371,6 +347,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void saveChanges() {
+        bottomSheetBehavior.setState(STATE_COLLAPSED);
         SettingValues currentUserSettingValues = Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues();
         String language = Objects.requireNonNull(mBinding.bottomSheetInclude.languageSpinnerSettings.getEditText()).getText().toString();
 
@@ -434,4 +411,8 @@ public class MainActivity extends AppCompatActivity {
             mAnimationView.pauseAnimation();
         }
     }
+    private void closeSetting(){
+        if (bottomSheetBehavior.getState()==STATE_EXPANDED)bottomSheetBehavior.setState(STATE_COLLAPSED);
+    }
+
 }

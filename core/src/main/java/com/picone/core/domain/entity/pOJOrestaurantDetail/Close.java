@@ -1,9 +1,10 @@
-package com.picone.core.domain.entity.restaurantDetailPOJO;
+package com.picone.core.domain.entity.pOJOrestaurantDetail;
+
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Open {
+public class Close {
 
     @SerializedName("day")
     @Expose

@@ -50,7 +50,6 @@ public class RestaurantDetailFragment extends BaseFragment {
         mBinding = FragmentRestaurantDetailBinding.inflate(inflater, container, false);
         setAppBarVisibility(false);
         setStatusBarTransparency(true);
-        setBottomSheetVisibility(false);
         return mBinding.getRoot();
     }
 
@@ -61,9 +60,8 @@ public class RestaurantDetailFragment extends BaseFragment {
         initView();
     }
 
-    //todo reuse
     private void initButtons(Restaurant selectedRestaurant) {
-        //setChooseRestaurantFabVisibility(selectedRestaurant);
+        setChooseRestaurantFabVisibility(selectedRestaurant);
 
         mBinding.chooseRestaurantFab.setOnClickListener(v -> {
             mRestaurantViewModel.addUserToRestaurant(selectedRestaurant, mRestaurantViewModel.getAllRestaurants.getValue());
@@ -124,7 +122,7 @@ public class RestaurantDetailFragment extends BaseFragment {
         });
     }
 
-    private void setButtonColor(Restaurant restaurant) {
+    private void setButtonColor(@NonNull Restaurant restaurant) {
         if (restaurant.getPhoneNumber() == null) {
             mBinding.callNumberDetailImageButton.setBackgroundColor(Color.LTGRAY);
             mBinding.webSiteDetailImageButton.setEnabled(false);
@@ -143,7 +141,7 @@ public class RestaurantDetailFragment extends BaseFragment {
 
     }
 
-    private void setPhoto(Restaurant restaurant) {
+    private void setPhoto(@NonNull Restaurant restaurant) {
         Glide.with(mBinding.restaurantPhotoDetailImageView.getContext())
                 .load(restaurant.getRestaurantPhoto())
                 .centerCrop()
@@ -159,14 +157,14 @@ public class RestaurantDetailFragment extends BaseFragment {
                 });
     }
 
-    private void initLike(Restaurant restaurant) {
+    private void initLike(@NonNull Restaurant restaurant) {
         int numberOfLike = 0;
         if (restaurant.getFanList() != null && !restaurant.getFanList().isEmpty())
             numberOfLike = restaurant.getFanList().size();
         manageStar(mBinding.opinionStarDetailImageView, numberOfLike);
     }
 
-    private void initWebSiteIntent(Restaurant selectedRestaurant) {
+    private void initWebSiteIntent(@NonNull Restaurant selectedRestaurant) {
         if (selectedRestaurant.getWebsite() != null) {
             Intent myWebLink = new Intent(Intent.ACTION_VIEW);
             myWebLink.setData(Uri.parse(selectedRestaurant.getWebsite()));
@@ -174,7 +172,7 @@ public class RestaurantDetailFragment extends BaseFragment {
         }
     }
 
-    private void initCallIntent(Restaurant selectedRestaurant) {
+    private void initCallIntent(@NonNull Restaurant selectedRestaurant) {
         if (selectedRestaurant.getPhoneNumber() != null) {
             Intent callIntent = new Intent(Intent.ACTION_CALL);
             callIntent.setData(Uri.parse(getString(R.string.tel).concat(selectedRestaurant.getPhoneNumber().trim())));

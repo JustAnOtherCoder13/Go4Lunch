@@ -22,10 +22,10 @@ public class ConstantParameter {
     public static final int REQUEST_CODE = 13700;
     public static String MAPS_KEY;
 
-    public static final int ALARM_HOUR = 13;
-    public static final int ALARM_MINUTE = 55;
+    public static final int ALARM_HOUR = 12;
+    public static final int ALARM_MINUTE = 0;
 
     public static final int MAPS_CAMERA_ZOOM = 16;
 
-    public static final SettingValues SETTING_START_VALUE = new SettingValues("En", true);
+    public static final SettingValues SETTING_START_VALUE = new SettingValues("Fr", true);
 }

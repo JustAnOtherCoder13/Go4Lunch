@@ -1,4 +1,4 @@
-package com.picone.core.domain.entity.predictionPOJO;
+package com.picone.core.domain.entity.pOJOprediction;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

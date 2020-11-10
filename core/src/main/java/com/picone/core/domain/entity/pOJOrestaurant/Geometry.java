@@ -1,4 +1,4 @@
-package com.picone.core.domain.entity.restaurantPOJO;
+package com.picone.core.domain.entity.pOJOrestaurant;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

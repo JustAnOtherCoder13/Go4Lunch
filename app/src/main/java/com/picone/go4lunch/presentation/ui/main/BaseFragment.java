@@ -29,8 +29,6 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED;
-
 @AndroidEntryPoint
 public abstract class BaseFragment extends Fragment {
 
@@ -115,10 +113,6 @@ public abstract class BaseFragment extends Fragment {
 
                     }
                 });
-    }
-    protected void setBottomSheetVisibility(boolean isVisible){
-        mainActivity.setBottomSheetVisibility(isVisible);
-        if (!isVisible)mainActivity.bottomSheetBehavior.setState(STATE_COLLAPSED);
     }
 
     protected void initSettingButtons() {
