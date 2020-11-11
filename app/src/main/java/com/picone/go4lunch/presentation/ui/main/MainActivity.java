@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,7 +43,6 @@ import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -222,19 +220,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initDropDownMenu() {
-        String[] languages = {(getString(R.string.English)), (getString(R.string.French))};
-        int[] flags = {(R.drawable.ic_united_kingdom_flag_30), (R.drawable.ic_french_flag_30)};
+        String[] languages = {getString(R.string.English), getString(R.string.French)};
+        int[] flags = {R.drawable.ic_united_kingdom_flag_30, R.drawable.ic_french_flag_30};
 
         CustomAdapter adapter = new CustomAdapter(this, languages, flags);
-        Log.i("TAG", "initDropDownMenu: "+ Arrays.toString(languages));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mBinding.bottomSheetInclude.languageTxtView.setAdapter(adapter);
     }
 
     protected void initSettingButtons() {
         mBinding.bottomSheetInclude.cancelReservationToggleButton.setChecked(false);
-        mBinding.bottomSheetInclude.languageTxtView.setText(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().getChosenLanguage());
-        mBinding.bottomSheetInclude.notificationSwitchButton.setChecked(mRestaurantViewModel.getCurrentUser.getValue().getSettingValues().isNotificationSet());
+        mBinding.bottomSheetInclude.notificationSwitchButton.setChecked(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().isNotificationSet());
         mBinding.bottomSheetInclude.saveChangesYesButtonSettings.setOnClickListener(v ->
                 initAlertDialog());
     }
@@ -382,7 +378,6 @@ public class MainActivity extends AppCompatActivity {
             mUserViewModel.updateUserSettingValues(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue())
                     , new SettingValues(Objects.requireNonNull(mBinding.bottomSheetInclude.languageSpinnerSettings.getEditText()).getText().toString().trim(),
                             mBinding.bottomSheetInclude.notificationSwitchButton.isChecked()));
-
             if (mBinding.bottomSheetInclude.cancelReservationToggleButton.isChecked()) {
                 if (getUserDailyScheduleOnToday(Objects.requireNonNull
                         (mRestaurantViewModel.getCurrentUser.getValue()).getUserDailySchedules()) == null)
