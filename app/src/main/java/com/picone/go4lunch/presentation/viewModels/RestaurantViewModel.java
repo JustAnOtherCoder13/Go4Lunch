@@ -2,7 +2,6 @@ package com.picone.go4lunch.presentation.viewModels;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.hilt.lifecycle.ViewModelInject;
@@ -257,7 +256,6 @@ public class RestaurantViewModel extends BaseViewModel {
                 getCurrentUserInfoForUid(getRestaurantDailyScheduleOnToday(firstChoiceRestaurant.getRestaurantDailySchedules()).getInterestedUsers(), currentUser));
         if (getRestaurantDailyScheduleOnToday(firstChoiceRestaurant.getRestaurantDailySchedules()).getInterestedUsers().isEmpty())
             firstChoiceRestaurant.getRestaurantDailySchedules().remove(getRestaurantDailyScheduleOnToday(firstChoiceRestaurant.getRestaurantDailySchedules()));
-        Log.i("TAG", "cancelReservation: "+getRestaurantDailyScheduleOnToday(getRestaurantForPlaceId(getUserDailyScheduleOnToday(currentUser.getUserDailySchedules()).getRestaurantPlaceId(),allRestaurants).getRestaurantDailySchedules()));
 
         currentUser.getUserDailySchedules().remove(getUserDailyScheduleOnToday(currentUser.getUserDailySchedules()));
         addRestaurantCompletable(firstChoiceRestaurant)

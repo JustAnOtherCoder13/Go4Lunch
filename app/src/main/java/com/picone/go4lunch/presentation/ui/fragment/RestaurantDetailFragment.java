@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +63,6 @@ public class RestaurantDetailFragment extends BaseFragment {
 
     private void initButtons(Restaurant selectedRestaurant) {
         setChooseRestaurantFabVisibility(selectedRestaurant);
-
         mBinding.chooseRestaurantFab.setOnClickListener(v -> {
             mRestaurantViewModel.addUserToRestaurant(selectedRestaurant, mRestaurantViewModel.getAllRestaurants.getValue());
             mRestaurantViewModel.updateUserDailySchedule(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()), selectedRestaurant);

@@ -1,6 +1,5 @@
 package com.picone.go4lunch.presentation.ui.main;
 
-import android.app.AlertDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
@@ -18,7 +17,6 @@ import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.DrawerMenuHeaderLayoutBinding;
 import com.picone.go4lunch.presentation.viewModels.ChatViewModel;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;

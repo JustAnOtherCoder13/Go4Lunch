@@ -189,34 +189,35 @@ public class MainActivity extends AppCompatActivity {
 
     private void initDrawerMenuItems(MenuItem item) {
         if (mRestaurantViewModel.getCurrentUser.getValue() != null)
-            switch (item.getItemId()) {
-                case R.id.your_lunch_drawer_layout:
-                    closeSetting();
-                    if (mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules() != null && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()) != null) {
-                        mRestaurantViewModel.setInterestedUsersForRestaurant(getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId(), mRestaurantViewModel.getAllRestaurants.getValue());
-                    } else
-                        Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
-                    break;
 
-                case R.id.settings_drawer_layout:
-                    if (mBinding.bottomSheetInclude.bottomSheet.getVisibility() == View.GONE)
-                        mBinding.bottomSheetInclude.bottomSheet.setVisibility(View.VISIBLE);
-                    if (bottomSheetBehavior.getState() == STATE_EXPANDED) {
-                        bottomSheetBehavior.setState(STATE_COLLAPSED);
-                    } else {
-                        bottomSheetBehavior.setState(STATE_EXPANDED);
-                        initSettingButtons();
-                    }
-                    break;
-                case R.id.logout_drawer_layout:
-                    closeSetting();
-                    signOut();
-                    break;
-                case R.id.chat_drawer_layout:
-                    closeSetting();
-                    mChatViewModel.setAllMessages();
-                    mNavController.navigate(R.id.chatFragment);
-            }
+        switch (item.getItemId()) {
+            case R.id.your_lunch_drawer_layout:
+                closeSetting();
+                if (mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules() != null && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()) != null) {
+                    mRestaurantViewModel.setInterestedUsersForRestaurant(getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId(), mRestaurantViewModel.getAllRestaurants.getValue());
+                } else
+                    Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.settings_drawer_layout:
+                if (mBinding.bottomSheetInclude.bottomSheet.getVisibility() == View.GONE)
+                    mBinding.bottomSheetInclude.bottomSheet.setVisibility(View.VISIBLE);
+                if (bottomSheetBehavior.getState() == STATE_EXPANDED) {
+                    bottomSheetBehavior.setState(STATE_COLLAPSED);
+                } else {
+                    bottomSheetBehavior.setState(STATE_EXPANDED);
+                    initSettingButtons();
+                }
+                break;
+            case R.id.logout_drawer_layout:
+                closeSetting();
+                signOut();
+                break;
+            case R.id.chat_drawer_layout:
+                closeSetting();
+                mChatViewModel.setAllMessages();
+                mNavController.navigate(R.id.chatFragment);
+        }
     }
 
     private void initDropDownMenu() {
@@ -229,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void initSettingButtons() {
+        mBinding.bottomSheetInclude.languageTxtView.setText(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().getChosenLanguage(),false);
         mBinding.bottomSheetInclude.cancelReservationToggleButton.setChecked(false);
         mBinding.bottomSheetInclude.notificationSwitchButton.setChecked(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().isNotificationSet());
         mBinding.bottomSheetInclude.saveChangesYesButtonSettings.setOnClickListener(v ->

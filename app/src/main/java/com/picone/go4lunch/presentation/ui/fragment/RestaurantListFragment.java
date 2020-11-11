@@ -1,7 +1,6 @@
 package com.picone.go4lunch.presentation.ui.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +20,6 @@ import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.picone.core.utils.FindInListUtil.getRestaurantDailyScheduleOnToday;
 
 public class RestaurantListFragment extends BaseFragment {
 

@@ -11,7 +11,7 @@ public class ConstantParameter {
     private static Calendar rightNow = Calendar.getInstance();
     public static final String TODAY = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(rightNow.getTime());
     public static final int CURRENT_HOUR = rightNow.get(Calendar.HOUR_OF_DAY);
-    public static final int MAX_RESERVATION_HOUR = 18;
+    public static final int MAX_RESERVATION_HOUR = 13;
 
     public static final String SELECTED_LANGUAGE = "Locale.Helper.Selected.Language";
 
