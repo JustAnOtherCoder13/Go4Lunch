@@ -75,7 +75,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
         fetchLastLocation();
         if (mAuth.getCurrentUser()!=null)
         mRestaurantViewModel.setCurrentUser(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail());
-        initSettingButtons();
         mRestaurantViewModel.getAllFilteredUsers.observe(getViewLifecycleOwner(),filteredUsers -> {
             if(filteredUsers.isEmpty()){
                 mRestaurantViewModel.setAllDbRestaurants();

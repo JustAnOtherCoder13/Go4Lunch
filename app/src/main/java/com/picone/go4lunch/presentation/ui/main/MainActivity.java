@@ -1,9 +1,11 @@
 package com.picone.go4lunch.presentation.ui.main;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,6 +44,7 @@ import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -84,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
         initViewModel();
+        initDropDownMenu();
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
         searchViewHelper = new SearchViewHelper(this, mRestaurantViewModel, mUserViewModel);
         initLoadingAnimation();
@@ -97,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         initBottomSheet();
-        initDropDownMenu();
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (mFirebaseAuth.getCurrentUser() != null || accessToken != null && !accessToken.isExpired())
             initValues();
@@ -204,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
                         bottomSheetBehavior.setState(STATE_COLLAPSED);
                     } else {
                         bottomSheetBehavior.setState(STATE_EXPANDED);
+                        initSettingButtons();
                     }
                     break;
                 case R.id.logout_drawer_layout:
@@ -222,8 +226,26 @@ public class MainActivity extends AppCompatActivity {
         int[] flags = {(R.drawable.ic_united_kingdom_flag_30), (R.drawable.ic_french_flag_30)};
 
         CustomAdapter adapter = new CustomAdapter(this, languages, flags);
+        Log.i("TAG", "initDropDownMenu: "+ Arrays.toString(languages));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mBinding.bottomSheetInclude.languageTxtView.setAdapter(adapter);
+    }
+
+    protected void initSettingButtons() {
+        mBinding.bottomSheetInclude.cancelReservationToggleButton.setChecked(false);
+        mBinding.bottomSheetInclude.languageTxtView.setText(mRestaurantViewModel.getCurrentUser.getValue().getSettingValues().getChosenLanguage());
+        mBinding.bottomSheetInclude.notificationSwitchButton.setChecked(mRestaurantViewModel.getCurrentUser.getValue().getSettingValues().isNotificationSet());
+        mBinding.bottomSheetInclude.saveChangesYesButtonSettings.setOnClickListener(v ->
+                initAlertDialog());
+    }
+
+    private void initAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.change_settings)
+                .setNegativeButton(R.string.no, null)
+                .setPositiveButton(R.string.yes, (dialog, which) -> saveChanges())
+                .create()
+                .show();
     }
 
     private void initBottomSheet() {
@@ -411,8 +433,10 @@ public class MainActivity extends AppCompatActivity {
             mAnimationView.pauseAnimation();
         }
     }
-    private void closeSetting(){
-        if (bottomSheetBehavior.getState()==STATE_EXPANDED)bottomSheetBehavior.setState(STATE_COLLAPSED);
+
+    private void closeSetting() {
+        if (bottomSheetBehavior.getState() == STATE_EXPANDED)
+            bottomSheetBehavior.setState(STATE_COLLAPSED);
     }
 
 }

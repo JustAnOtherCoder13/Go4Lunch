@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -195,9 +196,12 @@ public class RestaurantDetailFragment extends BaseFragment {
         if (mRestaurantViewModel.getCurrentUser.getValue() != null
                 && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()) != null
                 && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId()
-                .equals(selectedRestaurant.getPlaceId())
-                || CURRENT_HOUR >= MAX_RESERVATION_HOUR
-                || selectedRestaurant.getOpeningHours().equals(getResources().getString(R.string.closed)))
+                .equals(selectedRestaurant.getPlaceId())) mBinding.chooseRestaurantFab.setVisibility(View.GONE);
+
+                else if ( CURRENT_HOUR >= MAX_RESERVATION_HOUR
+                || selectedRestaurant.getOpeningHours().equals(getResources().getString(R.string.closed))){
             mBinding.chooseRestaurantFab.setVisibility(View.GONE);
+            Log.i("TAG", "setChooseRestaurantFabVisibility: "+selectedRestaurant.getOpeningHours());
+        }
     }
 }

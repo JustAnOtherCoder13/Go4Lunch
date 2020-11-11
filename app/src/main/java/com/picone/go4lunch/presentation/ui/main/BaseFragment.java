@@ -114,22 +114,4 @@ public abstract class BaseFragment extends Fragment {
                     }
                 });
     }
-
-    protected void initSettingButtons() {
-        mRestaurantViewModel.getCurrentUser.observe(getViewLifecycleOwner(), user -> {
-            mainActivity.mBinding.bottomSheetInclude.languageTxtView.setText(user.getSettingValues().getChosenLanguage());
-            mainActivity.mBinding.bottomSheetInclude.notificationSwitchButton.setChecked(user.getSettingValues().isNotificationSet());
-        });
-        mainActivity.mBinding.bottomSheetInclude.saveChangesYesButtonSettings.setOnClickListener(v ->
-                initAlertDialog());
-    }
-
-    private void initAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle(R.string.change_settings)
-                .setNegativeButton(R.string.no, null)
-                .setPositiveButton(R.string.yes, (dialog, which) -> mainActivity.saveChanges())
-                .create()
-                .show();
-    }
 }
