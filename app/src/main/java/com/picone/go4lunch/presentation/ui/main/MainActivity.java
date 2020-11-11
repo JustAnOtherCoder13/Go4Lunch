@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected void initSettingButtons() {
         mBinding.bottomSheetInclude.cancelReservationToggleButton.setChecked(false);
-        mBinding.bottomSheetInclude.languageTxtView.setText(mRestaurantViewModel.getCurrentUser.getValue().getSettingValues().getChosenLanguage());
+        mBinding.bottomSheetInclude.languageTxtView.setText(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().getChosenLanguage());
         mBinding.bottomSheetInclude.notificationSwitchButton.setChecked(mRestaurantViewModel.getCurrentUser.getValue().getSettingValues().isNotificationSet());
         mBinding.bottomSheetInclude.saveChangesYesButtonSettings.setOnClickListener(v ->
                 initAlertDialog());

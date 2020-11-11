@@ -2,6 +2,7 @@ package com.picone.go4lunch.presentation.ui.fragment.adapters;
 
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,9 +96,11 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
 
     private void setInterestedUsers(@NonNull ViewHolder holder, Restaurant restaurant) {
         if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null &&
-                getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().size() > 0)
+                getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().size() > 0){
+            holder.restaurantBinding.interestedColleague.setVisibility(View.VISIBLE);
+            holder.restaurantBinding.interestedColleagueNumber.setVisibility(View.VISIBLE);
             holder.restaurantBinding.interestedColleagueNumber.setText(("(").concat(String.valueOf(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().size())).concat(")"));
-        else {
+        }else {
             holder.restaurantBinding.interestedColleague.setVisibility(View.GONE);
             holder.restaurantBinding.interestedColleagueNumber.setVisibility(View.GONE);
         }

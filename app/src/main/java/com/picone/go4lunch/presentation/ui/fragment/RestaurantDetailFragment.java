@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static android.Manifest.permission.CALL_PHONE;
+import static com.picone.core.utils.ConstantParameter.CLOSED;
 import static com.picone.core.utils.ConstantParameter.CURRENT_HOUR;
 import static com.picone.core.utils.ConstantParameter.MAX_RESERVATION_HOUR;
 import static com.picone.core.utils.ConstantParameter.REQUEST_CODE;
@@ -91,7 +92,6 @@ public class RestaurantDetailFragment extends BaseFragment {
         }
     }
 
-
     private void initRecyclerView() {
         mAdapter = new ColleagueRecyclerViewAdapter(new ArrayList<>(), TAG);
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -133,8 +133,8 @@ public class RestaurantDetailFragment extends BaseFragment {
             mBinding.webSiteDetailImageButton.setEnabled(false);
         }
 
-        mRestaurantViewModel.getFanList.observe(getViewLifecycleOwner(),fanList->{
-            if (fanList!=null&&fanList.contains(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getUid())) {
+        mRestaurantViewModel.getFanList.observe(getViewLifecycleOwner(), fanList -> {
+            if (fanList != null && fanList.contains(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getUid())) {
                 mBinding.likeDetailImageButton.setBackgroundColor(Color.LTGRAY);
                 mBinding.likeDetailImageButton.setEnabled(false);
             }
@@ -196,12 +196,10 @@ public class RestaurantDetailFragment extends BaseFragment {
         if (mRestaurantViewModel.getCurrentUser.getValue() != null
                 && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()) != null
                 && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId()
-                .equals(selectedRestaurant.getPlaceId())) mBinding.chooseRestaurantFab.setVisibility(View.GONE);
-
-                else if ( CURRENT_HOUR >= MAX_RESERVATION_HOUR
-                || selectedRestaurant.getOpeningHours().equals(getResources().getString(R.string.closed))){
+                .equals(selectedRestaurant.getPlaceId())
+                || CURRENT_HOUR >= MAX_RESERVATION_HOUR
+                || selectedRestaurant.getOpeningHours().equalsIgnoreCase(CLOSED)) {
             mBinding.chooseRestaurantFab.setVisibility(View.GONE);
-            Log.i("TAG", "setChooseRestaurantFabVisibility: "+selectedRestaurant.getOpeningHours());
         }
     }
 }

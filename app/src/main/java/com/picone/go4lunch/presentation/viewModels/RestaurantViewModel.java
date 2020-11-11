@@ -188,7 +188,6 @@ public class RestaurantViewModel extends BaseViewModel {
     @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
     @SuppressLint("CheckResult")
     public void filterExistingResults(String query, List<User> allUsers, String locationStr, String googleKey) {
-        Log.i("TAG", "filterExistingResults: " + allUsers);
         List<Restaurant> filteredRestaurant = new ArrayList<>();
         List<User> filteredUsers = new ArrayList<>();
         getPredictionInteractor.getPredictions(query, googleKey, locationStr)
@@ -258,12 +257,12 @@ public class RestaurantViewModel extends BaseViewModel {
                 getCurrentUserInfoForUid(getRestaurantDailyScheduleOnToday(firstChoiceRestaurant.getRestaurantDailySchedules()).getInterestedUsers(), currentUser));
         if (getRestaurantDailyScheduleOnToday(firstChoiceRestaurant.getRestaurantDailySchedules()).getInterestedUsers().isEmpty())
             firstChoiceRestaurant.getRestaurantDailySchedules().remove(getRestaurantDailyScheduleOnToday(firstChoiceRestaurant.getRestaurantDailySchedules()));
+        Log.i("TAG", "cancelReservation: "+getRestaurantDailyScheduleOnToday(getRestaurantForPlaceId(getUserDailyScheduleOnToday(currentUser.getUserDailySchedules()).getRestaurantPlaceId(),allRestaurants).getRestaurantDailySchedules()));
 
         currentUser.getUserDailySchedules().remove(getUserDailyScheduleOnToday(currentUser.getUserDailySchedules()));
-
         addRestaurantCompletable(firstChoiceRestaurant)
                 .andThen(updateUserChosenRestaurantInteractor.updateUserChosenRestaurant(currentUser))
-                .subscribe(() -> { }, throwable -> checkException());
+                .subscribe(() -> {}, throwable -> checkException());
     }
 
     //---------------------------------------------UPDATE----------------------------------------------
@@ -310,6 +309,7 @@ public class RestaurantViewModel extends BaseViewModel {
                         restaurantFromMap.setFanList(persistedRestaurant.getFanList());
                         if (persistedRestaurant.getRestaurantDailySchedules() != null)
                             restaurantFromMap.setRestaurantDailySchedules(persistedRestaurant.getRestaurantDailySchedules());
+                        else restaurantFromMap.setRestaurantDailySchedules(new ArrayList<>());
                     }
                 }
             }
