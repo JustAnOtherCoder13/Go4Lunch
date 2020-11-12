@@ -3,15 +3,15 @@ package com.picone.core.domain.entity.user;
 public class SettingValues {
 
     private String chosenLanguage;
-    private boolean isNotificationSet;
+    private boolean notificationSet;
 
     @SuppressWarnings("unused")
     public SettingValues() {
     }
 
-    public SettingValues(String chosenLanguage, boolean isNotificationSet) {
+    public SettingValues(String chosenLanguage, boolean notificationSet) {
         this.chosenLanguage = chosenLanguage;
-        this.isNotificationSet = isNotificationSet;
+        this.notificationSet = notificationSet;
     }
 
     public String getChosenLanguage() {
@@ -19,6 +19,6 @@ public class SettingValues {
     }
 
     public boolean isNotificationSet() {
-        return isNotificationSet;
+        return notificationSet;
     }
 }

@@ -4,7 +4,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.picone.core.domain.entity.user.User;
-import com.picone.core.domain.entity.user.UserDailySchedule;
 
 import java.util.List;
 
@@ -46,11 +45,6 @@ public class UserDaoImpl implements UserDao {
     public Observable<List<User>> getCurrentUserForEmail(String authUserEmail) {
         Query query = usersDatabaseReference.orderByChild("email").equalTo(authUserEmail);
         return RxFirebaseDatabase.observeValueEvent(query, DataSnapshotMapper.listOf(User.class)).toObservable();
-    }
-
-    @Override
-    public Observable<List<UserDailySchedule>> getCurrentUserDailySchedules(String uId) {
-        return RxFirebaseDatabase.observeValueEvent(usersDatabaseReference.child(uId).child("userDailySchedules"), DataSnapshotMapper.listOf(UserDailySchedule.class)).toObservable();
     }
 }
 

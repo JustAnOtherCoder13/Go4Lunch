@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -24,6 +25,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.picone.core.domain.entity.restaurant.Restaurant;
@@ -31,9 +33,10 @@ import com.picone.core.domain.entity.user.SettingValues;
 import com.picone.core.domain.entity.user.User;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.ActivityMainBinding;
-import com.picone.go4lunch.presentation.utils.CustomAdapter;
-import com.picone.go4lunch.presentation.utils.LocaleHelper;
-import com.picone.go4lunch.presentation.utils.SearchViewHelper;
+import com.picone.go4lunch.presentation.helpers.CustomAdapter;
+import com.picone.go4lunch.presentation.helpers.ErrorHandler;
+import com.picone.go4lunch.presentation.helpers.LocaleHelper;
+import com.picone.go4lunch.presentation.helpers.SearchViewHelper;
 import com.picone.go4lunch.presentation.viewModels.ChatViewModel;
 import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
@@ -48,8 +51,10 @@ import javax.inject.Inject;
 import dagger.hilt.android.AndroidEntryPoint;
 import dagger.hilt.android.scopes.ActivityScoped;
 
-import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
-import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getUserDailyScheduleOnToday;
+import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED;
+import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
+import static com.picone.core.utils.FindInListUtil.getRestaurantDailyScheduleOnToday;
+import static com.picone.core.utils.FindInListUtil.getUserDailyScheduleOnToday;
 
 
 @ActivityScoped
@@ -57,6 +62,7 @@ import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getUser
 public class MainActivity extends AppCompatActivity {
 
     public ActivityMainBinding mBinding;
+    public LottieAnimationView mAnimationView;
 
     @Inject
     protected GoogleSignInClient mGoogleSignInClient;
@@ -67,55 +73,36 @@ public class MainActivity extends AppCompatActivity {
     private LoginViewModel mLoginViewModel;
     private RestaurantViewModel mRestaurantViewModel;
     private ChatViewModel mChatViewModel;
+
     private NavController mNavController;
     private SearchViewHelper searchViewHelper;
-    public LottieAnimationView mAnimationView;
+    private BottomSheetBehavior<ConstraintLayout> bottomSheetBehavior;
 
-    //TODO delete google key from repo
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
+        initViewModel();
+        initDropDownMenu();
         mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
         searchViewHelper = new SearchViewHelper(this, mRestaurantViewModel, mUserViewModel);
         initLoadingAnimation();
-        setSettingsVisibility(false);
         initToolBar();
-        initViewModel();
         initMenuButton();
         initInComingNavigation();
-        initNavigation();
-    }
-
-    private void initToolBar() {
-        setSupportActionBar(mBinding.topNavBar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_icon);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle(R.string.i_am_hungry_title);
+        NavigationUI.setupWithNavController(mBinding.bottomNavigation, mNavController);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        initBottomSheet();
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if (mFirebaseAuth.getCurrentUser() != null || accessToken != null && !accessToken.isExpired()) {
-            initViewModelsValues();
-            initSettingButtons();
-            mRestaurantViewModel.getSelectedRestaurant.observe(this, restaurant -> {
-                if (restaurant != null)
-                    mNavController.navigate(R.id.restaurantDetailFragment);
-            });
-            mRestaurantViewModel.getUserChosenRestaurant.observe(this, this::initNotificationMessage);
-
-            mRestaurantViewModel.getAllFilteredUsers.observe(this, users ->
-                    mUserViewModel.setAllUsersMutableLiveData(users));
-            Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
-        }
+        if (mFirebaseAuth.getCurrentUser() != null || accessToken != null && !accessToken.isExpired())
+            initValues();
     }
-
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -125,11 +112,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        boolean bol = Objects.requireNonNull(mNavController.getCurrentDestination()).getId() == R.id.mapsFragment;
+        if (bol) {
+            LocaleHelper.persist(this, Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().getChosenLanguage());
+            finish();
+        } else super.onBackPressed();
         mRestaurantViewModel.resetSelectedRestaurant();
-        if (Objects.requireNonNull(mNavController.getCurrentDestination()).getId() == R.id.authenticationFragment) {
-            this.finish();
-        } else mNavController.navigateUp();
+        mNavController.navigateUp();
     }
 
     @Override
@@ -139,9 +128,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        mBinding.drawerLayout.open();
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mBinding.drawerLayout.open();
+                break;
+            case R.id.top_nav_search_button:
+                searchViewHelper.initSearchView(item);
+        }
         return super.onOptionsItemSelected(item);
     }
+
+    //--------------------------------- INIT ------------------------------------------
 
     private void initViewModel() {
         mLoginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
@@ -150,16 +147,39 @@ public class MainActivity extends AppCompatActivity {
         mChatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
     }
 
+    private void initValues() {
+        mRestaurantViewModel.getAllDbRestaurants.observe(this, restaurants ->
+                mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(null));
+        mLoginViewModel.authenticate(true);
+        mRestaurantViewModel.getSelectedRestaurant.observe(this, restaurant -> {
+            if (restaurant != null)
+                mNavController.navigate(R.id.restaurantDetailFragment);
+        });
+        mRestaurantViewModel.getUserChosenRestaurant.observe(this, this::initNotificationMessage);
+
+        mRestaurantViewModel.getAllFilteredUsers.observe(this, users ->
+                mUserViewModel.setAllUsersMutableLiveData(users));
+
+        mRestaurantViewModel.getErrorState.observe(this, error_state -> {
+            if (error_state.equals(ErrorHandler.ON_ERROR)) {
+                Toast.makeText(this, ErrorHandler.ON_ERROR.label, Toast.LENGTH_LONG).show();
+                playLoadingAnimation(false);
+            }
+        });
+        Toast.makeText(this, getResources().getString(R.string.welcome_back_message) + Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getDisplayName(), Toast.LENGTH_LONG).show();
+    }
+
+    private void initToolBar() {
+        setSupportActionBar(mBinding.topNavBar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_icon);
+        getSupportActionBar().setTitle(R.string.i_am_hungry_title);
+    }
+
     //--------------------------------- BUTTONS ------------------------------------------
 
-
     private void initMenuButton() {
-        mBinding.topNavBar.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.top_nav_search_button) {
-                searchViewHelper.initSearchView(item);
-            }
-            return false;
-        });
         mBinding.navView.setNavigationItemSelectedListener(item -> {
             mBinding.drawerLayout.close();
             initDrawerMenuItems(item);
@@ -169,48 +189,51 @@ public class MainActivity extends AppCompatActivity {
 
     private void initDrawerMenuItems(MenuItem item) {
         if (mRestaurantViewModel.getCurrentUser.getValue() != null)
-            switch (item.getItemId()) {
-                case R.id.your_lunch_drawer_layout:
-                    if (mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules() != null && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()) != null) {
-                        mRestaurantViewModel.setInterestedUsersForRestaurant(getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId());
-                    } else
-                        Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
-                    break;
 
-                case R.id.settings_drawer_layout:
-                    if (mBinding.settingsViewInclude.settings.getVisibility() == View.GONE) {
-                        setSettingsVisibility(true);
-                        initDropDownMenu();
-                    }
-                    mBinding.settingsViewInclude.saveChangesNoButtonSettings.setOnClickListener(v ->
-                            setSettingsVisibility(false));
-                    break;
-                case R.id.logout_drawer_layout:
-                    signOut();
-                    break;
-                case R.id.chat_drawer_layout:
-                    mChatViewModel.setAllMessages();
-                    mNavController.navigate(R.id.chatFragment);
-            }
+        switch (item.getItemId()) {
+            case R.id.your_lunch_drawer_layout:
+                closeSetting();
+                if (mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules() != null && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()) != null) {
+                    mRestaurantViewModel.setInterestedUsersForRestaurant(getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId(), mRestaurantViewModel.getAllRestaurants.getValue());
+                } else
+                    Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.settings_drawer_layout:
+                if (mBinding.bottomSheetInclude.bottomSheet.getVisibility() == View.GONE)
+                    mBinding.bottomSheetInclude.bottomSheet.setVisibility(View.VISIBLE);
+                if (bottomSheetBehavior.getState() == STATE_EXPANDED) {
+                    bottomSheetBehavior.setState(STATE_COLLAPSED);
+                } else {
+                    bottomSheetBehavior.setState(STATE_EXPANDED);
+                    initSettingButtons();
+                }
+                break;
+            case R.id.logout_drawer_layout:
+                closeSetting();
+                signOut();
+                break;
+            case R.id.chat_drawer_layout:
+                closeSetting();
+                mChatViewModel.setAllMessages();
+                mNavController.navigate(R.id.chatFragment);
+        }
     }
 
     private void initDropDownMenu() {
-        String[] languages = {(getString(R.string.English)), (getString(R.string.French))};
-        int[] flags = {(R.drawable.ic_united_kingdom_flag_30), (R.drawable.ic_french_flag_30)};
+        String[] languages = {getString(R.string.English), getString(R.string.French)};
+        int[] flags = {R.drawable.ic_united_kingdom_flag_30, R.drawable.ic_french_flag_30};
 
         CustomAdapter adapter = new CustomAdapter(this, languages, flags);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mBinding.settingsViewInclude.languageTxtView.setAdapter(adapter);
+        mBinding.bottomSheetInclude.languageTxtView.setAdapter(adapter);
     }
 
-    private void initSettingButtons() {
-        mRestaurantViewModel.getCurrentUser.observe(this, user -> {
-            mBinding.settingsViewInclude.languageTxtView.setText(user.getSettingValues().getChosenLanguage());
-            mBinding.settingsViewInclude.notificationSwitchButton.setChecked(user.getSettingValues().isNotificationSet());
-        });
-        mBinding.settingsViewInclude.saveChangesNoButtonSettings.setOnClickListener(v ->
-                setSettingsVisibility(false));
-        mBinding.settingsViewInclude.saveChangesYesButtonSettings.setOnClickListener(v ->
+    protected void initSettingButtons() {
+        mBinding.bottomSheetInclude.languageTxtView.setText(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().getChosenLanguage(),false);
+        mBinding.bottomSheetInclude.cancelReservationToggleButton.setChecked(false);
+        mBinding.bottomSheetInclude.notificationSwitchButton.setChecked(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().isNotificationSet());
+        mBinding.bottomSheetInclude.saveChangesYesButtonSettings.setOnClickListener(v ->
                 initAlertDialog());
     }
 
@@ -221,6 +244,26 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton(R.string.yes, (dialog, which) -> saveChanges())
                 .create()
                 .show();
+    }
+
+    private void initBottomSheet() {
+        mBinding.bottomSheetInclude.bottomSheet.setVisibility(View.GONE);
+        bottomSheetBehavior = BottomSheetBehavior.from(mBinding.bottomSheetInclude.bottomSheet);
+        mBinding.bottomSheetInclude.bottomSheet.setClickable(true);
+        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == STATE_COLLAPSED)
+                    mBinding.bottomSheetInclude.bottomSheet.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                if (slideOffset <= 0.1)
+                    mBinding.bottomSheetInclude.bottomSheet.setVisibility(View.GONE);
+                else mBinding.bottomSheetInclude.bottomSheet.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     //--------------------------------- NAVIGATION ------------------------------------------
@@ -241,35 +284,8 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void initNavigation() {
-        NavigationUI.setupWithNavController(mBinding.bottomNavigation, mNavController);
-    }
+    //--------------------------------- UI VISIBILITY -----------------------------------------
 
-    //--------------------------------- UPDATE VALUE ------------------------------------------
-
-    private void initViewModelsValues() {
-        mLoginViewModel.authenticate(true);
-        mUserViewModel.setAllDbUsers();
-        mRestaurantViewModel.setAllDbRestaurants();
-        mUserViewModel.getAllUsers.observe(this, users ->
-                mRestaurantViewModel.setCurrentUser(Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getEmail()));
-        mRestaurantViewModel.getAllDbRestaurants.observe(this, restaurants ->
-                mRestaurantViewModel.updateAllRestaurantsWithPersistedValues(null));
-    }
-
-    //--------------------------------- UI VISIBILITY ------------------------------------------
-
-    public void setSettingsVisibility(boolean isVisible) {
-        if (isVisible) {
-            mBinding.settingsViewInclude.settings.setVisibility(View.VISIBLE);
-            mBinding.settingsViewInclude.settingsFrame.setVisibility(View.VISIBLE);
-        } else {
-            mBinding.settingsViewInclude.settings.setVisibility(View.GONE);
-            mBinding.settingsViewInclude.settingsFrame.setVisibility(View.GONE);
-        }
-    }
-
-    //TODO set in shadow not transparent
     public void setStatusBarTransparency(boolean isTransparent) {
         if (isTransparent) {
 
@@ -308,10 +324,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     //--------------------------------- HELPERS ------------------------------------------
 
-    private void initNotificationMessage(Restaurant restaurant){
+    private void initNotificationMessage(Restaurant restaurant) {
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
             if (restaurant != null
                     && restaurant.getRestaurantDailySchedules() != null
@@ -325,12 +340,17 @@ public class MainActivity extends AppCompatActivity {
                         userToPass.remove(user);
 
                 mRestaurantViewModel.sendNotification(task.getResult(),
-                        getString(R.string.today_lunch),createMessage(restaurant.getName(), restaurant.getAddress(), UserListToString(userToPass)));
+                        getString(R.string.today_lunch), createMessage(restaurant.getName(), restaurant.getAddress(), UserListToString(userToPass)));
             }
         });
     }
+
     private String createMessage(String restaurantName, String restaurantAddress, String interestedUsers) {
-        return (getString(R.string.notification_you_are_eating) + restaurantName + getString(R.string.notification_at) + restaurantAddress + getString(R.string.notification_with) + interestedUsers);
+        if (!interestedUsers.trim().isEmpty())
+            return (getString(R.string.notification_you_are_eating) + restaurantName + getString(R.string.notification_at) + restaurantAddress + getString(R.string.notification_with) + interestedUsers);
+        else
+            return (getString(R.string.notification_you_are_eating) + restaurantName + getString(R.string.notification_at) + restaurantAddress);
+
     }
 
     private String UserListToString(List<User> interestedUsers) {
@@ -346,32 +366,32 @@ public class MainActivity extends AppCompatActivity {
         return interestedUsersStr;
     }
 
-    private void saveChanges() {
+    public void saveChanges() {
+        bottomSheetBehavior.setState(STATE_COLLAPSED);
         SettingValues currentUserSettingValues = Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues();
-        String language = Objects.requireNonNull(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText()).getText().toString();
+        String language = Objects.requireNonNull(mBinding.bottomSheetInclude.languageSpinnerSettings.getEditText()).getText().toString();
 
-        if (!language.equalsIgnoreCase(LocaleHelper.getLanguage(this))
-                || mBinding.settingsViewInclude.notificationSwitchButton.isChecked() != currentUserSettingValues.isNotificationSet()
-                || mBinding.settingsViewInclude.cancelReservationToggleButton.isChecked()) {
+        if (!language.equalsIgnoreCase(currentUserSettingValues.getChosenLanguage())
+                || mBinding.bottomSheetInclude.notificationSwitchButton.isChecked() != currentUserSettingValues.isNotificationSet()
+                || mBinding.bottomSheetInclude.cancelReservationToggleButton.isChecked()) {
 
             setLanguageAndRestart(language);
 
             mUserViewModel.updateUserSettingValues(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue())
-                    , new SettingValues(Objects.requireNonNull(mBinding.settingsViewInclude.languageSpinnerSettings.getEditText()).getText().toString().trim(),
-                            mBinding.settingsViewInclude.notificationSwitchButton.isChecked()));
-
-            if (mBinding.settingsViewInclude.cancelReservationToggleButton.isChecked()) {
+                    , new SettingValues(Objects.requireNonNull(mBinding.bottomSheetInclude.languageSpinnerSettings.getEditText()).getText().toString().trim(),
+                            mBinding.bottomSheetInclude.notificationSwitchButton.isChecked()));
+            if (mBinding.bottomSheetInclude.cancelReservationToggleButton.isChecked()) {
                 if (getUserDailyScheduleOnToday(Objects.requireNonNull
                         (mRestaurantViewModel.getCurrentUser.getValue()).getUserDailySchedules()) == null)
                     Toast.makeText(this, R.string.haven_t_chose_restaurant, Toast.LENGTH_SHORT).show();
-                else mRestaurantViewModel.cancelReservation();
+                else
+                    mRestaurantViewModel.cancelReservation(mRestaurantViewModel.getAllRestaurants.getValue());
             }
         }
-        setSettingsVisibility(false);
     }
 
     private void setLanguageAndRestart(String language) {
-        if (!language.equalsIgnoreCase(LocaleHelper.getLanguage(this))) {
+        if (!language.equalsIgnoreCase(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().getChosenLanguage())) {
             LocaleHelper.setNewLocale(this, language);
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
@@ -410,4 +430,10 @@ public class MainActivity extends AppCompatActivity {
             mAnimationView.pauseAnimation();
         }
     }
+
+    private void closeSetting() {
+        if (bottomSheetBehavior.getState() == STATE_EXPANDED)
+            bottomSheetBehavior.setState(STATE_COLLAPSED);
+    }
+
 }

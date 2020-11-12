@@ -7,15 +7,13 @@ import androidx.lifecycle.ViewModel;
 
 public class LoginViewModel extends ViewModel {
 
-
     public enum AuthenticationState {
-        UNAUTHENTICATED,        // Initial state, the user needs to authenticate
-        AUTHENTICATED,          // The user has authenticated successfully
-        INVALID_AUTHENTICATION  // Authentication failed
+        UNAUTHENTICATED,
+        AUTHENTICATED,
+        INVALID_AUTHENTICATION
     }
 
-    private final MutableLiveData<AuthenticationState> authenticationState =
-            new MutableLiveData<>();
+    private final MutableLiveData<AuthenticationState> authenticationState = new MutableLiveData<>();
 
     @ViewModelInject
     public LoginViewModel() {
@@ -27,11 +25,8 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void authenticate(boolean bool) {
-        if (bool) {
-            authenticationState.setValue(AuthenticationState.AUTHENTICATED);
-        } else {
-            authenticationState.setValue(AuthenticationState.INVALID_AUTHENTICATION);
-        }
+        if (bool) authenticationState.setValue(AuthenticationState.AUTHENTICATED);
+        else authenticationState.setValue(AuthenticationState.INVALID_AUTHENTICATION);
     }
 
     public void refuseAuthentication() {

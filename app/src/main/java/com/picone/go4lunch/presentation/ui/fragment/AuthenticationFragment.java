@@ -36,7 +36,7 @@ import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static com.picone.go4lunch.presentation.utils.ConstantParameter.RC_SIGN_IN;
+import static com.picone.core.utils.ConstantParameter.RC_SIGN_IN;
 
 public class AuthenticationFragment extends BaseFragment {
 
@@ -51,7 +51,6 @@ public class AuthenticationFragment extends BaseFragment {
         initButtons();
         setAppBarVisibility(false);
         setStatusBarTransparency(true);
-        setSettingViewVisibility();
         playLoadingAnimation(false);
         mNavController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
         return mBinding.getRoot();
@@ -127,7 +126,6 @@ public class AuthenticationFragment extends BaseFragment {
 
 //------------------------------------Facebook authentication----------------------------
 
-    //TODO new method to get avatar? have a look at facebook api
     private void handleFacebookAccessToken(AccessToken token) {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)

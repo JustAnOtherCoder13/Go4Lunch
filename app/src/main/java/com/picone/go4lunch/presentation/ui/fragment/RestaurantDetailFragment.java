@@ -28,13 +28,15 @@ import com.picone.go4lunch.presentation.ui.fragment.adapters.ColleagueRecyclerVi
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static android.Manifest.permission.CALL_PHONE;
-import static com.picone.go4lunch.presentation.utils.ConstantParameter.CURRENT_HOUR;
-import static com.picone.go4lunch.presentation.utils.ConstantParameter.MAX_RESERVATION_HOUR;
-import static com.picone.go4lunch.presentation.utils.ConstantParameter.REQUEST_CODE;
-import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getUserDailyScheduleOnToday;
-import static com.picone.go4lunch.presentation.utils.ManageStarUtil.manageStar;
+import static com.picone.core.utils.ConstantParameter.CLOSED;
+import static com.picone.core.utils.ConstantParameter.CURRENT_HOUR;
+import static com.picone.core.utils.ConstantParameter.MAX_RESERVATION_HOUR;
+import static com.picone.core.utils.ConstantParameter.REQUEST_CODE;
+import static com.picone.core.utils.FindInListUtil.getUserDailyScheduleOnToday;
+import static com.picone.go4lunch.presentation.helpers.ManageStarHelper.manageStar;
 
 public class RestaurantDetailFragment extends BaseFragment {
 
@@ -61,12 +63,13 @@ public class RestaurantDetailFragment extends BaseFragment {
 
     private void initButtons(Restaurant selectedRestaurant) {
         setChooseRestaurantFabVisibility(selectedRestaurant);
-
-        mBinding.chooseRestaurantFab.setOnClickListener(v ->
-                mRestaurantViewModel.addUserToRestaurant());
+        mBinding.chooseRestaurantFab.setOnClickListener(v -> {
+            mRestaurantViewModel.addUserToRestaurant(selectedRestaurant, mRestaurantViewModel.getAllRestaurants.getValue());
+            mRestaurantViewModel.updateUserDailySchedule(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()), selectedRestaurant);
+        });
 
         mBinding.likeDetailImageButton.setOnClickListener(v ->
-                initLikeAlertDialog());
+                initLikeAlertDialog(selectedRestaurant));
 
         mBinding.callNumberDetailImageButton.setOnClickListener(v ->
                 initCallIntent(selectedRestaurant));
@@ -108,8 +111,8 @@ public class RestaurantDetailFragment extends BaseFragment {
                 setButtonColor(restaurant);
                 initButtons(restaurant);
                 if (restaurant.getFanList() != null)
-                    mRestaurantViewModel.setLikeCounter(restaurant.getFanList().size());
-                else mRestaurantViewModel.setLikeCounter(0);
+                    mRestaurantViewModel.setLikeCounterMutableLiveData(restaurant.getFanList().size());
+                else mRestaurantViewModel.setLikeCounterMutableLiveData(0);
                 mBinding.restaurantNameDetailTextView.setText(restaurant.getName());
                 mBinding.addressDetailTextView.setText(restaurant.getAddress());
                 initLike(restaurant);
@@ -118,7 +121,7 @@ public class RestaurantDetailFragment extends BaseFragment {
         });
     }
 
-    private void setButtonColor(Restaurant restaurant) {
+    private void setButtonColor(@NonNull Restaurant restaurant) {
         if (restaurant.getPhoneNumber() == null) {
             mBinding.callNumberDetailImageButton.setBackgroundColor(Color.LTGRAY);
             mBinding.webSiteDetailImageButton.setEnabled(false);
@@ -127,16 +130,17 @@ public class RestaurantDetailFragment extends BaseFragment {
             mBinding.webSiteDetailImageButton.setBackgroundColor(Color.LTGRAY);
             mBinding.webSiteDetailImageButton.setEnabled(false);
         }
-        mRestaurantViewModel.getCurrentUser.observe(getViewLifecycleOwner(), user -> {
-            if (restaurant.getFanList() != null && restaurant.getFanList().contains(user.getUid())) {
+
+        mRestaurantViewModel.getFanList.observe(getViewLifecycleOwner(), fanList -> {
+            if (fanList != null && fanList.contains(Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getUid())) {
                 mBinding.likeDetailImageButton.setBackgroundColor(Color.LTGRAY);
                 mBinding.likeDetailImageButton.setEnabled(false);
             }
-
         });
+
     }
 
-    private void setPhoto(Restaurant restaurant) {
+    private void setPhoto(@NonNull Restaurant restaurant) {
         Glide.with(mBinding.restaurantPhotoDetailImageView.getContext())
                 .load(restaurant.getRestaurantPhoto())
                 .centerCrop()
@@ -152,14 +156,14 @@ public class RestaurantDetailFragment extends BaseFragment {
                 });
     }
 
-    private void initLike(Restaurant restaurant) {
+    private void initLike(@NonNull Restaurant restaurant) {
         int numberOfLike = 0;
         if (restaurant.getFanList() != null && !restaurant.getFanList().isEmpty())
             numberOfLike = restaurant.getFanList().size();
         manageStar(mBinding.opinionStarDetailImageView, numberOfLike);
     }
 
-    private void initWebSiteIntent(Restaurant selectedRestaurant) {
+    private void initWebSiteIntent(@NonNull Restaurant selectedRestaurant) {
         if (selectedRestaurant.getWebsite() != null) {
             Intent myWebLink = new Intent(Intent.ACTION_VIEW);
             myWebLink.setData(Uri.parse(selectedRestaurant.getWebsite()));
@@ -167,7 +171,7 @@ public class RestaurantDetailFragment extends BaseFragment {
         }
     }
 
-    private void initCallIntent(Restaurant selectedRestaurant) {
+    private void initCallIntent(@NonNull Restaurant selectedRestaurant) {
         if (selectedRestaurant.getPhoneNumber() != null) {
             Intent callIntent = new Intent(Intent.ACTION_CALL);
             callIntent.setData(Uri.parse(getString(R.string.tel).concat(selectedRestaurant.getPhoneNumber().trim())));
@@ -177,11 +181,11 @@ public class RestaurantDetailFragment extends BaseFragment {
         }
     }
 
-    private void initLikeAlertDialog() {
+    private void initLikeAlertDialog(Restaurant selectedRestaurant) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle(R.string.like_restaurant_question)
                 .setNegativeButton(R.string.no, null)
-                .setPositiveButton(R.string.yes, (dialog, which) -> mRestaurantViewModel.updateFanList())
+                .setPositiveButton(R.string.yes, (dialog, which) -> mRestaurantViewModel.updateFanList(selectedRestaurant))
                 .create()
                 .show();
     }
@@ -192,7 +196,8 @@ public class RestaurantDetailFragment extends BaseFragment {
                 && getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId()
                 .equals(selectedRestaurant.getPlaceId())
                 || CURRENT_HOUR >= MAX_RESERVATION_HOUR
-                || selectedRestaurant.getOpeningHours().equals(getResources().getString(R.string.closed)))
+                || selectedRestaurant.getOpeningHours().equalsIgnoreCase(CLOSED)) {
             mBinding.chooseRestaurantFab.setVisibility(View.GONE);
+        }
     }
 }

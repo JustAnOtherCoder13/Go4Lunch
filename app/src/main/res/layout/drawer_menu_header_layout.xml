@@ -11,8 +11,8 @@
         android:background="@drawable/dinner_with_friends_background"
         android:contentDescription="@string/dinner_with_friend_background"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -21,8 +21,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@id/drawer_avatar"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -32,8 +32,8 @@
         android:layout_height="70dp"
         android:contentDescription="@string/user_avatar_drawer_menu"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/drawer_user_name"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/drawer_title"
         tools:src="@tools:sample/avatars" />
 
@@ -43,8 +43,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/drawer_avatar"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/drawer_avatar"
         app:layout_constraintTop_toBottomOf="@id/drawer_title" />
 
     <TextView
@@ -52,8 +52,8 @@
         style="@style/drawer_user_mail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/drawer_avatar"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/drawer_avatar"
         app:layout_constraintTop_toBottomOf="@id/drawer_user_name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

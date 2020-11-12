@@ -5,28 +5,24 @@ import android.annotation.SuppressLint;
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.picone.core.domain.entity.ChatMessage;
 import com.picone.core.domain.interactors.chatInteractors.GetAllMessagesInteractor;
 import com.picone.core.domain.interactors.chatInteractors.PostMessageInteractor;
+import com.picone.core.utils.SchedulerProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+public class ChatViewModel extends BaseViewModel {
 
-public class ChatViewModel extends ViewModel {
-
-    private MutableLiveData<List<ChatMessage>> chatMessageMutableLiveData = new MutableLiveData<>();
-
-    private GetAllMessagesInteractor getAllMessagesInteractor;
-    private PostMessageInteractor postMessageInteractor;
+    private MutableLiveData<List<ChatMessage>> chatMessageMutableLiveData = new MutableLiveData<>(new ArrayList<>());
 
     @ViewModelInject
-    public ChatViewModel(GetAllMessagesInteractor getAllMessagesInteractor, PostMessageInteractor postMessageInteractor) {
+    public ChatViewModel(GetAllMessagesInteractor getAllMessagesInteractor, PostMessageInteractor postMessageInteractor, SchedulerProvider schedulerProvider) {
         this.getAllMessagesInteractor = getAllMessagesInteractor;
         this.postMessageInteractor = postMessageInteractor;
+        this.schedulerProvider = schedulerProvider;
     }
 
     public LiveData<List<ChatMessage>> getAllMessages = chatMessageMutableLiveData;
@@ -35,16 +31,20 @@ public class ChatViewModel extends ViewModel {
     @SuppressLint("CheckResult")
     public void setAllMessages() {
         getAllMessagesInteractor.getAllMessages()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(schedulerProvider.getIo())
+                .observeOn(schedulerProvider.getUi())
                 .subscribe(chatMessages ->
-                        chatMessageMutableLiveData.setValue(chatMessages));
+                        chatMessageMutableLiveData.setValue(chatMessages), throwable -> checkException());
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
     public void postMessage(ChatMessage chatMessage) {
-        postMessageInteractor.postMessage(chatMessage)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+        if (chatMessage != null && chatMessage.getUserText() != null && !chatMessage.getUserText().trim().isEmpty())
+            postMessageInteractor.postMessage(chatMessage)
+                    .subscribeOn(schedulerProvider.getIo())
+                    .observeOn(schedulerProvider.getUi())
+                    .subscribe(() -> {
+                    }, throwable -> checkException());
     }
 }

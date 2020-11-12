@@ -255,7 +255,6 @@
 
     <style name="post_fab_style">
         <item name="android:layout_marginEnd">@dimen/basic_marge</item>
-        <item name="android:layout_marginBottom">@dimen/fab_marge</item>
         <item name="android:scaleType">center</item>
         <item name="backgroundTint">@color/colorPrimary</item>
         <item name="maxImageSize">28dp</item>
@@ -271,6 +270,8 @@
         <item name="android:textColor">@color/onPrimaryColor</item>
         <item name="android:textColorHint">@color/colorPrimaryLight</item>
         <item name="android:layout_margin">@dimen/basic_marge</item>
+        <item name="android:padding">@dimen/little_marge</item>
+        <item name="android:paddingStart">@dimen/big_marge</item>
     </style>
 
     <style name="chat_card_view">
@@ -312,7 +313,7 @@
     <style name="txt_card_view_receiver">
         <item name="android:layout_marginStart">@dimen/xxl_marge</item>
         <item name="android:layout_marginEnd">@dimen/basic_marge</item>
-        <item name="cardBackgroundColor">@color/colorPrimaryLight</item>
+        <item name="android:background">@drawable/custom_background_light</item>
         <item name="cardCornerRadius">@dimen/big_marge</item>
     </style>
 
@@ -362,17 +363,13 @@
         <item name="android:textColor">@color/onPrimaryColor</item>
     </style>
 
-    <style name="setting_cancel_label">
+    <style name="setting_cancel_label_txt">
         <item name="android:layout_marginStart">@dimen/basic_marge</item>
         <item name="android:layout_marginTop">@dimen/big_marge</item>
         <item name="android:layout_marginEnd">@dimen/basic_marge</item>
-        <item name="cardBackgroundColor">@color/colorPrimary</item>
-        <item name="cardCornerRadius">@dimen/big_marge</item>
-        <item name="cardElevation">0dp</item>
-    </style>
-
-    <style name="setting_cancel_label_txt">
-        <item name="android:layout_margin">@dimen/basic_marge</item>
+        <item name="android:background">@drawable/custom_background_primary</item>
+        <item name="android:paddingTop">@dimen/basic_marge</item>
+        <item name="android:paddingBottom">@dimen/basic_marge</item>
         <item name="android:text">@string/cancel_reservation</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textColor">@color/onPrimaryColor</item>
@@ -385,12 +382,8 @@
         <item name="cardCornerRadius">15dp</item>
     </style>
 
-    <style name="setting_check_box">
-        <item name="android:background">@null</item>
-        <item name="android:drawablePadding">@dimen/little_marge</item>
-        <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:textOff">@string/no</item>
-        <item name="android:textOn">@string/yes</item>
+    <style name="setting_check_box" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/delete_button_selector</item>
     </style>
 
     <style name="setting_save_change_txt">

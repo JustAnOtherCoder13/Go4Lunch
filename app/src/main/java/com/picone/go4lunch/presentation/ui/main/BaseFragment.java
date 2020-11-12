@@ -65,7 +65,6 @@ public abstract class BaseFragment extends Fragment {
                 populateDrawerMenu(mAuth.getCurrentUser());
             }
         });
-
     }
 
     protected void setAppBarVisibility(boolean isVisible) {
@@ -74,10 +73,6 @@ public abstract class BaseFragment extends Fragment {
 
     protected void setStatusBarTransparency(boolean isTransparent) {
         mainActivity.setStatusBarTransparency(isTransparent);
-    }
-
-    protected void setSettingViewVisibility() {
-        mainActivity.setSettingsVisibility(false);
     }
 
     @SuppressWarnings("ConstantConditions")

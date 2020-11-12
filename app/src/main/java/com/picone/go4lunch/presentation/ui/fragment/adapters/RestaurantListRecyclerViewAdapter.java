@@ -19,9 +19,9 @@ import com.picone.go4lunch.databinding.RecyclerViewRestaurantItemsBinding;
 
 import java.util.List;
 
-import static com.picone.go4lunch.presentation.utils.ConstantParameter.CLOSED;
-import static com.picone.go4lunch.presentation.utils.DailyScheduleHelper.getRestaurantDailyScheduleOnToday;
-import static com.picone.go4lunch.presentation.utils.ManageStarUtil.manageStar;
+import static com.picone.core.utils.ConstantParameter.CLOSED;
+import static com.picone.core.utils.FindInListUtil.getRestaurantDailyScheduleOnToday;
+import static com.picone.go4lunch.presentation.helpers.ManageStarHelper.manageStar;
 
 public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantListRecyclerViewAdapter.ViewHolder> {
 
@@ -95,9 +95,11 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
 
     private void setInterestedUsers(@NonNull ViewHolder holder, Restaurant restaurant) {
         if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null &&
-                getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().size() > 0)
+                getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().size() > 0){
+            holder.restaurantBinding.interestedColleague.setVisibility(View.VISIBLE);
+            holder.restaurantBinding.interestedColleagueNumber.setVisibility(View.VISIBLE);
             holder.restaurantBinding.interestedColleagueNumber.setText(("(").concat(String.valueOf(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().size())).concat(")"));
-        else {
+        }else {
             holder.restaurantBinding.interestedColleague.setVisibility(View.GONE);
             holder.restaurantBinding.interestedColleagueNumber.setVisibility(View.GONE);
         }

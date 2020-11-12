@@ -14,12 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.go4lunch.R;
 import com.picone.go4lunch.databinding.FragmentRestaurantListBinding;
+import com.picone.go4lunch.presentation.helpers.RecyclerViewItemClickUtil;
 import com.picone.go4lunch.presentation.ui.fragment.adapters.RestaurantListRecyclerViewAdapter;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
-import com.picone.go4lunch.presentation.utils.RecyclerViewItemClickUtil;
 
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.List;
 
 public class RestaurantListFragment extends BaseFragment {
 
@@ -49,8 +49,11 @@ public class RestaurantListFragment extends BaseFragment {
     public void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewListFragment, R.layout.fragment_restaurant_list)
                 .setOnItemClickListener((recyclerView, position, v) -> {
-                    Restaurant restaurant = Objects.requireNonNull(mRestaurantViewModel.getAllRestaurants.getValue()).get(position);
-                    mRestaurantViewModel.setInterestedUsersForRestaurant(restaurant.getPlaceId());
+                    List<Restaurant> allRestaurants = mRestaurantViewModel.getAllRestaurants.getValue();
+                    assert allRestaurants != null;
+                    Restaurant restaurant = allRestaurants.get(position);
+                    mRestaurantViewModel.setInterestedUsersForRestaurant(restaurant.getPlaceId(),allRestaurants);
+                    mRestaurantViewModel.persistRestaurant(restaurant);
                 });
     }
 
@@ -59,7 +62,6 @@ public class RestaurantListFragment extends BaseFragment {
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mBinding.recyclerViewListFragment.setLayoutManager(linearLayoutManager);
         mBinding.recyclerViewListFragment.setAdapter(adapter);
-        mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(),
-                adapter::updateRestaurants);
+        mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), adapter::updateRestaurants);
     }
 }

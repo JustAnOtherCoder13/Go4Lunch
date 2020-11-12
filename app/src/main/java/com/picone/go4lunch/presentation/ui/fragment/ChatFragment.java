@@ -19,7 +19,7 @@ import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static com.picone.go4lunch.presentation.utils.ConstantParameter.TODAY;
+import static com.picone.core.utils.ConstantParameter.TODAY;
 
 public class ChatFragment extends BaseFragment {
 
@@ -35,15 +35,14 @@ public class ChatFragment extends BaseFragment {
         return mBinding.getRoot();
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initRecyclerView();
         mBinding.postMessageFab.setOnClickListener(v -> {
             User user = mRestaurantViewModel.getCurrentUser.getValue();
-            if (!mBinding.chatEditText.getText().toString().trim().isEmpty() && user != null)
-                mChatViewModel.postMessage(new ChatMessage(TODAY, user.getAvatar(), user.getName(), mBinding.chatEditText.getText().toString(), user.getUid()));
-
+            mChatViewModel.postMessage(new ChatMessage(TODAY, user.getAvatar(), user.getName(), mBinding.chatEditText.getText().toString(), user.getUid()));
             mBinding.chatEditText.getText().clear();
         });
         mBinding.chatEditText.setOnClickListener(v ->
@@ -58,11 +57,9 @@ public class ChatFragment extends BaseFragment {
         mBinding.recyclerViewChatFragment.setLayoutManager(linearLayoutManager);
         mBinding.recyclerViewChatFragment.setAdapter(mAdapter);
         mChatViewModel.getAllMessages.observe(requireActivity(), chatMessages -> {
-            if (chatMessages != null) {
-                mAdapter.updateMessages(chatMessages, Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getUid());
-                mBinding.recyclerViewChatFragment.post(() ->
-                        mBinding.recyclerViewChatFragment.smoothScrollToPosition(mAdapter.getItemCount()));
-            }
+            mAdapter.updateMessages(chatMessages, Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getUid());
+            mBinding.recyclerViewChatFragment.post(() ->
+                    mBinding.recyclerViewChatFragment.smoothScrollToPosition(mAdapter.getItemCount()));
         });
     }
 }

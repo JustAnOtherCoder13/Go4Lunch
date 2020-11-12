@@ -7,6 +7,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.picone.core.utils.SchedulerProvider;
 import com.picone.go4lunch.presentation.ui.main.BaseFragment;
 
 import dagger.Module;
@@ -14,6 +15,8 @@ import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.components.ActivityComponent;
 import dagger.hilt.android.qualifiers.ActivityContext;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 @InstallIn(ActivityComponent.class)
 @Module
@@ -45,4 +48,6 @@ public final class PresentationModule {
         return CallbackManager.Factory.create();
     }
 
+    @Provides
+    static SchedulerProvider provideScheduler() { return new SchedulerProvider(Schedulers.io(), AndroidSchedulers.mainThread());}
 }

@@ -1,8 +1,8 @@
 package com.picone.core.domain.interactors.restaurantInteractors.placeInteractors;
 
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
+import com.picone.core.domain.entity.pOJOrestaurantDetail.RestaurantDetail;
 import com.picone.core.domain.entity.restaurant.Restaurant;
-import com.picone.core.domain.entity.restaurantDetailPOJO.RestaurantDetail;
 
 import java.util.Calendar;
 
@@ -32,12 +32,12 @@ public class FetchRestaurantDetailFromPlaceInteractor {
     }
 
     private String formatOpeningHours(RestaurantDetail restaurantDetail) {
-        String closingHour = restaurantDetail.getResult().getOpeningHours().getPeriods().get(getWeekDayTextValue()).getClose().getTime();
-        if (restaurantDetail.getResult().getOpeningHours().getOpenNow())
-            closingHour = closingHour.substring(0, 2) + ":" + closingHour.substring(2, 4);
-        else
-            closingHour = "Closed";
-
+        String closingHour="Closed";
+        if (restaurantDetail.getResult().getOpeningHours() != null) {
+            if (restaurantDetail.getResult().getOpeningHours().getOpenNow()){
+                closingHour = restaurantDetail.getResult().getOpeningHours().getPeriods().get(getWeekDayTextValue()).getClose().getTime();
+                closingHour = closingHour.substring(0, 2) + ":" + closingHour.substring(2, 4);}
+        }
         return closingHour;
     }
 
