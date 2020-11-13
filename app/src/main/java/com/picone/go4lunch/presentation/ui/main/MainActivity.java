@@ -53,7 +53,10 @@ import dagger.hilt.android.scopes.ActivityScoped;
 
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED;
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
+import static com.picone.core.utils.ConstantParameter.CURRENT_HOUR;
+import static com.picone.core.utils.ConstantParameter.MAX_RESERVATION_HOUR;
 import static com.picone.core.utils.FindInListUtil.getRestaurantDailyScheduleOnToday;
+import static com.picone.core.utils.FindInListUtil.getRestaurantForPlaceId;
 import static com.picone.core.utils.FindInListUtil.getUserDailyScheduleOnToday;
 
 
@@ -115,6 +118,8 @@ public class MainActivity extends AppCompatActivity {
         boolean bol = Objects.requireNonNull(mNavController.getCurrentDestination()).getId() == R.id.mapsFragment;
         if (bol) {
             LocaleHelper.persist(this, Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().getChosenLanguage());
+            if (getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules())!=null&& CURRENT_HOUR<=MAX_RESERVATION_HOUR)
+            initNotificationMessage(getRestaurantForPlaceId(getUserDailyScheduleOnToday(mRestaurantViewModel.getCurrentUser.getValue().getUserDailySchedules()).getRestaurantPlaceId(),mRestaurantViewModel.getAllRestaurants.getValue()));
             finish();
         } else super.onBackPressed();
         mRestaurantViewModel.resetSelectedRestaurant();
@@ -155,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
             if (restaurant != null)
                 mNavController.navigate(R.id.restaurantDetailFragment);
         });
-        mRestaurantViewModel.getUserChosenRestaurant.observe(this, this::initNotificationMessage);
+        //mRestaurantViewModel.getUserChosenRestaurant.observe(this, this::initNotificationMessage);
 
         mRestaurantViewModel.getAllFilteredUsers.observe(this, users ->
                 mUserViewModel.setAllUsersMutableLiveData(users));
@@ -328,10 +333,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initNotificationMessage(Restaurant restaurant) {
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-            if (restaurant != null
-                    && restaurant.getRestaurantDailySchedules() != null
-                    && getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null
-                    && Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().isNotificationSet()) {
+            if (Objects.requireNonNull(mRestaurantViewModel.getCurrentUser.getValue()).getSettingValues().isNotificationSet()) {
 
                 List<User> userToPass = new ArrayList<>(getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers());
 

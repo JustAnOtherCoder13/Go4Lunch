@@ -26,7 +26,6 @@ public class CustomAdapter extends ArrayAdapter<String> {
 
     public CustomAdapter(@NonNull Context context, String[] languages, int[] flags) {
         super(context, R.layout.spinner_item, languages);
-        Log.i("TAG", "getDropDownView: "+ Arrays.toString(languages));
         this.context = context;
         this.languages = languages;
         this.flags = flags;
