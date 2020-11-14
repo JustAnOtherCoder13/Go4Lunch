@@ -6,6 +6,7 @@
 # local configuration (sdk path, etc)
 local.properties
 gradle.properties
+settings.gradle
 
 # generated files
 bin/
