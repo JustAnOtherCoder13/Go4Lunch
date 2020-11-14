@@ -232,7 +232,7 @@
     <style name="restaurant_item_photo_img">
         <item name="android:layout_margin">@dimen/basic_marge</item>
         <item name="android:scaleType">centerCrop</item>
-        <item name="android:src">@drawable/dinner_with_friends</item>
+        <item name="android:src">@drawable/no_photo</item>
     </style>
 
     <style name="restaurant_item_separator">
