@@ -10,6 +10,7 @@
         android:id="@+id/restaurant_photo_detail_image_view"
         android:layout_width="450dp"
         android:layout_height="280dp"
+        android:src="@drawable/no_photo"
         android:contentDescription="@string/restaurant_photo_content_description_restaurant_detail"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"

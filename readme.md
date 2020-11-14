@@ -16,6 +16,10 @@
 
 ## 3. Preview.
 
+### Go4Lunch presentation.
+
++ presentation of the app structure and more : https://slides.com/justanothercoder/deck-0101ce
+  
 ### Authenticate with Google or Facebook.
 ![googleAuth](gif_preview/auth_with_google.gif)
 
