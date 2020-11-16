@@ -2,20 +2,16 @@ package com.picone.core.domain.interactors.restaurantInteractors.restaurantInter
 
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.domain.entity.restaurant.Restaurant;
+import com.picone.core.domain.interactors.restaurantInteractors.RestaurantBaseInteractor;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import io.reactivex.Observable;
 
-public class GetAllPersistedRestaurantsInteractor {
-
-    @Inject
-    RestaurantRepository restaurantDataSource;
+public class GetAllPersistedRestaurantsInteractor extends RestaurantBaseInteractor {
 
     public GetAllPersistedRestaurantsInteractor(RestaurantRepository restaurantDataSource) {
-        this.restaurantDataSource = restaurantDataSource;
+        super(restaurantDataSource);
     }
 
     public Observable<List<Restaurant>> getAllPersistedRestaurants(){

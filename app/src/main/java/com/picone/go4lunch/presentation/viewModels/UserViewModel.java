@@ -1,7 +1,6 @@
 package com.picone.go4lunch.presentation.viewModels;
 
-import android.annotation.SuppressLint;
-
+import androidx.annotation.NonNull;
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -29,8 +28,6 @@ public class UserViewModel extends BaseViewModel {
     private MutableLiveData<List<User>> allUsersMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
 
-    //suppress warning is safe cause subscribe is used to set allUsersMutableLiveData
-    @SuppressLint("CheckResult")
     @ViewModelInject
     public UserViewModel(GetAllUsersInteractor getAllUsersInteractor, AddUserInteractor addUserInteractor, UpdateUserInteractor updateUserInteractor,SchedulerProvider schedulerProvider) {
         this.addUserInteractor = addUserInteractor;
@@ -56,35 +53,32 @@ public class UserViewModel extends BaseViewModel {
         allUsersMutableLiveData.setValue(filteredUsers);
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    @SuppressLint("CheckResult")
     public void setAllDbUsers() {
-        getAllUsersInteractor.getAllUsers()
+        compositeDisposable.add(
+                getAllUsersInteractor.getAllUsers()
                 .subscribeOn(schedulerProvider.getIo())
                 .observeOn(schedulerProvider.getUi())
-                .subscribe(users -> allUsersMutableLiveData.setValue(users), throwable -> checkException());
+                .subscribe(users -> allUsersMutableLiveData.setValue(users), throwable -> checkException()));
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    @SuppressLint("CheckResult")
     public void addUser(User currentUser) {
-        addUserInteractor.addUser(currentUser)
+        compositeDisposable.add(
+                addUserInteractor.addUser(currentUser)
                 .subscribeOn(schedulerProvider.getIo())
                 .observeOn(schedulerProvider.getUi())
                 .subscribe(() -> UserCompletionStateMutableLiveData.setValue(UserCompletionState.ON_COMPLETE)
                         , throwable -> {
                             UserCompletionStateMutableLiveData.setValue(UserCompletionState.ON_ERROR);
                             checkException();
-                        });
+                        }));
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    @SuppressLint("CheckResult")
-    public void updateUserSettingValues(User currentUser, SettingValues settingValues) {
+    public void updateUserSettingValues(@NonNull User currentUser, SettingValues settingValues) {
         currentUser.setSettingValues(settingValues);
-        updateUserInteractor.updateUser(currentUser)
+        compositeDisposable.add(
+                updateUserInteractor.updateUser(currentUser)
                 .subscribeOn(schedulerProvider.getIo())
                 .observeOn(schedulerProvider.getUi())
-                .subscribe(()->{},throwable -> checkException());
+                .subscribe(()->{},throwable -> checkException()));
     }
 }

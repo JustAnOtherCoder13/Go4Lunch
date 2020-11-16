@@ -14,4 +14,6 @@ public interface UserDao {
     Completable AddUser(User user);
 
     Observable<List<User>> getCurrentUserForEmail(String authUserEmail);
+
+    Completable updateUser(User currentUser);
 }

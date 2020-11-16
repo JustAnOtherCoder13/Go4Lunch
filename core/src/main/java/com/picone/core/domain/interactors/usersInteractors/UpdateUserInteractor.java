@@ -7,13 +7,13 @@ import javax.inject.Inject;
 
 import io.reactivex.Completable;
 
-public class UpdateUserInteractor {
+public class UpdateUserInteractor extends UserBaseInteractor {
 
     @Inject
     UserRepository userDataSource;
 
     public UpdateUserInteractor(UserRepository userDataSource) {
-        this.userDataSource = userDataSource;
+        super(userDataSource);
     }
 
     public Completable updateUser(User currentUser) {

@@ -2,6 +2,8 @@ package com.picone.core.data.repository.restaurant;
 
 import android.location.Location;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.JsonObject;
@@ -22,6 +24,10 @@ import durdinapps.rxfirebase2.RxFirebaseDatabase;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 
+import static com.picone.core.utils.ConstantParameter.RADIUS;
+import static com.picone.core.utils.ConstantParameter.RESTAURANT_REF;
+import static com.picone.core.utils.ConstantParameter.USER_REF;
+
 public class RestaurantDaoImpl implements RestaurantDao {
 
     @Inject
@@ -30,13 +36,11 @@ public class RestaurantDaoImpl implements RestaurantDao {
     protected RetrofitClient retrofitClient;
     private DatabaseReference restaurantsDataBaseReference;
 
-    private final String RADIUS = "400";
 
-
-    public RestaurantDaoImpl(FirebaseDatabase database, RetrofitClient retrofitClient) {
+    public RestaurantDaoImpl(@NonNull FirebaseDatabase database, RetrofitClient retrofitClient) {
         this.database = database;
         this.retrofitClient = retrofitClient;
-        this.restaurantsDataBaseReference = database.getReference().child("restaurants");
+        this.restaurantsDataBaseReference = database.getReference().child(RESTAURANT_REF);
     }
 
     //----------------------------------------FIREBASE---------------------------------------------------------------
@@ -49,7 +53,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
 
     @Override
     public Completable updateUserChosenRestaurant(User currentUser) {
-        return RxFirebaseDatabase.setValue(database.getReference().child("users").child(currentUser.getUid()), currentUser);
+        return RxFirebaseDatabase.setValue(database.getReference().child(USER_REF).child(currentUser.getUid()), currentUser);
     }
 
     @Override
@@ -59,13 +63,13 @@ public class RestaurantDaoImpl implements RestaurantDao {
 
     //-----------------------------------------------GOOGLE PLACE-------------------------------------------------------
     @Override
-    public Observable<NearBySearch> getNearBySearch(Location mCurrentLocation, String googleKey) {
+    public Observable<NearBySearch> getNearBySearch(@NonNull Location mCurrentLocation, String googleKey) {
         return retrofitClient.googlePlaceService()
                 .getNearbySearch(mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude(), RADIUS, googleKey);
     }
 
     @Override
-    public Observable<RestaurantDetail> getPlaceRestaurantDetail(Restaurant restaurant, String googleKey) {
+    public Observable<RestaurantDetail> getPlaceRestaurantDetail(@NonNull Restaurant restaurant, String googleKey) {
         return retrofitClient.googlePlaceService()
                 .getRestaurantDetail(restaurant.getPlaceId(), googleKey);
     }

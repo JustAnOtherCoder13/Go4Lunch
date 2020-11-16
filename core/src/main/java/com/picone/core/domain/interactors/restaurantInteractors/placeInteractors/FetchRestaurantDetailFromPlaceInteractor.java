@@ -3,20 +3,16 @@ package com.picone.core.domain.interactors.restaurantInteractors.placeInteractor
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.domain.entity.pOJOrestaurantDetail.RestaurantDetail;
 import com.picone.core.domain.entity.restaurant.Restaurant;
+import com.picone.core.domain.interactors.restaurantInteractors.RestaurantBaseInteractor;
 
 import java.util.Calendar;
 
-import javax.inject.Inject;
-
 import io.reactivex.Observable;
 
-public class FetchRestaurantDetailFromPlaceInteractor {
-
-    @Inject
-    RestaurantRepository restaurantDataSource;
+public class FetchRestaurantDetailFromPlaceInteractor extends RestaurantBaseInteractor {
 
     public FetchRestaurantDetailFromPlaceInteractor(RestaurantRepository restaurantDataSource) {
-        this.restaurantDataSource = restaurantDataSource;
+        super(restaurantDataSource);
     }
 
     public Observable<Restaurant> getRestaurantDetail(Restaurant restaurant, String googleKey) {

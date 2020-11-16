@@ -46,7 +46,7 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
         final User user = mUsers.get(position);
         if (tag.equals(WorkmatesFragment.TAG)) initHolderForWorkmatesFragment(holder, user);
         else initHolderForRestaurantDetail(holder, user);
-        initUserAvatar(holder, user);
+        setAvatar(holder, user);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
 
         private RecyclerViewColleagueItemsBinding colleagueBinding;
 
-        ViewHolder(RecyclerViewColleagueItemsBinding colleagueBinding) {
+        ViewHolder(@NonNull RecyclerViewColleagueItemsBinding colleagueBinding) {
             super(colleagueBinding.getRoot());
             this.colleagueBinding = colleagueBinding;
         }
@@ -69,12 +69,12 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
         notifyDataSetChanged();
     }
 
-    private void initHolderForRestaurantDetail(@NonNull ViewHolder holder, User user) {
+    private void initHolderForRestaurantDetail(@NonNull ViewHolder holder, @NonNull User user) {
         holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(holder.itemView.getContext().getString(R.string.is_joining)));
         holder.colleagueBinding.separator.setVisibility(View.GONE);
     }
 
-    private void initHolderForWorkmatesFragment(@NonNull ViewHolder holder, User user) {
+    private void initHolderForWorkmatesFragment(@NonNull ViewHolder holder, @NonNull User user) {
         if (user.getUserDailySchedules() != null && getUserDailyScheduleOnToday(user.getUserDailySchedules()) != null) {
             holder.colleagueBinding.userSelectedRestaurant.setText(user.getName().concat(holder.itemView.getContext().getString(R.string.is_eating)).concat(getUserDailyScheduleOnToday(user.getUserDailySchedules()).getRestaurantName()));
             holder.colleagueBinding.userSelectedRestaurant.setTextColor(Color.BLACK);
@@ -85,7 +85,7 @@ public class ColleagueRecyclerViewAdapter extends RecyclerView.Adapter<Colleague
         }
     }
 
-    private void initUserAvatar(@NonNull ViewHolder holder, User user) {
+    private void setAvatar(@NonNull ViewHolder holder, @NonNull User user) {
         Glide.with(holder.colleagueBinding.avatarImageView.getContext())
                 .load(user.getAvatar())
                 .circleCrop()

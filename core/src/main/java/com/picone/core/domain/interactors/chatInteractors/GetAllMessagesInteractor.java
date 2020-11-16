@@ -5,17 +5,13 @@ import com.picone.core.domain.entity.ChatMessage;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import io.reactivex.Observable;
 
-public class GetAllMessagesInteractor {
+public class GetAllMessagesInteractor extends ChatBaseInteractor{
 
-    @Inject
-    protected ChatMessageRepository chatMessageDataSource;
 
     public GetAllMessagesInteractor(ChatMessageRepository chatMessageDataSource) {
-        this.chatMessageDataSource = chatMessageDataSource;
+        super(chatMessageDataSource);
     }
 
     public Observable<List<ChatMessage>> getAllMessages() {

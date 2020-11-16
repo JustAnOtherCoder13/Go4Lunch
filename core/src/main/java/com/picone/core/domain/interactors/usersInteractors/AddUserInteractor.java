@@ -3,17 +3,12 @@ package com.picone.core.domain.interactors.usersInteractors;
 import com.picone.core.data.repository.user.UserRepository;
 import com.picone.core.domain.entity.user.User;
 
-import javax.inject.Inject;
-
 import io.reactivex.Completable;
 
-public class AddUserInteractor {
-
-    @Inject
-    UserRepository userDataSource;
+public class AddUserInteractor extends UserBaseInteractor {
 
     public AddUserInteractor(UserRepository userDataSource) {
-        this.userDataSource = userDataSource;
+        super(userDataSource);
     }
 
     public Completable addUser(User user) {

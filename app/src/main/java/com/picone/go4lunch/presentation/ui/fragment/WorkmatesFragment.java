@@ -57,7 +57,7 @@ public class WorkmatesFragment extends BaseFragment {
         mUserViewModel.getAllUsers().observe(getViewLifecycleOwner(), adapter::updateUsers);
     }
 
-    public void configureOnClickRecyclerView() {
+    private void configureOnClickRecyclerView() {
         RecyclerViewItemClickUtil.addTo(mBinding.recyclerViewWorkmatesFragment, R.layout.fragment_restaurant_list)
                 .setOnItemClickListener((recyclerView, position, v) -> {
                     if (!Objects.requireNonNull(mUserViewModel.getAllUsers().getValue()).isEmpty()

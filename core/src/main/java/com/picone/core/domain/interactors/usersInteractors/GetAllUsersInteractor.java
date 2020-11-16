@@ -5,17 +5,12 @@ import com.picone.core.domain.entity.user.User;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import io.reactivex.Observable;
 
-public class GetAllUsersInteractor {
-
-    @Inject
-    UserRepository userDataSource;
+public class GetAllUsersInteractor extends UserBaseInteractor {
 
     public GetAllUsersInteractor(UserRepository userDataSource) {
-        this.userDataSource = userDataSource;
+        super(userDataSource);
     }
 
     public Observable<List<User>> getAllUsers() {

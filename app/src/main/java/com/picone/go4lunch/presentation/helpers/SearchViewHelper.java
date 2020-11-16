@@ -23,9 +23,9 @@ import static com.picone.core.utils.ConstantParameter.MAPS_KEY;
 
 public class SearchViewHelper {
 
-    MainActivity mainActivity;
-    RestaurantViewModel mRestaurantViewModel;
-    UserViewModel mUserViewModel;
+    private MainActivity mainActivity;
+    private RestaurantViewModel mRestaurantViewModel;
+    private UserViewModel mUserViewModel;
 
     public SearchViewHelper(MainActivity mainActivity, RestaurantViewModel mRestaurantViewModel, UserViewModel mUserViewModel) {
         this.mainActivity = mainActivity;

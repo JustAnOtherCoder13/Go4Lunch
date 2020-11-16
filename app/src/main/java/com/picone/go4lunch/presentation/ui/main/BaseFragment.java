@@ -23,6 +23,8 @@ import com.picone.go4lunch.presentation.viewModels.LoginViewModel;
 import com.picone.go4lunch.presentation.viewModels.RestaurantViewModel;
 import com.picone.go4lunch.presentation.viewModels.UserViewModel;
 
+import java.util.Objects;
+
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -75,9 +77,8 @@ public abstract class BaseFragment extends Fragment {
         mainActivity.setStatusBarTransparency(isTransparent);
     }
 
-    @SuppressWarnings("ConstantConditions")
     protected void setPageTitle(int title) {
-        mainActivity.getSupportActionBar().setTitle(title);
+        Objects.requireNonNull(mainActivity.getSupportActionBar()).setTitle(title);
     }
 
     protected void playLoadingAnimation(boolean bol) {
@@ -92,7 +93,7 @@ public abstract class BaseFragment extends Fragment {
         mChatViewModel = new ViewModelProvider(requireActivity()).get(ChatViewModel.class);
     }
 
-    private void populateDrawerMenu(FirebaseUser currentUser) {
+    private void populateDrawerMenu(@NonNull FirebaseUser currentUser) {
         View hView = mainActivity.mBinding.navView.getHeaderView(0);
         DrawerMenuHeaderLayoutBinding headerLayoutBinding = DrawerMenuHeaderLayoutBinding.bind(hView);
         headerLayoutBinding.drawerUserName.setText(currentUser.getDisplayName());

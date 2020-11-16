@@ -1,7 +1,5 @@
 package com.picone.go4lunch.presentation.viewModels;
 
-import android.annotation.SuppressLint;
-
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -27,24 +25,22 @@ public class ChatViewModel extends BaseViewModel {
 
     public LiveData<List<ChatMessage>> getAllMessages = chatMessageMutableLiveData;
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    @SuppressLint("CheckResult")
     public void setAllMessages() {
+        compositeDisposable.add(
         getAllMessagesInteractor.getAllMessages()
                 .subscribeOn(schedulerProvider.getIo())
                 .observeOn(schedulerProvider.getUi())
                 .subscribe(chatMessages ->
-                        chatMessageMutableLiveData.setValue(chatMessages), throwable -> checkException());
+                        chatMessageMutableLiveData.setValue(chatMessages), throwable -> checkException()));
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    @SuppressLint("CheckResult")
     public void postMessage(ChatMessage chatMessage) {
         if (chatMessage != null && chatMessage.getUserText() != null && !chatMessage.getUserText().trim().isEmpty())
+            compositeDisposable.add(
             postMessageInteractor.postMessage(chatMessage)
                     .subscribeOn(schedulerProvider.getIo())
                     .observeOn(schedulerProvider.getUi())
                     .subscribe(() -> {
-                    }, throwable -> checkException());
+                    }, throwable -> checkException()));
     }
 }

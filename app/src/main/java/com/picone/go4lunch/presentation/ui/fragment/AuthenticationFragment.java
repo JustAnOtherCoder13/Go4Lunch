@@ -126,7 +126,7 @@ public class AuthenticationFragment extends BaseFragment {
 
 //------------------------------------Facebook authentication----------------------------
 
-    private void handleFacebookAccessToken(AccessToken token) {
+    private void handleFacebookAccessToken(@NonNull AccessToken token) {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(requireActivity(), task -> {
@@ -163,7 +163,7 @@ public class AuthenticationFragment extends BaseFragment {
         });
     }
 
-    private void setCurrentUser(Task<AuthResult> task) {
+    private void setCurrentUser(@NonNull Task<AuthResult> task) {
         if (task.isSuccessful()) {
             isNewUser = Objects.requireNonNull(Objects.requireNonNull(task.getResult())
                     .getAdditionalUserInfo())

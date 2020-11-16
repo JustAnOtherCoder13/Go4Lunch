@@ -51,7 +51,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
         private RecyclerViewChatItemBinding recyclerViewChatItemBinding;
 
-        public ViewHolder(RecyclerViewChatItemBinding recyclerViewChatItemBinding) {
+        public ViewHolder(@NonNull RecyclerViewChatItemBinding recyclerViewChatItemBinding) {
             super(recyclerViewChatItemBinding.getRoot());
             this.recyclerViewChatItemBinding = recyclerViewChatItemBinding;
         }
@@ -75,7 +75,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         holder.recyclerViewChatItemBinding.chatMessageDate.setText(chatMessage.getTime());
     }
 
-    private void setAvatar(@NonNull ImageView chatAvatarImageView, ChatMessage chatMessage) {
+    private void setAvatar(@NonNull ImageView chatAvatarImageView, @NonNull ChatMessage chatMessage) {
         Glide.with(chatAvatarImageView.getContext())
                 .load(chatMessage.getUserAvatar())
                 .circleCrop()

@@ -2,7 +2,6 @@ package com.picone.go4lunch.presentation.helpers;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -14,15 +13,13 @@ import androidx.annotation.Nullable;
 
 import com.picone.go4lunch.R;
 
-import java.util.Arrays;
-
 import static com.picone.go4lunch.presentation.helpers.GetBitmapFromVectorUtil.getBitmapFromVectorDrawable;
 
 public class CustomAdapter extends ArrayAdapter<String> {
 
-    Context context;
-    String[] languages;
-    int[] flags;
+    private Context context;
+    private String[] languages;
+    private int[] flags;
 
     public CustomAdapter(@NonNull Context context, String[] languages, int[] flags) {
         super(context, R.layout.spinner_item, languages);

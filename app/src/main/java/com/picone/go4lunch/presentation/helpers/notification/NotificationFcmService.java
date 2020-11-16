@@ -22,8 +22,8 @@ public class NotificationFcmService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        if (remoteMessage.getData().size() > 0){
-        setAlarm(this, remoteMessage.getData().get(getString(R.string.intent_extra_name)));}
+        if (remoteMessage.getData().size() > 0)
+        setAlarm(this, remoteMessage.getData().get(getString(R.string.intent_extra_name)));
     }
 
     @Override

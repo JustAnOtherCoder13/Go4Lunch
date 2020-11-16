@@ -5,17 +5,12 @@ import com.picone.core.domain.entity.user.User;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import io.reactivex.Observable;
 
-public class GetCurrentUserForEmailInteractor {
-
-    @Inject
-    UserRepository userDataSource;
+public class GetCurrentUserForEmailInteractor extends UserBaseInteractor {
 
     public GetCurrentUserForEmailInteractor(UserRepository userDataSource) {
-        this.userDataSource = userDataSource;
+        super(userDataSource);
     }
 
     public Observable<List<User>> getCurrentUserForEmail(String authUserEmail){

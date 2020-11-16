@@ -7,21 +7,17 @@ import com.picone.core.domain.entity.pOJOrestaurant.NearBySearch;
 import com.picone.core.domain.entity.pOJOrestaurant.RestaurantPOJO;
 import com.picone.core.domain.entity.restaurant.Restaurant;
 import com.picone.core.domain.entity.restaurant.RestaurantPosition;
+import com.picone.core.domain.interactors.restaurantInteractors.RestaurantBaseInteractor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import io.reactivex.Observable;
 
-public class FetchRestaurantFromPlaceInteractor {
-
-    @Inject
-    RestaurantRepository restaurantDataSource;
+public class FetchRestaurantFromPlaceInteractor extends RestaurantBaseInteractor {
 
     public FetchRestaurantFromPlaceInteractor(RestaurantRepository restaurantDataSource) {
-        this.restaurantDataSource = restaurantDataSource;
+        super(restaurantDataSource);
     }
 
     public Observable<List<Restaurant>> fetchRestaurantFromPlace(Location mCurrentLocation, String googleKey) {

@@ -4,18 +4,14 @@ import android.location.Location;
 
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.domain.entity.restaurant.Restaurant;
-
-import javax.inject.Inject;
+import com.picone.core.domain.interactors.restaurantInteractors.RestaurantBaseInteractor;
 
 import io.reactivex.Observable;
 
-public class FetchRestaurantDistanceInteractor {
-
-    @Inject
-    RestaurantRepository restaurantDataSource;
+public class FetchRestaurantDistanceInteractor extends RestaurantBaseInteractor {
 
     public FetchRestaurantDistanceInteractor(RestaurantRepository restaurantDataSource) {
-        this.restaurantDataSource = restaurantDataSource;
+        super(restaurantDataSource);
     }
 
     public Observable<Restaurant> getRestaurantDistance(Restaurant restaurant, Location currentLocation, String googleKey) {

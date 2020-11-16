@@ -60,7 +60,7 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
 
         private RecyclerViewRestaurantItemsBinding restaurantBinding;
 
-        ViewHolder(RecyclerViewRestaurantItemsBinding restaurantBinding) {
+        ViewHolder(@NonNull RecyclerViewRestaurantItemsBinding restaurantBinding) {
             super(restaurantBinding.getRoot());
             this.restaurantBinding = restaurantBinding;
         }
@@ -71,7 +71,7 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
         notifyDataSetChanged();
     }
 
-    private void setRestaurantPhoto(@NonNull ViewHolder holder, Restaurant restaurant) {
+    private void setRestaurantPhoto(@NonNull ViewHolder holder, @NonNull Restaurant restaurant) {
         Glide.with(holder.restaurantBinding.restaurantPhotoImageView.getContext())
                 .load(restaurant.getRestaurantPhoto())
                 .centerCrop()
@@ -87,13 +87,13 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
                 });
     }
 
-    private void setNumberOfStars(@NonNull ViewHolder holder, Restaurant restaurant) {
+    private void setNumberOfStars(@NonNull ViewHolder holder, @NonNull Restaurant restaurant) {
         int numberOfLike = 0;
         if (restaurant.getFanList() != null) numberOfLike = restaurant.getFanList().size();
         manageStar(holder.restaurantBinding.opinionStarDetailImageView, numberOfLike);
     }
 
-    private void setInterestedUsers(@NonNull ViewHolder holder, Restaurant restaurant) {
+    private void setInterestedUsers(@NonNull ViewHolder holder, @NonNull Restaurant restaurant) {
         if (getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()) != null &&
                 getRestaurantDailyScheduleOnToday(restaurant.getRestaurantDailySchedules()).getInterestedUsers().size() > 0){
             holder.restaurantBinding.interestedColleague.setVisibility(View.VISIBLE);
@@ -105,7 +105,7 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
         }
     }
 
-    private void setOpeningHour(@NonNull ViewHolder holder, Restaurant restaurant) {
+    private void setOpeningHour(@NonNull ViewHolder holder, @NonNull Restaurant restaurant) {
         String formatOpeningHour = holder.itemView.getContext().getString(R.string.open_until).concat(restaurant.getOpeningHours());
         if (restaurant.getOpeningHours().equalsIgnoreCase(CLOSED)){
             holder.restaurantBinding.openingTimeTextView.setText(R.string.closed);

@@ -1,5 +1,7 @@
 package com.picone.core.data.repository.user;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -14,15 +16,18 @@ import durdinapps.rxfirebase2.RxFirebaseDatabase;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 
+import static com.picone.core.utils.ConstantParameter.MAIL_REF;
+import static com.picone.core.utils.ConstantParameter.USER_REF;
+
 public class UserDaoImpl implements UserDao {
 
     @Inject
     protected FirebaseDatabase firebaseDatabase;
     private DatabaseReference usersDatabaseReference;
 
-    public UserDaoImpl(FirebaseDatabase firebaseDatabase) {
+    public UserDaoImpl(@NonNull FirebaseDatabase firebaseDatabase) {
         this.firebaseDatabase = firebaseDatabase;
-        this.usersDatabaseReference = firebaseDatabase.getReference().child("users");
+        this.usersDatabaseReference = firebaseDatabase.getReference().child(USER_REF);
     }
 
     @Override
@@ -32,18 +37,19 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Completable AddUser(User user) {
+    public Completable AddUser(@NonNull User user) {
         user.setUid(usersDatabaseReference.push().getKey());
         return RxFirebaseDatabase.setValue(usersDatabaseReference.child(user.getUid()), user);
     }
 
+    @Override
     public Completable updateUser(User currentUser) {
         return RxFirebaseDatabase.setValue(usersDatabaseReference.child(currentUser.getUid()), currentUser);
     }
 
     @Override
     public Observable<List<User>> getCurrentUserForEmail(String authUserEmail) {
-        Query query = usersDatabaseReference.orderByChild("email").equalTo(authUserEmail);
+        Query query = usersDatabaseReference.orderByChild(MAIL_REF).equalTo(authUserEmail);
         return RxFirebaseDatabase.observeValueEvent(query, DataSnapshotMapper.listOf(User.class)).toObservable();
     }
 }

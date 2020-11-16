@@ -29,6 +29,7 @@ public class ManageStarHelper {
                 starLayoutBinding.opinionStar1.setVisibility(View.VISIBLE);
                 starLayoutBinding.opinionStar2.setVisibility(View.VISIBLE);
                 starLayoutBinding.opinionStar3.setVisibility(View.VISIBLE);
+                break;
         }
     }
 }

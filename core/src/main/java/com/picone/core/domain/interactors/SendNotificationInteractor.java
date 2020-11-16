@@ -2,18 +2,14 @@ package com.picone.core.domain.interactors;
 
 import com.google.gson.JsonObject;
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
-
-import javax.inject.Inject;
+import com.picone.core.domain.interactors.restaurantInteractors.RestaurantBaseInteractor;
 
 import io.reactivex.Observable;
 
-public class SendNotificationInteractor {
-
-    @Inject
-    RestaurantRepository restaurantDataSource;
+public class SendNotificationInteractor extends RestaurantBaseInteractor {
 
     public SendNotificationInteractor(RestaurantRepository restaurantDataSource) {
-        this.restaurantDataSource = restaurantDataSource;
+        super(restaurantDataSource);
     }
 
     public Observable<JsonObject> sendNotification(String token, String title, String message) {

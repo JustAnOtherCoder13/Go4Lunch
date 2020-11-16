@@ -6,15 +6,7 @@
 + **Min Sdk Version :** 19.
 + **JavaVersion :** 1_8.
 
-## 2. Compile project.
-
-+ Open **ANDROID STUDIO**.
-+ Click on **File ->New -> Project from Version Control ->Git**.
-+ Enter the following URL : https://github.com/JustAnOtherCoder13/Go4Lunch.git
-+ Optimize import by right clicking on app folder and choose "Optimize Import".
-+ Run the project by clicking **Play** button in the tool bar on top.
-
-## 3. Preview.
+## 2. Preview.
 
 ### Go4Lunch presentation.
 
@@ -54,7 +46,7 @@
   + Change application language.
   + Chat with workmates.
 
-## 4. Work done
+## 3. Work done
 
 + Single activity application.
 + Multi module application

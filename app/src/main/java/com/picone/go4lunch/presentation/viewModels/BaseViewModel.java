@@ -21,10 +21,13 @@ import com.picone.core.domain.interactors.usersInteractors.UpdateUserInteractor;
 import com.picone.core.utils.SchedulerProvider;
 import com.picone.go4lunch.presentation.helpers.ErrorHandler;
 
+import io.reactivex.disposables.CompositeDisposable;
+
 public abstract class BaseViewModel extends ViewModel {
 
     protected MutableLiveData<ErrorHandler> errorState = new MutableLiveData<>(ErrorHandler.NO_ERROR);
     public LiveData<ErrorHandler> getErrorState = errorState;
+    protected CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     //------------------------RESTAURANT_INTERACTORS----------------------------
     protected AddRestaurantInteractor addRestaurantInteractor;
@@ -50,5 +53,11 @@ public abstract class BaseViewModel extends ViewModel {
 
     protected void checkException() {
         errorState.setValue(ErrorHandler.ON_ERROR);
+    }
+
+    @Override
+    protected void onCleared() {
+        compositeDisposable.clear();
+        super.onCleared();
     }
 }

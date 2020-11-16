@@ -97,11 +97,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         updateLocationUI();
-        mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), restaurants -> {
-            initCustomMarker(restaurants);
-            mRestaurantViewModel.setUserChosenRestaurant(restaurants);
-        });
-
+        mRestaurantViewModel.getAllRestaurants.observe(getViewLifecycleOwner(), this::initCustomMarker);
     }
 
     private void initMapView(@Nullable Bundle savedInstanceState) {

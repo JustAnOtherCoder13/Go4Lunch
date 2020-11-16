@@ -15,6 +15,11 @@ public class ConstantParameter {
 
     public static final String SELECTED_LANGUAGE = "Locale.Helper.Selected.Language";
 
+    public final static String CHAT_REF = "chat";
+    public final static String RESTAURANT_REF = "restaurants";
+    public final static String USER_REF = "users";
+    public final static String MAIL_REF = "email";
+
     public static final int NOTIFICATION_ID = 7;
     public static final String NOTIFICATION_TAG = "GO4LUNCH";
     public static final String CLOSED = "Closed";
@@ -26,6 +31,10 @@ public class ConstantParameter {
     public static final int ALARM_MINUTE = 0;
 
     public static final int MAPS_CAMERA_ZOOM = 16;
+
+    public static final int CHAT_MESSAGE_LIMIT = 50;
+
+    public static final String RADIUS = "400";
 
     public static final SettingValues SETTING_START_VALUE = new SettingValues("Fr", true);
 }

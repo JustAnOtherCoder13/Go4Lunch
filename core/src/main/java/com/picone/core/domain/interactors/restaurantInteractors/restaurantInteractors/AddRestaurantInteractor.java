@@ -2,18 +2,14 @@ package com.picone.core.domain.interactors.restaurantInteractors.restaurantInter
 
 import com.picone.core.data.repository.restaurant.RestaurantRepository;
 import com.picone.core.domain.entity.restaurant.Restaurant;
-
-import javax.inject.Inject;
+import com.picone.core.domain.interactors.restaurantInteractors.RestaurantBaseInteractor;
 
 import io.reactivex.Completable;
 
-public class AddRestaurantInteractor {
-
-    @Inject
-    RestaurantRepository restaurantDataSource;
+public class AddRestaurantInteractor extends RestaurantBaseInteractor {
 
     public AddRestaurantInteractor(RestaurantRepository restaurantDataSource) {
-        this.restaurantDataSource = restaurantDataSource;
+        super(restaurantDataSource);
     }
 
     public Completable addRestaurant(Restaurant restaurant){
